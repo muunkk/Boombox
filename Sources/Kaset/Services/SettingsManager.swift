@@ -14,10 +14,6 @@ final class SettingsManager {
         static let defaultLaunchPage = "settings.defaultLaunchPage"
         static let hapticFeedbackEnabled = "settings.hapticFeedbackEnabled"
         static let rememberPlaybackSettings = "settings.rememberPlaybackSettings"
-        static let lastFMEnabled = "settings.lastFMEnabled"
-        static let enabledServices = "settings.enabledServices"
-        static let scrobblePercentThreshold = "settings.scrobblePercentThreshold"
-        static let scrobbleMinSeconds = "settings.scrobbleMinSeconds"
         static let mediaControlStyle = "settings.mediaControlStyle"
         static let syncedLyricsEnabled = "settings.syncedLyricsEnabled"
         static let romanizationEnabled = "settings.romanizationEnabled"
@@ -188,43 +184,6 @@ final class SettingsManager {
         }
     }
 
-    /// Per-service enabled flags stored as a dictionary.
-    private var enabledServices: [String: Bool] {
-        didSet {
-            UserDefaults.standard.set(self.enabledServices, forKey: Keys.enabledServices)
-        }
-    }
-
-    /// Whether a specific scrobbling service is enabled by name.
-    func isServiceEnabled(_ serviceName: String) -> Bool {
-        self.enabledServices[serviceName] ?? false
-    }
-
-    /// Sets the enabled state for a specific scrobbling service by name.
-    func setServiceEnabled(_ serviceName: String, _ enabled: Bool) {
-        self.enabledServices[serviceName] = enabled
-    }
-
-    /// Whether Last.fm scrobbling is enabled (backward-compatible convenience).
-    var lastFMEnabled: Bool {
-        get { self.isServiceEnabled("Last.fm") }
-        set { self.setServiceEnabled("Last.fm", newValue) }
-    }
-
-    /// Percentage of track duration required before scrobbling (0.0–1.0).
-    var scrobblePercentThreshold: Double {
-        didSet {
-            UserDefaults.standard.set(self.scrobblePercentThreshold, forKey: Keys.scrobblePercentThreshold)
-        }
-    }
-
-    /// Minimum seconds of play time before scrobbling (overrides percentage for long tracks).
-    var scrobbleMinSeconds: TimeInterval {
-        didSet {
-            UserDefaults.standard.set(self.scrobbleMinSeconds, forKey: Keys.scrobbleMinSeconds)
-        }
-    }
-
     /// The last page the user was on (for "Last Used" option).
     var lastUsedPage: LaunchPage = .home
 
@@ -259,17 +218,6 @@ final class SettingsManager {
         self.hapticFeedbackEnabled = UserDefaults.standard.object(forKey: Keys.hapticFeedbackEnabled) as? Bool ?? true
         self.rememberPlaybackSettings = UserDefaults.standard.object(forKey: Keys.rememberPlaybackSettings) as? Bool ?? false
 
-        // Load per-service enabled flags, migrating from legacy lastFMEnabled if needed
-        if let stored = UserDefaults.standard.dictionary(forKey: Keys.enabledServices) as? [String: Bool] {
-            self.enabledServices = stored
-        } else if let legacyEnabled = UserDefaults.standard.object(forKey: Keys.lastFMEnabled) as? Bool {
-            // Migrate from single-service flag to dictionary
-            self.enabledServices = ["Last.fm": legacyEnabled]
-        } else {
-            self.enabledServices = [:]
-        }
-        self.scrobblePercentThreshold = UserDefaults.standard.object(forKey: Keys.scrobblePercentThreshold) as? Double ?? 0.5
-        self.scrobbleMinSeconds = UserDefaults.standard.object(forKey: Keys.scrobbleMinSeconds) as? Double ?? 240
         self.syncedLyricsEnabled = UserDefaults.standard.object(forKey: Keys.syncedLyricsEnabled) as? Bool ?? true
         self.romanizationEnabled = UserDefaults.standard.object(forKey: Keys.romanizationEnabled) as? Bool ?? true
 
@@ -298,14 +246,6 @@ final class SettingsManager {
         }
 
         AppLocalization.setLanguage(self.contentLanguage.languageCode)
-
-        // Persist migration from legacy lastFMEnabled key (must run after all properties initialized)
-        if UserDefaults.standard.object(forKey: Keys.enabledServices) == nil,
-           UserDefaults.standard.object(forKey: Keys.lastFMEnabled) != nil
-        {
-            UserDefaults.standard.set(self.enabledServices, forKey: Keys.enabledServices)
-            UserDefaults.standard.removeObject(forKey: Keys.lastFMEnabled)
-        }
     }
 
     // MARK: - Computed Properties
