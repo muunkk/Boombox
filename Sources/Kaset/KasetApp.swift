@@ -352,12 +352,6 @@ struct SettingsView: View {
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }
-
-
-            ExtensionsSettingsView()
-                .tabItem {
-                    Label("Extensions", systemImage: "puzzlepiece.extension")
-                }
         }
         .frame(width: 460, height: 420)
     }

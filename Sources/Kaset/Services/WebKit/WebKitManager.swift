@@ -33,9 +33,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
     /// The YouTube Music origin URL.
     static let origin = "https://music.youtube.com"
 
-    @MainActor
-    let webExtensionController = WKWebExtensionController()
-
     /// Required cookie name for authentication.
     static let authCookieName = "__Secure-3PAPISID"
 
@@ -46,8 +43,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
     static let userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
 
     private let logger = DiagnosticsLogger.webKit
-
-    private var extensionContexts: [String: WKWebExtensionContext] = [:]
 
     override private init() {
         // Use the default persistent data store
@@ -72,44 +67,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         }
 
         self.logger.info("WebKitManager initialized with persistent data store")
-
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                self.webExtensionController.delegate = self
-            }
-        #endif
-
-        Task { await self.loadExtensions() }
-    }
-
-    /// Returns `true` if any web extension is currently loaded.
-    var isExtensionLoaded: Bool {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                return !self.webExtensionController.extensionContexts.isEmpty
-            }
-        #endif
-        return false
-    }
-
-    /// Number of currently loaded extensions.
-    var loadedExtensionCount: Int {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                return self.webExtensionController.extensionContexts.count
-            }
-        #endif
-        return 0
-    }
-
-    /// Returns the version string of the first loaded extension, if any.
-    var extensionVersion: String? {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                return self.webExtensionController.extensionContexts.first?.webExtension.version
-            }
-        #endif
-        return nil
     }
 
     /// Restores auth cookies from Keychain to WebKit.
@@ -169,60 +126,10 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         }
     }
 
-    /// Loads all enabled extensions from `ExtensionsManager`.
-    private func loadExtensions() async {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                let resolvedURLs = ExtensionsManager.shared.resolvedURLs()
-                guard !resolvedURLs.isEmpty else {
-                    self.logger.info("No enabled extensions to load")
-                    return
-                }
-
-                for (id, url) in resolvedURLs {
-                    await self.loadSingleExtension(at: url, id: id)
-                }
-
-                self.logger.info("Loaded \(self.webExtensionController.extensionContexts.count) extension(s)")
-            }
-        #endif
-    }
-
-    /// Loads a single web extension from a directory URL.
-    @available(macOS 14.0, *)
-    private func loadSingleExtension(at url: URL, id: String) async {
-        do {
-            let webExtension = try await WKWebExtension(resourceBaseURL: url)
-            let context = WKWebExtensionContext(for: webExtension)
-
-            self.extensionContexts[id] = context
-
-            for permission in webExtension.requestedPermissions {
-                context.setPermissionStatus(.grantedExplicitly, for: permission)
-            }
-
-            for matchPattern in webExtension.requestedPermissionMatchPatterns {
-                context.setPermissionStatus(.grantedExplicitly, for: matchPattern)
-            }
-
-            try self.webExtensionController.load(context)
-            try? await context.loadBackgroundContent()
-            self.logger.info("Loaded extension \(webExtension.displayName ?? url.lastPathComponent) (\(webExtension.version ?? "?")). Options: \(context.optionsPageURL?.absoluteString ?? "none")")
-        } catch {
-            self.logger.error("Failed to load extension at \(url.path): \(error.localizedDescription)")
-        }
-    }
-
     /// Creates a WebView configuration using the shared persistent data store.
     func createWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = self.dataStore
-
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                configuration.webExtensionController = self.webExtensionController
-            }
-        #endif
 
         configuration.preferences.isElementFullscreenEnabled = true
         configuration.mediaTypesRequiringUserActionForPlayback = []
@@ -231,77 +138,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         configuration.allowsAirPlayForMediaPlayback = true
 
         return configuration
-    }
-
-    /// Metadata required to present an extension-owned page in a dedicated web view.
-    struct ExtensionPage: Identifiable {
-        let id: String
-        let url: URL
-        let configuration: WKWebViewConfiguration
-    }
-
-    /// Resolves the options or popup page for a loaded extension.
-    func extensionPage(forExtensionId id: String) -> ExtensionPage? {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                guard let context = self.extensionContexts[id] else { return nil }
-                guard let configuration = context.webViewConfiguration else { return nil }
-
-                if let optionsURL = context.optionsPageURL {
-                    return ExtensionPage(id: id, url: optionsURL, configuration: configuration)
-                }
-
-                guard let managedExt = ExtensionsManager.shared.extensions.first(where: { $0.id == id }),
-                      let relativePath = managedExt.optionsPath ?? managedExt.popupPath,
-                      let fallbackURL = Self.extensionResourceURL(relativePath: relativePath, baseURL: context.baseURL)
-                else {
-                    return nil
-                }
-
-                return ExtensionPage(id: id, url: fallbackURL, configuration: configuration)
-            }
-        #endif
-        return nil
-    }
-
-    /// Gets the options page URL for a loaded extension by its Kaset internal ID.
-    func optionsPageURL(forExtensionId id: String) -> URL? {
-        self.extensionPage(forExtensionId: id)?.url
-    }
-
-    /// Gets the options page URL for a loaded extension by name (deprecated/fallback).
-    func optionsPageURL(forExtensionNamed name: String) -> URL? {
-        #if compiler(>=5.9)
-            if #available(macOS 14.0, *) {
-                self.logger.info("Looking for options page for extension: \(name)")
-                for context in self.webExtensionController.extensionContexts {
-                    let displayName = context.webExtension.displayName ?? ""
-                    self.logger.debug("Checking context: \(displayName)")
-                    if displayName == name {
-                        let url = context.optionsPageURL
-                        self.logger.info("Found options page URL: \(url?.absoluteString ?? "nil")")
-                        return url
-                    }
-                }
-                self.logger.warning("No extension found with display name: \(name)")
-            }
-        #endif
-        return nil
-    }
-
-    static func extensionResourceURL(relativePath: String, baseURL: URL) -> URL? {
-        let trimmedPath = relativePath.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedPath.isEmpty else { return nil }
-
-        if let components = URLComponents(string: trimmedPath), components.scheme != nil || components.host != nil {
-            return nil
-        }
-
-        let normalizedPath = trimmedPath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        guard !normalizedPath.isEmpty else { return nil }
-
-        let rootURL = baseURL.hasDirectoryPath ? baseURL : baseURL.appendingPathComponent("", isDirectory: true)
-        return URL(string: normalizedPath, relativeTo: rootURL)?.absoluteURL
     }
 
     /// Waits for the one-time startup cookie restore to finish.
@@ -516,17 +352,3 @@ extension WebKitManager: WKHTTPCookieStoreObserver {
     }
 }
 
-#if compiler(>=5.9)
-    @available(macOS 14.0, *)
-    extension WebKitManager: WKWebExtensionControllerDelegate {
-        func webExtensionController(_: WKWebExtensionController, shouldShowPromptFor permissions: Set<WKWebExtension.Permission>, in _: WKWebExtensionContext) async -> Bool {
-            self.logger.info("Showing permission prompt for: \(permissions.map(\.rawValue).joined(separator: ", "))")
-            return true
-        }
-
-        func webExtensionController(_: WKWebExtensionController, shouldShowPromptFor matchPatterns: Set<WKWebExtension.MatchPattern>, in _: WKWebExtensionContext) async -> Bool {
-            self.logger.info("Showing match-pattern prompt for: \(matchPatterns.map(\.string).joined(separator: ", "))")
-            return true
-        }
-    }
-#endif

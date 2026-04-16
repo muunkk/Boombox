@@ -36,9 +36,6 @@ enum DiagnosticsLogger {
     /// Logger for AirPlay-related events.
     static let airplay = Logger(subsystem: "com.sertacozercan.Kaset", category: "AirPlay")
 
-    /// Logger for web extension management events.
-    static let extensions = Logger(subsystem: "com.sertacozercan.Kaset", category: "Extensions")
-
     /// Logger for listening history-related events.
     static let history = Logger(subsystem: "com.sertacozercan.Kaset", category: "History")
 }
