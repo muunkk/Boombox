@@ -13,10 +13,6 @@ extension EnvironmentValues {
     @Entry var showCommandBar: Binding<Bool> = .constant(false)
 }
 
-extension EnvironmentValues {
-    @Entry var showWhatsNew: Binding<Bool> = .constant(false)
-}
-
 // MARK: - KasetApp
 
 /// Main entry point for the Kaset macOS application.
@@ -31,7 +27,6 @@ struct KasetApp: App {
     @State private var playerService = PlayerService()
     @State private var sharedClient: any YTMusicClientProtocol
     @State private var notificationService: NotificationService?
-    @State private var updaterService = UpdaterService()
     @State private var favoritesManager = FavoritesManager.shared
     @State private var likeStatusManager = SongLikeStatusManager.shared
     @State private var accountService: AccountService?
@@ -46,9 +41,6 @@ struct KasetApp: App {
 
     /// Whether the command bar is visible.
     @State private var showCommandBar = false
-
-    /// Whether the "What's New" sheet should be shown.
-    @State private var showWhatsNew = false
 
     init() {
         Bundle.enableAppLocalizationOverride()
@@ -120,7 +112,6 @@ struct KasetApp: App {
                     .environment(\.searchFocusTrigger, self.$searchFocusTrigger)
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)
-                    .environment(\.showWhatsNew, self.$showWhatsNew)
                     .onAppear {
                         DiagnosticsLogger.app.info("KasetApp: App content appeared")
                         // Wire up PlayerService to AppDelegate for dock menu and AppleScript actions
@@ -148,17 +139,8 @@ struct KasetApp: App {
             SettingsView()
                 .environment(\.locale, self.settings.contentLanguage.locale)
                 .environment(self.authService)
-                .environment(self.updaterService)
         }
         .commands {
-            // Check for Updates command in app menu
-            CommandGroup(after: .appInfo) {
-                Button("Check for Updates...") {
-                    self.updaterService.checkForUpdates()
-                }
-                .disabled(!self.updaterService.canCheckForUpdates)
-            }
-
             // Playback commands
             CommandMenu("Playback") {
                 // Play/Pause - Space
@@ -286,13 +268,6 @@ struct KasetApp: App {
                 .keyboardShortcut("0", modifiers: .command)
             }
 
-            // Help menu - What's New
-            CommandGroup(after: .appInfo) {
-                Divider()
-                Button("What's New in Kaset") {
-                    self.showWhatsNew = true
-                }
-            }
         }
     }
 
@@ -375,11 +350,9 @@ struct KasetApp: App {
 /// Main settings view with tabbed navigation.
 @available(macOS 26.0, *)
 struct SettingsView: View {
-    @Environment(UpdaterService.self) private var updaterService
-
     var body: some View {
         TabView {
-            GeneralSettingsView(updaterService: self.updaterService)
+            GeneralSettingsView()
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }

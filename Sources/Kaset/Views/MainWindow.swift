@@ -5,15 +5,6 @@ import SwiftUI
 /// Main application window with sidebar navigation and player bar.
 @available(macOS 26.0, *)
 struct MainWindow: View {
-    private struct PresentedWhatsNew: Identifiable {
-        let whatsNew: WhatsNew
-        let requestedVersion: WhatsNew.Version
-
-        var id: String {
-            "\(self.requestedVersion.description)::\(self.whatsNew.version.description)"
-        }
-    }
-
     private enum Layout {
         static let commandBarTopPadding: CGFloat = 72
     }
@@ -25,7 +16,6 @@ struct MainWindow: View {
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @Environment(\.searchFocusTrigger) private var searchFocusTrigger
     @Environment(\.showCommandBar) private var showCommandBar
-    @Environment(\.showWhatsNew) private var showWhatsNew
 
     /// Binding to navigation selection for keyboard shortcut control from parent.
     @Binding var navigationSelection: NavigationItem?
@@ -35,7 +25,6 @@ struct MainWindow: View {
 
     @State private var showLoginSheet = false
     @State private var isCommandBarPresented = false
-    @State private var whatsNewToPresent: PresentedWhatsNew?
 
     // MARK: - Cached ViewModels (persist across tab switches)
 
@@ -140,11 +129,6 @@ struct MainWindow: View {
         .sheet(isPresented: self.$showLoginSheet) {
             LoginSheet()
         }
-        .sheet(item: self.$whatsNewToPresent) { presentedWhatsNew in
-            WhatsNewView(whatsNew: presentedWhatsNew.whatsNew) {
-                self.dismissWhatsNew(presentedWhatsNew)
-            }
-        }
         .overlay {
             // Command bar overlay - dismisses when clicking outside
             if self.isCommandBarPresented {
@@ -180,18 +164,6 @@ struct MainWindow: View {
             if newValue {
                 self.isCommandBarPresented = true
                 self.showCommandBar.wrappedValue = false
-            }
-        }
-        .onChange(of: self.showWhatsNew.wrappedValue) { _, newValue in
-            if newValue {
-                // Manual trigger from Help menu — fetch release notes, bypass version store
-                Task { @MainActor in
-                    await self.presentCurrentWhatsNew(
-                        respectingPresentedVersions: false,
-                        allowsGenericFallback: true
-                    )
-                }
-                self.showWhatsNew.wrappedValue = false
             }
         }
         .onChange(of: self.authService.state) { oldState, newState in
@@ -395,12 +367,6 @@ struct MainWindow: View {
             self.showLoginSheet = true
         case .loggedIn:
             self.showLoginSheet = false
-            // Auto-present "What's New" — fetch from GitHub release notes
-            if self.whatsNewToPresent == nil {
-                Task { @MainActor in
-                    await self.presentCurrentWhatsNew()
-                }
-            }
             Task {
                 await self.accountService.fetchAccounts()
             }
@@ -420,31 +386,6 @@ struct MainWindow: View {
                 }
             }
         }
-    }
-
-    @MainActor
-    private func dismissWhatsNew(_ whatsNew: PresentedWhatsNew) {
-        WhatsNewVersionStore().markPresented(whatsNew.requestedVersion)
-        self.whatsNewToPresent = nil
-    }
-
-    @MainActor
-    private func presentCurrentWhatsNew(
-        respectingPresentedVersions: Bool = true,
-        allowsGenericFallback: Bool = false
-    ) async {
-        let currentVersion = WhatsNew.Version.current()
-        let whatsNew = await WhatsNewProvider.fetchWhatsNew(
-            for: currentVersion,
-            respectingPresentedVersions: respectingPresentedVersions
-        ) ?? (allowsGenericFallback ? WhatsNewProvider.fallbackCollection.first : nil)
-
-        guard let whatsNew else { return }
-
-        self.whatsNewToPresent = PresentedWhatsNew(
-            whatsNew: whatsNew,
-            requestedVersion: currentVersion
-        )
     }
 
     /// Refreshes all content when switching accounts.

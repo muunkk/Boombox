@@ -8,12 +8,7 @@ struct GeneralSettingsView: View {
     @State private var cacheSize: String = .init(localized: "Calculating...")
     @State private var isClearing = false
 
-    /// The updater service for managing app updates.
-    var updaterService: UpdaterService
-
     var body: some View {
-        @Bindable var updater = self.updaterService
-
         Form {
             // MARK: - General Section
 
@@ -101,35 +96,6 @@ struct GeneralSettingsView: View {
                 Text("General")
             }
 
-            // MARK: - Updates Section
-
-            Section {
-                Toggle("Automatically check for updates", isOn: $updater.automaticChecksEnabled)
-
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Software Update")
-                        if let lastCheck = self.updaterService.lastUpdateCheckDate {
-                            Text("Last checked: \(lastCheck, format: .relative(presentation: .named))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            Text("Never checked")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    Spacer()
-                    Button("Check Now") {
-                        self.updaterService.checkForUpdates()
-                    }
-                    .disabled(!self.updaterService.canCheckForUpdates)
-                }
-                .padding(.vertical, 4)
-            } header: {
-                Text("Updates")
-            }
-
             // MARK: - About Section
 
             Section {
@@ -138,15 +104,6 @@ struct GeneralSettingsView: View {
                     Spacer()
                     Text(self.appVersion)
                         .foregroundStyle(.secondary)
-                }
-
-                Link(destination: URL(string: "https://github.com/sozercan/kaset")!) {
-                    HStack {
-                        Text("GitHub")
-                        Spacer()
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
-                    }
                 }
             } header: {
                 Text("About")
