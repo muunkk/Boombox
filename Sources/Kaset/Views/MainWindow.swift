@@ -287,21 +287,6 @@ struct MainWindow: View {
         .animation(.easeInOut(duration: 0.25), value: self.playerService.showLyrics)
         .animation(.easeInOut(duration: 0.25), value: self.playerService.showQueue)
         .frame(minWidth: 900, minHeight: 600)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    self.isCommandBarPresented = true
-                } label: {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.primary)
-                }
-                .keyboardShortcut("k", modifiers: .command)
-                .help(String(localized: "Ask AI (⌘K)"))
-                .accessibilityIdentifier(AccessibilityID.MainWindow.aiButton)
-                .requiresIntelligence()
-            }
-        }
     }
 
     /// Right sidebar overlay showing either lyrics or queue as glass panels (mutually exclusive).

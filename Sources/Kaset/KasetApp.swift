@@ -149,9 +149,6 @@ struct KasetApp: App {
 
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
-
-                        // Warm up Foundation Models in background
-                        await FoundationModelsService.shared.warmup()
                     }
                     .onOpenURL { url in
                         self.handleIncomingURL(url)
@@ -399,11 +396,6 @@ struct SettingsView: View {
             GeneralSettingsView(updaterService: self.updaterService)
                 .tabItem {
                     Label("General", systemImage: "gearshape")
-                }
-
-            IntelligenceSettingsView()
-                .tabItem {
-                    Label("Intelligence", systemImage: "sparkles")
                 }
 
             ScrobblingSettingsView()
