@@ -180,17 +180,6 @@ struct MainWindow: View {
                 self.playerService.confirmPlaybackStarted()
             }
         }
-        .onChange(of: self.playerService.showVideo) { _, showVideo in
-            DiagnosticsLogger.player.debug("showVideo onChange triggered: \(showVideo)")
-            if showVideo {
-                VideoWindowController.shared.show(
-                    playerService: self.playerService,
-                    webKitManager: self.webKitManager
-                )
-            } else {
-                VideoWindowController.shared.close()
-            }
-        }
         .onChange(of: self.accountService.currentAccount?.id) { _, newAccountId in
             self.playerService.resetTrackStatus()
 

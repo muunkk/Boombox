@@ -132,11 +132,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Whether the current track has video available.
     var currentTrackHasVideo: Bool = false
 
-    /// Whether video mode is active (user has opened video window).
-    /// Note: We don't auto-close based on currentTrackHasVideo here because
-    /// the detection can be unreliable when video mode CSS is active.
-    var showVideo: Bool = false
-
     /// Whether AirPlay is currently connected (playing to a wireless target).
     private(set) var isAirPlayConnected: Bool = false
 
@@ -486,9 +481,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Flag to suppress YouTube autoplay after the native queue has finished.
     var shouldSuppressAutoplayAfterQueueEnd: Bool = false
 
-    /// Grace period instant - don't auto-close video window shortly after opening (uses monotonic clock)
-    private var videoWindowOpenedAt: ContinuousClock.Instant?
-
     /// Debounces repeat-one recovery `play()` when YouTube sends bursty metadata (safety net in `PlayerService+WebQueueSync`).
     /// Internal so the WebQueueSync extension can throttle; not part of the public API.
     var lastRepeatOneRecoveryInstant: ContinuousClock.Instant?
@@ -513,26 +505,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         if previousValue != hasVideo {
             self.logger.debug("Video availability updated: \(hasVideo)")
         }
-    }
-
-    /// Called when video window opens to start grace period
-    func videoWindowDidOpen() {
-        self.videoWindowOpenedAt = ContinuousClock.now
-        self.logger.debug("videoWindowDidOpen: grace period started")
-    }
-
-    /// Called when video window closes to clear grace period
-    func videoWindowDidClose() {
-        self.videoWindowOpenedAt = nil
-        self.logger.debug("videoWindowDidClose: grace period cleared")
-    }
-
-    /// Returns true if video window was recently opened (within grace period)
-    /// This is used to ignore spurious trackChanged events during video mode setup
-    var isVideoGracePeriodActive: Bool {
-        guard let openedAt = self.videoWindowOpenedAt else { return false }
-        // 3 second grace period to allow video mode setup to complete
-        return ContinuousClock.now - openedAt < .seconds(3)
     }
 
     /// Toggles play/pause.

@@ -214,7 +214,6 @@ struct MiniPlayerWebView: NSViewRepresentable {
 ///
 /// Extensions provide:
 /// - Playback controls (SingletonPlayerWebView+PlaybackControls.swift)
-/// - Video mode CSS injection (SingletonPlayerWebView+VideoMode.swift)
 /// - Observer script (SingletonPlayerWebView+ObserverScript.swift)
 @MainActor
 final class SingletonPlayerWebView {
@@ -320,15 +319,10 @@ final class SingletonPlayerWebView {
         webView.removeFromSuperview()
         container.addSubview(webView)
 
-        // Use autoresizing to match container size (consistent with waitForValidBoundsAndInject)
+        // Use autoresizing to match container size
         webView.translatesAutoresizingMaskIntoConstraints = true
         webView.frame = container.bounds
         webView.autoresizingMask = [.width, .height]
-
-        // Note: Don't re-inject CSS here if we're already in video mode.
-        // Re-injecting causes the YouTube UI to briefly flicker back in because it
-        // removes and re-creates our custom video container.
-        // updateDisplayMode(.video) handles the initial injection perfectly.
     }
 
     /// Starts high frequency polling for synced lyrics
@@ -510,18 +504,6 @@ final class SingletonPlayerWebView {
                         thumbnailUrl: thumbnailUrl,
                         videoId: observedVideoId
                     )
-
-                    // Close video window on track change, but skip during grace period.
-                    // We only close if the videoId actually changed to prevent closing
-                    // due to spurious metadata (title/artist) glitches during resize.
-                    let videoIdChanged = observedVideoId != nil && observedVideoId != self.playerService.currentTrack?.videoId
-
-                    if self.playerService.showVideo, videoIdChanged, !self.playerService.isVideoGracePeriodActive {
-                        DiagnosticsLogger.player.info(
-                            "trackChanged to videoId '\(observedVideoId ?? "unknown")' while video shown - closing video window"
-                        )
-                        self.playerService.showVideo = false
-                    }
                 }
             }
         }
@@ -576,14 +558,6 @@ final class SingletonPlayerWebView {
                 // Restore lyrics high-frequency polling if it was active
                 if SingletonPlayerWebView.shared.isLyricsPollActive {
                     SingletonPlayerWebView.shared.startLyricsPoll()
-                }
-
-                // Re-inject video mode CSS if it was active
-                if SingletonPlayerWebView.shared.displayMode == .video {
-                    SingletonPlayerWebView.shared.refreshVideoModeCSS()
-                    // If refresh fails to find the container (because it's a new page),
-                    // it will log a debug message. We should also call the full injection.
-                    SingletonPlayerWebView.shared.injectVideoModeCSS()
                 }
             }
         }
