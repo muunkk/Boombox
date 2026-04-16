@@ -137,13 +137,6 @@ GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 # Create PkgInfo
 echo -n "APPL????" > "$APP_BUNDLE/Contents/PkgInfo"
 
-# Copy AppleScript definition
-SDEF_PATH="$ROOT/Sources/Kaset/Resources/Kaset.sdef"
-if [[ -f "$SDEF_PATH" ]]; then
-  echo "📜 Copying AppleScript definition..."
-  cp "$SDEF_PATH" "$APP_BUNDLE/Contents/Resources/Kaset.sdef"
-fi
-
 # Copy app icon (.icon bundle for macOS 26+ Liquid Glass, .icns as fallback)
 ICON_SOURCE="$ROOT/Sources/Kaset/Resources/kaset.icon"
 if [[ -d "$ICON_SOURCE" ]]; then
@@ -160,31 +153,6 @@ XCASSETS_PATH="$ROOT/Sources/Kaset/Resources/Assets.xcassets"
 if [[ -d "$XCASSETS_PATH" ]] && command -v actool &>/dev/null; then
   echo "🎨 Compiling asset catalog..."
   compile_asset_catalog "$XCASSETS_PATH" "$APP_BUNDLE/Contents/Resources"
-fi
-
-# Embed Sparkle.framework
-SPARKLE_FRAMEWORK=""
-for arch in "${ARCH_LIST[@]}"; do
-  CANDIDATE=$(build_product_path "" "$arch")
-  CANDIDATE_DIR=$(dirname "$CANDIDATE")
-  if [[ -d "$CANDIDATE_DIR/Sparkle.framework" ]]; then
-    SPARKLE_FRAMEWORK="$CANDIDATE_DIR/Sparkle.framework"
-    break
-  fi
-done
-
-# Also check the default build path
-if [[ -z "$SPARKLE_FRAMEWORK" ]] && [[ -d ".build/$CONF/Sparkle.framework" ]]; then
-  SPARKLE_FRAMEWORK=".build/$CONF/Sparkle.framework"
-fi
-
-if [[ -n "$SPARKLE_FRAMEWORK" ]]; then
-  echo "✨ Embedding Sparkle.framework..."
-  cp -R "$SPARKLE_FRAMEWORK" "$APP_BUNDLE/Contents/Frameworks/"
-  chmod -R a+rX "$APP_BUNDLE/Contents/Frameworks/Sparkle.framework"
-  install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP_BUNDLE/Contents/MacOS/$APP_NAME" 2>/dev/null || true
-else
-  echo "WARN: Sparkle.framework not found in build output. Auto-updates will not work."
 fi
 
 # SwiftPM resource bundles are emitted next to the built binary
@@ -285,24 +253,6 @@ ${APP_LOCALIZATIONS_PLIST}
             <string>Viewer</string>
         </dict>
     </array>
-
-    <!-- Sparkle Auto-Update Configuration -->
-    <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/sozercan/kaset/main/appcast.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>qa2zoeXHqn+pluxQSGjn5HyIYA/iFtrEJz7S1BoslpI=</string>
-    <key>SUEnableAutomaticChecks</key>
-    <true/>
-    <key>SUScheduledCheckInterval</key>
-    <integer>86400</integer>
-    <key>SUAllowsAutomaticUpdates</key>
-    <true/>
-
-    <!-- AppleScript Support -->
-    <key>NSAppleScriptEnabled</key>
-    <true/>
-    <key>OSAScriptingDefinition</key>
-    <string>Kaset.sdef</string>
 
     <!-- Build Metadata -->
     <key>KasetBuildTimestamp</key>

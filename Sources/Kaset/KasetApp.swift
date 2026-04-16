@@ -61,9 +61,6 @@ struct KasetApp: App {
         player.setYTMusicClient(client)
         SongLikeStatusManager.shared.setClient(client)
 
-        // Set shared instance for AppleScript access
-        PlayerService.shared = player
-
         // Create account service
         let account = AccountService(ytMusicClient: client, authService: auth)
 
@@ -114,8 +111,7 @@ struct KasetApp: App {
                     .environment(\.showCommandBar, self.$showCommandBar)
                     .onAppear {
                         DiagnosticsLogger.app.info("KasetApp: App content appeared")
-                        // Wire up PlayerService to AppDelegate for dock menu and AppleScript actions
-                        // This runs synchronously so AppleScript commands can access playerService immediately
+                        // Wire up PlayerService to AppDelegate for dock menu actions
                         self.appDelegate.playerService = self.playerService
                         // Reference notificationService to keep SwiftUI from deallocating it
                         _ = self.notificationService
