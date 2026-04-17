@@ -335,6 +335,8 @@ struct PlayerBar: View {
             .accessibilityLabel(String(localized: "Shuffle"))
             .accessibilityValue(self.playerService.shuffleEnabled ? String(localized: "On") : String(localized: "Off"))
 
+            self.nowPlayingPanelToggleButton
+
             // Previous
             Button {
                 HapticService.playback()
@@ -482,7 +484,30 @@ struct PlayerBar: View {
         }
     }
 
-    // MARK: - Action Buttons (Like/Now Playing/Lyrics/Queue)
+    // MARK: - Now Playing Panel Toggle
+
+    private var nowPlayingPanelToggleButton: some View {
+        Button {
+            HapticService.toggle()
+            withAnimation(AppAnimation.standard) {
+                self.settings.showSidebarNowPlayingPanel.toggle()
+            }
+        } label: {
+            Image(systemName: self.settings.showSidebarNowPlayingPanel ? "chevron.down" : "chevron.up")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
+                .frame(width: 18)
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.pressable)
+        .glassEffectID("nowPlayingPanel", in: self.playerNamespace)
+        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingPanelToggle)
+        .accessibilityLabel(String(localized: "Now Playing Panel"))
+        .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
+        .help(String(localized: "Now Playing Panel"))
+    }
+
+    // MARK: - Action Buttons (Like/Lyrics/Queue)
 
     private var actionButtons: some View {
         @Bindable var player = self.playerService
@@ -505,24 +530,6 @@ struct PlayerBar: View {
             .accessibilityLabel(String(localized: "Like"))
             .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
             .disabled(self.playerService.currentTrack == nil)
-
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    self.settings.showSidebarNowPlayingPanel.toggle()
-                }
-            } label: {
-                Image(systemName: "sidebar.left")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.pressable)
-            .glassEffectID("nowPlayingPanel", in: self.playerNamespace)
-            .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingPanelToggle)
-            .accessibilityLabel(String(localized: "Now Playing Panel"))
-            .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
-            .help(String(localized: "Now Playing Panel"))
 
             // Lyrics button
             Button {
