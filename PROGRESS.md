@@ -6,7 +6,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `feature/player-bar-polish`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: player bar polish visible-toggle fix at `2aead9d` on `feature/player-bar-polish`; merge to `personal/main` is still pending
+- Latest completed checkpoint: player bar polish toggle placement at `a797c1e` on `feature/player-bar-polish`; merge to `personal/main` is still pending
 - `swift build`: passes
 - `swift test`: passes (894 tests after player bar polish coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
@@ -66,6 +66,7 @@ Final verification after merging to `personal/main`:
 - Base: `personal/main` at `3a8d6d1`
 - Implementation commit: `99d569f`
 - Visibility follow-up commit: `2aead9d`
+- Toggle placement follow-up commit: `a797c1e`
 - Summary:
   - Added a persisted `showSidebarNowPlayingPanel` setting.
   - Added a toggle button in the bottom player bar for the sidebar now-playing panel.
@@ -73,6 +74,7 @@ Final verification after merging to `personal/main`:
   - Removed the player-bar now-playing popover so title/art no longer conflicts with the hover scrubber.
   - Made the bottom seek slider stay visible while dragging and always show when the sidebar now-playing panel is enabled.
   - Changed the toggle icon to the verified `sidebar.left` SF Symbol so the hidden/off state renders visibly on macOS 26.
+  - Moved the toggle into the left transport cluster before Previous and changed it to an up/down chevron toggle.
 - Verification:
   - `swift build`: passed
   - `swift test`: passed, 894 tests in 73 suites
