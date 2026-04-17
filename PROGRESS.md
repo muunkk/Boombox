@@ -4,11 +4,11 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `feature/player-bar-polish`
+- Branch: `feature/audio-output-picker`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: player bar polish leading toggle at `cce4773` on `feature/player-bar-polish`; merge to `personal/main` is still pending
+- Latest completed checkpoint: audio output picker implemented at `291bacc` on `feature/audio-output-picker`; stacked on `feature/player-bar-polish`
 - `swift build`: passes
-- `swift test`: passes (894 tests after player bar polish coverage)
+- `swift test`: passes (895 tests after audio output picker coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -36,6 +36,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
 - [x] Add player UI feature suite: expanded now-playing popover, Focus Player, Small Player, hidden dislike button, dynamic audio output icon, and exponential volume curve
 - [x] Add player bar polish branch: persistent sidebar now-playing panel, stable bottom scrubber, and removal of the player-bar popover
+- [x] Add audio output picker branch: native popover, CoreAudio output enumeration/switching, and AirPods active icon state
 
 ## Worktree Branch Log
 
@@ -81,6 +82,23 @@ Final verification after merging to `personal/main`:
   - `swift build`: passed
   - `swift test`: passed, 894 tests in 73 suites
   - `Scripts/build-app.sh release`: passed
+
+## Audio Output Picker Branch Log
+
+- Branch: `feature/audio-output-picker`
+- Base: stacked on `feature/player-bar-polish` at `8e5ea3c`
+- Implementation commit: `291bacc`
+- Summary:
+  - Replaced the bottom player-bar AirPlay-only click action with a native SwiftUI output picker popover.
+  - Extended `AudioOutputDeviceInfo` to enumerate live CoreAudio output devices and set the macOS default output device.
+  - Restored the bar button to a speaker-picker icon by default, while switching to an active AirPods icon when the current output is AirPods.
+  - Added checkmarked popover rows with device names, transport descriptions, and a refresh action.
+  - Kept output switching available even when no track is playing.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 895 tests in 73 suites
+  - `Scripts/build-app.sh release`: passed
+  - Packaged app launched from `.build/app/YTMPrivate.app`
 
 ## Resume Commands
 
