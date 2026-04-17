@@ -22,6 +22,18 @@ struct CommandBarView: View {
     /// The user's input text.
     @State private var inputText = ""
 
+    /// Search suggestions for the current input.
+    @State private var suggestions: [SearchSuggestion] = []
+
+    /// Whether the palette is loading autocomplete suggestions.
+    @State private var isLoadingSuggestions = false
+
+    /// Index of the currently selected suggestion for keyboard navigation.
+    @State private var selectedSuggestionIndex = -1
+
+    /// Debounced autocomplete task.
+    @State private var suggestionsTask: Task<Void, Never>?
+
     /// Focus state for the text field.
     @FocusState private var isInputFocused: Bool
 
@@ -53,12 +65,26 @@ struct CommandBarView: View {
                         .focused(self.$isInputFocused)
                         .accessibilityIdentifier(AccessibilityID.MainWindow.commandBarInput)
                         .onSubmit {
-                            self.runSearch()
+                            self.submitSearch()
+                        }
+                        .onKeyPress(.downArrow) {
+                            guard !self.visibleSuggestions.isEmpty else { return .ignored }
+                            self.selectedSuggestionIndex = min(
+                                self.selectedSuggestionIndex + 1,
+                                self.visibleSuggestions.count - 1
+                            )
+                            return .handled
+                        }
+                        .onKeyPress(.upArrow) {
+                            guard !self.visibleSuggestions.isEmpty else { return .ignored }
+                            self.selectedSuggestionIndex = max(self.selectedSuggestionIndex - 1, -1)
+                            return .handled
                         }
 
                     if !self.inputText.isEmpty {
                         Button {
                             self.inputText = ""
+                            self.clearSuggestions()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.secondary)
@@ -73,7 +99,11 @@ struct CommandBarView: View {
                 Divider()
                     .opacity(0.3)
 
-                self.quickActionsView
+                if self.trimmedInput.isEmpty {
+                    self.quickActionsView
+                } else {
+                    self.searchSuggestionsView
+                }
             }
             .frame(width: 500)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
@@ -83,6 +113,12 @@ struct CommandBarView: View {
         .accessibilityIdentifier(AccessibilityID.MainWindow.commandBar)
         .onAppear {
             self.isInputFocused = true
+        }
+        .onChange(of: self.inputText) { _, _ in
+            self.fetchSuggestions()
+        }
+        .onDisappear {
+            self.suggestionsTask?.cancel()
         }
         .onExitCommand {
             self.dismissCommandBar()
@@ -131,19 +167,114 @@ struct CommandBarView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    private var searchSuggestionsView: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Suggestions")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+
+                Spacer()
+
+                if self.isLoadingSuggestions {
+                    ProgressView()
+                        .controlSize(.small)
+                        .frame(width: 13, height: 13)
+                }
+            }
+
+            if self.visibleSuggestions.isEmpty {
+                Button {
+                    self.runSearch(query: self.trimmedInput)
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "return")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                            .frame(width: 16)
+
+                        Text("Search \"\(self.trimmedInput)\"")
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            } else {
+                ForEach(Array(self.visibleSuggestions.enumerated()), id: \.element.id) { index, suggestion in
+                    self.suggestionRow(suggestion, index: index)
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func suggestionRow(_ suggestion: SearchSuggestion, index: Int) -> some View {
+        Button {
+            self.runSearch(query: suggestion.query)
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 16)
+
+                Text(suggestion.query)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "arrow.up.left")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(index == self.selectedSuggestionIndex ? Color.accentColor.opacity(0.15) : Color.clear)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: - Actions
 
+    private var trimmedInput: String {
+        self.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var visibleSuggestions: [SearchSuggestion] {
+        Array(self.suggestions.prefix(6))
+    }
+
+    private func submitSearch() {
+        if self.selectedSuggestionIndex >= 0,
+           self.selectedSuggestionIndex < self.visibleSuggestions.count
+        {
+            self.runSearch(query: self.visibleSuggestions[self.selectedSuggestionIndex].query)
+        } else {
+            self.runSearch(query: self.trimmedInput)
+        }
+    }
+
     /// Routes the current input into the Search tab and focuses its search field.
-    private func runSearch() {
-        let trimmedQuery = self.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func runSearch(query: String) {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         self.navigationSelection.wrappedValue = .search
+        self.clearSuggestions()
+
         if let searchViewModel = self.searchViewModel {
             searchViewModel.selectedFilter = .all
             searchViewModel.query = trimmedQuery
             if !trimmedQuery.isEmpty {
-                searchViewModel.search()
+                Task {
+                    await searchViewModel.searchImmediately()
+                }
             }
         }
+
         self.dismissCommandBar()
         Task {
             try? await Task.sleep(for: .milliseconds(100))
@@ -151,6 +282,48 @@ struct CommandBarView: View {
                 self.searchFocusTrigger.wrappedValue = true
             }
         }
+    }
+
+    private func fetchSuggestions() {
+        self.suggestionsTask?.cancel()
+        self.selectedSuggestionIndex = -1
+
+        let query = self.trimmedInput
+        guard !query.isEmpty else {
+            self.clearSuggestions()
+            return
+        }
+
+        self.isLoadingSuggestions = true
+        self.suggestionsTask = Task {
+            try? await Task.sleep(for: .milliseconds(150))
+
+            guard !Task.isCancelled else { return }
+
+            do {
+                let fetchedSuggestions = try await self.client.getSearchSuggestions(query: query)
+                guard !Task.isCancelled else { return }
+
+                await MainActor.run {
+                    guard self.trimmedInput == query else { return }
+                    self.suggestions = fetchedSuggestions
+                    self.isLoadingSuggestions = false
+                }
+            } catch {
+                await MainActor.run {
+                    guard self.trimmedInput == query else { return }
+                    self.suggestions = []
+                    self.isLoadingSuggestions = false
+                }
+            }
+        }
+    }
+
+    private func clearSuggestions() {
+        self.suggestionsTask?.cancel()
+        self.suggestions = []
+        self.isLoadingSuggestions = false
+        self.selectedSuggestionIndex = -1
     }
 }
 

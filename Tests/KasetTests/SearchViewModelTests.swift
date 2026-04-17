@@ -39,6 +39,34 @@ struct SearchViewModelTests {
         #expect(self.mockClient.searchCalled == false)
     }
 
+    @Test("Immediate search calls API without debounce")
+    func immediateSearchCallsAPIWithoutDebounce() async {
+        self.mockClient.searchResponse = TestFixtures.makeSearchResponse(
+            songCount: 1,
+            albumCount: 0,
+            artistCount: 0,
+            playlistCount: 0
+        )
+        self.viewModel.query = "boards of canada"
+
+        await self.viewModel.searchImmediately()
+
+        #expect(self.mockClient.searchCalled)
+        #expect(self.mockClient.searchQueries == ["boards of canada"])
+        #expect(self.viewModel.loadingState == .loaded)
+        #expect(self.viewModel.results.allItems.count == 1)
+    }
+
+    @Test("Immediate search with empty query does not call API")
+    func immediateSearchWithEmptyQueryDoesNotCallAPI() async {
+        self.viewModel.query = ""
+
+        await self.viewModel.searchImmediately()
+
+        #expect(self.mockClient.searchCalled == false)
+        #expect(self.viewModel.loadingState == .idle)
+    }
+
     @Test("Clear resets state")
     func clearResetsState() {
         self.viewModel.query = "test query"

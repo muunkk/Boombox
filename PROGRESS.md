@@ -6,9 +6,9 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `personal/main`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: private rebrand, stripped docs, and local verification; see `git log --oneline -8` for exact commits
+- Latest completed checkpoint: command palette suggestions and immediate search fix; see `git log --oneline -8` for exact commits
 - `swift build`: passes
-- `swift test`: passes (883 tests after auth hardening coverage)
+- `swift test`: passes (885 tests after command palette search coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -33,6 +33,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Rebrand app bundle and user-facing docs to `YTM Private`
 - [x] Add `STRIPPED.md`
 - [x] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
+- [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
 
 ## Resume Commands
 

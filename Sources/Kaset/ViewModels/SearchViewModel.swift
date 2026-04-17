@@ -207,6 +207,22 @@ final class SearchViewModel {
         }
     }
 
+    /// Performs a search immediately for explicit submissions from outside the search field.
+    func searchImmediately() async {
+        self.searchTask?.cancel()
+        self.suggestionsTask?.cancel()
+        self.suggestions = []
+        self.client.clearSearchContinuation()
+
+        guard !self.query.isEmpty else {
+            self.results = .empty
+            self.loadingState = .idle
+            return
+        }
+
+        await self.performSearch()
+    }
+
     /// Performs a search with the current filter (no debounce, called when filter changes).
     private func searchWithFilter() {
         self.searchTask?.cancel()
