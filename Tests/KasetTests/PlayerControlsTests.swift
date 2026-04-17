@@ -34,4 +34,11 @@ struct PlayerControlsTests {
         #expect(AudioOutputIconResolver.systemImageName(deviceName: "Bluetooth Headphones", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "headphones")
         #expect(AudioOutputIconResolver.systemImageName(deviceName: "MacBook Pro Speakers", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "speaker.wave.2.fill")
     }
+
+    @Test("Audio output picker button uses speaker icon unless AirPods are active")
+    func audioOutputPickerButtonUsesSpeakerIconUnlessAirPodsAreActive() {
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "MacBook Pro Speakers", transportType: nil) == "hifispeaker")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Studio Display Speakers", transportType: nil) == "hifispeaker")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Mel's AirPods Pro", transportType: nil) == "airpods")
+    }
 }

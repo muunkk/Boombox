@@ -24,6 +24,9 @@ struct PlayerBar: View {
     @State private var volumeValue: Double = 1.0
     @State private var isAdjustingVolume = false
     @State private var audioOutput = AudioOutputDeviceInfo.unknown
+    @State private var availableAudioOutputs: [AudioOutputDeviceInfo] = []
+    @State private var isAudioOutputPickerPresented = false
+    @State private var audioOutputSelectionError: String?
 
     /// Cached formatted progress string to avoid repeated formatting.
     @State private var formattedProgress: String = "0:00"
@@ -424,24 +427,35 @@ struct PlayerBar: View {
             // Like/Dislike/Library actions
             self.actionButtons
 
-            // AirPlay button
+            // Audio output picker
             Button {
                 HapticService.toggle()
-                self.playerService.showAirPlayPicker()
+                self.refreshAvailableAudioOutputs()
+                self.isAudioOutputPickerPresented.toggle()
             } label: {
                 Image(systemName: self.audioOutputIcon)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.isAirPlayConnected ? .red : .primary.opacity(0.85))
+                    .foregroundStyle(self.audioOutputButtonIsActive ? .red : .primary.opacity(0.85))
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
             .accessibilityIdentifier(AccessibilityID.PlayerBar.airplayButton)
-            .accessibilityLabel(
-                self.playerService.isAirPlayConnected
-                    ? String(localized: "AirPlay Connected")
-                    : String(localized: "Audio Output: \(self.audioOutput.accessibilityName)")
-            )
-            .disabled(self.playerService.currentTrack == nil)
+            .accessibilityLabel(String(localized: "Audio Output: \(self.audioOutput.accessibilityName)"))
+            .help(String(localized: "Click to select the speaker to use to listen to songs."))
+            .popover(isPresented: self.$isAudioOutputPickerPresented, arrowEdge: .bottom) {
+                AudioOutputPickerPopover(
+                    currentOutput: self.audioOutput,
+                    availableOutputs: self.availableAudioOutputs,
+                    selectionError: self.audioOutputSelectionError,
+                    onRefresh: {
+                        self.refreshAvailableAudioOutputs()
+                    },
+                    onSelect: { output in
+                        self.selectAudioOutput(output)
+                    }
+                )
+                .frame(width: 280)
+            }
 
             Divider()
                 .frame(height: 20)
@@ -580,14 +594,160 @@ struct PlayerBar: View {
     }
 
     private var audioOutputIcon: String {
-        self.audioOutput.systemImageName(fallbackVolumeIcon: self.volumeIcon)
+        self.audioOutput.pickerButtonSystemImageName()
+    }
+
+    private var audioOutputButtonIsActive: Bool {
+        self.audioOutput.isAirPods || self.playerService.isAirPlayConnected
+    }
+
+    private func refreshAvailableAudioOutputs() {
+        self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+        self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+        self.audioOutputSelectionError = nil
+    }
+
+    private func selectAudioOutput(_ output: AudioOutputDeviceInfo) {
+        guard output.isSelectable else { return }
+
+        if AudioOutputDeviceInfo.setDefaultOutput(output) {
+            HapticService.success()
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+            self.isAudioOutputPickerPresented = false
+            self.audioOutputSelectionError = nil
+        } else {
+            HapticService.error()
+            self.audioOutputSelectionError = String(localized: "Could not switch to \(output.accessibilityName).")
+        }
     }
 
     private func refreshAudioOutputLoop() async {
         while !Task.isCancelled {
             self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            if self.isAudioOutputPickerPresented {
+                self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+            }
             try? await Task.sleep(for: .seconds(5))
         }
+    }
+}
+
+// MARK: - AudioOutputPickerPopover
+
+@available(macOS 26.0, *)
+private struct AudioOutputPickerPopover: View {
+    let currentOutput: AudioOutputDeviceInfo
+    let availableOutputs: [AudioOutputDeviceInfo]
+    let selectionError: String?
+    let onRefresh: () -> Void
+    let onSelect: (AudioOutputDeviceInfo) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Sound Output")
+                    .font(.headline)
+
+                Spacer()
+
+                Button {
+                    self.onRefresh()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.borderless)
+                .help(String(localized: "Refresh Output Devices"))
+            }
+
+            if self.availableOutputs.isEmpty {
+                ContentUnavailableView(
+                    "No Output Devices",
+                    systemImage: "speaker.slash",
+                    description: Text("macOS did not report any output devices.")
+                )
+                .frame(minHeight: 120)
+            } else {
+                VStack(spacing: 2) {
+                    ForEach(self.availableOutputs) { output in
+                        AudioOutputPickerRow(
+                            output: output,
+                            isSelected: self.isSelected(output)
+                        ) {
+                            self.onSelect(output)
+                        }
+                    }
+                }
+            }
+
+            if let selectionError {
+                Text(selectionError)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(14)
+    }
+
+    private func isSelected(_ output: AudioOutputDeviceInfo) -> Bool {
+        output.id == self.currentOutput.id && output.isSelectable
+    }
+}
+
+// MARK: - AudioOutputPickerRow
+
+@available(macOS 26.0, *)
+private struct AudioOutputPickerRow: View {
+    let output: AudioOutputDeviceInfo
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Button {
+            self.onSelect()
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: self.output.systemImageName(fallbackVolumeIcon: "hifispeaker"))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(self.isSelected ? .red : .primary.opacity(0.85))
+                    .frame(width: 22)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(self.output.accessibilityName)
+                        .font(.system(size: 13, weight: .medium))
+                        .lineLimit(1)
+
+                    Text(self.output.transportDescription)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                if self.isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.red)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+            .background {
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(self.isHovering ? Color.primary.opacity(0.08) : Color.clear)
+            }
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            self.isHovering = hovering
+        }
+        .accessibilityLabel(self.output.accessibilityName)
+        .accessibilityValue(self.isSelected ? String(localized: "Selected") : self.output.transportDescription)
     }
 }
 
