@@ -204,13 +204,13 @@ struct KasetApp: App {
 
                 Divider()
 
-                // Lyrics - ⌘L
+                // Lyrics - ⌘Y
                 Button(self.playerService.showLyrics ? "Hide Lyrics" : "Show Lyrics") {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         self.playerService.showLyrics.toggle()
                     }
                 }
-                .keyboardShortcut("l", modifiers: .command)
+                .keyboardShortcut("y", modifiers: .command)
             }
 
             // Navigation commands - replace default sidebar toggle
@@ -246,11 +246,11 @@ struct KasetApp: App {
                 }
                 .keyboardShortcut("f", modifiers: .command)
 
-                // Command Bar - ⌘K
+                // Command Bar - ⌘L
                 Button("Command Bar") {
                     self.showCommandBar = true
                 }
-                .keyboardShortcut("k", modifiers: .command)
+                .keyboardShortcut("l", modifiers: .command)
             }
 
             // Window menu - show main window

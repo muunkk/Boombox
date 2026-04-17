@@ -937,7 +937,7 @@ Type-safe structured outputs for AI responses:
 
 | Feature | Trigger | Model Used |
 |---------|---------|------------|
-| Command Bar | ⌘K | `MusicIntent`, `MusicQuery` |
+| Command Bar | ⌘L | Search routing and playback shortcuts |
 | Lyrics Explanation | "Explain" button in lyrics view | `LyricsSummary` |
 | Queue Management | Natural language in command bar | `QueueIntent` |
 | Queue Refinement | Refine button in queue view | `QueueChanges` |
@@ -987,11 +987,11 @@ Right sidebar panel displaying song lyrics:
 
 **File**: `Sources/Kaset/Views/CommandBarView.swift`
 
-Spotlight-style command palette triggered by ⌘K:
+Spotlight-style command palette triggered by ⌘L:
 
-- Natural language input parsed via `MusicIntent`
-- Shows suggestions and action previews
-- Supports commands: play, pause, skip, search, queue management
+- Routes text queries into the Search tab
+- Shows quick playback actions
+- Supports commands: play, pause, skip, search, queue display
 - Floating overlay with glass effect
 
 **Trigger**: `@Environment(\.showCommandBar)` environment key.

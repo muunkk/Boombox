@@ -13,10 +13,10 @@ final class CommandBarUITests: KasetUITestCase {
         XCTAssertTrue(self.waitForElement(window), "Main window should exist")
         window.click()
 
-        self.app.typeKey("k", modifierFlags: .command)
+        self.app.typeKey("l", modifierFlags: .command)
 
         let commandBar = self.app.otherElements[TestAccessibilityID.MainWindow.commandBar].firstMatch
-        XCTAssertTrue(self.waitForElement(commandBar), "Command bar should appear after pressing Cmd+K")
+        XCTAssertTrue(self.waitForElement(commandBar), "Command bar should appear after pressing Cmd+L")
 
         let input = self.app.textFields[TestAccessibilityID.MainWindow.commandBarInput].firstMatch
         XCTAssertTrue(self.waitForElement(input), "Command bar input should be visible")

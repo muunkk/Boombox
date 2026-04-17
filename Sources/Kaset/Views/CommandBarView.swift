@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - CommandBarView
 
-/// A floating command bar accessible via ⌘K that routes a query into the Search tab
+/// A floating command bar accessible via ⌘L that routes a query into the Search tab
 /// and exposes a small palette of playback shortcuts.
 @available(macOS 26.0, *)
 struct CommandBarView: View {

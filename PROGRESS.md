@@ -6,7 +6,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `personal/main`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed commit: `796a598 strip: remove WKWebExtension subsystem`
+- Latest completed checkpoint: shortcut remap to `Cmd+L` / `Cmd+Y`; see `git log --oneline -8` for exact commits
 - `swift build`: passes
 - `swift test`: passes (880 tests after AI-only, video-leftover, and URL-scheme cleanup)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
@@ -28,7 +28,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Remove distribution leftovers: `Casks/`, `appcast.xml`, Sparkle release scripts, GitHub release workflow, stale Sparkle signing code
 - [x] Remove remaining floating-video metadata leftovers: `MusicVideoType`, `Song.hasVideo`, `Song.musicVideoType`, `currentTrackHasVideo`, `MOCK_HAS_VIDEO`, `VideoWindow` IDs
 - [x] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
-- [ ] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, no `Cmd+K` palette action
+- [x] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, and remove the old command-k palette action
 - [ ] Harden auth: modern Safari UA, direct `https://music.youtube.com/` login, login-only WebView config, device-only Keychain cookies, cookie allowlist, Safari passkey fallback
 - [ ] Rebrand app bundle and user-facing docs to `YTM Private`
 - [ ] Add `STRIPPED.md`

@@ -13,8 +13,9 @@ Kaset provides keyboard control for playback and navigation while preserving sta
 | `⌘↓`     | Volume down                         |
 | `⌘S`     | Toggle shuffle                      |
 | `⌘R`     | Cycle repeat mode (Off → All → One) |
+| `⌘Y`     | Toggle lyrics                       |
 
-Mute is still available from the Playback menu and AppleScript, but Kaset intentionally does not assign a default mute shortcut so the native macOS minimize shortcut (`⌘M`) continues to work.
+Mute is still available from the Playback menu, but Kaset intentionally does not assign a default mute shortcut so the native macOS minimize shortcut (`⌘M`) continues to work.
 
 ## Navigation
 
@@ -24,4 +25,4 @@ Mute is still available from the Playback menu and AppleScript, but Kaset intent
 | `⌘2`     | Go to Explore    |
 | `⌘3`     | Go to Library    |
 | `⌘F`     | Go to Search     |
-| `⌘K`     | Open Command Bar |
+| `⌘L`     | Open Command Bar |
