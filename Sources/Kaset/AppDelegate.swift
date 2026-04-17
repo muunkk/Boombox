@@ -15,6 +15,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Using strong reference to prevent deallocation when window is hidden.
     private var mainWindow: NSWindow?
 
+    /// Coordinates same-window resizing for player presentation modes.
+    private let playerPresentationWindowCoordinator = PlayerPresentationWindowCoordinator()
+
     func applicationDidFinishLaunching(_: Notification) {
         DiagnosticsLogger.app.info("AppDelegate: applicationDidFinishLaunching")
         // Set up notification center delegate to show notifications in foreground
@@ -101,6 +104,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Store reference to main window for reliable reopen
             self.mainWindow = window
         }
+    }
+
+    /// Applies app-level window sizing for player presentation mode changes.
+    func transitionPlayerPresentationMode(from oldMode: PlayerPresentationMode, to newMode: PlayerPresentationMode) {
+        self.playerPresentationWindowCoordinator.transition(from: oldMode, to: newMode)
     }
 
     // MARK: - Dock Menu
