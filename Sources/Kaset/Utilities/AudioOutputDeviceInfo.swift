@@ -345,7 +345,7 @@ enum AudioOutputIconResolver {
             manufacturer: manufacturer,
             modelUID: modelUID
         ) {
-            return "airpods"
+            return "airpodspro"
         }
 
         return "hifispeaker"
@@ -366,7 +366,7 @@ enum AudioOutputIconResolver {
             manufacturer: manufacturer,
             modelUID: modelUID
         ) {
-            return "airpods"
+            return "airpodspro"
         }
 
         if transportType == kAudioDeviceTransportTypeAirPlay || normalizedName.contains("airplay") {
