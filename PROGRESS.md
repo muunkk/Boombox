@@ -6,7 +6,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `feature/audio-output-picker`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: audio output picker implemented at `291bacc` on `feature/audio-output-picker`; stacked on `feature/player-bar-polish`
+- Latest completed checkpoint: renamed AirPods detection fixed at `6de4023` on `feature/audio-output-picker`; stacked on `feature/player-bar-polish`
 - `swift build`: passes
 - `swift test`: passes (895 tests after audio output picker coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
@@ -88,10 +88,12 @@ Final verification after merging to `personal/main`:
 - Branch: `feature/audio-output-picker`
 - Base: stacked on `feature/player-bar-polish` at `8e5ea3c`
 - Implementation commit: `291bacc`
+- Renamed AirPods detection fix: `6de4023`
 - Summary:
   - Replaced the bottom player-bar AirPlay-only click action with a native SwiftUI output picker popover.
   - Extended `AudioOutputDeviceInfo` to enumerate live CoreAudio output devices and set the macOS default output device.
   - Restored the bar button to a speaker-picker icon by default, while switching to an active AirPods icon when the current output is AirPods.
+  - Detects renamed AirPods by Apple manufacturer + Bluetooth transport metadata, not only by visible device name.
   - Added checkmarked popover rows with device names, transport descriptions, and a refresh action.
   - Kept output switching available even when no track is playing.
 - Verification:
