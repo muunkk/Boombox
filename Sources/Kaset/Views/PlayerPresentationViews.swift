@@ -152,7 +152,7 @@ struct CompactPlayerView: View {
 
                     Spacer(minLength: 6)
 
-                    NowPlayingProgressView()
+                    NowPlayingProgressView(accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerSeekSlider)
 
                     Spacer(minLength: 10)
 
@@ -218,102 +218,6 @@ struct CompactPlayerView: View {
 
     private func artworkSize(for availableSize: CGSize) -> CGFloat {
         min(max(availableSize.height * 0.38, 198), availableSize.width - 64, 292)
-    }
-}
-
-// MARK: - NowPlayingTimeFormatter
-
-enum NowPlayingTimeFormatter {
-    static func string(from seconds: TimeInterval) -> String {
-        guard seconds.isFinite, seconds >= 0 else { return "0:00" }
-
-        let totalSeconds = Int(seconds)
-        let hours = totalSeconds / 3600
-        let minutes = (totalSeconds % 3600) / 60
-        let seconds = totalSeconds % 60
-
-        if hours > 0 {
-            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
-        } else {
-            return String(format: "%d:%02d", minutes, seconds)
-        }
-    }
-}
-
-// MARK: - NowPlayingProgressView
-
-/// Shared seek/progress control for now-playing presentation surfaces.
-@available(macOS 26.0, *)
-struct NowPlayingProgressView: View {
-    private static let brandAccent = PackageResourceLookup.brandAccent
-
-    @Environment(PlayerService.self) private var playerService
-
-    @State private var seekValue: Double = 0
-    @State private var isSeeking = false
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Slider(value: self.$seekValue, in: 0 ... 1) { editing in
-                if editing {
-                    self.isSeeking = true
-                } else {
-                    self.performSeek()
-                }
-            }
-            .tint(Self.brandAccent)
-            .disabled(self.playerService.currentTrack == nil || self.playerService.duration <= 0)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayerSeekSlider)
-            .accessibilityLabel(String(localized: "Playback position"))
-
-            HStack {
-                Text(self.elapsedText)
-                Spacer()
-                Text(self.remainingText)
-            }
-            .font(.caption.monospacedDigit())
-            .foregroundStyle(.secondary)
-        }
-        .onAppear {
-            self.syncSeekValue()
-        }
-        .onChange(of: self.playerService.progress) { _, _ in
-            self.syncSeekValue()
-        }
-        .onChange(of: self.playerService.duration) { _, _ in
-            self.syncSeekValue()
-        }
-    }
-
-    private var elapsedText: String {
-        let progress = self.isSeeking ? self.seekValue * self.playerService.duration : self.playerService.progress
-        return NowPlayingTimeFormatter.string(from: progress)
-    }
-
-    private var remainingText: String {
-        let progress = self.isSeeking ? self.seekValue * self.playerService.duration : self.playerService.progress
-        let remaining = max(0, self.playerService.duration - progress)
-        return "-\(NowPlayingTimeFormatter.string(from: remaining))"
-    }
-
-    private func syncSeekValue() {
-        guard !self.isSeeking else { return }
-
-        if self.playerService.duration > 0 {
-            self.seekValue = min(max(self.playerService.progress / self.playerService.duration, 0), 1)
-        } else {
-            self.seekValue = 0
-        }
-    }
-
-    private func performSeek() {
-        guard self.isSeeking else { return }
-
-        let seekTime = self.seekValue * self.playerService.duration
-        Task { @MainActor in
-            await self.playerService.seek(to: seekTime)
-            self.isSeeking = false
-        }
     }
 }
 
@@ -438,7 +342,9 @@ struct NowPlayingVolumeControl: View {
                     self.isAdjustingVolume = true
                 } else {
                     self.isAdjustingVolume = false
-                    Task { await self.playerService.setVolume(self.volumeValue) }
+                    Task {
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: self.volumeValue))
+                    }
                 }
             }
             .tint(Self.brandAccent)
@@ -447,11 +353,11 @@ struct NowPlayingVolumeControl: View {
         }
         .foregroundStyle(.secondary)
         .onAppear {
-            self.volumeValue = self.playerService.volume
+            self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: self.playerService.volume)
         }
         .onChange(of: self.playerService.volume) { _, newValue in
             guard !self.isAdjustingVolume else { return }
-            self.volumeValue = newValue
+            self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: newValue)
         }
         .onChange(of: self.volumeValue) { oldValue, newValue in
             guard self.isAdjustingVolume else { return }
@@ -460,12 +366,14 @@ struct NowPlayingVolumeControl: View {
                 HapticService.sliderBoundary()
             }
 
-            Task { await self.playerService.setVolume(newValue) }
+            Task {
+                await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
+            }
         }
     }
 
     private var volumeIcon: String {
-        let currentVolume = self.isAdjustingVolume ? self.volumeValue : self.playerService.volume
+        let currentVolume = self.isAdjustingVolume ? VolumeCurve.outputVolume(forSliderValue: self.volumeValue) : self.playerService.volume
 
         if currentVolume == 0 {
             return "speaker.slash.fill"
