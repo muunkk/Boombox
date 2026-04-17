@@ -7,22 +7,36 @@ struct LoginSheet: View {
     @Environment(WebKitManager.self) private var webKitManager
     @Environment(\.dismiss) private var dismiss
 
+    private enum LoginMode {
+        case embedded
+        case safariFallback
+    }
+
     @State private var isCheckingLogin = false
     @State private var pollTask: Task<Void, Never>?
+    @State private var loginMode: LoginMode = .embedded
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
             self.headerView
 
             Divider()
 
-            // WebView
-            LoginWebView(onNavigationToYouTubeMusic: {
-                self.checkForSuccessfulLogin()
-            })
+            switch self.loginMode {
+            case .embedded:
+                self.embeddedLoginView
+            case .safariFallback:
+                SafariSignInFallbackView(
+                    onImportCompleted: {
+                        self.checkForSuccessfulLogin()
+                    },
+                    onUseEmbeddedSignIn: {
+                        self.loginMode = .embedded
+                    }
+                )
+            }
         }
-        .frame(width: 500, height: 650)
+        .frame(width: 520, height: 700)
         .onChange(of: self.webKitManager.cookiesDidChange) { _, _ in
             self.checkForSuccessfulLogin()
         }
@@ -50,11 +64,43 @@ struct LoginSheet: View {
                 }
             }
 
-            Text("Note: If passkeys don't work, use \"Try another way\" to sign in with password.", comment: "Login help text about passkey alternative")
+            Text(self.loginHelpText)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .padding()
+    }
+
+    private var loginHelpText: String {
+        switch self.loginMode {
+        case .embedded:
+            return "Embedded sign-in may work for passwords, but Google passkeys usually need Safari for this private app."
+        case .safariFallback:
+            return "Safari handles the passkey. This app only imports allowlisted auth cookies into local WebKit and Keychain storage."
+        }
+    }
+
+    private var embeddedLoginView: some View {
+        VStack(spacing: 0) {
+            LoginWebView(onNavigationToYouTubeMusic: {
+                self.checkForSuccessfulLogin()
+            })
+
+            Divider()
+
+            HStack(alignment: .center, spacing: 12) {
+                Text("Passkey prompt missing or blocked?")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Button("Use Safari sign-in") {
+                    self.loginMode = .safariFallback
+                }
+            }
+            .padding()
+        }
     }
 
     /// Starts a periodic task to check for successful login.

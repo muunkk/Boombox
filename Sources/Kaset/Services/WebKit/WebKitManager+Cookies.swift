@@ -51,6 +51,37 @@ final class CookieArchiveWriteCoordinator: @unchecked Sendable {
 
 // MARK: - KeychainCookieStorage
 
+struct AuthCookieImportResult: Equatable {
+    let importedCount: Int
+    let importedCookieNames: [String]
+}
+
+private struct ManualCookieCandidate {
+    let name: String
+    let value: String
+    let domain: String
+    let path: String
+    let expiresDate: Date?
+    let isSecure: Bool
+}
+
+enum AuthCookieImportError: LocalizedError, Equatable {
+    case emptyInput
+    case noSupportedCookies
+    case missingPrimaryAuthCookie
+
+    var errorDescription: String? {
+        switch self {
+        case .emptyInput:
+            return "Paste one or more YouTube or Google auth cookies first."
+        case .noSupportedCookies:
+            return "No supported YouTube Music auth cookies were found. Include SAPISID or __Secure-3PAPISID from Safari."
+        case .missingPrimaryAuthCookie:
+            return "The import needs SAPISID or __Secure-3PAPISID so YouTube Music API requests can be signed."
+        }
+    }
+}
+
 /// Securely stores auth cookies in the macOS Keychain.
 /// Provides encryption at rest and app-specific access control.
 enum KeychainCookieStorage {
@@ -66,18 +97,174 @@ enum KeychainCookieStorage {
     /// Cookie names required for YouTube Music authentication.
     static let authCookieNames = Set([
         "SAPISID", "__Secure-3PAPISID", "__Secure-1PAPISID",
-        "SID", "HSID", "SSID", "APISID",
+        "__Secure-3PSID", "__Secure-1PSID", "SID", "HSID", "SSID", "APISID",
+        "SIDCC", "__Secure-3PSIDCC", "__Secure-1PSIDCC", "LOGIN_INFO",
     ])
+
+    private static let defaultManualImportDomain = ".youtube.com"
 
     static func isValidAuthCookie(_ cookie: HTTPCookie, now: Date = Date()) -> Bool {
         guard self.authCookieNames.contains(cookie.name) else { return false }
+        guard self.isAllowedAuthCookieDomain(cookie.domain) else { return false }
         if let expiresDate = cookie.expiresDate, expiresDate < now {
             return false
         }
         return true
     }
 
-    /// Creates the serialized archive we persist to Keychain (and in DEBUG to `cookies.dat`).
+    static func isAllowedAuthCookieDomain(_ domain: String) -> Bool {
+        var normalizedDomain = domain
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        while normalizedDomain.hasPrefix(".") {
+            normalizedDomain.removeFirst()
+        }
+
+        return normalizedDomain == "youtube.com"
+            || normalizedDomain == "google.com"
+            || normalizedDomain.hasSuffix(".youtube.com")
+            || normalizedDomain.hasSuffix(".google.com")
+    }
+
+    static func makeManualAuthCookies(from rawText: String) throws -> [HTTPCookie] {
+        let trimmedText = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else {
+            throw AuthCookieImportError.emptyInput
+        }
+
+        let candidates = Self.parseManualCookieCandidates(from: trimmedText)
+        let now = Date()
+        var cookiesByKey: [String: HTTPCookie] = [:]
+        var orderedKeys: [String] = []
+
+        for candidate in candidates {
+            guard let cookie = Self.makeManualCookie(from: candidate),
+                  Self.isValidAuthCookie(cookie, now: now)
+            else {
+                continue
+            }
+
+            let key = "\(cookie.domain)|\(cookie.path)|\(cookie.name)"
+            if cookiesByKey[key] == nil {
+                orderedKeys.append(key)
+            }
+            cookiesByKey[key] = cookie
+        }
+
+        let cookies = orderedKeys.compactMap { cookiesByKey[$0] }
+        guard !cookies.isEmpty else {
+            throw AuthCookieImportError.noSupportedCookies
+        }
+
+        return cookies
+    }
+
+    private static func parseManualCookieCandidates(from rawText: String) -> [ManualCookieCandidate] {
+        rawText
+            .components(separatedBy: .newlines)
+            .flatMap { line -> [ManualCookieCandidate] in
+                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmedLine.isEmpty, !trimmedLine.hasPrefix("#") else { return [] }
+
+                if trimmedLine.lowercased().hasPrefix("cookie:") {
+                    let cookieHeader = String(trimmedLine.dropFirst("cookie:".count))
+                    return Self.parseCookiePairs(from: cookieHeader)
+                }
+
+                if trimmedLine.contains("\t"),
+                   let netscapeCookie = Self.parseNetscapeCookieLine(trimmedLine)
+                {
+                    return [netscapeCookie]
+                }
+
+                return Self.parseCookiePairs(from: trimmedLine)
+            }
+    }
+
+    private static func parseNetscapeCookieLine(_ line: String) -> ManualCookieCandidate? {
+        let parts = line.split(separator: "\t", omittingEmptySubsequences: false).map(String.init)
+        guard parts.count >= 7 else { return nil }
+
+        let domain = parts[0].trimmingCharacters(in: .whitespacesAndNewlines)
+        let path = parts[2].trimmingCharacters(in: .whitespacesAndNewlines)
+        let isSecure = parts[3].caseInsensitiveCompare("TRUE") == .orderedSame
+        let expiresDate: Date?
+        if let timestamp = TimeInterval(parts[4]), timestamp > 0 {
+            expiresDate = Date(timeIntervalSince1970: timestamp)
+        } else {
+            expiresDate = nil
+        }
+
+        return ManualCookieCandidate(
+            name: parts[5].trimmingCharacters(in: .whitespacesAndNewlines),
+            value: parts[6].trimmingCharacters(in: .whitespacesAndNewlines),
+            domain: domain,
+            path: path,
+            expiresDate: expiresDate,
+            isSecure: isSecure
+        )
+    }
+
+    private static func parseCookiePairs(from text: String) -> [ManualCookieCandidate] {
+        let defaultExpiration = Date(timeIntervalSinceNow: 60 * 60 * 24 * 180)
+
+        return text
+            .split(separator: ";", omittingEmptySubsequences: true)
+            .compactMap { pair -> ManualCookieCandidate? in
+                let trimmedPair = pair.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let equalsIndex = trimmedPair.firstIndex(of: "=") else { return nil }
+
+                let name = trimmedPair[..<equalsIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                let valueStart = trimmedPair.index(after: equalsIndex)
+                let value = trimmedPair[valueStart...].trimmingCharacters(in: .whitespacesAndNewlines)
+
+                return ManualCookieCandidate(
+                    name: String(name),
+                    value: String(value),
+                    domain: Self.defaultManualImportDomain,
+                    path: "/",
+                    expiresDate: defaultExpiration,
+                    isSecure: true
+                )
+            }
+    }
+
+    private static func makeManualCookie(from candidate: ManualCookieCandidate) -> HTTPCookie? {
+        let invalidCharacters = CharacterSet.controlCharacters.union(.newlines)
+        let name = candidate.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let value = candidate.value.trimmingCharacters(in: .whitespacesAndNewlines)
+        let domain = candidate.domain.trimmingCharacters(in: .whitespacesAndNewlines)
+        let path = candidate.path.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !name.isEmpty,
+              !value.isEmpty,
+              !domain.isEmpty,
+              value.unicodeScalars.allSatisfy({ !invalidCharacters.contains($0) }),
+              Self.isAllowedAuthCookieDomain(domain)
+        else {
+            return nil
+        }
+
+        var properties: [HTTPCookiePropertyKey: Any] = [
+            .name: name,
+            .value: value,
+            .domain: domain,
+            .path: path.isEmpty ? "/" : path,
+        ]
+
+        if candidate.isSecure || name.hasPrefix("__Secure-") {
+            properties[.secure] = "TRUE"
+        }
+
+        if let expiresDate = candidate.expiresDate {
+            properties[.expires] = expiresDate
+        }
+
+        return HTTPCookie(properties: properties)
+    }
+
+    /// Creates the serialized archive we persist to Keychain.
     /// Returns nil if there are no valid auth cookies to store.
     static func makeArchiveData(from cookies: [HTTPCookie]) -> (data: Data, cookieCount: Int)? {
         let now = Date()
@@ -140,7 +327,7 @@ enum KeychainCookieStorage {
 
         let attributes: [String: Any] = [
             kSecValueData as String: data,
-            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
         ]
 
         var status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
@@ -360,9 +547,7 @@ enum LegacyCookieMigration {
         }
 
         self.logger.info("✓ Successfully migrated \(validCookies.count) cookies to Keychain")
-        #if !DEBUG
-            Self.deleteLegacyFile()
-        #endif
+        Self.deleteLegacyFile()
         return true
     }
 
@@ -378,53 +563,3 @@ enum LegacyCookieMigration {
         }
     }
 }
-
-#if DEBUG
-
-    // MARK: - DebugCookieFileExporter
-
-    /// Debug-only cookie export to the legacy `cookies.dat` file used by `Tools/api-explorer.swift`.
-    ///
-    /// In release builds we store cookies only in Keychain and do not export to disk.
-    enum DebugCookieFileExporter {
-        private static let logger = DiagnosticsLogger.webKit
-
-        private static var fileURL: URL? {
-            guard let appSupport = FileManager.default.urls(
-                for: .applicationSupportDirectory,
-                in: .userDomainMask
-            ).first else {
-                return nil
-            }
-
-            let appFolder = appSupport.appendingPathComponent("Kaset", isDirectory: true)
-
-            do {
-                try FileManager.default.createDirectory(
-                    at: appFolder,
-                    withIntermediateDirectories: true
-                )
-            } catch {
-                Self.logger.error("Failed to create Kaset folder: \(error.localizedDescription)")
-                return nil
-            }
-
-            return appFolder.appendingPathComponent("cookies.dat")
-        }
-
-        static func exportAuthCookiesArchiveData(_ archiveData: Data) {
-            guard let destinationURL = fileURL else { return }
-
-            do {
-                try archiveData.write(to: destinationURL, options: .atomic)
-                // Restrict permissions: owner read/write only.
-                try FileManager.default.setAttributes(
-                    [.posixPermissions: 0o600],
-                    ofItemAtPath: destinationURL.path
-                )
-            } catch {
-                Self.logger.warning("Failed to export cookies.dat for debug tools: \(error.localizedDescription)")
-            }
-        }
-    }
-#endif

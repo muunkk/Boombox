@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import WebKit
 @testable import Kaset
 
 /// Tests for WebKitManager.
@@ -27,6 +28,14 @@ struct WebKitManagerTests {
         let configuration = self.webKitManager.createWebViewConfiguration()
         #expect(configuration != nil)
         #expect(configuration.websiteDataStore === self.webKitManager.dataStore)
+    }
+
+    @Test("Create login WebView configuration without user scripts")
+    func createLoginWebViewConfiguration() {
+        let configuration = self.webKitManager.createLoginWebViewConfiguration()
+        #expect(configuration != nil)
+        #expect(configuration.websiteDataStore === self.webKitManager.dataStore)
+        #expect(configuration.userContentController.userScripts.isEmpty)
     }
 
     @Test("Origin constant")
@@ -81,5 +90,37 @@ struct WebKitManagerTests {
         coordinator.seedPersistedArchive(archive)
 
         #expect(coordinator.beginSaveIfNeeded(archive) == false)
+    }
+
+    @Test("Auth cookie validation requires allowlisted name and domain")
+    func authCookieValidationRequiresAllowlist() throws {
+        let validCookie = try #require(Self.makeCookie(name: "__Secure-3PAPISID", domain: ".youtube.com"))
+        let unsupportedName = try #require(Self.makeCookie(name: "PREF", domain: ".youtube.com"))
+        let unsupportedDomain = try #require(Self.makeCookie(name: "__Secure-3PAPISID", domain: ".example.com"))
+
+        #expect(KeychainCookieStorage.isValidAuthCookie(validCookie))
+        #expect(!KeychainCookieStorage.isValidAuthCookie(unsupportedName))
+        #expect(!KeychainCookieStorage.isValidAuthCookie(unsupportedDomain))
+    }
+
+    @Test("Manual auth cookie parser accepts cookie headers")
+    func manualAuthCookieParserAcceptsCookieHeaders() throws {
+        let cookies = try KeychainCookieStorage.makeManualAuthCookies(
+            from: "Cookie: PREF=ignored; __Secure-3PAPISID=redacted-token; SAPISID=redacted-fallback"
+        )
+
+        #expect(cookies.map(\.name).sorted() == ["SAPISID", "__Secure-3PAPISID"])
+        #expect(cookies.allSatisfy { KeychainCookieStorage.isAllowedAuthCookieDomain($0.domain) })
+    }
+
+    private static func makeCookie(name: String, domain: String) -> HTTPCookie? {
+        HTTPCookie(properties: [
+            .domain: domain,
+            .path: "/",
+            .name: name,
+            .value: "redacted-token",
+            .secure: "TRUE",
+            .expires: Date(timeIntervalSinceNow: 3_600),
+        ])
     }
 }

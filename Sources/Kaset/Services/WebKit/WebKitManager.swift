@@ -39,8 +39,8 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
     /// Fallback cookie name (non-secure version).
     static let fallbackAuthCookieName = "SAPISID"
 
-    /// Custom user agent to appear as Safari to avoid "browser not supported" errors.
-    static let userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
+    /// Custom user agent matching the local macOS 26.4.1 / Safari 26.4 environment.
+    static let userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 26_4_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Safari/605.1.15"
 
     private let logger = DiagnosticsLogger.webKit
 
@@ -58,7 +58,7 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         self.dataStore.httpCookieStore.add(self)
 
         // Restore auth cookies on startup.
-        // Keychain is the source of truth; in DEBUG builds we also export to cookies.dat for tooling.
+        // Keychain is the source of truth for persisted YouTube Music auth cookies.
         if !UITestConfig.isRunningUnitTests {
             self.initialCookieRestoreTask = Task { @MainActor in
                 await self.restoreAuthCookiesFromBackup()
@@ -104,10 +104,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
             return
         }
 
-        #if DEBUG
-            DebugCookieFileExporter.exportAuthCookiesArchiveData(archiveData)
-        #endif
-
         self.logger.info("Restoring \(keychainCookies.count) auth cookies from Keychain")
 
         // Set each cookie in WebKit
@@ -128,6 +124,17 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
 
     /// Creates a WebView configuration using the shared persistent data store.
     func createWebViewConfiguration() -> WKWebViewConfiguration {
+        self.makeBaseWebViewConfiguration()
+    }
+
+    /// Creates a login-only WebView configuration with no native script message bridges.
+    func createLoginWebViewConfiguration() -> WKWebViewConfiguration {
+        let configuration = self.makeBaseWebViewConfiguration()
+        configuration.userContentController = WKUserContentController()
+        return configuration
+    }
+
+    private func makeBaseWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = self.dataStore
 
@@ -280,10 +287,9 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         let cookies = await dataStore.httpCookieStore.allCookies()
         self.logger.info("Force backup: found \(cookies.count) total cookies")
 
-        // Filter for YouTube/Google auth cookies
+        // Filter for allowlisted YouTube/Google auth cookies.
         let authCookies = cookies.filter { cookie in
-            let domain = cookie.domain.lowercased()
-            return domain.hasSuffix("youtube.com") || domain.hasSuffix("google.com")
+            KeychainCookieStorage.isValidAuthCookie(cookie)
         }
 
         self.logger.info("Force backup: \(authCookies.count) YouTube/Google cookies to Keychain")
@@ -293,10 +299,44 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         // Fire-and-forget: failures are handled inside KeychainCookieStorage.
         Task(priority: .utility) {
             _ = KeychainCookieStorage.saveArchiveData(archive.data, cookieCount: archive.cookieCount)
-            #if DEBUG
-                DebugCookieFileExporter.exportAuthCookiesArchiveData(archive.data)
-            #endif
         }
+    }
+
+    /// Imports allowlisted auth cookies pasted from Safari into WebKit and Keychain.
+    @discardableResult
+    func importAuthCookies(from rawText: String) async throws -> AuthCookieImportResult {
+        let cookies = try KeychainCookieStorage.makeManualAuthCookies(from: rawText)
+        let hasPrimaryAuthCookie = cookies.contains { cookie in
+            cookie.name == Self.authCookieName || cookie.name == Self.fallbackAuthCookieName
+        }
+
+        guard hasPrimaryAuthCookie else {
+            throw AuthCookieImportError.missingPrimaryAuthCookie
+        }
+
+        for cookie in cookies {
+            await self.dataStore.httpCookieStore.setCookie(cookie)
+        }
+
+        guard let archive = KeychainCookieStorage.makeArchiveData(from: cookies) else {
+            throw AuthCookieImportError.noSupportedCookies
+        }
+
+        let didSave = await Task(priority: .utility) {
+            KeychainCookieStorage.saveArchiveData(archive.data, cookieCount: archive.cookieCount)
+        }.value
+
+        if !didSave {
+            self.logger.warning("Imported auth cookies into WebKit, but Keychain persistence failed")
+        }
+
+        self.cookiesDidChange = Date()
+        self.logger.info("Imported \(cookies.count) allowlisted auth cookies from Safari fallback")
+
+        return AuthCookieImportResult(
+            importedCount: cookies.count,
+            importedCookieNames: cookies.map(\.name).sorted()
+        )
     }
 }
 
@@ -334,10 +374,9 @@ extension WebKitManager: WKHTTPCookieStoreObserver {
     private func performCookieBackup(cookieStore: WKHTTPCookieStore) async {
         let cookies = await cookieStore.allCookies()
 
-        // Filter for YouTube/Google auth cookies
+        // Filter for allowlisted YouTube/Google auth cookies.
         let authCookies = cookies.filter { cookie in
-            let domain = cookie.domain.lowercased()
-            return domain.hasSuffix("youtube.com") || domain.hasSuffix("google.com")
+            KeychainCookieStorage.isValidAuthCookie(cookie)
         }
 
         guard let archive = KeychainCookieStorage.makeArchiveData(from: authCookies) else { return }
@@ -345,10 +384,6 @@ extension WebKitManager: WKHTTPCookieStoreObserver {
         // Perform Keychain/file I/O off the main thread.
         Task.detached(priority: .utility) {
             _ = KeychainCookieStorage.saveArchiveData(archive.data, cookieCount: archive.cookieCount)
-            #if DEBUG
-                DebugCookieFileExporter.exportAuthCookiesArchiveData(archive.data)
-            #endif
         }
     }
 }
-

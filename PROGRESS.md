@@ -6,9 +6,9 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `personal/main`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: shortcut remap to `Cmd+L` / `Cmd+Y`; see `git log --oneline -8` for exact commits
+- Latest completed checkpoint: auth hardening and Safari passkey fallback; see `git log --oneline -8` for exact commits
 - `swift build`: passes
-- `swift test`: passes (880 tests after AI-only, video-leftover, and URL-scheme cleanup)
+- `swift test`: passes (883 tests after auth hardening coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -29,7 +29,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Remove remaining floating-video metadata leftovers: `MusicVideoType`, `Song.hasVideo`, `Song.musicVideoType`, `currentTrackHasVideo`, `MOCK_HAS_VIDEO`, `VideoWindow` IDs
 - [x] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
 - [x] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, and remove the old command-k palette action
-- [ ] Harden auth: modern Safari UA, direct `https://music.youtube.com/` login, login-only WebView config, device-only Keychain cookies, cookie allowlist, Safari passkey fallback
+- [x] Harden auth: modern Safari UA, direct `https://music.youtube.com/` login, login-only WebView config, device-only Keychain cookies, cookie allowlist, Safari passkey fallback
 - [ ] Rebrand app bundle and user-facing docs to `YTM Private`
 - [ ] Add `STRIPPED.md`
 - [ ] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`

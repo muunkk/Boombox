@@ -64,7 +64,7 @@ final class YTMusicClient: YTMusicClientProtocol {
 
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+            "User-Agent": WebKitManager.userAgent,
             "Accept-Encoding": "gzip, deflate, br",
         ]
         // Increase connection pool for parallel requests (HTTP/2 multiplexing is automatic)
@@ -1376,11 +1376,11 @@ final class YTMusicClient: YTMusicClientProtocol {
                 "experimentIds": [],
                 "experimentsToken": "",
                 "browserName": "Safari",
-                "browserVersion": "17.0",
+                "browserVersion": "26.4",
                 "osName": "Macintosh",
-                "osVersion": "10_15_7",
+                "osVersion": "26_4_1",
                 "platform": "DESKTOP",
-                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+                "userAgent": WebKitManager.userAgent,
                 "utcOffsetMinutes": -TimeZone.current.secondsFromGMT() / 60,
             ],
             "user": userDict,
