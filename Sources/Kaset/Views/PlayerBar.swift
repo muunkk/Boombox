@@ -22,6 +22,7 @@ struct PlayerBar: View {
     /// Local volume value for smooth slider dragging.
     @State private var volumeValue: Double = 1.0
     @State private var isAdjustingVolume = false
+    @State private var audioOutput = AudioOutputDeviceInfo.unknown
 
     /// Cached formatted progress string to avoid repeated formatting.
     @State private var formattedProgress: String = "0:00"
@@ -84,14 +85,28 @@ struct PlayerBar: View {
 
                 // Command + Up Arrow: Volume up
                 Button("") {
-                    Task { await self.playerService.setVolume(min(1.0, self.playerService.volume + 0.1)) }
+                    Task {
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: 0.1
+                            )
+                        )
+                    }
                 }
                 .keyboardShortcut(.upArrow, modifiers: .command)
                 .opacity(0)
 
                 // Command + Down Arrow: Volume down
                 Button("") {
-                    Task { await self.playerService.setVolume(max(0.0, self.playerService.volume - 0.1)) }
+                    Task {
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: -0.1
+                            )
+                        )
+                    }
                 }
                 .keyboardShortcut(.downArrow, modifiers: .command)
                 .opacity(0)
@@ -113,12 +128,16 @@ struct PlayerBar: View {
         .onChange(of: self.playerService.volume) { _, newValue in
             // Sync local volume value when not actively adjusting
             if !self.isAdjustingVolume {
-                self.volumeValue = newValue
+                self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: newValue)
             }
         }
         .onAppear {
             // Sync local volume value from saved state on initial load
-            self.volumeValue = self.playerService.volume
+            self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: self.playerService.volume)
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+        }
+        .task {
+            await self.refreshAudioOutputLoop()
         }
     }
 
@@ -378,14 +397,18 @@ struct PlayerBar: View {
                 HapticService.toggle()
                 self.playerService.showAirPlayPicker()
             } label: {
-                Image(systemName: "airplayaudio")
+                Image(systemName: self.audioOutputIcon)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(self.playerService.isAirPlayConnected ? .red : .primary.opacity(0.85))
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
             .accessibilityIdentifier(AccessibilityID.PlayerBar.airplayButton)
-            .accessibilityLabel(self.playerService.isAirPlayConnected ? String(localized: "AirPlay Connected") : String(localized: "AirPlay"))
+            .accessibilityLabel(
+                self.playerService.isAirPlayConnected
+                    ? String(localized: "AirPlay Connected")
+                    : String(localized: "Audio Output: \(self.audioOutput.accessibilityName)")
+            )
             .disabled(self.playerService.currentTrack == nil)
 
             Divider()
@@ -407,7 +430,7 @@ struct PlayerBar: View {
                     self.isAdjustingVolume = false
                     // Always apply volume when interaction ends to ensure WebView is synced
                     Task {
-                        await self.playerService.setVolume(self.volumeValue)
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: self.volumeValue))
                     }
                 }
             }
@@ -422,7 +445,7 @@ struct PlayerBar: View {
                         HapticService.sliderBoundary()
                     }
                     Task {
-                        await self.playerService.setVolume(newValue)
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
                     }
                 }
             }
@@ -435,24 +458,6 @@ struct PlayerBar: View {
         @Bindable var player = self.playerService
 
         return HStack(spacing: 12) {
-            // Dislike button
-            Button {
-                HapticService.toggle()
-                self.playerService.dislikeCurrentTrack()
-            } label: {
-                Image(systemName: self.playerService.currentTrackLikeStatus == .dislike
-                    ? "hand.thumbsdown.fill"
-                    : "hand.thumbsdown")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.currentTrackLikeStatus == .dislike ? .red : .primary.opacity(0.85))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.pressable)
-            .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .dislike)
-            .accessibilityLabel(String(localized: "Dislike"))
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .dislike ? String(localized: "Disliked") : String(localized: "Not disliked"))
-            .disabled(self.playerService.currentTrack == nil)
-
             // Like button
             Button {
                 HapticService.toggle()
@@ -509,13 +514,24 @@ struct PlayerBar: View {
     }
 
     private var volumeIcon: String {
-        let currentVolume = self.isAdjustingVolume ? self.volumeValue : self.playerService.volume
+        let currentVolume = self.isAdjustingVolume ? VolumeCurve.outputVolume(forSliderValue: self.volumeValue) : self.playerService.volume
         if currentVolume == 0 {
             return "speaker.slash.fill"
         } else if currentVolume < 0.5 {
             return "speaker.wave.1.fill"
         } else {
             return "speaker.wave.2.fill"
+        }
+    }
+
+    private var audioOutputIcon: String {
+        self.audioOutput.systemImageName(fallbackVolumeIcon: self.volumeIcon)
+    }
+
+    private func refreshAudioOutputLoop() async {
+        while !Task.isCancelled {
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            try? await Task.sleep(for: .seconds(5))
         }
     }
 }

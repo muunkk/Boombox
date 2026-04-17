@@ -176,7 +176,12 @@ struct KasetApp: App {
                 // Volume Up - ⌘↑
                 Button("Volume Up") {
                     Task {
-                        await self.playerService.setVolume(min(1.0, self.playerService.volume + 0.1))
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: 0.1
+                            )
+                        )
                     }
                 }
                 .keyboardShortcut(.upArrow, modifiers: .command)
@@ -184,7 +189,12 @@ struct KasetApp: App {
                 // Volume Down - ⌘↓
                 Button("Volume Down") {
                     Task {
-                        await self.playerService.setVolume(max(0.0, self.playerService.volume - 0.1))
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: -0.1
+                            )
+                        )
                     }
                 }
                 .keyboardShortcut(.downArrow, modifiers: .command)
