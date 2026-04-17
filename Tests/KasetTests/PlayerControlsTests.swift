@@ -1,3 +1,4 @@
+import CoreAudio
 import Testing
 @testable import Kaset
 
@@ -40,5 +41,17 @@ struct PlayerControlsTests {
         #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "MacBook Pro Speakers", transportType: nil) == "hifispeaker")
         #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Studio Display Speakers", transportType: nil) == "hifispeaker")
         #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Mel's AirPods Pro", transportType: nil) == "airpods")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(
+            deviceName: "ลาดพร้าวซาวด์",
+            transportType: kAudioDeviceTransportTypeBluetooth,
+            manufacturer: "Apple Inc.",
+            modelUID: "2024 4c"
+        ) == "airpods")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(
+            deviceName: "Mel's Beats",
+            transportType: kAudioDeviceTransportTypeBluetooth,
+            manufacturer: "Apple Inc.",
+            modelUID: nil
+        ) == "hifispeaker")
     }
 }

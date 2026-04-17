@@ -6,13 +6,29 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     let id: AudioDeviceID
     let name: String
     let transportType: UInt32?
+    let manufacturer: String?
+    let modelUID: String?
 
-    static let unknown = AudioOutputDeviceInfo(id: AudioDeviceID(kAudioObjectUnknown), name: String(localized: "Audio Output"), transportType: nil)
+    static let unknown = AudioOutputDeviceInfo(
+        id: AudioDeviceID(kAudioObjectUnknown),
+        name: String(localized: "Audio Output"),
+        transportType: nil,
+        manufacturer: nil,
+        modelUID: nil
+    )
 
-    init(id: AudioDeviceID = AudioDeviceID(kAudioObjectUnknown), name: String, transportType: UInt32?) {
+    init(
+        id: AudioDeviceID = AudioDeviceID(kAudioObjectUnknown),
+        name: String,
+        transportType: UInt32?,
+        manufacturer: String? = nil,
+        modelUID: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.transportType = transportType
+        self.manufacturer = manufacturer
+        self.modelUID = modelUID
     }
 
     var accessibilityName: String {
@@ -24,7 +40,12 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 
     var isAirPods: Bool {
-        AudioOutputIconResolver.isAirPods(deviceName: self.name)
+        AudioOutputIconResolver.isAirPods(
+            deviceName: self.name,
+            transportType: self.transportType,
+            manufacturer: self.manufacturer,
+            modelUID: self.modelUID
+        )
     }
 
     var transportDescription: String {
@@ -35,6 +56,8 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
         AudioOutputIconResolver.systemImageName(
             deviceName: self.name,
             transportType: self.transportType,
+            manufacturer: self.manufacturer,
+            modelUID: self.modelUID,
             fallbackVolumeIcon: fallbackVolumeIcon
         )
     }
@@ -42,7 +65,9 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     func pickerButtonSystemImageName() -> String {
         AudioOutputIconResolver.pickerButtonSystemImageName(
             deviceName: self.name,
-            transportType: self.transportType
+            transportType: self.transportType,
+            manufacturer: self.manufacturer,
+            modelUID: self.modelUID
         )
     }
 
@@ -54,7 +79,9 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
         return AudioOutputDeviceInfo(
             id: deviceID,
             name: Self.deviceName(for: deviceID) ?? Self.unknown.name,
-            transportType: Self.transportType(for: deviceID)
+            transportType: Self.transportType(for: deviceID),
+            manufacturer: Self.manufacturer(for: deviceID),
+            modelUID: Self.modelUID(for: deviceID)
         )
     }
 
@@ -65,7 +92,9 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
                 AudioOutputDeviceInfo(
                     id: deviceID,
                     name: Self.deviceName(for: deviceID) ?? String(localized: "Audio Output"),
-                    transportType: Self.transportType(for: deviceID)
+                    transportType: Self.transportType(for: deviceID),
+                    manufacturer: Self.manufacturer(for: deviceID),
+                    modelUID: Self.modelUID(for: deviceID)
                 )
             }
             .sorted { lhs, rhs in
@@ -236,11 +265,28 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 
     private static func deviceName(for deviceID: AudioDeviceID) -> String? {
+        Self.stringProperty(kAudioObjectPropertyName, for: deviceID)
+    }
+
+    private static func manufacturer(for deviceID: AudioDeviceID) -> String? {
+        Self.stringProperty(kAudioObjectPropertyManufacturer, for: deviceID)
+    }
+
+    private static func modelUID(for deviceID: AudioDeviceID) -> String? {
+        Self.stringProperty(kAudioDevicePropertyModelUID, for: deviceID)
+    }
+
+    private static func stringProperty(_ selector: AudioObjectPropertySelector, for deviceID: AudioDeviceID) -> String? {
         var address = AudioObjectPropertyAddress(
-            mSelector: kAudioObjectPropertyName,
+            mSelector: selector,
             mScope: kAudioObjectPropertyScopeGlobal,
             mElement: kAudioObjectPropertyElementMain
         )
+
+        guard AudioObjectHasProperty(deviceID, &address) else {
+            return nil
+        }
+
         let namePointer = UnsafeMutablePointer<CFString?>.allocate(capacity: 1)
         namePointer.initialize(to: nil)
         defer {
@@ -292,18 +338,34 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
 }
 
 enum AudioOutputIconResolver {
-    static func pickerButtonSystemImageName(deviceName: String, transportType _: UInt32?) -> String {
-        if Self.isAirPods(deviceName: deviceName) {
+    static func pickerButtonSystemImageName(deviceName: String, transportType: UInt32?, manufacturer: String? = nil, modelUID: String? = nil) -> String {
+        if Self.isAirPods(
+            deviceName: deviceName,
+            transportType: transportType,
+            manufacturer: manufacturer,
+            modelUID: modelUID
+        ) {
             return "airpods"
         }
 
         return "hifispeaker"
     }
 
-    static func systemImageName(deviceName: String, transportType: UInt32?, fallbackVolumeIcon: String) -> String {
+    static func systemImageName(
+        deviceName: String,
+        transportType: UInt32?,
+        manufacturer: String? = nil,
+        modelUID: String? = nil,
+        fallbackVolumeIcon: String
+    ) -> String {
         let normalizedName = deviceName.localizedLowercase
 
-        if Self.isAirPods(deviceName: deviceName) {
+        if Self.isAirPods(
+            deviceName: deviceName,
+            transportType: transportType,
+            manufacturer: manufacturer,
+            modelUID: modelUID
+        ) {
             return "airpods"
         }
 
@@ -324,8 +386,21 @@ enum AudioOutputIconResolver {
         return fallbackVolumeIcon
     }
 
-    static func isAirPods(deviceName: String) -> Bool {
-        deviceName.localizedLowercase.contains("airpods")
+    static func isAirPods(deviceName: String, transportType: UInt32?, manufacturer: String? = nil, modelUID: String? = nil) -> Bool {
+        let normalizedName = deviceName.localizedLowercase
+        let normalizedManufacturer = manufacturer?.localizedLowercase ?? ""
+        let normalizedModelUID = modelUID?.localizedLowercase ?? ""
+
+        if normalizedName.contains("beats") || normalizedModelUID.contains("beats") {
+            return false
+        }
+
+        if normalizedName.contains("airpods") || normalizedModelUID.contains("airpods") {
+            return true
+        }
+
+        return transportType == kAudioDeviceTransportTypeBluetooth
+            && normalizedManufacturer.contains("apple")
     }
 }
 
