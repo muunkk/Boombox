@@ -16,6 +16,7 @@ struct MainWindow: View {
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @Environment(\.searchFocusTrigger) private var searchFocusTrigger
     @Environment(\.showCommandBar) private var showCommandBar
+    @Environment(\.playerPresentationMode) private var playerPresentationMode
 
     /// Binding to navigation selection for keyboard shortcut control from parent.
     @Binding var navigationSelection: NavigationItem?
@@ -71,7 +72,7 @@ struct MainWindow: View {
                     // Show loading while checking login status to avoid onboarding flash
                     self.initializingView
                 } else if self.authService.state.isLoggedIn {
-                    self.mainContent
+                    self.authenticatedContent
                 } else {
                     OnboardingView()
                 }
@@ -225,6 +226,18 @@ struct MainWindow: View {
     }
 
     // MARK: - Main Content
+
+    @ViewBuilder
+    private var authenticatedContent: some View {
+        switch self.playerPresentationMode.wrappedValue {
+        case .standard:
+            self.mainContent
+        case .focus:
+            FocusPlayerView()
+        case .compact:
+            CompactPlayerView()
+        }
+    }
 
     private var mainContent: some View {
         ZStack(alignment: .trailing) {

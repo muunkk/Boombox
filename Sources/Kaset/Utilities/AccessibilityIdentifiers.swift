@@ -143,6 +143,8 @@ enum AccessibilityID {
         static let commandBar = "mainWindow.commandBar"
         static let commandBarOverlay = "mainWindow.commandBarOverlay"
         static let commandBarInput = "mainWindow.commandBarInput"
+        static let focusPlayer = "mainWindow.focusPlayer"
+        static let compactPlayer = "mainWindow.compactPlayer"
     }
 
     // MARK: - Explore View
