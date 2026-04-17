@@ -8,10 +8,11 @@ struct PlayerBar: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
 
     @Environment(PlayerService.self) private var playerService
-    @Environment(WebKitManager.self) private var webKitManager
 
     /// Namespace for glass effect morphing and unioning.
     @Namespace private var playerNamespace
+
+    @State private var settings = SettingsManager.shared
 
     @State private var isHovering = false
 
@@ -29,8 +30,6 @@ struct PlayerBar: View {
     @State private var formattedRemaining: String = "-0:00"
     /// Last integer second of progress to reduce string formatting frequency.
     @State private var lastProgressSecond: Int = -1
-    @State private var isTrackInfoHovering = false
-    @State private var isNowPlayingPopoverPresented = false
 
     var body: some View {
         GlassEffectContainer(spacing: 0) {
@@ -40,7 +39,7 @@ struct PlayerBar: View {
 
                 Spacer()
 
-                // Center section: Track info OR seek bar (on hover)
+                // Center section: track info or seek bar.
                 self.centerSection
 
                 Spacer()
@@ -143,7 +142,7 @@ struct PlayerBar: View {
         }
     }
 
-    // MARK: - Center Section (track info blurs, seek bar appears on hover)
+    // MARK: - Center Section
 
     private var centerSection: some View {
         ZStack {
@@ -151,27 +150,21 @@ struct PlayerBar: View {
             if case let .error(message) = playerService.state {
                 self.errorView(message: message)
             } else {
-                // Seek bar (shown when hovering and track is playing)
-                if self.shouldShowHoverSeekBar {
+                if self.shouldShowSeekBar {
                     self.seekBarView
                         .transition(.opacity)
+                } else {
+                    self.trackInfoView
+                        .transition(.opacity)
                 }
-
-                // Track info (blurred when hovering and track is playing)
-                self.trackInfoView
-                    .blur(radius: self.shouldShowHoverSeekBar ? 8 : 0)
-                    .opacity(self.shouldShowHoverSeekBar ? 0.001 : 1)
-                    .accessibilityHidden(self.shouldShowHoverSeekBar)
             }
         }
         .frame(maxWidth: 400)
     }
 
-    private var shouldShowHoverSeekBar: Bool {
-        self.isHovering
-            && self.playerService.currentTrack != nil
-            && !self.isTrackInfoHovering
-            && !self.isNowPlayingPopoverPresented
+    private var shouldShowSeekBar: Bool {
+        self.playerService.currentTrack != nil
+            && (self.settings.showSidebarNowPlayingPanel || self.isHovering || self.isSeeking)
     }
 
     // MARK: - Error View
@@ -208,27 +201,9 @@ struct PlayerBar: View {
     // MARK: - Track Info View
 
     private var trackInfoView: some View {
-        Button {
-            guard self.playerService.currentTrack != nil else { return }
-            HapticService.navigation()
-            withAnimation(AppAnimation.quick) {
-                self.isNowPlayingPopoverPresented = true
-            }
-        } label: {
-            self.trackInfoContent
-        }
-        .buttonStyle(.plain)
-        .disabled(self.playerService.currentTrack == nil)
-        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingTrigger)
+        self.trackInfoContent
         .accessibilityLabel(self.nowPlayingAccessibilityLabel)
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.12)) {
-                self.isTrackInfoHovering = hovering
-            }
-        }
-        .popover(isPresented: self.$isNowPlayingPopoverPresented, arrowEdge: .bottom) {
-            ExpandedNowPlayingPopoverView(isPresented: self.$isNowPlayingPopoverPresented)
-        }
+        .allowsHitTesting(false)
     }
 
     private var trackInfoContent: some View {
@@ -300,6 +275,8 @@ struct PlayerBar: View {
             }
             .controlSize(.small)
             .tint(Self.brandAccent)
+            .disabled(self.playerService.duration <= 0)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.seekSlider)
 
             // Remaining time - use cached formatted string when not seeking
             Text(self.isSeeking ? "-\(self.formatTime(self.playerService.duration - self.seekValue * self.playerService.duration))" : self.formattedRemaining)
@@ -313,6 +290,12 @@ struct PlayerBar: View {
     /// Performs the actual seek operation after slider interaction ends.
     private func performSeek() {
         guard self.isSeeking else { return }
+        guard self.playerService.currentTrack != nil, self.playerService.duration > 0 else {
+            self.isSeeking = false
+            self.seekValue = 0
+            return
+        }
+
         let seekTime = self.seekValue * self.playerService.duration
         Task {
             await self.playerService.seek(to: seekTime)
@@ -499,7 +482,7 @@ struct PlayerBar: View {
         }
     }
 
-    // MARK: - Action Buttons (Like/Dislike/Lyrics/Queue)
+    // MARK: - Action Buttons (Like/Now Playing/Lyrics/Queue)
 
     private var actionButtons: some View {
         @Bindable var player = self.playerService
@@ -522,6 +505,23 @@ struct PlayerBar: View {
             .accessibilityLabel(String(localized: "Like"))
             .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
             .disabled(self.playerService.currentTrack == nil)
+
+            Button {
+                HapticService.toggle()
+                withAnimation(AppAnimation.standard) {
+                    self.settings.showSidebarNowPlayingPanel.toggle()
+                }
+            } label: {
+                Image(systemName: self.settings.showSidebarNowPlayingPanel ? "rectangle.leftthird.inset.filled" : "rectangle.leftthird.inset")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .buttonStyle(.pressable)
+            .glassEffectID("nowPlayingPanel", in: self.playerNamespace)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingPanelToggle)
+            .accessibilityLabel(String(localized: "Now Playing Panel"))
+            .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
 
             // Lyrics button
             Button {

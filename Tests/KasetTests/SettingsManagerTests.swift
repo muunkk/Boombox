@@ -72,6 +72,29 @@ struct SettingsManagerTests {
         #expect(manager.rememberPlaybackSettings == false)
     }
 
+    @Test("Default showSidebarNowPlayingPanel is false")
+    func defaultShowSidebarNowPlayingPanel() {
+        let manager = SettingsManager.shared
+        #expect(manager.showSidebarNowPlayingPanel == false)
+    }
+
+    @Test("showSidebarNowPlayingPanel persists to UserDefaults")
+    func showSidebarNowPlayingPanelPersists() {
+        let manager = SettingsManager.shared
+        let originalValue = manager.showSidebarNowPlayingPanel
+        let key = "settings.showSidebarNowPlayingPanel"
+
+        defer {
+            manager.showSidebarNowPlayingPanel = originalValue
+        }
+
+        manager.showSidebarNowPlayingPanel = true
+        #expect(UserDefaults.standard.bool(forKey: key) == true)
+
+        manager.showSidebarNowPlayingPanel = false
+        #expect(UserDefaults.standard.bool(forKey: key) == false)
+    }
+
     @Test("Disabling rememberPlaybackSettings clears persisted values")
     func disablingRememberPlaybackSettingsClearsValues() {
         let manager = SettingsManager.shared

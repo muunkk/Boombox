@@ -8,6 +8,8 @@ struct Sidebar: View {
     /// Namespace for glass effect morphing.
     @Namespace private var sidebarNamespace
 
+    @State private var settings = SettingsManager.shared
+
     var body: some View {
         VStack(spacing: 0) {
             GlassEffectContainer(spacing: 0) {
@@ -82,6 +84,15 @@ struct Sidebar: View {
 
             Divider()
                 .opacity(0.3)
+
+            if self.settings.showSidebarNowPlayingPanel {
+                NowPlayingSidebarPanel()
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+
+                Divider()
+                    .opacity(0.3)
+            }
 
             // Profile section at bottom
             SidebarProfileView()

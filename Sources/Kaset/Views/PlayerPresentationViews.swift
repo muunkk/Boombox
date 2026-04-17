@@ -385,80 +385,6 @@ struct NowPlayingVolumeControl: View {
     }
 }
 
-// MARK: - ExpandedNowPlayingPopoverView
-
-/// Medium now-playing popover opened from the bottom player bar.
-@available(macOS 26.0, *)
-struct ExpandedNowPlayingPopoverView: View {
-    @Binding var isPresented: Bool
-
-    @Environment(\.playerPresentationMode) private var playerPresentationMode
-
-    @State private var isHovering = false
-
-    var body: some View {
-        GlassEffectContainer(spacing: 0) {
-            ZStack(alignment: .topTrailing) {
-                VStack(spacing: 18) {
-                    NowPlayingArtworkView(size: 220, cornerRadius: 12)
-
-                    NowPlayingTitleBlock(titleFont: .title3, artistFont: .subheadline, maxWidth: 280)
-
-                    NowPlayingProgressView(accessibilityIdentifier: AccessibilityID.PlayerBar.expandedPopoverProgressSlider)
-                        .frame(width: 280)
-
-                    NowPlayingTransportControls(size: .regular)
-                }
-                .padding(.top, self.isHovering ? 34 : 10)
-                .padding(.horizontal, 22)
-                .padding(.bottom, 22)
-                .frame(width: 324)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
-
-                self.hoverActions
-                    .padding(.top, 10)
-                    .padding(.trailing, 10)
-            }
-        }
-        .onHover { hovering in
-            withAnimation(AppAnimation.quick) {
-                self.isHovering = hovering
-            }
-        }
-        .accessibilityIdentifier(AccessibilityID.PlayerBar.expandedPopover)
-    }
-
-    private var hoverActions: some View {
-        HStack(spacing: 8) {
-            Button {
-                withAnimation(AppAnimation.standard) {
-                    self.playerPresentationMode.wrappedValue = .focus
-                    self.isPresented = false
-                }
-            } label: {
-                Label("Focus Player", systemImage: "rectangle.expand.vertical")
-            }
-            .buttonStyle(.glass)
-            .accessibilityIdentifier(AccessibilityID.PlayerBar.expandedPopoverFocusButton)
-
-            Button {
-                withAnimation(AppAnimation.quick) {
-                    self.isPresented = false
-                }
-            } label: {
-                Label("Collapse", systemImage: "chevron.down")
-            }
-            .buttonStyle(.glass)
-            .accessibilityIdentifier(AccessibilityID.PlayerBar.expandedPopoverCollapseButton)
-        }
-        .font(.caption.weight(.medium))
-        .labelStyle(.titleAndIcon)
-        .opacity(self.isHovering ? 1 : 0)
-        .allowsHitTesting(self.isHovering)
-        .accessibilityHidden(!self.isHovering)
-    }
-}
-
 // MARK: - NowPlayingArtworkView
 
 /// Shared square artwork for player presentation surfaces.
@@ -768,13 +694,4 @@ struct NowPlayingFocusActions: View {
     CompactPlayerView()
         .environment(PlayerService())
         .environment(\.playerPresentationMode, .constant(.compact))
-}
-
-@available(macOS 26.0, *)
-#Preview("Expanded Now Playing Popover") {
-    @Previewable @State var isPresented = true
-
-    ExpandedNowPlayingPopoverView(isPresented: $isPresented)
-        .environment(PlayerService())
-        .environment(\.playerPresentationMode, .constant(.standard))
 }
