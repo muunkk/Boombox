@@ -64,11 +64,24 @@ extension SingletonPlayerWebView {
                         visibility: hidden !important;
                         pointer-events: none !important;
                     }
+
+                    tp-yt-paper-dialog:has([aria-label="Song"]):has([aria-label="Video"]),
+                    tp-yt-paper-dialog:has([title="Song"]):has([title="Video"]),
+                    iron-dropdown:has([aria-label="Song"]):has([aria-label="Video"]),
+                    iron-dropdown:has([title="Song"]):has([title="Video"]),
+                    ytmusic-popup-container:has([aria-label="Song"]):has([aria-label="Video"]),
+                    ytmusic-popup-container:has([title="Song"]):has([title="Video"]) {
+                        display: none !important;
+                        visibility: hidden !important;
+                        pointer-events: none !important;
+                    }
                 `;
 
                 const host = document.head || document.documentElement || document.body;
                 if (host && host.appendChild) {
                     host.appendChild(style);
+                } else {
+                    setTimeout(installAudioOnlyStyle, 0);
                 }
             }
 
@@ -272,21 +285,17 @@ extension SingletonPlayerWebView {
 
             let scheduled = false;
             function scheduleApply() {
+                applyAudioOnlyPlayback();
+
                 if (scheduled) {
                     return;
                 }
 
                 scheduled = true;
-                const run = function() {
+                setTimeout(function() {
                     scheduled = false;
                     applyAudioOnlyPlayback();
-                };
-
-                if (typeof requestAnimationFrame === 'function') {
-                    requestAnimationFrame(run);
-                } else {
-                    setTimeout(run, 0);
-                }
+                }, 50);
             }
 
             window.__ytmPrivateApplyAudioOnlyPlayback = applyAudioOnlyPlayback;
