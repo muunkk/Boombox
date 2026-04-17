@@ -512,7 +512,7 @@ struct PlayerBar: View {
                     self.settings.showSidebarNowPlayingPanel.toggle()
                 }
             } label: {
-                Image(systemName: self.settings.showSidebarNowPlayingPanel ? "rectangle.leftthird.inset.filled" : "rectangle.leftthird.inset")
+                Image(systemName: "sidebar.left")
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
                     .contentTransition(.symbolEffect(.replace))
@@ -522,6 +522,7 @@ struct PlayerBar: View {
             .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingPanelToggle)
             .accessibilityLabel(String(localized: "Now Playing Panel"))
             .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
+            .help(String(localized: "Now Playing Panel"))
 
             // Lyrics button
             Button {
