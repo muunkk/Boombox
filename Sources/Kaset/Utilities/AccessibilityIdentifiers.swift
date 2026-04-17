@@ -155,6 +155,13 @@ enum AccessibilityID {
         static let focusPlayerLyricsButton = "mainWindow.focusPlayer.lyricsButton"
         static let focusPlayerQueueButton = "mainWindow.focusPlayer.queueButton"
         static let compactPlayer = "mainWindow.compactPlayer"
+        static let compactPlayerBackButton = "mainWindow.compactPlayer.backButton"
+        static let compactPlayerSeekSlider = "mainWindow.compactPlayer.seekSlider"
+        static let compactPlayerLikeButton = "mainWindow.compactPlayer.likeButton"
+        static let compactPlayerLyricsButton = "mainWindow.compactPlayer.lyricsButton"
+        static let compactPlayerQueueButton = "mainWindow.compactPlayer.queueButton"
+        static let compactPlayerAirPlayButton = "mainWindow.compactPlayer.airPlayButton"
+        static let compactPlayerVolumeSlider = "mainWindow.compactPlayer.volumeSlider"
     }
 
     // MARK: - Explore View

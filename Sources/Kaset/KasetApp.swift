@@ -133,6 +133,9 @@ struct KasetApp: App {
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
                     }
+                    .onChange(of: self.playerPresentationMode) { oldMode, newMode in
+                        self.appDelegate.transitionPlayerPresentationMode(from: oldMode, to: newMode)
+                    }
             }
         }
 
@@ -246,7 +249,7 @@ struct KasetApp: App {
                     }
                 }
                 .keyboardShortcut("m", modifiers: [.command, .shift])
-                .disabled(self.playerService.currentTrack == nil)
+                .disabled(self.playerService.currentTrack == nil && self.playerPresentationMode != .compact)
             }
 
             // Navigation commands - replace default sidebar toggle
