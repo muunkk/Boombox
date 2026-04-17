@@ -321,6 +321,8 @@ struct PlayerBar: View {
 
     private var playbackControls: some View {
         HStack(spacing: 16) {
+            self.nowPlayingPanelToggleButton
+
             // Shuffle
             Button {
                 HapticService.toggle()
@@ -334,8 +336,6 @@ struct PlayerBar: View {
             .buttonStyle(.pressable)
             .accessibilityLabel(String(localized: "Shuffle"))
             .accessibilityValue(self.playerService.shuffleEnabled ? String(localized: "On") : String(localized: "Off"))
-
-            self.nowPlayingPanelToggleButton
 
             // Previous
             Button {
@@ -493,7 +493,7 @@ struct PlayerBar: View {
                 self.settings.showSidebarNowPlayingPanel.toggle()
             }
         } label: {
-            Image(systemName: self.settings.showSidebarNowPlayingPanel ? "chevron.down" : "chevron.up")
+            Image(systemName: self.settings.showSidebarNowPlayingPanel ? "chevron.right" : "chevron.left")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
                 .frame(width: 18)
