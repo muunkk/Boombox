@@ -29,6 +29,8 @@ struct PlayerBar: View {
     @State private var formattedRemaining: String = "-0:00"
     /// Last integer second of progress to reduce string formatting frequency.
     @State private var lastProgressSecond: Int = -1
+    @State private var isTrackInfoHovering = false
+    @State private var isNowPlayingPopoverPresented = false
 
     var body: some View {
         GlassEffectContainer(spacing: 0) {
@@ -149,19 +151,27 @@ struct PlayerBar: View {
             if case let .error(message) = playerService.state {
                 self.errorView(message: message)
             } else {
-                // Track info (blurred when hovering and track is playing)
-                self.trackInfoView
-                    .blur(radius: self.isHovering && self.playerService.currentTrack != nil ? 8 : 0)
-                    .opacity(self.isHovering && self.playerService.currentTrack != nil ? 0 : 1)
-
                 // Seek bar (shown when hovering and track is playing)
-                if self.isHovering, self.playerService.currentTrack != nil {
+                if self.shouldShowHoverSeekBar {
                     self.seekBarView
                         .transition(.opacity)
                 }
+
+                // Track info (blurred when hovering and track is playing)
+                self.trackInfoView
+                    .blur(radius: self.shouldShowHoverSeekBar ? 8 : 0)
+                    .opacity(self.shouldShowHoverSeekBar ? 0.001 : 1)
+                    .accessibilityHidden(self.shouldShowHoverSeekBar)
             }
         }
         .frame(maxWidth: 400)
+    }
+
+    private var shouldShowHoverSeekBar: Bool {
+        self.isHovering
+            && self.playerService.currentTrack != nil
+            && !self.isTrackInfoHovering
+            && !self.isNowPlayingPopoverPresented
     }
 
     // MARK: - Error View
@@ -198,10 +208,35 @@ struct PlayerBar: View {
     // MARK: - Track Info View
 
     private var trackInfoView: some View {
+        Button {
+            guard self.playerService.currentTrack != nil else { return }
+            HapticService.navigation()
+            withAnimation(AppAnimation.quick) {
+                self.isNowPlayingPopoverPresented = true
+            }
+        } label: {
+            self.trackInfoContent
+        }
+        .buttonStyle(.plain)
+        .disabled(self.playerService.currentTrack == nil)
+        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingTrigger)
+        .accessibilityLabel(self.nowPlayingAccessibilityLabel)
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.12)) {
+                self.isTrackInfoHovering = hovering
+            }
+        }
+        .popover(isPresented: self.$isNowPlayingPopoverPresented, arrowEdge: .bottom) {
+            ExpandedNowPlayingPopoverView(isPresented: self.$isNowPlayingPopoverPresented)
+        }
+    }
+
+    private var trackInfoContent: some View {
         HStack(spacing: 10) {
             // Thumbnail
             if let track = self.playerService.currentTrack {
                 SongThumbnailView(song: track, size: 36, cornerRadius: 4)
+                    .accessibilityIdentifier(AccessibilityID.PlayerBar.thumbnail)
             } else {
                 RoundedRectangle(cornerRadius: 4)
                     .fill(.quaternary)
@@ -213,21 +248,33 @@ struct PlayerBar: View {
             }
 
             // Track info
-            if let track = playerService.currentTrack {
+            if let track = self.playerService.currentTrack {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(track.title)
                         .font(.system(size: 12, weight: .medium))
                         .lineLimit(1)
                         .foregroundStyle(.primary)
+                        .accessibilityIdentifier(AccessibilityID.PlayerBar.trackTitle)
 
                     Text(track.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : track.artistsDisplay)
                         .font(.system(size: 10))
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier(AccessibilityID.PlayerBar.trackArtist)
                 }
                 .frame(maxWidth: 200, alignment: .leading)
             }
         }
+        .contentShape(Rectangle())
+    }
+
+    private var nowPlayingAccessibilityLabel: String {
+        guard let track = self.playerService.currentTrack else {
+            return String(localized: "No song playing")
+        }
+
+        let artist = track.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : track.artistsDisplay
+        return String(localized: "Now playing: \(track.title) by \(artist)")
     }
 
     // MARK: - Seek Bar View (replaces track info on hover)
