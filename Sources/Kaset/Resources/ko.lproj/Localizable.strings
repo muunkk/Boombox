@@ -39,17 +39,11 @@
 
 "Analyzing..." = "분석 중...";
 
-"Apple Intelligence" = "Apple Intelligence";
 
-"Apple Intelligence & Siri Settings" = "Apple Intelligence 및 Siri 설정";
 
-"Apple Intelligence is currently unavailable." = "Apple Intelligence를 현재 사용할 수 없습니다.";
 
-"Apple Intelligence is downloading. This may take a few minutes." = "Apple Intelligence를 다운로드하는 중입니다. 몇 분 정도 걸릴 수 있습니다.";
 
-"Apple Intelligence is not available" = "Apple Intelligence를 사용할 수 없음";
 
-"Apple Intelligence is ready to use" = "Apple Intelligence를 사용할 준비가 되었습니다";
 
 "Apply Changes" = "변경사항 적용";
 
@@ -61,7 +55,6 @@
 
 "Command Bar (⌘L)" = "명령 막대 (⌘L)";
 
-"Ask anything about music..." = "음악에 대해 무엇이든 물어보세요...";
 
 "Automatically check for updates" = "자동으로 업데이트 확인";
 
@@ -153,11 +146,9 @@
 
 "Edit" = "편집";
 
-"Enable %@ Scrobbling" = "%@ 스크로블링 사용";
 
 "Enable AI Features" = "AI 기능 활성화";
 
-"Enable Apple Intelligence in System Settings to use AI features." = "AI 기능을 사용하려면 시스템 설정에서 Apple Intelligence를 활성화하세요.";
 
 
 "Enable Synced Lyrics" = "실시간 가사 활성화";
@@ -165,7 +156,6 @@
 
 "Error: %@" = "오류: %@";
 
-"Explain lyrics with AI" = "AI로 가사 설명";
 
 "Explore" = "둘러보기";
 
@@ -425,7 +415,6 @@
 
 "Save shuffle and repeat settings across app restarts" = "앱을 다시 시작해도 셔플 및 반복 설정 유지";
 
-"Scrobbling" = "스크로블링";
 
 "Search" = "검색";
 
@@ -496,7 +485,6 @@
 
 "There aren't any lyrics available for this song." = "이 노래에 사용할 수 있는 가사가 없습니다.";
 
-"This Mac doesn't support Apple Intelligence. An Apple Silicon Mac is required." = "이 Mac은 Apple Intelligence를 지원하지 않습니다. Apple Silicon Mac이 필요합니다.";
 
 "Top songs" = "인기곡";
 
@@ -548,7 +536,7 @@
 
 "Waiting for authorization…" = "인증 대기 중…";
 
-"Welcome to Kaset" = "Kaset에 오신 것을 환영합니다";
+"Welcome to YTM Private" = "YTM Private에 오신 것을 환영합니다";
 
 "What would you like to change?" = "무엇을 변경하시겠습니까?";
 
@@ -556,9 +544,7 @@
 
 "What would you like to do?" = "무엇을 하시겠습니까?";
 
-"What's New in Kaset" = "Kaset의 새로운 기능";
 
-"When enabled, you can use natural language commands, AI-powered playlist refinement, and lyrics explanations." = "활성화하면 자연어 명령, AI 기반 재생목록 다듬기, 가사 설명을 사용할 수 있습니다.";
 
 "Your Library" = "내 보관함";
 

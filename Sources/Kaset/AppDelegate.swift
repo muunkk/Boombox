@@ -96,7 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Enable automatic window frame persistence using autosave name
             // This ensures window size/position is restored across app launches
             if window.frameAutosaveName.isEmpty {
-                window.setFrameAutosaveName("KasetMainWindow")
+                window.setFrameAutosaveName("YTMPrivateMainWindow")
             }
             // Store reference to main window for reliable reopen
             self.mainWindow = window
@@ -194,7 +194,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Fallback: find main window by frameAutosaveName
-        for window in NSApplication.shared.windows where window.frameAutosaveName == "KasetMainWindow" {
+        for window in NSApplication.shared.windows where window.frameAutosaveName == "YTMPrivateMainWindow" {
             self.mainWindow = window
             if !window.isVisible {
                 window.makeKeyAndOrderFront(nil)

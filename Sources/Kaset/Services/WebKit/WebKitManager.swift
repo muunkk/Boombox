@@ -78,12 +78,6 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         // Wait a moment for WebKit to fully initialize
         try? await Task.sleep(for: .milliseconds(100))
 
-        // Migrate from legacy file-based storage if needed (one-time operation).
-        // Perform file I/O off the main actor.
-        _ = await Task(priority: .utility) {
-            LegacyCookieMigration.migrateIfNeeded()
-        }.value
-
         let existingCookies = await dataStore.httpCookieStore.allCookies()
         self.logger.info("WebKit has \(existingCookies.count) cookies on startup")
 

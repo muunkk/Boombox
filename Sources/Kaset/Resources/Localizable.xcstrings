@@ -51,16 +51,16 @@
             "value": "%lld곡"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld lagu"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld lagu"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld morceaux"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld morceaux"
           }
         }
       }
@@ -93,16 +93,16 @@
             "value": "macOS를 위한 네이티브 YouTube Music 환경"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pengalaman YouTube Music asli untuk macOS"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pengalaman YouTube Music asli untuk macOS"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une expérience YouTube Music native pour macOS"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une expérience YouTube Music native pour macOS"
           }
         }
       }
@@ -127,16 +127,16 @@
             "value": "정보"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respons AI mengikuti pengaturan bahasa sistem Anda."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respons AI mengikuti pengaturan bahasa sistem Anda."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les réponses de l'IA suivent les paramètres de langue de votre système."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les réponses de l'IA suivent les paramètres de langue de votre système."
           }
         }
       }
@@ -161,16 +161,16 @@
             "value": "재생목록과 좋아요 표시한 노래에 액세스하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tentang"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentang"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À propos"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos"
           }
         }
       }
@@ -195,16 +195,16 @@
             "value": "계정"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akses daftar putar dan lagu yang Anda sukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akses daftar putar dan lagu yang Anda sukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accédez à vos playlists et morceaux aimés"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accédez à vos playlists et morceaux aimés"
           }
         }
       }
@@ -229,16 +229,16 @@
             "value": "즐겨찾기에 추가"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akun"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akun"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compte"
           }
         }
       }
@@ -263,16 +263,16 @@
             "value": "보관함에 추가"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tambah ke Favorit"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah ke Favorit"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter aux favoris"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter aux favoris"
           }
         }
       }
@@ -297,16 +297,16 @@
             "value": "대기열에 추가"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tambah ke Pustaka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah ke Pustaka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter à la bibliothèque"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter à la bibliothèque"
           }
         }
       }
@@ -331,16 +331,16 @@
             "value": "보관함에 추가됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tambah ke Antrean"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tambah ke Antrean"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter à la file d'attente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter à la file d'attente"
           }
         }
       }
@@ -365,16 +365,16 @@
             "value": "AI 응답은 시스템 언어 설정을 따릅니다."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ditambahkan ke Pustaka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ditambahkan ke Pustaka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouté à la bibliothèque"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouté à la bibliothèque"
           }
         }
       }
@@ -399,16 +399,16 @@
             "value": "AirPlay"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AirPlay"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AirPlay"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay"
           }
         }
       }
@@ -433,16 +433,16 @@
             "value": "AirPlay 연결됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AirPlay Terhubung"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay Terhubung"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AirPlay connecté"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay connecté"
           }
         }
       }
@@ -467,16 +467,16 @@
             "value": "앨범"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album"
           }
         }
       }
@@ -501,16 +501,16 @@
             "value": "앨범"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Album"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Albums"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Albums"
           }
         }
       }
@@ -535,16 +535,16 @@
             "value": "전체"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Semua"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semua"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout"
           }
         }
       }
@@ -569,16 +569,16 @@
             "value": "전체 에피소드"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Semua Episode"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semua Episode"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tous les épisodes"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tous les épisodes"
           }
         }
       }
@@ -603,16 +603,16 @@
             "value": "알 수 없는 오류가 발생했습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terjadi kesalahan yang tidak diketahui"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terjadi kesalahan yang tidak diketahui"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une erreur inconnue s'est produite"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une erreur inconnue s'est produite"
           }
         }
       }
@@ -637,16 +637,16 @@
             "value": "재생목록 분석 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menganalisis daftar putar..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menganalisis daftar putar..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analyse de la playlist..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyse de la playlist..."
           }
         }
       }
@@ -671,220 +671,16 @@
             "value": "분석 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menganalisis..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analyse en cours..."
-          }
-        }
-      }
-    },
-    "Apple Intelligence": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "ذكاء Apple"
+            "value": "Menganalisis..."
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple Intelligence"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence"
-          }
-        }
-      }
-    },
-    "Apple Intelligence & Siri Settings": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "إعدادات ذكاء Apple و Siri"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ve Siri Ayarları"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence 및 Siri 설정"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence & Pengaturan Siri"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réglages Apple Intelligence et Siri"
-          }
-        }
-      }
-    },
-    "Apple Intelligence is currently unavailable.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ذكاء Apple غير متاح حاليًا."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence şu anda kullanılamıyor."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence를 현재 사용할 수 없습니다."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence saat ini tidak tersedia."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence est actuellement indisponible."
-          }
-        }
-      }
-    },
-    "Apple Intelligence is downloading. This may take a few minutes.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "جارٍ تنزيل ذكاء Apple. قد يستغرق هذا بضع دقائق."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence indiriliyor. Bu işlem birkaç dakika sürebilir."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence를 다운로드하는 중입니다. 몇 분 정도 걸릴 수 있습니다."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence sedang diunduh. Ini mungkin memakan waktu beberapa menit."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence est en cours de téléchargement. Cela peut prendre quelques minutes."
-          }
-        }
-      }
-    },
-    "Apple Intelligence is not available": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ذكاء Apple غير متاح"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence kullanılamıyor"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence를 사용할 수 없음"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence tidak tersedia"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence n'est pas disponible"
-          }
-        }
-      }
-    },
-    "Apple Intelligence is ready to use": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ذكاء Apple جاهز للاستخدام"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence kullanıma hazır"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence를 사용할 준비가 되었습니다"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence siap digunakan"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence est prêt à être utilisé"
+            "value": "Analyse en cours..."
           }
         }
       }
@@ -909,16 +705,16 @@
             "value": "변경사항 적용"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terapkan Perubahan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terapkan Perubahan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appliquer les modifications"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appliquer les modifications"
           }
         }
       }
@@ -943,16 +739,16 @@
             "value": "아티스트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artiste"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artiste"
           }
         }
       }
@@ -977,16 +773,16 @@
             "value": "아티스트를 찾을 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artis tidak ditemukan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artis tidak ditemukan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artiste introuvable"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artiste introuvable"
           }
         }
       }
@@ -1011,16 +807,16 @@
             "value": "아티스트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artistes"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artistes"
           }
         }
       }
@@ -1045,50 +841,16 @@
             "value": "명령 막대 (⌘L)"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bilah Perintah (⌘L)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barre de commandes (⌘L)"
-          }
-        }
-      }
-    },
-    "Ask anything about music...": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "اسأل أي شيء عن الموسيقى..."
+            "value": "Bilah Perintah (⌘L)"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Müzik hakkında istediğinizi sorun..."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "음악에 대해 무엇이든 물어보세요..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tanya apa saja tentang musik..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Posez n'importe quelle question sur la musique..."
+            "value": "Barre de commandes (⌘L)"
           }
         }
       }
@@ -1113,16 +875,16 @@
             "value": "자동으로 업데이트 확인"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Periksa pembaruan secara otomatis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa pembaruan secara otomatis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vérifier automatiquement les mises à jour"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifier automatiquement les mises à jour"
           }
         }
       }
@@ -1147,16 +909,16 @@
             "value": "사용 가능"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tersedia"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tersedia"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disponible"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disponible"
           }
         }
       }
@@ -1181,16 +943,16 @@
             "value": "백그라운드 재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar di Latar Belakang"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar di Latar Belakang"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lecture en arrière-plan"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture en arrière-plan"
           }
         }
       }
@@ -1215,16 +977,16 @@
             "value": "진정한 macOS 환경을 위해 SwiftUI로 제작"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dibangun dengan SwiftUI untuk pengalaman macOS yang sesungguhnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dibangun dengan SwiftUI untuk pengalaman macOS yang sesungguhnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conçu avec SwiftUI pour une véritable expérience macOS"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conçu avec SwiftUI pour une véritable expérience macOS"
           }
         }
       }
@@ -1249,16 +1011,16 @@
             "value": "계산 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menghitung..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menghitung..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calcul en cours..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calcul en cours..."
           }
         }
       }
@@ -1283,16 +1045,16 @@
             "value": "취소"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batal"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batal"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annuler"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
           }
         }
       }
@@ -1318,16 +1080,16 @@
             "value": "시스템 언어를 영어 또는 다른 지원 언어로 변경하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ubah bahasa sistem Anda ke bahasa Inggris atau bahasa yang didukung lainnya."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubah bahasa sistem Anda ke bahasa Inggris atau bahasa yang didukung lainnya."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changez la langue de votre système en anglais ou dans une autre langue prise en charge."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changez la langue de votre système en anglais ou dans une autre langue prise en charge."
           }
         }
       }
@@ -1352,16 +1114,16 @@
             "value": "차트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tangga Lagu"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tangga Lagu"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Classements"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classements"
           }
         }
       }
@@ -1386,16 +1148,16 @@
             "value": "업데이트 확인..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Periksa Sekarang"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa Sekarang"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vérifier maintenant"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifier maintenant"
           }
         }
       }
@@ -1420,16 +1182,16 @@
             "value": "지금 확인"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Periksa Pembaruan..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa Pembaruan..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher les mises à jour..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher les mises à jour..."
           }
         }
       }
@@ -1456,16 +1218,16 @@
             "value": "Kontrol Merkezi'ndeki Şu An Çalıyor widget'ında hangi düğmelerin görüneceğini seçin"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih bahasa untuk antarmuka aplikasi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih bahasa untuk antarmuka aplikasi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez la langue de l'interface de l'application"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez la langue de l'interface de l'application"
           }
         }
       }
@@ -1490,16 +1252,16 @@
             "value": "지우기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih tombol yang muncul di widget Sedang Diputar di Pusat Kontrol"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih tombol yang muncul di widget Sedang Diputar di Pusat Kontrol"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez les boutons affichés dans le widget En lecture du Centre de contrôle"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez les boutons affichés dans le widget En lecture du Centre de contrôle"
           }
         }
       }
@@ -1524,16 +1286,16 @@
             "value": "AI 컨텍스트 지우기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effacer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer"
           }
         }
       }
@@ -1558,16 +1320,16 @@
             "value": "캐시 지우기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus Konteks AI"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus Konteks AI"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effacer le contexte IA"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer le contexte IA"
           }
         }
       }
@@ -1592,16 +1354,16 @@
             "value": "입력 지우기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bersihkan Cache"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersihkan Cache"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vider le cache"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vider le cache"
           }
         }
       }
@@ -1626,16 +1388,16 @@
             "value": "검색 지우기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus input"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus input"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effacer la saisie"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer la saisie"
           }
         }
       }
@@ -1660,16 +1422,16 @@
             "value": "지우는 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus pencarian"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus pencarian"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effacer la recherche"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer la recherche"
           }
         }
       }
@@ -1694,16 +1456,16 @@
             "value": "AI 세션 상태를 지웁니다. 응답이 이상하거나 멈춘 것 같으면 사용하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Membersihkan..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Membersihkan..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nettoyage en cours..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nettoyage en cours..."
           }
         }
       }
@@ -1728,16 +1490,16 @@
             "value": "닫기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menghapus status sesi AI. Gunakan ini jika respons tampak aneh atau macet."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menghapus status sesi AI. Gunakan ini jika respons tampak aneh atau macet."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Efface l'état de la session IA. Utilisez ceci si les réponses semblent incorrectes ou bloquées."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efface l'état de la session IA. Utilisez ceci si les réponses semblent incorrectes ou bloquées."
           }
         }
       }
@@ -1762,16 +1524,16 @@
             "value": "사이드 패널 닫기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutup"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fermer"
           }
         }
       }
@@ -1796,16 +1558,16 @@
             "value": "컬렉션"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutup panel samping"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup panel samping"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer le panneau latéral"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fermer le panneau latéral"
           }
         }
       }
@@ -1830,16 +1592,16 @@
             "value": "명령 막대"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koleksi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koleksi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Collection"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collection"
           }
         }
       }
@@ -1864,16 +1626,16 @@
             "value": "커뮤니티 재생목록"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Panel Perintah"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panel Perintah"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barre de commandes"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barre de commandes"
           }
         }
       }
@@ -1898,16 +1660,16 @@
             "value": "연결"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daftar putar komunitas"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daftar putar komunitas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playlists de la communauté"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists de la communauté"
           }
         }
       }
@@ -1932,16 +1694,16 @@
             "value": "%@(으)로 연결됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hubungkan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hubungkan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecter"
           }
         }
       }
@@ -1966,16 +1728,16 @@
             "value": "해당 지역에서 콘텐츠를 사용하지 못할 수 있습니다."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terhubung sebagai %@"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terhubung sebagai %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecté en tant que %@"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecté en tant que %@"
           }
         }
       }
@@ -2000,16 +1762,16 @@
             "value": "계속"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bahasa Konten"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bahasa Konten"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Langue du contenu"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langue du contenu"
           }
         }
       }
@@ -2034,16 +1796,16 @@
             "value": "키보드로 재생을 제어하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konten mungkin tidak tersedia di wilayah Anda."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konten mungkin tidak tersedia di wilayah Anda."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le contenu peut ne pas être disponible dans votre région."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le contenu peut ne pas être disponible dans votre région."
           }
         }
       }
@@ -2068,16 +1830,16 @@
             "value": "AI 세션을 생성할 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lanjutkan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanjutkan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuer"
           }
         }
       }
@@ -2102,16 +1864,16 @@
             "value": "음악을 검색할 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kendalikan pemutaran dengan keyboard Anda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kendalikan pemutaran dengan keyboard Anda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contrôlez la lecture avec votre clavier"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contrôlez la lecture avec votre clavier"
           }
         }
       }
@@ -2136,16 +1898,16 @@
             "value": "여기에서 보려면 YouTube Music에서 재생목록을 만들거나 저장하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat membuat sesi AI"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat membuat sesi AI"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de créer la session IA"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de créer la session IA"
           }
         }
       }
@@ -2170,16 +1932,16 @@
             "value": "실행 시 기본 페이지"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat mencari musik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat mencari musik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de rechercher de la musique"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de rechercher de la musique"
           }
         }
       }
@@ -2204,16 +1966,16 @@
             "value": "연결 해제"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buat atau simpan daftar putar di YouTube Music untuk melihatnya di sini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buat atau simpan daftar putar di YouTube Music untuk melihatnya di sini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créez ou enregistrez des playlists sur YouTube Music pour les voir ici."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créez ou enregistrez des playlists sur YouTube Music pour les voir ici."
           }
         }
       }
@@ -2238,16 +2000,16 @@
             "value": "둘러보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halaman Default Saat Buka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halaman Default Saat Buka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Page par défaut au lancement"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page par défaut au lancement"
           }
         }
       }
@@ -2272,16 +2034,16 @@
             "value": "싫어요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putuskan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putuskan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déconnecter"
           }
         }
       }
@@ -2306,16 +2068,16 @@
             "value": "싫어요 표시됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jelajahi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jelajahi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Découvrir"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Découvrir"
           }
         }
       }
@@ -2340,16 +2102,16 @@
             "value": "닫기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak suka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak suka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je n'aime pas"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je n'aime pas"
           }
         }
       }
@@ -2374,16 +2136,16 @@
             "value": "완료"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak disukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak disukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non aimé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non aimé"
           }
         }
       }
@@ -2408,16 +2170,16 @@
             "value": "다시 시도하려면 두 번 탭하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutup"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutup"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fermer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fermer"
           }
         }
       }
@@ -2442,16 +2204,16 @@
             "value": "계정을 전환하려면 두 번 탭하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selesai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selesai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminé"
           }
         }
       }
@@ -2480,16 +2242,16 @@
             "value": "다운로드 중"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketuk dua kali untuk mencoba lagi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketuk dua kali untuk mencoba lagi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez deux fois pour réessayer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez deux fois pour réessayer"
           }
         }
       }
@@ -2514,16 +2276,16 @@
             "value": "드래그하여 순서 변경"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketuk dua kali untuk mengganti akun"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketuk dua kali untuk mengganti akun"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez deux fois pour changer de compte"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez deux fois pour changer de compte"
           }
         }
       }
@@ -2552,23 +2314,19 @@
             "value": "편집"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mengunduh"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mengunduh"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Téléchargement"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargement"
           }
         }
       }
-    },
-    "Enable %@ Scrobbling": {
-      "comment": "A toggle that enables or disables scrobbling for a specific service. The argument is the name of the service.",
-      "isCommentAutoGenerated": true
     },
     "Enable AI Features": {
       "localizations": {
@@ -2590,85 +2348,16 @@
             "value": "AI 기능 활성화"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seret untuk mengurutkan ulang"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Glissez pour réorganiser"
-          }
-        }
-      }
-    },
-    "Enable Apple Intelligence in System Settings to use AI features.": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "فعّل ذكاء Apple في إعدادات النظام لاستخدام ميزات الذكاء الاصطناعي."
+            "value": "Seret untuk mengurutkan ulang"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yapay zeka özelliklerini kullanmak için Sistem Ayarları'nda Apple Intelligence'ı etkinleştirin."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AI 기능을 사용하려면 시스템 설정에서 Apple Intelligence를 활성화하세요."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier"
-          }
-        }
-      }
-    },
-    "Enable %@ Scrobbling" : {
-      "comment" : "Settings toggle; %@ is the scrobbling service name (e.g. Last.fm)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تفعيل السكروبلنغ لـ %@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 스크로블링 사용"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Scrobbling'i Etkinleştir"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan Scrobbling %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer le Scrobbling %@"
+            "value": "Glissez pour réorganiser"
           }
         }
       }
@@ -2695,50 +2384,16 @@
             "value": "Senkronize Şarkı Sözlerini Etkinleştir"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan Fitur AI"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer les fonctionnalités IA"
-          }
-        }
-      }
-    },
-    "Episodes": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "الحلقات"
+            "value": "Aktifkan Fitur AI"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bölümler"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "에피소드"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan Apple Intelligence di Pengaturan Sistem untuk menggunakan fitur AI."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activez Apple Intelligence dans les Réglages Système pour utiliser les fonctionnalités IA."
+            "value": "Activer les fonctionnalités IA"
           }
         }
       }
@@ -2763,50 +2418,16 @@
             "value": "오류: %@"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan Lirik Tersinkron"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer les paroles synchronisées"
-          }
-        }
-      }
-    },
-    "Explain lyrics with AI": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "شرح الكلمات بالذكاء الاصطناعي"
+            "value": "Aktifkan Lirik Tersinkron"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Şarkı sözlerini yapay zekayla açıkla"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AI로 가사 설명"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Episode"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Épisodes"
+            "value": "Activer les paroles synchronisées"
           }
         }
       }
@@ -2831,16 +2452,16 @@
             "value": "둘러보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kesalahan: %@"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kesalahan: %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur : %@"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erreur : %@"
           }
         }
       }
@@ -2865,16 +2486,16 @@
             "value": "로드 실패"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jelaskan lirik dengan AI"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jelaskan lirik dengan AI"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Expliquer les paroles avec l'IA"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expliquer les paroles avec l'IA"
           }
         }
       }
@@ -2899,16 +2520,16 @@
             "value": "계정 로드 실패"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jelajah"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jelajah"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explorer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorer"
           }
         }
       }
@@ -2933,16 +2554,16 @@
             "value": "계정을 로드하지 못했습니다. 다시 시도해 주세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gagal memuat"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gagal memuat"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Échec du chargement"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec du chargement"
           }
         }
       }
@@ -2967,16 +2588,16 @@
             "value": "계정을 전환하지 못했습니다. 다시 시도해 주세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gagal memuat akun"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gagal memuat akun"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Échec du chargement des comptes"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec du chargement des comptes"
           }
         }
       }
@@ -3001,16 +2622,16 @@
             "value": "즐겨찾기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gagal memuat akun. Silakan coba lagi."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gagal memuat akun. Silakan coba lagi."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Échec du chargement des comptes. Veuillez réessayer."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec du chargement des comptes. Veuillez réessayer."
           }
         }
       }
@@ -3035,16 +2656,16 @@
             "value": "추천 재생목록"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gagal mengganti akun. Silakan coba lagi."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gagal mengganti akun. Silakan coba lagi."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Échec du changement de compte. Veuillez réessayer."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec du changement de compte. Veuillez réessayer."
           }
         }
       }
@@ -3071,16 +2692,16 @@
             "value": "Mevcut olduğunda gerçek zamanlı senkronize şarkı sözlerini getir ve göster"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Favorit"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favorit"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Favoris"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favoris"
           }
         }
       }
@@ -3105,16 +2726,16 @@
             "value": "노래, 앨범, 아티스트, 재생목록 찾기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daftar putar unggulan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daftar putar unggulan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playlists en vedette"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists en vedette"
           }
         }
       }
@@ -3139,26 +2760,26 @@
             "value": "여기에서 보려면 YouTube Music에서 아티스트를 구독하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ambil dan tampilkan lirik tersinkron waktu nyata jika tersedia"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambil dan tampilkan lirik tersinkron waktu nyata jika tersedia"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Récupérer et afficher les paroles synchronisées en temps réel lorsqu'elles sont disponibles"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récupérer et afficher les paroles synchronisées en temps réel lorsqu'elles sont disponibles"
           }
         }
       }
     },
-    "Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" : {
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher le texte romanisé (romaji, pinyin, etc.) sous les paroles non latines"
+    "Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics": {
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher le texte romanisé (romaji, pinyin, etc.) sous les paroles non latines"
           }
         }
       }
@@ -3183,16 +2804,16 @@
             "value": "일반"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temukan lagu, album, artis, dan daftar putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temukan lagu, album, artis, dan daftar putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trouvez des morceaux, albums, artistes et playlists"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trouvez des morceaux, albums, artistes et playlists"
           }
         }
       }
@@ -3217,16 +2838,16 @@
             "value": "GitHub"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ikuti artis di YouTube Music untuk melihatnya di sini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikuti artis di YouTube Music untuk melihatnya di sini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suivez des artistes sur YouTube Music pour les voir ici."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suivez des artistes sur YouTube Music pour les voir ici."
           }
         }
       }
@@ -3251,16 +2872,16 @@
             "value": "앨범으로 이동"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umum"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umum"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Général"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Général"
           }
         }
       }
@@ -3285,16 +2906,16 @@
             "value": "아티스트로 이동"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub"
           }
         }
       }
@@ -3319,16 +2940,16 @@
             "value": "햅틱 피드백"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka Album"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka Album"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aller à l'album"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aller à l'album"
           }
         }
       }
@@ -3353,16 +2974,16 @@
             "value": "숨김"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka Artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka Artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aller à l'artiste"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aller à l'artiste"
           }
         }
       }
@@ -3387,16 +3008,16 @@
             "value": "가사 숨기기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umpan Balik Haptik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umpan Balik Haptik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retour haptique"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour haptique"
           }
         }
       }
@@ -3421,16 +3042,16 @@
             "value": "가사 설명 숨기기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tersembunyi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tersembunyi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masqué"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masqué"
           }
         }
       }
@@ -3455,16 +3076,16 @@
             "value": "하이라이트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sembunyikan Lirik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan Lirik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masquer les paroles"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer les paroles"
           }
         }
       }
@@ -3489,16 +3110,16 @@
             "value": "홈"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sembunyikan penjelasan lirik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sembunyikan penjelasan lirik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masquer l'explication des paroles"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer l'explication des paroles"
           }
         }
       }
@@ -3523,16 +3144,16 @@
             "value": "이미지 캐시"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sorotan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sorotan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Highlights"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Highlights"
           }
         }
       }
@@ -3557,128 +3178,128 @@
             "value": "보관함에 저장됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beranda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beranda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accueil"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accueil"
           }
         }
       }
     },
-    "%lld songs listened today" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استمعت إلى %lld أغنية اليوم"
+    "%lld songs listened today": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استمعت إلى %lld أغنية اليوم"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "오늘 %lld곡 감상"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 %lld곡 감상"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bugün %lld şarkı dinlendi"
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün %lld şarkı dinlendi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld morceaux écoutés aujourd'hui"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld morceaux écoutés aujourd'hui"
           }
         }
       }
     },
-    "Refresh" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تحديث"
+    "Refresh": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحديث"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "새로고침"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로고침"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yenile"
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yenile"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiser"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser"
           }
         }
       }
     },
-    "Listening History" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سجل الاستماع"
+    "Listening History": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سجل الاستماع"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "감상 기록"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "감상 기록"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dinleme Geçmişi"
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinleme Geçmişi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Historique d'écoute"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historique d'écoute"
           }
         }
       }
     },
-    "History" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السجل"
+    "History": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السجل"
           }
         },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기록"
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geçmiş"
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçmiş"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Historique"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historique"
           }
         }
       }
@@ -3703,22 +3324,22 @@
             "value": "인텔리전스"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cache Gambar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache Gambar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cache d'images"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache d'images"
           }
         }
       }
     },
     "Item %lld": {},
-    "Kaset": {},
+    "YTM Private": {},
     "Keep listening even when the window is closed": {
       "localizations": {
         "ar": {
@@ -3739,16 +3360,16 @@
             "value": "창이 닫혀도 계속 재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Di Pustaka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di Pustaka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dans la bibliothèque"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dans la bibliothèque"
           }
         }
       }
@@ -3773,16 +3394,16 @@
             "value": "지원되지 않는 언어"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kecerdasan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kecerdasan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intelligence"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intelligence"
           }
         }
       }
@@ -3811,16 +3432,16 @@
             "value": "마지막 사용"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lanjutkan mendengarkan meski jendela ditutup"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanjutkan mendengarkan meski jendela ditutup"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuer l'écoute même lorsque la fenêtre est fermée"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuer l'écoute même lorsque la fenêtre est fermée"
           }
         }
       }
@@ -3845,16 +3466,16 @@
             "value": "더 알아보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bahasa Tidak Didukung"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bahasa Tidak Didukung"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Langue non prise en charge"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langue non prise en charge"
           }
         }
       }
@@ -3879,16 +3500,16 @@
             "value": "보관함"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terakhir Digunakan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terakhir Digunakan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dernière utilisation"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dernière utilisation"
           }
         }
       }
@@ -3913,16 +3534,16 @@
             "value": "좋아요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pelajari lebih lanjut"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pelajari lebih lanjut"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En savoir plus"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En savoir plus"
           }
         }
       }
@@ -3947,16 +3568,16 @@
             "value": "좋아요 표시됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pustaka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pustaka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothèque"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bibliothèque"
           }
         }
       }
@@ -3981,16 +3602,16 @@
             "value": "좋아요 표시한 음악"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "J'aime"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "J'aime"
           }
         }
       }
@@ -4017,16 +3638,16 @@
             "value": "더 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aimé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aimé"
           }
         }
       }
@@ -4051,16 +3672,16 @@
             "value": "아티스트 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Musik yang Disukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Musik yang Disukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Musique aimée"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Musique aimée"
           }
         }
       }
@@ -4085,16 +3706,16 @@
             "value": "차트 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muat Lainnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muat Lainnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charger plus"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charger plus"
           }
         }
       }
@@ -4119,16 +3740,16 @@
             "value": "둘러보기 콘텐츠 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat artis..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat artis..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement de l'artiste..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement de l'artiste..."
           }
         }
       }
@@ -4153,16 +3774,16 @@
             "value": "좋아요 표시한 노래 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat tangga lagu..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat tangga lagu..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des classements..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des classements..."
           }
         }
       }
@@ -4188,16 +3809,16 @@
             "value": "가사 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat konten jelajah..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat konten jelajah..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement du contenu à explorer..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement du contenu à explorer..."
           }
         }
       }
@@ -4222,16 +3843,16 @@
             "value": "분위기 및 장르 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat lagu yang disukai..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat lagu yang disukai..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des morceaux aimés..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des morceaux aimés..."
           }
         }
       }
@@ -4257,16 +3878,16 @@
             "value": "더 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat lirik..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat lirik..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des paroles..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des paroles..."
           }
         }
       }
@@ -4291,16 +3912,16 @@
             "value": "새 앨범 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat suasana hati & genre..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat suasana hati & genre..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des ambiances et genres..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des ambiances et genres..."
           }
         }
       }
@@ -4325,16 +3946,16 @@
             "value": "재생목록 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat lainnya..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat lainnya..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement..."
           }
         }
       }
@@ -4359,16 +3980,16 @@
             "value": "팟캐스트 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat rilis baru..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat rilis baru..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des nouveautés..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des nouveautés..."
           }
         }
       }
@@ -4393,16 +4014,16 @@
             "value": "노래 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat daftar putar..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat daftar putar..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement de la playlist..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement de la playlist..."
           }
         }
       }
@@ -4427,16 +4048,16 @@
             "value": "보관함 로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat podcast..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat podcast..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des podcasts..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des podcasts..."
           }
         }
       }
@@ -4461,16 +4082,16 @@
             "value": "로드 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat lagu..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat lagu..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement des morceaux..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des morceaux..."
           }
         }
       }
@@ -4495,16 +4116,16 @@
             "value": "가사"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat pustaka Anda..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat pustaka Anda..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement de votre bibliothèque..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement de votre bibliothèque..."
           }
         }
       }
@@ -4529,16 +4150,16 @@
             "value": "미디어 키"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memuat..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memuat..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement..."
           }
         }
       }
@@ -4563,16 +4184,16 @@
             "value": "믹스"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lirik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lirik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paroles"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paroles"
           }
         }
       }
@@ -4597,16 +4218,16 @@
             "value": "분위기 및 장르"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tombol Media"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tombol Media"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Touches multimédia"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touches multimédia"
           }
         }
       }
@@ -4631,16 +4252,16 @@
             "value": "맨 끝으로 이동"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mix"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mix"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mix"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mix"
           }
         }
       }
@@ -4665,16 +4286,16 @@
             "value": "맨 위로 이동"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suasana & Genre"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suasana & Genre"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ambiances et genres"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambiances et genres"
           }
         }
       }
@@ -4699,16 +4320,16 @@
             "value": "음소거"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pindah ke Akhir"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindah ke Akhir"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer à la fin"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déplacer à la fin"
           }
         }
       }
@@ -4733,16 +4354,16 @@
             "value": "네이티브 인터페이스"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pindah ke Atas"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pindah ke Atas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déplacer en haut"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déplacer en haut"
           }
         }
       }
@@ -4767,16 +4388,16 @@
             "value": "확인한 적 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bisukan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisukan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couper le son"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couper le son"
           }
         }
       }
@@ -4801,16 +4422,16 @@
             "value": "새 앨범"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Antarmuka Asli"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antarmuka Asli"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interface native"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interface native"
           }
         }
       }
@@ -4835,16 +4456,16 @@
             "value": "다음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum pernah diperiksa"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum pernah diperiksa"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jamais vérifié"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jamais vérifié"
           }
         }
       }
@@ -4869,16 +4490,16 @@
             "value": "다음 트랙"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rilis Baru"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rilis Baru"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouveautés"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveautés"
           }
         }
       }
@@ -4903,16 +4524,16 @@
             "value": "아직 아티스트가 없습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berikutnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berikutnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suivant"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suivant"
           }
         }
       }
@@ -4937,16 +4558,16 @@
             "value": "변경 사항이 없습니다. 재생목록이 좋아 보여요!"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu berikutnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu berikutnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piste suivante"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piste suivante"
           }
         }
       }
@@ -4971,16 +4592,16 @@
             "value": "연결 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu Berikutnya/Sebelumnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu Berikutnya/Sebelumnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piste suivante/précédente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piste suivante/précédente"
           }
         }
       }
@@ -5005,16 +4626,16 @@
             "value": "사용 가능한 콘텐츠 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Koneksi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Koneksi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune connexion"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune connexion"
           }
         }
       }
@@ -5039,16 +4660,16 @@
             "value": "아직 좋아요 표시한 노래가 없습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Konten"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Konten"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun contenu disponible"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun contenu disponible"
           }
         }
       }
@@ -5073,16 +4694,16 @@
             "value": "가사 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Lirik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Lirik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune parole disponible"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune parole disponible"
           }
         }
       }
@@ -5107,16 +4728,16 @@
             "value": "분위기 및 장르 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Suasana & Genre"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Suasana & Genre"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune ambiance et genre disponible"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune ambiance et genre disponible"
           }
         }
       }
@@ -5141,16 +4762,16 @@
             "value": "아직 재생목록이 없습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Antrean"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Antrean"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune file d'attente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune file d'attente"
           }
         }
       }
@@ -5175,16 +4796,16 @@
             "value": "아직 팟캐스트가 없습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Ada Lagu Diputar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Ada Lagu Diputar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun morceau en lecture"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun morceau en lecture"
           }
         }
       }
@@ -5209,16 +4830,16 @@
             "value": "대기열 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum ada artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum ada artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun artiste pour le moment"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun artiste pour le moment"
           }
         }
       }
@@ -5243,16 +4864,16 @@
             "value": "검색 결과 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada perubahan yang disarankan. Daftar putar sudah bagus!"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada perubahan yang disarankan. Daftar putar sudah bagus!"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune modification suggérée. La playlist est parfaite !"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune modification suggérée. La playlist est parfaite !"
           }
         }
       }
@@ -5277,16 +4898,16 @@
             "value": "재생 중인 노래 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum ada lagu yang disukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum ada lagu yang disukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun morceau aimé pour le moment"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun morceau aimé pour le moment"
           }
         }
       }
@@ -5311,16 +4932,16 @@
             "value": "이 카테고리에서 노래나 재생목록을 찾을 수 없습니다."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum ada daftar putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum ada daftar putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune playlist pour le moment"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune playlist pour le moment"
           }
         }
       }
@@ -5345,16 +4966,16 @@
             "value": "연결되지 않음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum ada podcast"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum ada podcast"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun podcast pour le moment"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun podcast pour le moment"
           }
         }
       }
@@ -5379,16 +5000,16 @@
             "value": "싫어요 취소됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada hasil"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada hasil"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun résultat trouvé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun résultat trouvé"
           }
         }
       }
@@ -5413,16 +5034,16 @@
             "value": "활성화되지 않음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada lagu atau daftar putar dalam kategori ini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak ada lagu atau daftar putar dalam kategori ini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun morceau ou playlist trouvé dans cette catégorie."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun morceau ou playlist trouvé dans cette catégorie."
           }
         }
       }
@@ -5447,16 +5068,16 @@
             "value": "좋아요 취소됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Diaktifkan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Diaktifkan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non activé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non activé"
           }
         }
       }
@@ -5481,16 +5102,16 @@
             "value": "로그인되지 않음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak Didukung"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak Didukung"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non pris en charge"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non pris en charge"
           }
         }
       }
@@ -5515,16 +5136,16 @@
             "value": "지원되지 않음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak terhubung"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak terhubung"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non connecté"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non connecté"
           }
         }
       }
@@ -5550,16 +5171,16 @@
             "value": "참고: 패스키가 작동하지 않으면 \"다른 방법 시도\"를 사용하여 비밀번호로 로그인하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum ditandai tidak suka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum ditandai tidak suka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non marqué comme non aimé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non marqué comme non aimé"
           }
         }
       }
@@ -5586,16 +5207,16 @@
             "value": "Şu An Çalıyor Kontrolleri"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum disukai"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum disukai"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non aimé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non aimé"
           }
         }
       }
@@ -5620,16 +5241,16 @@
             "value": "끔"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Belum masuk"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belum masuk"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non connecté"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non connecté"
           }
         }
       }
@@ -5654,16 +5275,16 @@
             "value": "확인"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Catatan: Jika kunci sandi tidak berfungsi, gunakan \"Coba cara lain\" untuk masuk dengan kata sandi."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catatan: Jika kunci sandi tidak berfungsi, gunakan \"Coba cara lain\" untuk masuk dengan kata sandi."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Remarque : si les clés d'accès ne fonctionnent pas, utilisez « Essayer autrement » pour vous connecter avec un mot de passe."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remarque : si les clés d'accès ne fonctionnent pas, utilisez « Essayer autrement » pour vous connecter avec un mot de passe."
           }
         }
       }
@@ -5688,16 +5309,16 @@
             "value": "켬"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kontrol Sedang Diputar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrol Sedang Diputar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contrôles de lecture en cours"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contrôles de lecture en cours"
           }
         }
       }
@@ -5722,16 +5343,16 @@
             "value": "한 곡"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -5756,16 +5377,16 @@
             "value": "사이드 패널에서 대기열 열기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mati"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mati"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désactivé"
           }
         }
       }
@@ -5790,16 +5411,16 @@
             "value": "자연어로 음악을 제어하려면 명령 막대를 여세요. \"편안한 음악 재생\" 또는 \"재즈를 대기열에 추가\"라고 말해 보세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nyala"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nyala"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activé"
           }
         }
       }
@@ -5824,16 +5445,16 @@
             "value": "일시중지"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Satu"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satu"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un"
           }
         }
       }
@@ -5859,16 +5480,16 @@
             "value": "재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka antrean di panel samping"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka antrean di panel samping"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir la file d'attente dans le panneau latéral"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir la file d'attente dans le panneau latéral"
           }
         }
       }
@@ -5894,16 +5515,16 @@
             "value": "가사를 보려면 노래를 재생하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka panel perintah untuk mengontrol musik dengan bahasa alami. Coba ucapkan \"putar sesuatu yang santai\" atau \"tambahkan jazz ke antrean\"."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buka panel perintah untuk mengontrol musik dengan bahasa alami. Coba ucapkan \"putar sesuatu yang santai\" atau \"tambahkan jazz ke antrean\"."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrez la barre de commandes pour contrôler la musique en langage naturel. Essayez « jouer quelque chose de chill » ou « ajouter du jazz à la file d'attente »."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrez la barre de commandes pour contrôler la musique en langage naturel. Essayez « jouer quelque chose de chill » ou « ajouter du jazz à la file d'attente »."
           }
         }
       }
@@ -5928,16 +5549,16 @@
             "value": "모두 재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pause"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
           }
         }
       }
@@ -5962,16 +5583,16 @@
             "value": "최신 재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lecture"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture"
           }
         }
       }
@@ -5996,16 +5617,16 @@
             "value": "다음에 재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar Semua"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar Semua"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout lire"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout lire"
           }
         }
       }
@@ -6030,16 +5651,16 @@
             "value": "대기열을 만들려면 재생목록이나 앨범에서 노래를 재생하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar Terbaru"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar Terbaru"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lire le plus récent"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lire le plus récent"
           }
         }
       }
@@ -6064,16 +5685,16 @@
             "value": "재생"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar Berikutnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar Berikutnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lire ensuite"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lire ensuite"
           }
         }
       }
@@ -6098,16 +5719,16 @@
             "value": "재생됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar sebuah lagu untuk melihat liriknya di sini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar sebuah lagu untuk melihat liriknya di sini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancez un morceau pour voir ses paroles ici."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lancez un morceau pour voir ses paroles ici."
           }
         }
       }
@@ -6132,16 +5753,16 @@
             "value": "재생 중"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Putar lagu dari daftar putar atau album untuk membangun antrean Anda."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putar lagu dari daftar putar atau album untuk membangun antrean Anda."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancez des morceaux depuis une playlist ou un album pour créer votre file d'attente."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lancez des morceaux depuis une playlist ou un album pour créer votre file d'attente."
           }
         }
       }
@@ -6167,16 +5788,16 @@
             "value": "재생목록"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pemutaran"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pemutaran"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lecture"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture"
           }
         }
       }
@@ -6201,16 +5822,16 @@
             "value": "재생목록을 찾을 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diputar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diputar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lu"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lu"
           }
         }
       }
@@ -6235,16 +5856,16 @@
             "value": "재생목록"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memutar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memutar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En lecture"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En lecture"
           }
         }
       }
@@ -6269,16 +5890,16 @@
             "value": "인터넷 연결을 확인하고 다시 시도해 주세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daftar putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daftar putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playlist"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlist"
           }
         }
       }
@@ -6303,16 +5924,16 @@
             "value": "팟캐스트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daftar putar tidak ditemukan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daftar putar tidak ditemukan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playlist introuvable"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlist introuvable"
           }
         }
       }
@@ -6337,16 +5958,16 @@
             "value": "Enter 키를 눌러 검색"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daftar putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daftar putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playlists"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists"
           }
         }
       }
@@ -6371,16 +5992,16 @@
             "value": "이전"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Periksa koneksi internet Anda dan coba lagi."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periksa koneksi internet Anda dan coba lagi."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veuillez vérifier votre connexion Internet et réessayer."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veuillez vérifier votre connexion Internet et réessayer."
           }
         }
       }
@@ -6405,16 +6026,16 @@
             "value": "이전 트랙"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcast"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podcast"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podcasts"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podcasts"
           }
         }
       }
@@ -6439,16 +6060,16 @@
             "value": "처리 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tekan Enter untuk mencari"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekan Enter untuk mencari"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez sur Entrée pour rechercher"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez sur Entrée pour rechercher"
           }
         }
       }
@@ -6473,16 +6094,16 @@
             "value": "Force Touch 트랙패드에서 동작에 대한 햅틱 피드백 제공"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sebelumnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sebelumnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Précédent"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Précédent"
           }
         }
       }
@@ -6507,16 +6128,16 @@
             "value": "대기열"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu sebelumnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu sebelumnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piste précédente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piste précédente"
           }
         }
       }
@@ -6541,16 +6162,16 @@
             "value": "빠른 액세스"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memproses..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memproses..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Traitement en cours..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traitement en cours..."
           }
         }
       }
@@ -6575,16 +6196,16 @@
             "value": "다시 실행"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berikan umpan balik haptik untuk tindakan di trackpad Force Touch"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berikan umpan balik haptik untuk tindakan di trackpad Force Touch"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fournir un retour tactile pour les actions sur les trackpads Force Touch"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fournir un retour tactile pour les actions sur les trackpads Force Touch"
           }
         }
       }
@@ -6609,16 +6230,16 @@
             "value": "다듬기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Antrean"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrean"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "File d'attente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File d'attente"
           }
         }
       }
@@ -6643,16 +6264,16 @@
             "value": "재생목록 다듬기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Akses Cepat"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akses Cepat"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accès rapide"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accès rapide"
           }
         }
       }
@@ -6677,16 +6298,16 @@
             "value": "릴리스 노트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulangi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rétablir"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rétablir"
           }
         }
       }
@@ -6711,16 +6332,16 @@
             "value": "셔플 및 반복 기억"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sempurnakan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sempurnakan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiner"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiner"
           }
         }
       }
@@ -6745,16 +6366,16 @@
             "value": "싫어요 취소"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sempurnakan Daftar Putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sempurnakan Daftar Putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiner la playlist"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiner la playlist"
           }
         }
       }
@@ -6779,16 +6400,16 @@
             "value": "즐겨찾기에서 삭제"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Catatan Rilis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catatan Rilis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notes de version"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes de version"
           }
         }
       }
@@ -6813,16 +6434,16 @@
             "value": "대기열에서 삭제"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingat Acak & Ulangi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingat Acak & Ulangi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mémoriser la lecture aléatoire et la répétition"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mémoriser la lecture aléatoire et la répétition"
           }
         }
       }
@@ -6847,16 +6468,16 @@
             "value": "반복"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus tidak suka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus tidak suka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retirer le je n'aime pas"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer le je n'aime pas"
           }
         }
       }
@@ -6881,16 +6502,16 @@
             "value": "전체 반복"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus dari Favorit"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus dari Favorit"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retirer des favoris"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer des favoris"
           }
         }
       }
@@ -6915,16 +6536,16 @@
             "value": "반복 끔"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus dari Antrean"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapus dari Antrean"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retirer de la file d'attente"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer de la file d'attente"
           }
         }
       }
@@ -6949,16 +6570,16 @@
             "value": "한 곡 반복"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulangi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Répéter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Répéter"
           }
         }
       }
@@ -6984,16 +6605,16 @@
             "value": "다시 시도"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulangi Semua"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi Semua"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout répéter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout répéter"
           }
         }
       }
@@ -7019,16 +6640,16 @@
             "value": "여기에서 보려면 YouTube Music에서 재생목록을 저장하고 팟캐스트를 구독하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulangi Mati"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi Mati"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Répétition désactivée"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Répétition désactivée"
           }
         }
       }
@@ -7053,16 +6674,16 @@
             "value": "여기에서 보려면 YouTube Music에서 재생목록을 저장하고, 아티스트를 구독하고, 팟캐스트를 구독하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ulangi Satu"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulangi Satu"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Répéter un seul"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Répéter un seul"
           }
         }
       }
@@ -7087,85 +6708,51 @@
             "value": "앱을 다시 시작해도 셔플 및 반복 설정 유지"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coba Lagi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba Lagi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réessayer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer"
           }
         }
       }
     },
-    "Romanize Lyrics" : {
-      "comment" : "Settings toggle to show romanized transliteration below non-Latin lyrics",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رومنة كلمات الأغاني"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "가사 로마자 표시"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Şarkı Sözlerini Romanize Et"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Romanisasi Lirik"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Romaniser les paroles"
-          }
-        }
-      }
-    },
-    "Scrobbling": {
+    "Romanize Lyrics": {
+      "comment": "Settings toggle to show romanized transliteration below non-Latin lyrics",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "سكروبلينج"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scrobbling"
+            "value": "رومنة كلمات الأغاني"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "스크로블링"
+            "value": "가사 로마자 표시"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simpan daftar putar dan berlangganan podcast di YouTube Music untuk melihatnya di sini."
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şarkı Sözlerini Romanize Et"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistrez des playlists et abonnez-vous à des podcasts sur YouTube Music pour les voir ici."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Romanisasi Lirik"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Romaniser les paroles"
           }
         }
       }
@@ -7190,16 +6777,16 @@
             "value": "검색"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simpan daftar putar, ikuti artis, dan berlangganan podcast di YouTube Music untuk melihatnya di sini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simpan daftar putar, ikuti artis, dan berlangganan podcast di YouTube Music untuk melihatnya di sini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistrez des playlists, suivez des artistes et abonnez-vous à des podcasts sur YouTube Music pour les voir ici."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrez des playlists, suivez des artistes et abonnez-vous à des podcasts sur YouTube Music pour les voir ici."
           }
         }
       }
@@ -7224,50 +6811,16 @@
             "value": "좋아하는 음악 검색"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simpan pengaturan acak dan ulangi setelah aplikasi dimulai ulang"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conserver les réglages de lecture aléatoire et de répétition entre les redémarrages"
-          }
-        }
-      }
-    },
-    "Search songs, albums, artists...": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "البحث عن أغاني، ألبومات، فنانين..."
+            "value": "Simpan pengaturan acak dan ulangi setelah aplikasi dimulai ulang"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Şarkı, albüm, sanatçı ara..."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "노래, 앨범, 아티스트 검색..."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scrobbling"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scrobbling"
+            "value": "Conserver les réglages de lecture aléatoire et de répétition entre les redémarrages"
           }
         }
       }
@@ -7292,16 +6845,16 @@
             "value": "검색 중..."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cari"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher"
           }
         }
       }
@@ -7326,16 +6879,16 @@
             "value": "모두 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cari musik favorit Anda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari musik favorit Anda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherchez votre musique préférée"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherchez votre musique préférée"
           }
         }
       }
@@ -7361,16 +6914,16 @@
             "value": "사이드바에서 항목을 선택하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cari lagu, album, artis..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cari lagu, album, artis..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher des morceaux, albums, artistes..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher des morceaux, albums, artistes..."
           }
         }
       }
@@ -7399,16 +6952,16 @@
             "value": "공유"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mencari..."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mencari..."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherche en cours..."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche en cours..."
           }
         }
       }
@@ -7433,16 +6986,16 @@
             "value": "모두 표시"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat semua"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat semua"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout voir"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout voir"
           }
         }
       }
@@ -7467,16 +7020,16 @@
             "value": "가사 표시"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih item dari bilah samping"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilih item dari bilah samping"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez un élément dans la barre latérale"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sélectionnez un élément dans la barre latérale"
           }
         }
       }
@@ -7501,16 +7054,16 @@
             "value": "지금 재생 중 알림 표시"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bagikan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bagikan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Partager"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partager"
           }
         }
       }
@@ -7535,16 +7088,16 @@
             "value": "표시 중"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan Semua"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan Semua"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout afficher"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout afficher"
           }
         }
       }
@@ -7569,16 +7122,16 @@
             "value": "셔플"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan Lirik"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan Lirik"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les paroles"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher les paroles"
           }
         }
       }
@@ -7603,16 +7156,16 @@
             "value": "셔플 끔"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan Notifikasi Sedang Diputar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tampilkan Notifikasi Sedang Diputar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les notifications de lecture en cours"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher les notifications de lecture en cours"
           }
         }
       }
@@ -7637,16 +7190,16 @@
             "value": "셔플 켬"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menampilkan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menampilkan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affichage"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affichage"
           }
         }
       }
@@ -7671,16 +7224,16 @@
             "value": "YouTube Music 보관함에 액세스하려면 로그인하세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acak"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acak"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aléatoire"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aléatoire"
           }
         }
       }
@@ -7705,16 +7258,16 @@
             "value": "YouTube Music에 로그인"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acak Mati"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acak Mati"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aléatoire désactivé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aléatoire désactivé"
           }
         }
       }
@@ -7739,16 +7292,16 @@
             "value": "Google로 로그인"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acak Nyala"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acak Nyala"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aléatoire activé"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aléatoire activé"
           }
         }
       }
@@ -7773,16 +7326,16 @@
             "value": "로그아웃"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keluar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keluar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se déconnecter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se déconnecter"
           }
         }
       }
@@ -7807,16 +7360,16 @@
             "value": "YouTube Music에 로그인됨"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masuk ke YouTube Music"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masuk ke YouTube Music"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se connecter à YouTube Music"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se connecter à YouTube Music"
           }
         }
       }
@@ -7841,16 +7394,16 @@
             "value": "소프트웨어 업데이트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masuk untuk mengakses pustaka YouTube Music Anda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masuk untuk mengakses pustaka YouTube Music Anda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connectez-vous pour accéder à votre bibliothèque YouTube Music"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez-vous pour accéder à votre bibliothèque YouTube Music"
           }
         }
       }
@@ -7875,16 +7428,16 @@
             "value": "노래"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masuk dengan Google"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masuk dengan Google"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se connecter avec Google"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se connecter avec Google"
           }
         }
       }
@@ -7910,16 +7463,16 @@
             "value": "좋아요 표시한 노래가 여기에 표시됩니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sudah masuk ke YouTube Music"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sudah masuk ke YouTube Music"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecté à YouTube Music"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecté à YouTube Music"
           }
         }
       }
@@ -7944,16 +7497,16 @@
             "value": "라디오 시작"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lompat Maju/Mundur"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lompat Maju/Mundur"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avancer/Reculer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avancer/Reculer"
           }
         }
       }
@@ -7978,16 +7531,16 @@
             "value": "구독"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembaruan Perangkat Lunak"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pembaruan Perangkat Lunak"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mise à jour logicielle"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mise à jour logicielle"
           }
         }
       }
@@ -8012,16 +7565,16 @@
             "value": "구독 %@"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morceaux"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morceaux"
           }
         }
       }
@@ -8046,16 +7599,16 @@
             "value": "여기에서 보려면 YouTube Music에서 팟캐스트를 구독하세요."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu yang Anda sukai akan muncul di sini"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu yang Anda sukai akan muncul di sini"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les morceaux que vous aimez apparaîtront ici"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les morceaux que vous aimez apparaîtront ici"
           }
         }
       }
@@ -8080,16 +7633,16 @@
             "value": "구독중"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mulai Radio"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mulai Radio"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancer la radio"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lancer la radio"
           }
         }
       }
@@ -8114,16 +7667,16 @@
             "value": "구독 오류"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berlangganan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berlangganan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "S'abonner"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S'abonner"
           }
         }
       }
@@ -8148,16 +7701,16 @@
             "value": "삭제 추천"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berlangganan %@"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berlangganan %@"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "S'abonner %@"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S'abonner %@"
           }
         }
       }
@@ -8182,16 +7735,16 @@
             "value": "계정 전환"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berlangganan podcast di YouTube Music untuk melihatnya di sini."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berlangganan podcast di YouTube Music untuk melihatnya di sini."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abonnez-vous à des podcasts sur YouTube Music pour les voir ici."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abonnez-vous à des podcasts sur YouTube Music pour les voir ici."
           }
         }
       }
@@ -8216,16 +7769,16 @@
             "value": "탭하여 다시 시도"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sudah berlangganan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sudah berlangganan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abonné"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abonné"
           }
         }
       }
@@ -8251,50 +7804,16 @@
             "value": "이 노래에 사용할 수 있는 가사가 없습니다."
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kesalahan Berlangganan"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur d'abonnement"
-          }
-        }
-      }
-    },
-    "This Mac doesn't support Apple Intelligence. An Apple Silicon Mac is required.": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "هذا الـ Mac لا يدعم ذكاء Apple. يتطلب Mac بمعالج Apple Silicon."
+            "value": "Kesalahan Berlangganan"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu Mac Apple Intelligence'ı desteklemiyor. Apple Silicon özellikli bir Mac gerekiyor."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이 Mac은 Apple Intelligence를 지원하지 않습니다. Apple Silicon Mac이 필요합니다."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Penghapusan yang Disarankan"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suppressions suggérées"
+            "value": "Erreur d'abonnement"
           }
         }
       }
@@ -8319,16 +7838,16 @@
             "value": "인기곡"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ganti Akun"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ganti Akun"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changer de compte"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changer de compte"
           }
         }
       }
@@ -8353,16 +7872,16 @@
             "value": "다시 시도"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Sistem"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default Sistem"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Par défaut du système"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par défaut du système"
           }
         }
       }
@@ -8387,16 +7906,16 @@
             "value": "다음과 같은 명령을 시도해 보세요:"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketuk untuk mencoba lagi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ketuk untuk mencoba lagi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez pour réessayer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez pour réessayer"
           }
         }
       }
@@ -8421,50 +7940,16 @@
             "value": "다른 항목을 검색해 보세요"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada lirik yang tersedia untuk lagu ini."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune parole n'est disponible pour ce morceau."
-          }
-        }
-      }
-    },
-    "Unable to determine availability": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "تعذّر تحديد التوفر"
+            "value": "Tidak ada lirik yang tersedia untuk lagu ini."
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kullanılabilirlik belirlenemedi"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사용 가능 여부를 확인할 수 없음"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mac ini tidak mendukung Apple Intelligence. Diperlukan Mac dengan chip Apple Silicon."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce Mac ne prend pas en charge Apple Intelligence. Un Mac avec puce Apple Silicon est requis."
+            "value": "Aucune parole n'est disponible pour ce morceau."
           }
         }
       }
@@ -8489,16 +7974,16 @@
             "value": "아티스트를 로드할 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lagu teratas"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagu teratas"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meilleurs morceaux"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meilleurs morceaux"
           }
         }
       }
@@ -8523,16 +8008,16 @@
             "value": "콘텐츠를 로드할 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coba Lagi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba Lagi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réessayer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer"
           }
         }
       }
@@ -8557,16 +8042,16 @@
             "value": "재생목록을 로드할 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coba perintah seperti:"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba perintah seperti:"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essayez des commandes comme :"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essayez des commandes comme :"
           }
         }
       }
@@ -8591,16 +8076,16 @@
             "value": "사용 불가"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coba cari hal lain"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba cari hal lain"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essayez de rechercher autre chose"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essayez de rechercher autre chose"
           }
         }
       }
@@ -8625,16 +8110,16 @@
             "value": "실행 취소"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat menentukan ketersediaan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat menentukan ketersediaan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de déterminer la disponibilité"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de déterminer la disponibilité"
           }
         }
       }
@@ -8659,16 +8144,16 @@
             "value": "알 수 없음"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat memuat artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat memuat artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de charger l'artiste"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de charger l'artiste"
           }
         }
       }
@@ -8693,16 +8178,16 @@
             "value": "알 수 없는 아티스트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat memuat konten"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat memuat konten"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de charger le contenu"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de charger le contenu"
           }
         }
       }
@@ -8727,16 +8212,16 @@
             "value": "좋아요 취소"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak dapat memuat daftar putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak dapat memuat daftar putar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de charger la playlist"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de charger la playlist"
           }
         }
       }
@@ -8761,16 +8246,16 @@
             "value": "음소거 해제"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak tersedia"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak tersedia"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indisponible"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indisponible"
           }
         }
       }
@@ -8795,16 +8280,16 @@
             "value": "다음 트랙"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batalkan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batalkan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annuler"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
           }
         }
       }
@@ -8829,16 +8314,16 @@
             "value": "업데이트"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak diketahui"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidak diketahui"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inconnu"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inconnu"
           }
         }
       }
@@ -8863,16 +8348,16 @@
             "value": "버전"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artis Tidak Dikenal"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artis Tidak Dikenal"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Artiste inconnu"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artiste inconnu"
           }
         }
       }
@@ -8897,16 +8382,16 @@
             "value": "동영상"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batal suka"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batal suka"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retirer le j'aime"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer le j'aime"
           }
         }
       }
@@ -8931,16 +8416,16 @@
             "value": "앨범 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bunyikan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bunyikan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réactiver le son"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réactiver le son"
           }
         }
       }
@@ -8965,16 +8450,16 @@
             "value": "아티스트 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berikutnya"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berikutnya"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À suivre"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À suivre"
           }
         }
       }
@@ -8999,16 +8484,16 @@
             "value": "재생목록 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembaruan"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pembaruan"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mises à jour"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mises à jour"
           }
         }
       }
@@ -9033,16 +8518,16 @@
             "value": "팟캐스트 보기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versi"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
           }
         }
       }
@@ -9067,16 +8552,16 @@
             "value": "볼륨 줄이기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vidéo"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vidéo"
           }
         }
       }
@@ -9101,16 +8586,16 @@
             "value": "볼륨 높이기"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat Album"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat Album"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voir l'album"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir l'album"
           }
         }
       }
@@ -9135,50 +8620,50 @@
             "value": "인증 대기 중…"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat Artis"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat Artis"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voir l'artiste"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir l'artiste"
           }
         }
       }
     },
-    "Welcome to Kaset": {
+    "Welcome to YTM Private": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مرحبًا بك في Kaset"
+            "value": "مرحبًا بك في YTM Private"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kaset'e Hoş Geldiniz"
+            "value": "YTM Private'e Hoş Geldiniz"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kaset에 오신 것을 환영합니다"
+            "value": "YTM Private에 오신 것을 환영합니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat Daftar Putar"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selamat datang di YTM Private"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voir la playlist"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenue sur YTM Private"
           }
         }
       }
@@ -9203,16 +8688,16 @@
             "value": "무엇을 변경하시겠습니까?"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat Podcast"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lihat Podcast"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voir le podcast"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir le podcast"
           }
         }
       }
@@ -9237,16 +8722,16 @@
             "value": "대기열로 무엇을 하시겠습니까?"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volume Turun"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume Turun"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Baisser le volume"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baisser le volume"
           }
         }
       }
@@ -9271,84 +8756,16 @@
             "value": "무엇을 하시겠습니까?"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volume Naik"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Augmenter le volume"
-          }
-        }
-      }
-    },
-    "What's New in Kaset": {
-      "localizations": {
-        "ar": {
+        "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "الجديد في Kaset"
+            "value": "Volume Naik"
           }
         },
-        "tr": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kaset'teki Yenilikler"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaset의 새로운 기능"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menunggu otorisasi…"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En attente d'autorisation…"
-          }
-        }
-      }
-    },
-    "When enabled, you can use natural language commands, AI-powered playlist refinement, and lyrics explanations.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "عند التفعيل، يمكنك استخدام الأوامر بلغة طبيعية، وتحسين قوائم التشغيل بالذكاء الاصطناعي، وشرح كلمات الأغاني."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Etkinleştirildiğinde doğal dil komutlarını, yapay zeka destekli çalma listesi iyileştirmeyi ve şarkı sözü açıklamalarını kullanabilirsiniz."
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "활성화하면 자연어 명령, AI 기반 재생목록 다듬기, 가사 설명을 사용할 수 있습니다."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selamat datang di Kaset"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenue sur Kaset"
+            "value": "Augmenter le volume"
           }
         }
       }
@@ -9373,16 +8790,16 @@
             "value": "내 보관함"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apa yang ingin Anda ubah?"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apa yang ingin Anda ubah?"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Que souhaitez-vous modifier ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que souhaitez-vous modifier ?"
           }
         }
       }
@@ -9407,16 +8824,16 @@
             "value": "보관함이 비어 있습니다"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apa yang ingin Anda lakukan dengan antrean?"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apa yang ingin Anda lakukan dengan antrean?"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Que souhaitez-vous faire avec votre file d'attente ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que souhaitez-vous faire avec votre file d'attente ?"
           }
         }
       }
@@ -9441,16 +8858,16 @@
             "value": "Uygulama arayüzü dilini seçin"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apa yang ingin Anda lakukan?"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apa yang ingin Anda lakukan?"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Que souhaitez-vous faire ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que souhaitez-vous faire ?"
           }
         }
       }
@@ -9475,16 +8892,16 @@
             "value": "İçerik Dili"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apa yang Baru di Kaset"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bahasa Konten"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouveautés de Kaset"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langue du contenu"
           }
         }
       }
@@ -9509,16 +8926,16 @@
             "value": "Sonraki/Önceki Parça"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jika diaktifkan, Anda dapat menggunakan perintah bahasa alami, penyempurnaan daftar putar bertenaga AI, dan penjelasan lirik."
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jika diaktifkan, Anda dapat menggunakan perintah bahasa alami, penyempurnaan daftar putar bertenaga AI, dan penjelasan lirik."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lorsque cette option est activée, vous pouvez utiliser des commandes en langage naturel, l'affinement de playlists par IA et les explications de paroles."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorsque cette option est activée, vous pouvez utiliser des commandes en langage naturel, l'affinement de playlists par IA et les explications de paroles."
           }
         }
       }
@@ -9543,16 +8960,16 @@
             "value": "İleri/Geri Atla"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pustaka Anda"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pustaka Anda"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre bibliothèque"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre bibliothèque"
           }
         }
       }
@@ -9577,16 +8994,16 @@
             "value": "Sistem Varsayılanı"
           }
         },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pustaka Anda kosong"
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pustaka Anda kosong"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre bibliothèque est vide"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre bibliothèque est vide"
           }
         }
       }

@@ -106,12 +106,12 @@ class KasetUITestCase: XCTestCase {
         // Stop immediately when a failure occurs
         continueAfterFailure = false
 
-        // Create new app instance pointing to installed Kaset.app
-        let appURL = URL(fileURLWithPath: "/Applications/Kaset.app")
+        // Create new app instance pointing to installed YTMPrivate.app
+        let appURL = URL(fileURLWithPath: "/Applications/YTMPrivate.app")
         if FileManager.default.fileExists(atPath: appURL.path) {
             self.app = XCUIApplication(url: appURL)
         } else {
-            self.app = XCUIApplication(bundleIdentifier: "com.sertacozercan.Kaset")
+            self.app = XCUIApplication(bundleIdentifier: "com.melboonchan.ytmprivate")
         }
 
         // Add UI test mode arguments

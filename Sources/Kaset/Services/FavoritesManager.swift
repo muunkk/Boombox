@@ -26,8 +26,8 @@ final class FavoritesManager {
     /// File URL for persisted data.
     private var fileURL: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let kasetDir = appSupport.appendingPathComponent("Kaset", isDirectory: true)
-        return kasetDir.appendingPathComponent("favorites.json")
+        let appDir = appSupport.appendingPathComponent("YTMPrivate", isDirectory: true)
+        return appDir.appendingPathComponent("favorites.json")
     }
 
     /// Task for the current save operation - cancelled when new save is triggered.

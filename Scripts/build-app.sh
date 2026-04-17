@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build script to create Kaset.app bundle
+# Build script to create YTMPrivate.app bundle
 # Based on Kuyruk/CodexBar packaging approach
 
 set -euo pipefail
@@ -12,9 +12,12 @@ source "$ROOT/version.env"
 
 # Configuration
 CONF=${1:-release}
-SIGNING_MODE=${KASET_SIGNING:-dev}
-APP_NAME="Kaset"
-BUNDLE_ID="com.sertacozercan.Kaset"
+SIGNING_MODE=${YTM_PRIVATE_SIGNING:-${KASET_SIGNING:-dev}}
+APP_NAME="YTMPrivate"
+DISPLAY_NAME="YTM Private"
+APP_EXECUTABLE="YTMPrivate"
+SWIFT_EXECUTABLE="YTMPrivate"
+BUNDLE_ID="com.melboonchan.ytmprivate"
 DEVELOPMENT_LOCALIZATION="en"
 BUILD_DIR="$ROOT/.build/app"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
@@ -30,7 +33,7 @@ if [[ ${#ARCH_LIST[@]} -eq 0 ]]; then
   esac
 fi
 
-echo "🔨 Building $APP_NAME ($CONF) for ${ARCH_LIST[*]}..."
+echo "🔨 Building $DISPLAY_NAME ($CONF) for ${ARCH_LIST[*]}..."
 
 # Clean previous build
 rm -rf "$BUILD_DIR"
@@ -129,7 +132,7 @@ install_binary() {
 }
 
 # Copy executable
-install_binary "$APP_NAME" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
+install_binary "$SWIFT_EXECUTABLE" "$APP_BUNDLE/Contents/MacOS/$APP_EXECUTABLE"
 
 BUILD_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
@@ -157,7 +160,7 @@ fi
 
 # SwiftPM resource bundles are emitted next to the built binary
 FIRST_ARCH="${ARCH_LIST[0]}"
-BINARY_PATH=$(build_product_path "$APP_NAME" "$FIRST_ARCH")
+BINARY_PATH=$(build_product_path "$SWIFT_EXECUTABLE" "$FIRST_ARCH")
 PREFERRED_BUILD_DIR=$(dirname "$BINARY_PATH")
 shopt -s nullglob
 SWIFTPM_BUNDLES=("${PREFERRED_BUILD_DIR}/"*.bundle)
@@ -207,7 +210,7 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<PLIST
 ${APP_LOCALIZATIONS_PLIST}
     </array>
     <key>CFBundleExecutable</key>
-    <string>${APP_NAME}</string>
+    <string>${APP_EXECUTABLE}</string>
     <key>CFBundleIconFile</key>
     <string>kaset</string>
     <key>CFBundleIconName</key>
@@ -219,9 +222,9 @@ ${APP_LOCALIZATIONS_PLIST}
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>${APP_NAME}</string>
+    <string>${DISPLAY_NAME}</string>
     <key>CFBundleDisplayName</key>
-    <string>${APP_NAME}</string>
+    <string>${DISPLAY_NAME}</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -233,15 +236,15 @@ ${APP_LOCALIZATIONS_PLIST}
     <key>LSMinimumSystemVersion</key>
     <string>26.0</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2025 Sertac Ozercan. All rights reserved.</string>
+    <string>Private source build by Mel Boonchan. Upstream copyright retained under the MIT license.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>LSUIElement</key>
     <false/>
     <!-- Build Metadata -->
-    <key>KasetBuildTimestamp</key>
+    <key>YTMPrivateBuildTimestamp</key>
     <string>${BUILD_TIMESTAMP}</string>
-    <key>KasetGitCommit</key>
+    <key>YTMPrivateGitCommit</key>
     <string>${GIT_COMMIT}</string>
 </dict>
 </plist>

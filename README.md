@@ -1,57 +1,40 @@
-# Kaset
+# YTM Private
 
-A native macOS YouTube Music client built with Swift and SwiftUI.
+A private, source-built macOS YouTube Music client for personal use.
 
-<img src="docs/screenshot.png" alt="Kaset Screenshot">
+![YTM Private screenshot](docs/screenshot.png)
 
-## Features
+## Kept Features
 
-- 🎵 **Native macOS Experience** — Apple Music-style UI with Liquid Glass player bar and clean sidebar navigation
-- 🎧 **YouTube Music Premium Support** — Full playback of DRM-protected content via your existing subscription
-- 🎛️ **System Integration** — Now Playing in Control Center, media key support, Dock menu controls
-- 📳 **Haptic Feedback** — Tactile feedback on Force Touch trackpads for player controls and navigation
-- 🎶 **Track Notifications** — Get notified when a new track starts playing
-- 🔊 **Background Audio** — Music continues playing when the window is closed; stops on quit
-- ⌨️ **[Keyboard Shortcuts](docs/keyboard-shortcuts.md)** — Full keyboard control for playback, navigation, and more
-- 🧭 **Explore** — Discover new releases, charts, and moods & genres
-- 🎙️ **Podcasts** — Browse and listen to podcasts with episode progress tracking
-- 📚 **Library Access** — Browse your playlists, liked songs, and subscribed podcasts
-- 🔍 **Search** — Find songs, albums, artists, playlists, and podcasts
-- ✨ **Apple Intelligence** — On-device AI for natural language commands, lyrics explanations, and playlist refinement
-- 📜 **Lyrics** — View plain and synced lyrics with line-by-line highlighting when timing data is available, plus AI-powered explanations and mood analysis
-- 📃 **Queue Management** — View, reorder, shuffle, and clear your playback queue
-- 📣 **Share** — Share songs, playlists, albums, and artists via the native macOS share sheet
-- 🔗 **[URL Scheme](docs/url-scheme.md)** — Open songs directly with `kaset://play?v=VIDEO_ID`
-- 🤖 **[AppleScript Support](docs/applescript.md)** — Automate playback with scripts, Raycast, Alfred, and Shortcuts
+- **Native macOS experience** — Apple Music-style SwiftUI interface with Liquid Glass player bar and sidebar navigation.
+- **YouTube Music Premium playback** — Playback stays inside the main YouTube Music `WKWebView`, so DRM-protected Premium content uses your existing subscription.
+- **System integration** — Now Playing in Control Center, media keys, Dock menu controls, haptics, and optional track notifications.
+- **Library access** — Browse playlists, liked songs, artists, albums, and subscribed podcasts from your YouTube Music account.
+- **Search** — Find songs, albums, artists, playlists, and podcasts.
+- **Lyrics** — Plain YouTube Music lyrics and synced LRCLib lyrics with line-by-line highlighting when timing data is available.
+- **Queue management** — View, reorder, shuffle, and clear the playback queue.
+- **Share** — Share songs, playlists, albums, and artists through the native macOS share sheet.
+- **Command palette** — `Cmd+L` opens the command palette. Lyrics moved to `Cmd+Y`.
 
-## Requirements
+## Auth Notes
 
-- macOS 26.0 or later
-- [Google](https://accounts.google.com) account
+Google passkeys are not promised inside the embedded login WebView. This private app supports a Safari fallback instead: sign in to YouTube Music in Safari, then import allowlisted YouTube/Google auth cookies locally into the app's WebKit data store and macOS Keychain. Pasted cookie values are not logged, exported, or sent to any service by this app.
 
-## Installation
-
-### Download
-
-Download the latest release from the [Releases](https://github.com/sozercan/kaset/releases) page.
-
-### Homebrew
+## Local Build
 
 ```bash
-brew install sozercan/repo/kaset
+swift build
+swift test
+Scripts/build-app.sh release
+open .build/app/YTMPrivate.app
 ```
 
-> **Note:** The app is not signed.
-> If you downloaded the app manually, you can clear extended attributes (including quarantine) with:
-> ```bash
-> xattr -cr /Applications/Kaset.app
-> ```
+The app bundle is named `YTMPrivate.app`, displays as `YTM Private`, and uses bundle id `com.melboonchan.ytmprivate`. Signing defaults to a local Apple Development certificate when available and falls back to ad-hoc signing.
 
-## Contributing
+## Trust Boundary
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, architecture, and coding guidelines.
-
-We welcome AI-assisted contributions! You can submit traditional PRs or **prompt requests** — share the AI prompt that generates your changes, and maintainers can review the intent before running the code. See the [AI-Assisted Contributions](CONTRIBUTING.md#ai-assisted-contributions--prompt-requests) section for details.
+See [STRIPPED.md](STRIPPED.md) for the deleted upstream subsystems and the remaining network/service boundary.
 
 ## Disclaimer
-Kaset is an unofficial application and not affiliated with YouTube or Google Inc. in any way. "YouTube", "YouTube Music" and the "YouTube Logo" are registered trademarks of Google Inc.
+
+YTM Private is an unofficial personal application and is not affiliated with YouTube or Google. YouTube, YouTube Music, and related marks belong to Google.

@@ -39,17 +39,11 @@
 
 "Analyzing..." = "Analyse en cours...";
 
-"Apple Intelligence" = "Apple Intelligence";
 
-"Apple Intelligence & Siri Settings" = "Réglages Apple Intelligence et Siri";
 
-"Apple Intelligence is currently unavailable." = "Apple Intelligence est actuellement indisponible.";
 
-"Apple Intelligence is downloading. This may take a few minutes." = "Apple Intelligence est en cours de téléchargement. Cela peut prendre quelques minutes.";
 
-"Apple Intelligence is not available" = "Apple Intelligence n'est pas disponible";
 
-"Apple Intelligence is ready to use" = "Apple Intelligence est prêt à être utilisé";
 
 "Apply Changes" = "Appliquer les modifications";
 
@@ -61,7 +55,6 @@
 
 "Command Bar (⌘L)" = "Barre de commandes (⌘L)";
 
-"Ask anything about music..." = "Posez n'importe quelle question sur la musique...";
 
 "Automatically check for updates" = "Vérifier automatiquement les mises à jour";
 
@@ -153,11 +146,9 @@
 
 "Edit" = "Modifier";
 
-"Enable %@ Scrobbling" = "Activer le Scrobbling %@";
 
 "Enable AI Features" = "Activer les fonctionnalités IA";
 
-"Enable Apple Intelligence in System Settings to use AI features." = "Activez Apple Intelligence dans les Réglages Système pour utiliser les fonctionnalités IA.";
 
 
 "Enable Synced Lyrics" = "Activer les paroles synchronisées";
@@ -165,7 +156,6 @@
 
 "Error: %@" = "Erreur : %@";
 
-"Explain lyrics with AI" = "Expliquer les paroles avec l'IA";
 
 "Explore" = "Explorer";
 
@@ -426,7 +416,6 @@
 
 "Save shuffle and repeat settings across app restarts" = "Conserver les réglages de lecture aléatoire et de répétition entre les redémarrages";
 
-"Scrobbling" = "Scrobbling";
 
 "Search" = "Rechercher";
 
@@ -497,7 +486,6 @@
 
 "There aren't any lyrics available for this song." = "Aucune parole n'est disponible pour ce morceau.";
 
-"This Mac doesn't support Apple Intelligence. An Apple Silicon Mac is required." = "Ce Mac ne prend pas en charge Apple Intelligence. Un Mac avec puce Apple Silicon est requis.";
 
 "Top songs" = "Meilleurs morceaux";
 
@@ -549,7 +537,7 @@
 
 "Waiting for authorization…" = "En attente d'autorisation…";
 
-"Welcome to Kaset" = "Bienvenue sur Kaset";
+"Welcome to YTM Private" = "Bienvenue sur YTM Private";
 
 "What would you like to change?" = "Que souhaitez-vous modifier ?";
 
@@ -557,9 +545,7 @@
 
 "What would you like to do?" = "Que souhaitez-vous faire ?";
 
-"What's New in Kaset" = "Nouveautés de Kaset";
 
-"When enabled, you can use natural language commands, AI-powered playlist refinement, and lyrics explanations." = "Lorsque cette option est activée, vous pouvez utiliser des commandes en langage naturel, l'affinement de playlists par IA et les explications de paroles.";
 
 "Your Library" = "Votre bibliothèque";
 

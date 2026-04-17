@@ -1,6 +1,6 @@
 # Keyboard Shortcuts
 
-Kaset provides keyboard control for playback and navigation while preserving standard macOS window shortcuts.
+YTM Private provides keyboard control for playback and navigation while preserving standard macOS window shortcuts.
 
 ## Playback
 
@@ -15,7 +15,7 @@ Kaset provides keyboard control for playback and navigation while preserving sta
 | `⌘R`     | Cycle repeat mode (Off → All → One) |
 | `⌘Y`     | Toggle lyrics                       |
 
-Mute is still available from the Playback menu, but Kaset intentionally does not assign a default mute shortcut so the native macOS minimize shortcut (`⌘M`) continues to work.
+Mute is still available from the Playback menu, but YTM Private intentionally does not assign a default mute shortcut so the native macOS minimize shortcut (`⌘M`) continues to work.
 
 ## Navigation
 

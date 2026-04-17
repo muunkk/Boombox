@@ -31,7 +31,7 @@ final class LRCLibProvider: LyricsProvider {
         guard let url = components.url else { return .unavailable }
 
         var request = URLRequest(url: url)
-        request.setValue("Kaset/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("YTMPrivate/1.0", forHTTPHeaderField: "User-Agent")
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)

@@ -167,7 +167,7 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
             column.width = 350 // Matches container width minus scroll bar space
             tableView.addTableColumn(column)
 
-            let dragType = NSPasteboard.PasteboardType("com.kaset.queueitem")
+            let dragType = NSPasteboard.PasteboardType("com.melboonchan.ytmprivate.queueitem")
             tableView.registerForDraggedTypes([dragType, .string])
             tableView.verticalMotionCanBeginDrag = true
             tableView.draggingDestinationFeedbackStyle = .gap // Show gap where item will be dropped
@@ -201,7 +201,7 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         let onStartRadio: (Song) -> Void
         weak var viewController: QueueListViewController?
         var isDragging = false
-        private let dragType = NSPasteboard.PasteboardType("com.kaset.queueitem")
+        private let dragType = NSPasteboard.PasteboardType("com.melboonchan.ytmprivate.queueitem")
 
         init(queue: [Song], currentIndex: Int, isPlaying: Bool, favoritesManager: FavoritesManager,
              onSelect: @escaping (Int) -> Void, onReorder: @escaping (Int, Int) -> Void, onRemove: @escaping (String) -> Void, onStartRadio: @escaping (Song) -> Void)

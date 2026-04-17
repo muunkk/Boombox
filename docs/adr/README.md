@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This directory contains Architecture Decision Records (ADRs) for the Kaset project.
+This directory contains retained Architecture Decision Records (ADRs) for the YTM Private fork.
 
 ## What is an ADR?
 
@@ -38,12 +38,8 @@ What becomes easier or more difficult because of this change?
 | [0001](0001-webview-playback.md) | WebView-Based Playback | Accepted |
 | [0002](0002-protocol-based-services.md) | Protocol-Based Service Design | Accepted |
 | [0003](0003-modular-api-parsers.md) | Modular API Response Parsers | Accepted |
-| [0004](0004-streaming-foundation-models.md) | Streaming Responses for Foundation Models | Accepted |
-| [0005](0005-foundation-models-architecture.md) | Foundation Models Architecture | Accepted |
 | [0006](0006-swift-testing-migration.md) | Swift Testing Migration | Accepted |
-| [0007](0007-sparkle-auto-updates.md) | Sparkle Auto-Updates | Accepted |
 | [0008](0008-nonisolated-network-helpers.md) | Nonisolated Network Helpers for MainActor Classes | Accepted |
 | [0009](0009-prompt-request-workflow.md) | Prompt Request Workflow | Accepted |
 | [0010](0010-airplay-fix.md) | Fix AirPlay for WebView-Based Playback | Implemented (with known limitations) |
-| [0011](0011-scrobbling-support.md) | Scrobbling Support (Last.fm) | Accepted |
 | [0012](0012-synced-lyrics-architecture.md) | Synced Lyrics Provider Architecture | Accepted |

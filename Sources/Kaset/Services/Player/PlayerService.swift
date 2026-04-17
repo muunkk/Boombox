@@ -147,7 +147,7 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     var isFetchingMoreMixSongs: Bool = false
 
     /// UserDefaults key for persisting queue display mode.
-    static let queueDisplayModeKey = "kaset.queue.displayMode"
+    static let queueDisplayModeKey = "ytmprivate.queue.displayMode"
 
     /// Undo/redo history for queue (up to 10 states). In-memory only.
     private var queueUndoHistory: [([Song], Int)] = []

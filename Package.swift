@@ -11,12 +11,8 @@ let package = Package(
     ],
     products: [
         .executable(
-            name: "Kaset",
+            name: "YTMPrivate",
             targets: ["Kaset"]
-        ),
-        .executable(
-            name: "api-explorer",
-            targets: ["APIExplorer"]
         ),
     ],
     dependencies: [],
@@ -31,13 +27,6 @@ let package = Package(
             swiftSettings: [
                 .swiftLanguageMode(.v6),
                 .enableExperimentalFeature("StrictConcurrency"),
-            ]
-        ),
-        // API Explorer CLI tool
-        .executableTarget(
-            name: "APIExplorer",
-            swiftSettings: [
-                .swiftLanguageMode(.v6),
             ]
         ),
         // Unit tests

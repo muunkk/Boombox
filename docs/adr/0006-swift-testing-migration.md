@@ -441,7 +441,6 @@ final class HomeViewUITests: XCTestCase {
 | `ExploreViewModelTests.swift` | 6 | Medium | ✅ Done |
 | `ArtistDetailTests.swift` | 6 | Medium | ✅ Done |
 | `SearchResponseTests.swift` | 6 | Low | ✅ Done |
-| `FoundationModelsTests.swift` | 6 | Medium | ✅ Done |
 | `PerformanceTests/ParserPerformanceTests.swift` | 7 | **Keep XCTest** | ✅ Verified |
 
 ### UI Tests (`KasetUITests/`)

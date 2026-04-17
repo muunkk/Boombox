@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Reset Kaset: kill running instances, build, package, relaunch, verify.
+# Reset YTM Private: kill running instances, build, package, relaunch, verify.
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_BUNDLE="${ROOT_DIR}/.build/app/Kaset.app"
-APP_PROCESS_PATTERN="Kaset.app/Contents/MacOS/Kaset"
-DEBUG_PROCESS_PATTERN="${ROOT_DIR}/.build/debug/Kaset"
-RELEASE_PROCESS_PATTERN="${ROOT_DIR}/.build/release/Kaset"
+APP_BUNDLE="${ROOT_DIR}/.build/app/YTMPrivate.app"
+APP_PROCESS_PATTERN="YTMPrivate.app/Contents/MacOS/YTMPrivate"
+DEBUG_PROCESS_PATTERN="${ROOT_DIR}/.build/debug/YTMPrivate"
+RELEASE_PROCESS_PATTERN="${ROOT_DIR}/.build/release/YTMPrivate"
 LOCK_KEY="$(printf '%s' "${ROOT_DIR}" | shasum -a 256 | cut -c1-8)"
-LOCK_DIR="${TMPDIR:-/tmp}/kaset-compile-and-run-${LOCK_KEY}"
+LOCK_DIR="${TMPDIR:-/tmp}/ytmprivate-compile-and-run-${LOCK_KEY}"
 LOCK_PID_FILE="${LOCK_DIR}/pid"
 WAIT_FOR_LOCK=0
 RUN_TESTS=0
@@ -67,6 +67,7 @@ kill_all_kaset() {
     pgrep -f "${APP_PROCESS_PATTERN}" >/dev/null 2>&1 \
       || pgrep -f "${DEBUG_PROCESS_PATTERN}" >/dev/null 2>&1 \
       || pgrep -f "${RELEASE_PROCESS_PATTERN}" >/dev/null 2>&1 \
+      || pgrep -x "YTMPrivate" >/dev/null 2>&1 \
       || pgrep -x "Kaset" >/dev/null 2>&1
   }
 
@@ -75,6 +76,7 @@ kill_all_kaset() {
     pkill -f "${APP_PROCESS_PATTERN}" 2>/dev/null || true
     pkill -f "${DEBUG_PROCESS_PATTERN}" 2>/dev/null || true
     pkill -f "${RELEASE_PROCESS_PATTERN}" 2>/dev/null || true
+    pkill -x "YTMPrivate" 2>/dev/null || true
     pkill -x "Kaset" 2>/dev/null || true
     if ! is_running; then
       return 0
@@ -86,6 +88,7 @@ kill_all_kaset() {
   pkill -9 -f "${APP_PROCESS_PATTERN}" 2>/dev/null || true
   pkill -9 -f "${DEBUG_PROCESS_PATTERN}" 2>/dev/null || true
   pkill -9 -f "${RELEASE_PROCESS_PATTERN}" 2>/dev/null || true
+  pkill -9 -x "YTMPrivate" 2>/dev/null || true
   pkill -9 -x "Kaset" 2>/dev/null || true
 
   for _ in {1..25}; do
@@ -95,7 +98,7 @@ kill_all_kaset() {
     sleep 0.2
   done
 
-  fail "Failed to kill all Kaset instances."
+  fail "Failed to kill all YTM Private instances."
 }
 
 # 1) Parse arguments.
@@ -118,8 +121,8 @@ done
 
 acquire_lock
 
-# 2) Kill all running Kaset instances.
-log "==> Killing existing Kaset instances"
+# 2) Kill all running YTM Private instances.
+log "==> Killing existing YTM Private instances"
 kill_all_kaset
 
 # 3) Lint (optional).
@@ -140,14 +143,14 @@ run_step "package app" "${ROOT_DIR}/Scripts/build-app.sh"
 log "==> Launching app"
 if ! open "${APP_BUNDLE}"; then
   log "WARN: launch app returned non-zero; falling back to direct binary launch."
-  "${APP_BUNDLE}/Contents/MacOS/Kaset" >/dev/null 2>&1 &
+  "${APP_BUNDLE}/Contents/MacOS/YTMPrivate" >/dev/null 2>&1 &
   disown
 fi
 
 # 7) Verify the app stays up for at least a moment.
 for _ in {1..10}; do
   if pgrep -f "${APP_PROCESS_PATTERN}" >/dev/null 2>&1; then
-    log "✅ Kaset is running."
+    log "✅ YTM Private is running."
     exit 0
   fi
   sleep 0.4

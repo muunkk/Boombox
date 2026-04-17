@@ -15,7 +15,7 @@ extension EnvironmentValues {
 
 // MARK: - KasetApp
 
-/// Main entry point for the Kaset macOS application.
+/// Main entry point for the YTM Private macOS application.
 @available(macOS 26.0, *)
 @main
 struct KasetApp: App {
@@ -90,7 +90,7 @@ struct KasetApp: App {
     }
 
     var body: some Scene {
-        Window("Kaset", id: "main") {
+        Window("YTM Private", id: "main") {
             // Skip UI during unit tests to prevent window spam
             if UITestConfig.isRunningUnitTests, !UITestConfig.isUITestMode {
                 Color.clear
@@ -255,7 +255,7 @@ struct KasetApp: App {
 
             // Window menu - show main window
             CommandGroup(after: .windowArrangement) {
-                Button("Kaset") {
+                Button("YTM Private") {
                     self.showMainWindow()
                 }
                 .keyboardShortcut("0", modifiers: .command)
@@ -267,7 +267,7 @@ struct KasetApp: App {
     /// Shows the main window.
     private func showMainWindow() {
         // Find and show the main window
-        for window in NSApplication.shared.windows where window.frameAutosaveName == "KasetMainWindow" {
+        for window in NSApplication.shared.windows where window.frameAutosaveName == "YTMPrivateMainWindow" {
             window.makeKeyAndOrderFront(nil)
             NSApplication.shared.activate(ignoringOtherApps: true)
             return

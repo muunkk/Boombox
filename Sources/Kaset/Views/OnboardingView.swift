@@ -17,7 +17,7 @@ struct OnboardingView: View {
                 CassetteIcon(size: 80)
                     .foregroundStyle(.tint)
 
-                Text("Welcome to Kaset")
+                Text("Welcome to YTM Private")
                     .font(.largeTitle)
                     .fontWeight(.bold)
 

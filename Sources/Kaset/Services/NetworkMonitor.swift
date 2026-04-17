@@ -68,7 +68,7 @@ final class NetworkMonitor {
 
     private init() {
         self.monitor = NWPathMonitor()
-        self.queue = DispatchQueue(label: "com.kaset.networkMonitor", qos: .utility)
+        self.queue = DispatchQueue(label: "com.melboonchan.ytmprivate.networkMonitor", qos: .utility)
         self.startMonitoring()
     }
 

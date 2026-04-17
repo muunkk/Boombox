@@ -89,7 +89,7 @@ enum KeychainCookieStorage {
     private static let writeCoordinator = CookieArchiveWriteCoordinator()
 
     /// Keychain service identifier for cookie storage.
-    private static let service = "com.kaset.auth-cookies"
+    private static let service = "com.melboonchan.ytmprivate.auth-cookies"
 
     /// Keychain account identifier.
     private static let account = "youtube-music-cookies"
@@ -454,112 +454,6 @@ enum KeychainCookieStorage {
             Self.logger.info("Deleted cookies from Keychain")
         } else if status != errSecItemNotFound {
             Self.logger.error("Failed to delete cookies from Keychain: \(status)")
-        }
-    }
-}
-
-// MARK: - LegacyCookieMigration
-
-/// Handles one-time migration from file-based cookie storage to Keychain.
-/// This ensures existing users don't lose their login session.
-enum LegacyCookieMigration {
-    private static let logger = DiagnosticsLogger.webKit
-
-    /// Returns the URL for the legacy cookie backup file.
-    private static var legacyFileURL: URL? {
-        guard let appSupport = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first else {
-            return nil
-        }
-        return appSupport
-            .appendingPathComponent("Kaset", isDirectory: true)
-            .appendingPathComponent("cookies.dat")
-    }
-
-    /// Migrates cookies from the legacy file to Keychain if needed.
-    /// Returns true if migration occurred, false if no migration was needed.
-    @discardableResult
-    static func migrateIfNeeded() -> Bool {
-        // If Keychain already has cookies, do not repeatedly migrate on every startup.
-        guard !KeychainCookieStorage.hasCookieItem() else { return false }
-
-        guard let fileURL = legacyFileURL,
-              FileManager.default.fileExists(atPath: fileURL.path)
-        else {
-            // No legacy file exists, nothing to migrate
-            return false
-        }
-
-        self.logger.info("Found legacy cookie file, migrating to Keychain...")
-
-        // Read cookies from legacy file
-        guard let data = try? Data(contentsOf: fileURL),
-              let cookieDataArray = try? NSKeyedUnarchiver.unarchivedObject(
-                  ofClasses: [NSArray.self, NSData.self],
-                  from: data
-              ) as? [Data]
-        else {
-            self.logger.error("Failed to read legacy cookie file for migration")
-            // Delete corrupted file
-            Self.deleteLegacyFile()
-            return false
-        }
-
-        let cookies = cookieDataArray.compactMap { cookieData -> HTTPCookie? in
-            guard let stringProperties = try? NSKeyedUnarchiver.unarchivedObject(
-                ofClasses: [NSDictionary.self, NSString.self, NSDate.self, NSNumber.self],
-                from: cookieData
-            ) as? [String: Any] else {
-                return nil
-            }
-
-            var convertedProperties: [HTTPCookiePropertyKey: Any] = [:]
-            for (key, value) in stringProperties {
-                convertedProperties[HTTPCookiePropertyKey(key)] = value
-            }
-            return HTTPCookie(properties: convertedProperties)
-        }
-
-        let now = Date()
-        let validCookies = cookies.filter { cookie in
-            KeychainCookieStorage.isValidAuthCookie(cookie, now: now)
-        }
-
-        guard !validCookies.isEmpty else {
-            self.logger.info("Legacy file contained no valid cookies")
-            #if !DEBUG
-                Self.deleteLegacyFile()
-            #endif
-            return false
-        }
-
-        // Save to Keychain
-        KeychainCookieStorage.saveCookies(validCookies)
-
-        // Verify migration succeeded by checking if cookies were actually saved
-        // Note: loadCookies() returns nil if Keychain access fails (e.g., unsigned builds)
-        guard let savedCookies = KeychainCookieStorage.loadCookies(), !savedCookies.isEmpty else {
-            self.logger.error("Migration verification failed - keeping legacy file as backup")
-            // Don't delete the file - Keychain may not be accessible
-            return false
-        }
-
-        self.logger.info("✓ Successfully migrated \(validCookies.count) cookies to Keychain")
-        Self.deleteLegacyFile()
-        return true
-    }
-
-    /// Deletes the legacy cookie file.
-    private static func deleteLegacyFile() {
-        guard let fileURL = legacyFileURL else { return }
-
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-            self.logger.info("Deleted legacy cookie file")
-        } catch {
-            self.logger.warning("Failed to delete legacy cookie file: \(error.localizedDescription)")
         }
     }
 }

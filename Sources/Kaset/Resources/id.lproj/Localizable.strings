@@ -39,17 +39,11 @@
 
 "Analyzing..." = "Menganalisis...";
 
-"Apple Intelligence" = "Apple Intelligence";
 
-"Apple Intelligence & Siri Settings" = "Apple Intelligence & Pengaturan Siri";
 
-"Apple Intelligence is currently unavailable." = "Apple Intelligence saat ini tidak tersedia.";
 
-"Apple Intelligence is downloading. This may take a few minutes." = "Apple Intelligence sedang diunduh. Ini mungkin memakan waktu beberapa menit.";
 
-"Apple Intelligence is not available" = "Apple Intelligence tidak tersedia";
 
-"Apple Intelligence is ready to use" = "Apple Intelligence siap digunakan";
 
 "Apply Changes" = "Terapkan Perubahan";
 
@@ -61,7 +55,6 @@
 
 "Command Bar (⌘L)" = "Bilah Perintah (⌘L)";
 
-"Ask anything about music..." = "Tanya apa saja tentang musik...";
 
 "Automatically check for updates" = "Periksa pembaruan secara otomatis";
 
@@ -153,11 +146,9 @@
 
 "Edit" = "Edit";
 
-"Enable %@ Scrobbling" = "Aktifkan Scrobbling %@";
 
 "Enable AI Features" = "Aktifkan Fitur AI";
 
-"Enable Apple Intelligence in System Settings to use AI features." = "Aktifkan Apple Intelligence di Pengaturan Sistem untuk menggunakan fitur AI.";
 
 
 "Enable Synced Lyrics" = "Aktifkan Lirik Tersinkron";
@@ -165,7 +156,6 @@
 
 "Error: %@" = "Kesalahan: %@";
 
-"Explain lyrics with AI" = "Jelaskan lirik dengan AI";
 
 "Explore" = "Jelajah";
 
@@ -417,7 +407,6 @@
 
 "Save shuffle and repeat settings across app restarts" = "Simpan pengaturan acak dan ulangi setelah aplikasi dimulai ulang";
 
-"Scrobbling" = "Scrobbling";
 
 "Search" = "Cari";
 
@@ -488,7 +477,6 @@
 
 "There aren't any lyrics available for this song." = "Tidak ada lirik yang tersedia untuk lagu ini.";
 
-"This Mac doesn't support Apple Intelligence. An Apple Silicon Mac is required." = "Mac ini tidak mendukung Apple Intelligence. Diperlukan Mac dengan chip Apple Silicon.";
 
 "Top songs" = "Lagu teratas";
 
@@ -540,7 +528,7 @@
 
 "Waiting for authorization…" = "Menunggu otorisasi…";
 
-"Welcome to Kaset" = "Selamat datang di Kaset";
+"Welcome to YTM Private" = "Selamat datang di YTM Private";
 
 "What would you like to change?" = "Apa yang ingin Anda ubah?";
 
@@ -548,9 +536,7 @@
 
 "What would you like to do?" = "Apa yang ingin Anda lakukan?";
 
-"What's New in Kaset" = "Apa yang Baru di Kaset";
 
-"When enabled, you can use natural language commands, AI-powered playlist refinement, and lyrics explanations." = "Jika diaktifkan, Anda dapat menggunakan perintah bahasa alami, penyempurnaan daftar putar bertenaga AI, dan penjelasan lirik.";
 
 "Your Library" = "Pustaka Anda";
 
