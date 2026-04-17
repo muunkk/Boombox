@@ -100,13 +100,6 @@ struct MainWindow: View {
                         .opacity(self.playerService.showMiniPlayer ? 0.95 : 0)
 
                     if self.playerService.showMiniPlayer {
-                        AudioOnlyStartupMask()
-                            .frame(width: 120, height: 68)
-                            .allowsHitTesting(false)
-                            .accessibilityHidden(true)
-                    }
-
-                    if self.playerService.showMiniPlayer {
                         Button {
                             self.playerService.confirmPlaybackStarted()
                         } label: {
@@ -414,34 +407,6 @@ struct MainWindow: View {
             group.addTask { await self.historyViewModel?.load() }
             group.addTask { await self.libraryViewModel?.refresh() }
         }
-    }
-}
-
-// MARK: - AudioOnlyStartupMask
-
-@available(macOS 26.0, *)
-private struct AudioOnlyStartupMask: View {
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(.regularMaterial)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.black.opacity(0.55))
-                }
-
-            HStack(spacing: 8) {
-                Image(systemName: "speaker.wave.2.fill")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.red)
-
-                Text("Audio")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            .padding(.horizontal, 12)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 }
 

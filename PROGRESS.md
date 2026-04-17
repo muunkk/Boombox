@@ -6,7 +6,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `feature/audio-only-playback`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: audio-only startup flash fix at `5452e07` on `feature/audio-only-playback`; stacked on `feature/player-button-layout`
+- Latest completed checkpoint: removed visible audio startup tile on `feature/audio-only-playback`; stacked on `feature/player-button-layout`
 - `swift build`: passes
 - `swift test`: passes (897 tests after audio-only playback coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
@@ -128,7 +128,8 @@ Final verification after merging to `personal/main`:
 - Summary:
   - Added a dedicated singleton WebView user script that forces YouTube Music's Song/Video switcher back to `Song`.
   - Hides the Video toggle and the small Song/Video popup when YouTube Music injects it into the player page.
-  - Applies the hide pass immediately on page mutations and covers the first-start WebView with a native audio-only mask so YouTube's popup cannot flash during startup.
+  - Applies the hide pass immediately on page mutations.
+  - Removed the visible native audio startup tile so first playback can stay visually clean while the faster script handles the YouTube popup.
   - Leaves the underlying WebKit media element alone so DRM audio playback, media keys, Now Playing, lyrics timing, and volume control keep using the existing path.
   - Added JavaScriptCore coverage for the injected script so the popup-hiding behavior is locked in.
 - Verification:
