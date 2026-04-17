@@ -37,6 +37,11 @@ enum AccessibilityID {
         static let trackTitle = "playerBar.trackTitle"
         static let trackArtist = "playerBar.trackArtist"
         static let thumbnail = "playerBar.thumbnail"
+        static let nowPlayingTrigger = "playerBar.nowPlayingTrigger"
+        static let expandedPopover = "playerBar.expandedPopover"
+        static let expandedPopoverFocusButton = "playerBar.expandedPopover.focusButton"
+        static let expandedPopoverCollapseButton = "playerBar.expandedPopover.collapseButton"
+        static let expandedPopoverProgressSlider = "playerBar.expandedPopover.progressSlider"
     }
 
     // MARK: - Queue View
@@ -143,6 +148,20 @@ enum AccessibilityID {
         static let commandBar = "mainWindow.commandBar"
         static let commandBarOverlay = "mainWindow.commandBarOverlay"
         static let commandBarInput = "mainWindow.commandBarInput"
+        static let focusPlayer = "mainWindow.focusPlayer"
+        static let focusPlayerExitButton = "mainWindow.focusPlayer.exitButton"
+        static let focusPlayerProgressSlider = "mainWindow.focusPlayer.progressSlider"
+        static let focusPlayerLikeButton = "mainWindow.focusPlayer.likeButton"
+        static let focusPlayerLyricsButton = "mainWindow.focusPlayer.lyricsButton"
+        static let focusPlayerQueueButton = "mainWindow.focusPlayer.queueButton"
+        static let compactPlayer = "mainWindow.compactPlayer"
+        static let compactPlayerBackButton = "mainWindow.compactPlayer.backButton"
+        static let compactPlayerSeekSlider = "mainWindow.compactPlayer.seekSlider"
+        static let compactPlayerLikeButton = "mainWindow.compactPlayer.likeButton"
+        static let compactPlayerLyricsButton = "mainWindow.compactPlayer.lyricsButton"
+        static let compactPlayerQueueButton = "mainWindow.compactPlayer.queueButton"
+        static let compactPlayerAirPlayButton = "mainWindow.compactPlayer.airPlayButton"
+        static let compactPlayerVolumeSlider = "mainWindow.compactPlayer.volumeSlider"
     }
 
     // MARK: - Explore View

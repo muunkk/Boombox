@@ -22,12 +22,15 @@ struct PlayerBar: View {
     /// Local volume value for smooth slider dragging.
     @State private var volumeValue: Double = 1.0
     @State private var isAdjustingVolume = false
+    @State private var audioOutput = AudioOutputDeviceInfo.unknown
 
     /// Cached formatted progress string to avoid repeated formatting.
     @State private var formattedProgress: String = "0:00"
     @State private var formattedRemaining: String = "-0:00"
     /// Last integer second of progress to reduce string formatting frequency.
     @State private var lastProgressSecond: Int = -1
+    @State private var isTrackInfoHovering = false
+    @State private var isNowPlayingPopoverPresented = false
 
     var body: some View {
         GlassEffectContainer(spacing: 0) {
@@ -84,14 +87,28 @@ struct PlayerBar: View {
 
                 // Command + Up Arrow: Volume up
                 Button("") {
-                    Task { await self.playerService.setVolume(min(1.0, self.playerService.volume + 0.1)) }
+                    Task {
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: 0.1
+                            )
+                        )
+                    }
                 }
                 .keyboardShortcut(.upArrow, modifiers: .command)
                 .opacity(0)
 
                 // Command + Down Arrow: Volume down
                 Button("") {
-                    Task { await self.playerService.setVolume(max(0.0, self.playerService.volume - 0.1)) }
+                    Task {
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: -0.1
+                            )
+                        )
+                    }
                 }
                 .keyboardShortcut(.downArrow, modifiers: .command)
                 .opacity(0)
@@ -113,12 +130,16 @@ struct PlayerBar: View {
         .onChange(of: self.playerService.volume) { _, newValue in
             // Sync local volume value when not actively adjusting
             if !self.isAdjustingVolume {
-                self.volumeValue = newValue
+                self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: newValue)
             }
         }
         .onAppear {
             // Sync local volume value from saved state on initial load
-            self.volumeValue = self.playerService.volume
+            self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: self.playerService.volume)
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+        }
+        .task {
+            await self.refreshAudioOutputLoop()
         }
     }
 
@@ -130,19 +151,27 @@ struct PlayerBar: View {
             if case let .error(message) = playerService.state {
                 self.errorView(message: message)
             } else {
-                // Track info (blurred when hovering and track is playing)
-                self.trackInfoView
-                    .blur(radius: self.isHovering && self.playerService.currentTrack != nil ? 8 : 0)
-                    .opacity(self.isHovering && self.playerService.currentTrack != nil ? 0 : 1)
-
                 // Seek bar (shown when hovering and track is playing)
-                if self.isHovering, self.playerService.currentTrack != nil {
+                if self.shouldShowHoverSeekBar {
                     self.seekBarView
                         .transition(.opacity)
                 }
+
+                // Track info (blurred when hovering and track is playing)
+                self.trackInfoView
+                    .blur(radius: self.shouldShowHoverSeekBar ? 8 : 0)
+                    .opacity(self.shouldShowHoverSeekBar ? 0.001 : 1)
+                    .accessibilityHidden(self.shouldShowHoverSeekBar)
             }
         }
         .frame(maxWidth: 400)
+    }
+
+    private var shouldShowHoverSeekBar: Bool {
+        self.isHovering
+            && self.playerService.currentTrack != nil
+            && !self.isTrackInfoHovering
+            && !self.isNowPlayingPopoverPresented
     }
 
     // MARK: - Error View
@@ -179,10 +208,35 @@ struct PlayerBar: View {
     // MARK: - Track Info View
 
     private var trackInfoView: some View {
+        Button {
+            guard self.playerService.currentTrack != nil else { return }
+            HapticService.navigation()
+            withAnimation(AppAnimation.quick) {
+                self.isNowPlayingPopoverPresented = true
+            }
+        } label: {
+            self.trackInfoContent
+        }
+        .buttonStyle(.plain)
+        .disabled(self.playerService.currentTrack == nil)
+        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingTrigger)
+        .accessibilityLabel(self.nowPlayingAccessibilityLabel)
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.12)) {
+                self.isTrackInfoHovering = hovering
+            }
+        }
+        .popover(isPresented: self.$isNowPlayingPopoverPresented, arrowEdge: .bottom) {
+            ExpandedNowPlayingPopoverView(isPresented: self.$isNowPlayingPopoverPresented)
+        }
+    }
+
+    private var trackInfoContent: some View {
         HStack(spacing: 10) {
             // Thumbnail
             if let track = self.playerService.currentTrack {
                 SongThumbnailView(song: track, size: 36, cornerRadius: 4)
+                    .accessibilityIdentifier(AccessibilityID.PlayerBar.thumbnail)
             } else {
                 RoundedRectangle(cornerRadius: 4)
                     .fill(.quaternary)
@@ -194,21 +248,33 @@ struct PlayerBar: View {
             }
 
             // Track info
-            if let track = playerService.currentTrack {
+            if let track = self.playerService.currentTrack {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(track.title)
                         .font(.system(size: 12, weight: .medium))
                         .lineLimit(1)
                         .foregroundStyle(.primary)
+                        .accessibilityIdentifier(AccessibilityID.PlayerBar.trackTitle)
 
                     Text(track.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : track.artistsDisplay)
                         .font(.system(size: 10))
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier(AccessibilityID.PlayerBar.trackArtist)
                 }
                 .frame(maxWidth: 200, alignment: .leading)
             }
         }
+        .contentShape(Rectangle())
+    }
+
+    private var nowPlayingAccessibilityLabel: String {
+        guard let track = self.playerService.currentTrack else {
+            return String(localized: "No song playing")
+        }
+
+        let artist = track.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : track.artistsDisplay
+        return String(localized: "Now playing: \(track.title) by \(artist)")
     }
 
     // MARK: - Seek Bar View (replaces track info on hover)
@@ -378,14 +444,18 @@ struct PlayerBar: View {
                 HapticService.toggle()
                 self.playerService.showAirPlayPicker()
             } label: {
-                Image(systemName: "airplayaudio")
+                Image(systemName: self.audioOutputIcon)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(self.playerService.isAirPlayConnected ? .red : .primary.opacity(0.85))
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
             .accessibilityIdentifier(AccessibilityID.PlayerBar.airplayButton)
-            .accessibilityLabel(self.playerService.isAirPlayConnected ? String(localized: "AirPlay Connected") : String(localized: "AirPlay"))
+            .accessibilityLabel(
+                self.playerService.isAirPlayConnected
+                    ? String(localized: "AirPlay Connected")
+                    : String(localized: "Audio Output: \(self.audioOutput.accessibilityName)")
+            )
             .disabled(self.playerService.currentTrack == nil)
 
             Divider()
@@ -407,7 +477,7 @@ struct PlayerBar: View {
                     self.isAdjustingVolume = false
                     // Always apply volume when interaction ends to ensure WebView is synced
                     Task {
-                        await self.playerService.setVolume(self.volumeValue)
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: self.volumeValue))
                     }
                 }
             }
@@ -422,7 +492,7 @@ struct PlayerBar: View {
                         HapticService.sliderBoundary()
                     }
                     Task {
-                        await self.playerService.setVolume(newValue)
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
                     }
                 }
             }
@@ -435,24 +505,6 @@ struct PlayerBar: View {
         @Bindable var player = self.playerService
 
         return HStack(spacing: 12) {
-            // Dislike button
-            Button {
-                HapticService.toggle()
-                self.playerService.dislikeCurrentTrack()
-            } label: {
-                Image(systemName: self.playerService.currentTrackLikeStatus == .dislike
-                    ? "hand.thumbsdown.fill"
-                    : "hand.thumbsdown")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.currentTrackLikeStatus == .dislike ? .red : .primary.opacity(0.85))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.pressable)
-            .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .dislike)
-            .accessibilityLabel(String(localized: "Dislike"))
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .dislike ? String(localized: "Disliked") : String(localized: "Not disliked"))
-            .disabled(self.playerService.currentTrack == nil)
-
             // Like button
             Button {
                 HapticService.toggle()
@@ -509,13 +561,24 @@ struct PlayerBar: View {
     }
 
     private var volumeIcon: String {
-        let currentVolume = self.isAdjustingVolume ? self.volumeValue : self.playerService.volume
+        let currentVolume = self.isAdjustingVolume ? VolumeCurve.outputVolume(forSliderValue: self.volumeValue) : self.playerService.volume
         if currentVolume == 0 {
             return "speaker.slash.fill"
         } else if currentVolume < 0.5 {
             return "speaker.wave.1.fill"
         } else {
             return "speaker.wave.2.fill"
+        }
+    }
+
+    private var audioOutputIcon: String {
+        self.audioOutput.systemImageName(fallbackVolumeIcon: self.volumeIcon)
+    }
+
+    private func refreshAudioOutputLoop() async {
+        while !Task.isCancelled {
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            try? await Task.sleep(for: .seconds(5))
         }
     }
 }

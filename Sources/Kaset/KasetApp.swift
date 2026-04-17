@@ -13,6 +13,10 @@ extension EnvironmentValues {
     @Entry var showCommandBar: Binding<Bool> = .constant(false)
 }
 
+extension EnvironmentValues {
+    @Entry var playerPresentationMode: Binding<PlayerPresentationMode> = .constant(.standard)
+}
+
 // MARK: - KasetApp
 
 /// Main entry point for the YTM Private macOS application.
@@ -41,6 +45,9 @@ struct KasetApp: App {
 
     /// Whether the command bar is visible.
     @State private var showCommandBar = false
+
+    /// Current player presentation mode.
+    @State private var playerPresentationMode: PlayerPresentationMode = .standard
 
     init() {
         Bundle.enableAppLocalizationOverride()
@@ -109,6 +116,7 @@ struct KasetApp: App {
                     .environment(\.searchFocusTrigger, self.$searchFocusTrigger)
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)
+                    .environment(\.playerPresentationMode, self.$playerPresentationMode)
                     .onAppear {
                         DiagnosticsLogger.app.info("KasetApp: App content appeared")
                         // Wire up PlayerService to AppDelegate for dock menu actions
@@ -124,6 +132,9 @@ struct KasetApp: App {
 
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
+                    }
+                    .onChange(of: self.playerPresentationMode) { oldMode, newMode in
+                        self.appDelegate.transitionPlayerPresentationMode(from: oldMode, to: newMode)
                     }
             }
         }
@@ -168,7 +179,12 @@ struct KasetApp: App {
                 // Volume Up - ⌘↑
                 Button("Volume Up") {
                     Task {
-                        await self.playerService.setVolume(min(1.0, self.playerService.volume + 0.1))
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: 0.1
+                            )
+                        )
                     }
                 }
                 .keyboardShortcut(.upArrow, modifiers: .command)
@@ -176,7 +192,12 @@ struct KasetApp: App {
                 // Volume Down - ⌘↓
                 Button("Volume Down") {
                     Task {
-                        await self.playerService.setVolume(max(0.0, self.playerService.volume - 0.1))
+                        await self.playerService.setVolume(
+                            VolumeCurve.steppedOutputVolume(
+                                fromOutputVolume: self.playerService.volume,
+                                bySliderStep: -0.1
+                            )
+                        )
                     }
                 }
                 .keyboardShortcut(.downArrow, modifiers: .command)
@@ -211,6 +232,24 @@ struct KasetApp: App {
                     }
                 }
                 .keyboardShortcut("y", modifiers: .command)
+
+                Divider()
+
+                Button(self.playerPresentationMode == .focus ? "Exit Focus Player" : "Focus Player") {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        self.playerPresentationMode = self.playerPresentationMode == .focus ? .standard : .focus
+                    }
+                }
+                .keyboardShortcut("f", modifiers: [.command, .shift])
+                .disabled(self.playerService.currentTrack == nil)
+
+                Button(self.playerPresentationMode == .compact ? "Exit Small Player" : "Small Player") {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        self.playerPresentationMode = self.playerPresentationMode == .compact ? .standard : .compact
+                    }
+                }
+                .keyboardShortcut("m", modifiers: [.command, .shift])
+                .disabled(self.playerService.currentTrack == nil && self.playerPresentationMode != .compact)
             }
 
             // Navigation commands - replace default sidebar toggle
