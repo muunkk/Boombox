@@ -285,31 +285,6 @@ else
   CODESIGN_ARGS=(--force --timestamp --options runtime --sign "$CODESIGN_ID")
 fi
 
-resign() { codesign "${CODESIGN_ARGS[@]}" "$1"; }
-
-# Sign Sparkle components (innermost first)
-SPARKLE="$APP_BUNDLE/Contents/Frameworks/Sparkle.framework"
-if [[ -d "$SPARKLE" ]]; then
-  echo "  → Signing Sparkle.framework..."
-  # Sign nested binaries first
-  [[ -f "$SPARKLE/Versions/B/Sparkle" ]] && resign "$SPARKLE/Versions/B/Sparkle"
-  [[ -f "$SPARKLE/Versions/B/Autoupdate" ]] && resign "$SPARKLE/Versions/B/Autoupdate"
-  [[ -d "$SPARKLE/Versions/B/Updater.app" ]] && {
-    [[ -f "$SPARKLE/Versions/B/Updater.app/Contents/MacOS/Updater" ]] && resign "$SPARKLE/Versions/B/Updater.app/Contents/MacOS/Updater"
-    resign "$SPARKLE/Versions/B/Updater.app"
-  }
-  [[ -d "$SPARKLE/Versions/B/XPCServices/Downloader.xpc" ]] && {
-    [[ -f "$SPARKLE/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader" ]] && resign "$SPARKLE/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader"
-    resign "$SPARKLE/Versions/B/XPCServices/Downloader.xpc"
-  }
-  [[ -d "$SPARKLE/Versions/B/XPCServices/Installer.xpc" ]] && {
-    [[ -f "$SPARKLE/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer" ]] && resign "$SPARKLE/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer"
-    resign "$SPARKLE/Versions/B/XPCServices/Installer.xpc"
-  }
-  resign "$SPARKLE/Versions/B" 2>/dev/null || true
-  resign "$SPARKLE"
-fi
-
 # Sign the app bundle with entitlements
 if [[ -f "$ROOT/Kaset.entitlements" ]]; then
   codesign "${CODESIGN_ARGS[@]}" --entitlements "$ROOT/Kaset.entitlements" "$APP_BUNDLE"

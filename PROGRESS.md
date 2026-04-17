@@ -25,7 +25,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 ## Remaining Work
 
 - [x] Delete orphaned AI/FoundationModels tests so `swift test` can compile again
-- [ ] Remove distribution leftovers: `Casks/`, `appcast.xml`, Sparkle release scripts, GitHub release workflow, stale Sparkle signing code
+- [x] Remove distribution leftovers: `Casks/`, `appcast.xml`, Sparkle release scripts, GitHub release workflow, stale Sparkle signing code
 - [ ] Remove remaining floating-video metadata leftovers: `MusicVideoType`, `Song.hasVideo`, `Song.musicVideoType`, `currentTrackHasVideo`, `MOCK_HAS_VIDEO`, `VideoWindow` IDs
 - [ ] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
 - [ ] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, no `Cmd+K` palette action
