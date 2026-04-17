@@ -121,6 +121,7 @@ struct KasetApp: App {
                         DiagnosticsLogger.app.info("KasetApp: App content appeared")
                         // Wire up PlayerService to AppDelegate for dock menu actions
                         self.appDelegate.playerService = self.playerService
+                        self.appDelegate.currentPlayerPresentationMode = self.playerPresentationMode
                         // Reference notificationService to keep SwiftUI from deallocating it
                         _ = self.notificationService
                     }
@@ -134,7 +135,19 @@ struct KasetApp: App {
                         await self.accountService?.fetchAccounts()
                     }
                     .onChange(of: self.playerPresentationMode) { oldMode, newMode in
+                        self.appDelegate.currentPlayerPresentationMode = newMode
                         self.appDelegate.transitionPlayerPresentationMode(from: oldMode, to: newMode)
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: .playerPresentationModeRequested)) { notification in
+                        guard let rawMode = notification.userInfo?[PlayerPresentationMode.requestNotificationModeKey] as? String,
+                              let mode = PlayerPresentationMode(rawValue: rawMode)
+                        else {
+                            return
+                        }
+
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            self.playerPresentationMode = mode
+                        }
                     }
             }
         }

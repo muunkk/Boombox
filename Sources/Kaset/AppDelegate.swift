@@ -15,6 +15,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Using strong reference to prevent deallocation when window is hidden.
     private var mainWindow: NSWindow?
 
+    /// Current SwiftUI player presentation mode, mirrored from KasetApp for Dock menu labels.
+    var currentPlayerPresentationMode: PlayerPresentationMode = .standard
+
     /// Coordinates same-window resizing for player presentation modes.
     private let playerPresentationWindowCoordinator = PlayerPresentationWindowCoordinator()
 
@@ -116,31 +119,112 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
 
-        let playPauseItem = NSMenuItem(
-            title: "Play/Pause",
+        self.addNowPlayingHeader(to: menu)
+        menu.addItem(.separator())
+
+        let canControlPlayback = self.playerService?.currentTrack != nil || self.playerService?.pendingPlayVideoId != nil
+        let hasCurrentTrack = self.playerService?.currentTrack != nil
+
+        self.addDockMenuItem(
+            to: menu,
+            title: self.playerService?.isPlaying == true ? "Pause" : "Play",
             action: #selector(dockMenuPlayPause),
-            keyEquivalent: ""
+            enabled: canControlPlayback
         )
-        playPauseItem.target = self
-        menu.addItem(playPauseItem)
-
-        let nextItem = NSMenuItem(
-            title: "Next Track",
-            action: #selector(dockMenuNext),
-            keyEquivalent: ""
-        )
-        nextItem.target = self
-        menu.addItem(nextItem)
-
-        let previousItem = NSMenuItem(
+        self.addDockMenuItem(
+            to: menu,
             title: "Previous Track",
             action: #selector(dockMenuPrevious),
-            keyEquivalent: ""
+            enabled: canControlPlayback
         )
-        previousItem.target = self
-        menu.addItem(previousItem)
+        self.addDockMenuItem(
+            to: menu,
+            title: "Next Track",
+            action: #selector(dockMenuNext),
+            enabled: canControlPlayback
+        )
+
+        menu.addItem(.separator())
+
+        self.addDockMenuItem(
+            to: menu,
+            title: self.playerService?.currentTrackLikeStatus == .like ? "Unlike" : "Like",
+            action: #selector(dockMenuToggleLike),
+            enabled: hasCurrentTrack,
+            state: self.playerService?.currentTrackLikeStatus == .like ? .on : .off
+        )
+        self.addDockMenuItem(
+            to: menu,
+            title: self.playerService?.showLyrics == true ? "Hide Lyrics" : "Show Lyrics",
+            action: #selector(dockMenuToggleLyrics),
+            enabled: hasCurrentTrack || self.playerService?.showLyrics == true,
+            state: self.playerService?.showLyrics == true ? .on : .off
+        )
+        self.addDockMenuItem(
+            to: menu,
+            title: self.playerService?.showQueue == true ? "Hide Queue" : "Show Queue",
+            action: #selector(dockMenuToggleQueue),
+            enabled: self.playerService != nil,
+            state: self.playerService?.showQueue == true ? .on : .off
+        )
+
+        menu.addItem(.separator())
+
+        self.addDockMenuItem(
+            to: menu,
+            title: self.currentPlayerPresentationMode == .focus ? "Exit Focus Player" : "Focus Player",
+            action: #selector(dockMenuToggleFocusPlayer),
+            enabled: hasCurrentTrack || self.currentPlayerPresentationMode == .focus,
+            state: self.currentPlayerPresentationMode == .focus ? .on : .off
+        )
+        self.addDockMenuItem(
+            to: menu,
+            title: self.currentPlayerPresentationMode == .compact ? "Exit Small Player" : "Small Player",
+            action: #selector(dockMenuToggleSmallPlayer),
+            enabled: hasCurrentTrack || self.currentPlayerPresentationMode == .compact,
+            state: self.currentPlayerPresentationMode == .compact ? .on : .off
+        )
+        self.addDockMenuItem(
+            to: menu,
+            title: SettingsManager.shared.showSidebarNowPlayingPanel ? "Hide Now Playing Panel" : "Show Now Playing Panel",
+            action: #selector(dockMenuToggleNowPlayingPanel),
+            state: SettingsManager.shared.showSidebarNowPlayingPanel ? .on : .off
+        )
 
         return menu
+    }
+
+    private func addNowPlayingHeader(to menu: NSMenu) {
+        guard let track = self.playerService?.currentTrack else {
+            self.addDockMenuItem(to: menu, title: "No Track Playing", enabled: false)
+            return
+        }
+
+        self.addDockMenuItem(to: menu, title: self.truncatedDockMenuTitle(track.title), enabled: false)
+
+        let artistsDisplay = track.artistsDisplay.isEmpty ? "Unknown Artist" : track.artistsDisplay
+        self.addDockMenuItem(to: menu, title: self.truncatedDockMenuTitle(artistsDisplay), enabled: false)
+    }
+
+    @discardableResult
+    private func addDockMenuItem(
+        to menu: NSMenu,
+        title: String,
+        action: Selector? = nil,
+        enabled: Bool = true,
+        state: NSControl.StateValue = .off
+    ) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: action, keyEquivalent: "")
+        item.target = action == nil ? nil : self
+        item.isEnabled = enabled
+        item.state = state
+        menu.addItem(item)
+        return item
+    }
+
+    private func truncatedDockMenuTitle(_ title: String, maxLength: Int = 56) -> String {
+        guard title.count > maxLength else { return title }
+        return "\(title.prefix(maxLength - 3))..."
     }
 
     @objc private func dockMenuPlayPause() {
@@ -174,6 +258,54 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await playerService.previous()
         }
+    }
+
+    @objc private func dockMenuToggleLike() {
+        self.playerService?.likeCurrentTrack()
+    }
+
+    @objc private func dockMenuToggleLyrics() {
+        guard let playerService else { return }
+        playerService.showLyrics.toggle()
+        self.showMainWindowAndActivate()
+    }
+
+    @objc private func dockMenuToggleQueue() {
+        guard let playerService else { return }
+        playerService.showQueue.toggle()
+        self.showMainWindowAndActivate()
+    }
+
+    @objc private func dockMenuToggleFocusPlayer() {
+        let requestedMode: PlayerPresentationMode = self.currentPlayerPresentationMode == .focus ? .standard : .focus
+        guard requestedMode == .standard || self.playerService?.currentTrack != nil else { return }
+        self.requestPlayerPresentationMode(requestedMode)
+    }
+
+    @objc private func dockMenuToggleSmallPlayer() {
+        let requestedMode: PlayerPresentationMode = self.currentPlayerPresentationMode == .compact ? .standard : .compact
+        guard requestedMode == .standard || self.playerService?.currentTrack != nil else { return }
+        self.requestPlayerPresentationMode(requestedMode)
+    }
+
+    @objc private func dockMenuToggleNowPlayingPanel() {
+        SettingsManager.shared.showSidebarNowPlayingPanel.toggle()
+        self.showMainWindowAndActivate()
+    }
+
+    private func requestPlayerPresentationMode(_ mode: PlayerPresentationMode) {
+        self.currentPlayerPresentationMode = mode
+        self.showMainWindowAndActivate()
+        NotificationCenter.default.post(
+            name: .playerPresentationModeRequested,
+            object: self,
+            userInfo: [PlayerPresentationMode.requestNotificationModeKey: mode.rawValue]
+        )
+    }
+
+    private func showMainWindowAndActivate() {
+        self.showMainWindowIfNeeded()
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
 
     /// Keep app running when the window is closed (for background audio).

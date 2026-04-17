@@ -26,3 +26,11 @@ enum PlayerPresentationMode: String, CaseIterable, Identifiable {
         }
     }
 }
+
+extension PlayerPresentationMode {
+    static let requestNotificationModeKey = "mode"
+}
+
+extension Notification.Name {
+    static let playerPresentationModeRequested = Notification.Name("YTMPrivatePlayerPresentationModeRequested")
+}
