@@ -25,14 +25,6 @@ enum TestAccessibilityID {
         static let commandBarInput = "mainWindow.commandBarInput"
     }
 
-    enum PlayerBar {
-        static let videoButton = "playerBar.video"
-    }
-
-    enum VideoWindow {
-        static let container = "videoWindow"
-    }
-
     // MARK: - Sidebar Profile
 
     enum SidebarProfile {
@@ -208,7 +200,7 @@ class KasetUITestCase: XCTestCase {
     }
 
     /// Launches the app with a mock current track (player has something playing).
-    func launchWithMockPlayer(isPlaying: Bool = true, hasVideo: Bool = false) {
+    func launchWithMockPlayer(isPlaying: Bool = true) {
         let track: [String: Any] = [
             "id": "current-track",
             "title": "Now Playing Song",
@@ -223,14 +215,8 @@ class KasetUITestCase: XCTestCase {
             self.app.launchEnvironment["MOCK_CURRENT_TRACK"] = jsonString
         }
         self.app.launchEnvironment["MOCK_IS_PLAYING"] = isPlaying ? "true" : "false"
-        self.app.launchEnvironment["MOCK_HAS_VIDEO"] = hasVideo ? "true" : "false"
 
         self.app.launch()
-    }
-
-    /// Launches the app with a mock current track that has video available.
-    func launchWithMockPlayerWithVideo(isPlaying: Bool = true) {
-        self.launchWithMockPlayer(isPlaying: isPlaying, hasVideo: true)
     }
 
     /// Launches the app with mock favorites.
@@ -301,7 +287,6 @@ class KasetUITestCase: XCTestCase {
     /// Launches the app with mock player state and mock favorites.
     func launchWithMockPlayerAndFavorites(
         isPlaying: Bool = true,
-        hasVideo: Bool = false,
         favorites: [MockFavoriteItem] = []
     ) {
         let track: [String: Any] = [
@@ -318,7 +303,6 @@ class KasetUITestCase: XCTestCase {
             self.app.launchEnvironment["MOCK_CURRENT_TRACK"] = jsonString
         }
         self.app.launchEnvironment["MOCK_IS_PLAYING"] = isPlaying ? "true" : "false"
-        self.app.launchEnvironment["MOCK_HAS_VIDEO"] = hasVideo ? "true" : "false"
 
         // Add mock favorites
         let favoritesArray = favorites.map { item -> [String: Any] in

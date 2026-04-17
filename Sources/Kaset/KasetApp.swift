@@ -125,9 +125,6 @@ struct KasetApp: App {
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
                     }
-                    .onOpenURL { url in
-                        self.handleIncomingURL(url)
-                    }
             }
         }
 
@@ -276,11 +273,8 @@ struct KasetApp: App {
             return
         }
 
-        // Fallback: find any main-capable window that's not the video window
+        // Fallback: find any main-capable window.
         for window in NSApplication.shared.windows where window.canBecomeMain {
-            if window.identifier?.rawValue == AccessibilityID.VideoWindow.container {
-                continue
-            }
             window.makeKeyAndOrderFront(nil)
             NSApplication.shared.activate(ignoringOtherApps: true)
             return
@@ -299,46 +293,6 @@ struct KasetApp: App {
         }
     }
 
-    // MARK: - URL Handling
-
-    /// Handles an incoming URL (from custom scheme).
-    private func handleIncomingURL(_ url: URL) {
-        DiagnosticsLogger.app.info("Received URL: \(url.absoluteString)")
-
-        guard let content = URLHandler.parse(url) else {
-            DiagnosticsLogger.app.warning("Unrecognized URL format: \(url.absoluteString)")
-            return
-        }
-
-        // If not logged in, ignore for now
-        guard self.authService.state.isLoggedIn else {
-            DiagnosticsLogger.app.info("Not logged in, ignoring URL")
-            return
-        }
-
-        self.handleParsedContent(content)
-    }
-
-    /// Handles parsed URL content.
-    private func handleParsedContent(_ content: URLHandler.ParsedContent) {
-        switch content {
-        case let .song(videoId):
-            DiagnosticsLogger.app.info("Playing song from URL: \(videoId)")
-            let song = Song(
-                id: videoId,
-                title: "Loading...",
-                artists: [],
-                videoId: videoId
-            )
-            Task {
-                await self.playerService.play(song: song)
-            }
-
-        case .playlist, .album, .artist:
-            // Only song playback is supported via URL scheme
-            DiagnosticsLogger.app.info("URL scheme only supports song playback")
-        }
-    }
 }
 
 // MARK: - SettingsView

@@ -129,9 +129,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         }
     }
 
-    /// Whether the current track has video available.
-    var currentTrackHasVideo: Bool = false
-
     /// Whether AirPlay is currently connected (playing to a wireless target).
     private(set) var isAirPlayConnected: Bool = false
 
@@ -342,12 +339,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
             self.logger.debug("Loaded mock playing state: \(isPlaying)")
         }
 
-        // Load mock video availability
-        if let hasVideoString = UITestConfig.environmentValue(for: UITestConfig.mockHasVideoKey) {
-            let hasVideo = hasVideoString == "true"
-            self.currentTrackHasVideo = hasVideo
-            self.logger.debug("Loaded mock video availability: \(hasVideo)")
-        }
     }
 
     /// Sets the YTMusicClient for API calls (dependency injection).
@@ -484,28 +475,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Debounces repeat-one recovery `play()` when YouTube sends bursty metadata (safety net in `PlayerService+WebQueueSync`).
     /// Internal so the WebQueueSync extension can throttle; not part of the public API.
     var lastRepeatOneRecoveryInstant: ContinuousClock.Instant?
-
-    /// Updates whether the current track has video available.
-    /// Note: This only affects the UI (enabling/disabling the video button).
-    /// It does NOT auto-close an open video window, since hasVideo detection
-    /// can be unreliable when the video element has been extracted by video mode CSS.
-    func updateVideoAvailability(hasVideo: Bool) {
-        let previousValue = self.currentTrackHasVideo
-        self.currentTrackHasVideo = hasVideo
-
-        // Don't auto-close the video window based on hasVideo detection.
-        // The detection is unreliable when video mode is active because:
-        // 1. The video element has been extracted from its original DOM location
-        // 2. The Song/Video toggle buttons may be hidden by our CSS
-        // 3. Resize or other layout changes can temporarily break detection
-        //
-        // Instead, we rely on trackChanged detection in the Coordinator to close
-        // the video window when a new track starts.
-
-        if previousValue != hasVideo {
-            self.logger.debug("Video availability updated: \(hasVideo)")
-        }
-    }
 
     /// Toggles play/pause.
     func playPause() async {

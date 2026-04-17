@@ -41,7 +41,6 @@ extension PlayerService {
         self.currentIndex = currentIndex
         self.currentTrack = currentSong
         self.pendingPlayVideoId = currentSong.videoId
-        self.currentTrackHasVideo = currentSong.musicVideoType?.hasVideoContent ?? currentSong.hasVideo ?? false
         self.showMiniPlayer = false
         self.songNearingEnd = false
         self.isKasetInitiatedPlayback = false

@@ -820,8 +820,6 @@ final class YTMusicClient: YTMusicClientProtocol {
                             duration: duration,
                             thumbnailURL: song.thumbnailURL,
                             videoId: song.videoId,
-                            hasVideo: song.hasVideo,
-                            musicVideoType: song.musicVideoType,
                             likeStatus: song.likeStatus,
                             isInLibrary: song.isInLibrary,
                             feedbackTokens: song.feedbackTokens

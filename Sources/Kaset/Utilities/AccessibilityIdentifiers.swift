@@ -32,7 +32,6 @@ enum AccessibilityID {
         static let dislikeButton = "playerBar.dislike"
         static let lyricsButton = "playerBar.lyrics"
         static let queueButton = "playerBar.queue"
-        static let videoButton = "playerBar.video"
         static let airplayButton = "playerBar.airplayButton"
         static let volumeSlider = "playerBar.volumeSlider"
         static let trackTitle = "playerBar.trackTitle"
@@ -173,10 +172,4 @@ enum AccessibilityID {
         static let scrollView = "historyView.scrollView"
     }
 
-    // MARK: - Video Window
-
-    enum VideoWindow {
-        static let container = "videoWindow"
-        static let videoContent = "videoWindow.content"
-    }
 }

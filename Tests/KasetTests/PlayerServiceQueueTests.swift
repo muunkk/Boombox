@@ -238,8 +238,6 @@ struct PlayerServiceQueueTests {
     func playbackSessionPersistence() async {
         // Arrange
         var songs = TestFixtures.makeSongs(count: 3)
-        songs[1].hasVideo = true
-        songs[1].musicVideoType = .omv
         songs[1].likeStatus = .like
         songs[1].isInLibrary = true
         songs[1].feedbackTokens = FeedbackTokens(add: "add-token", remove: "remove-token")
@@ -263,7 +261,6 @@ struct PlayerServiceQueueTests {
         #expect(newService.state == .paused)
         #expect(newService.showMiniPlayer == false)
         #expect(newService.shouldAutoloadPendingVideo == false)
-        #expect(newService.currentTrackHasVideo == true)
         #expect(newService.currentTrackLikeStatus == .like)
         #expect(newService.currentTrackInLibrary == true)
         #expect(newService.currentTrackFeedbackTokens == songs[1].feedbackTokens)

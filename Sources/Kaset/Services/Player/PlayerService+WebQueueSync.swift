@@ -85,8 +85,6 @@ extension PlayerService {
             duration: song.duration,
             thumbnailURL: intendedThumbnailURL,
             videoId: song.videoId,
-            hasVideo: song.hasVideo,
-            musicVideoType: song.musicVideoType,
             likeStatus: song.likeStatus,
             isInLibrary: song.isInLibrary,
             feedbackTokens: song.feedbackTokens

@@ -238,22 +238,6 @@ ${APP_LOCALIZATIONS_PLIST}
     <string>NSApplication</string>
     <key>LSUIElement</key>
     <false/>
-
-    <!-- URL Scheme Registration -->
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLName</key>
-            <string>com.sertacozercan.kaset</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>kaset</string>
-            </array>
-            <key>CFBundleTypeRole</key>
-            <string>Viewer</string>
-        </dict>
-    </array>
-
     <!-- Build Metadata -->
     <key>KasetBuildTimestamp</key>
     <string>${BUILD_TIMESTAMP}</string>

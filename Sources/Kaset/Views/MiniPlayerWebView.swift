@@ -465,7 +465,6 @@ final class SingletonPlayerWebView {
             let thumbnailUrl = body["thumbnailUrl"] as? String ?? ""
             let trackChanged = body["trackChanged"] as? Bool ?? false
             let likeStatusString = body["likeStatus"] as? String ?? "INDIFFERENT"
-            let hasVideo = body["hasVideo"] as? Bool ?? false
 
             // Parse like status
             let likeStatus: LikeStatus = switch likeStatusString {
@@ -483,9 +482,6 @@ final class SingletonPlayerWebView {
                     progress: Double(progress),
                     duration: Double(duration)
                 )
-
-                // Update video availability
-                self.playerService.updateVideoAvailability(hasVideo: hasVideo)
 
                 // Update like status only when track changes (initial state)
                 if trackChanged {

@@ -319,22 +319,6 @@ extension SingletonPlayerWebView {
                         }
                     }
 
-                    // Detect if actual video content is available
-                    // This is a quick DOM check for initial detection.
-                    // The API-based musicVideoType detection in fetchSongMetadata
-                    // will provide the authoritative value once metadata is loaded.
-                    let hasVideo = false;
-
-                    // Quick check: Look for Song/Video toggle buttons
-                    const toggleButtons = document.querySelectorAll('tp-yt-paper-button, button, [role="button"]');
-                    for (const btn of toggleButtons) {
-                        const text = (btn.textContent || btn.innerText || '').trim().toLowerCase();
-                        if (text === 'video' || text === 'song') {
-                            hasVideo = true;
-                            break;
-                        }
-                    }
-
                     bridge.postMessage({
                         type: 'STATE_UPDATE',
                         isPlaying: isPlaying,
@@ -345,8 +329,7 @@ extension SingletonPlayerWebView {
                         videoId: videoId,
                         thumbnailUrl: thumbnailUrl,
                         trackChanged: trackChanged,
-                        likeStatus: likeStatus,
-                        hasVideo: hasVideo
+                        likeStatus: likeStatus
                     });
                 } catch (e) {}
             }
