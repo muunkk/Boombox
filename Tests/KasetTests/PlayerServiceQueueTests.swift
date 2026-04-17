@@ -266,7 +266,7 @@ struct PlayerServiceQueueTests {
         #expect(newService.currentTrackFeedbackTokens == songs[1].feedbackTokens)
     }
 
-    @Test("Resume on a restored session reveals the mini player before loading playback")
+    @Test("Resume on a restored session starts hidden playback load")
     func resumeDeferredRestoredSession() async {
         // Arrange
         let songs = TestFixtures.makeSongs(count: 2)
@@ -283,8 +283,8 @@ struct PlayerServiceQueueTests {
         // Assert
         #expect(self.playerService.pendingPlayVideoId == songs[1].videoId)
         #expect(self.playerService.progress == 42)
-        #expect(self.playerService.state == .paused)
-        #expect(self.playerService.showMiniPlayer == true)
+        #expect(self.playerService.state == .loading)
+        #expect(self.playerService.showMiniPlayer == false)
         #expect(self.playerService.shouldAutoloadPendingVideo == true)
     }
 

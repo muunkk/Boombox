@@ -314,7 +314,7 @@ protocol PlayerServiceProtocol: AnyObject, Sendable {
     /// Index of current track in queue.
     var currentIndex: Int { get }
 
-    /// Whether the mini player should be shown.
+    /// Whether the legacy first-start WebView tile should be shown.
     var showMiniPlayer: Bool { get set }
 
     /// Like status of the current track.
@@ -391,7 +391,7 @@ protocol PlayerServiceProtocol: AnyObject, Sendable {
 
     // MARK: - State Updates
 
-    /// Called when the mini player confirms playback has started.
+    /// Called when playback is confirmed by the WebView observer or fallback mini player.
     func confirmPlaybackStarted()
 
     /// Called when the mini player is dismissed.

@@ -176,8 +176,10 @@ struct MainWindow: View {
             }
         }
         .onChange(of: self.playerService.isPlaying) { _, isPlaying in
-            // Auto-hide the WebView once playback starts
-            if isPlaying, self.playerService.showMiniPlayer {
+            // Open the session autoplay gate once the hidden WebView confirms playback.
+            if isPlaying,
+               self.playerService.showMiniPlayer || !self.playerService.hasUserInteractedThisSession
+            {
                 self.playerService.confirmPlaybackStarted()
             }
         }
