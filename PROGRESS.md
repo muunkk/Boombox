@@ -6,9 +6,9 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 - Branch: `personal/main`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: command palette suggestions and immediate search fix; see `git log --oneline -8` for exact commits
+- Latest completed checkpoint: player UI feature suite merged to `personal/main` at `a26e3b5`; see the worktree branch log below
 - `swift build`: passes
-- `swift test`: passes (885 tests after command palette search coverage)
+- `swift test`: passes (892 tests after player UI feature-suite coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -34,6 +34,30 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Add `STRIPPED.md`
 - [x] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
 - [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
+- [x] Add player UI feature suite: expanded now-playing popover, Focus Player, Small Player, hidden dislike button, dynamic audio output icon, and exponential volume curve
+
+## Worktree Branch Log
+
+Parallel feature work for the player UI suite used separate worktrees, then merged through `feature/player-ui-suite` before landing on `personal/main`.
+
+- `feature/player-ui-suite`
+  - Commit `b10a7d0`: added shared player-presentation state, environment wiring, `Focus Player` / `Small Player` menu commands, and placeholders for the alternate player surfaces.
+  - Commit `d877293`: resolved integration overlap between compact/focus player surfaces, removed duplicate progress controls, and made compact player volume use the shared exponential curve.
+  - Merged to `personal/main` as `a26e3b5`.
+- `feature/player-expanded-focus`
+  - Commit `df6d642`: made the player-bar artwork/title open a medium now-playing popover; added large artwork, progress seek, transport controls, hover actions, and the full-window Focus Player with Escape/return controls.
+- `feature/player-controls`
+  - Commit `ec3d275`: hid the player-bar dislike button, added `VolumeCurve`, added default audio-output detection/icons for AirPods/AirPlay/headphones/speakers, and updated volume shortcuts/sliders to use the non-linear curve.
+- `feature/player-compact-mode`
+  - Commit `eb84cb5`: added same-window Small Player mode, compact window resize/restore coordination, lock-screen-style controls, and compact-mode frame tests.
+
+Final verification after merging to `personal/main`:
+
+- `swift build`: passed
+- `swift test`: passed, 892 tests in 73 suites
+- `Scripts/build-app.sh release`: passed
+- `codesign --verify --deep --strict .build/app/YTMPrivate.app`: passed
+- Packaged app launched from `.build/app/YTMPrivate.app`
 
 ## Resume Commands
 
