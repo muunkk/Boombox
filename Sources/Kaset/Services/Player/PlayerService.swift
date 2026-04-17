@@ -75,10 +75,11 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Index of current track in queue.
     var currentIndex: Int = 0
 
-    /// Whether the mini player should be shown (user needs to interact to start playback).
+    /// Whether the legacy first-start WebView tile should be shown.
+    /// Kept for fallback/recovery paths, but normal playback stays hidden.
     var showMiniPlayer: Bool = false
 
-    /// The video ID that needs to be played in the mini player.
+    /// The video ID that needs to be played by the persistent WebView.
     var pendingPlayVideoId: String?
 
     /// Whether the user has successfully interacted at least once this session.
@@ -370,16 +371,14 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
 
         self.pendingPlayVideoId = videoId
 
-        // If user has already interacted this session, auto-play without popup
+        // Keep first playback hidden; the persistent WebView will load from MainWindow.
+        self.showMiniPlayer = false
         if self.hasUserInteractedThisSession {
             self.logger.info("User has interacted before, auto-playing without popup")
-            self.showMiniPlayer = false
             // Load the video directly - WebView session should allow autoplay
             SingletonPlayerWebView.shared.loadVideo(videoId: videoId)
         } else {
-            // First time: show the mini player for user interaction
-            self.showMiniPlayer = true
-            self.logger.info("Showing mini player for first-time user interaction")
+            self.logger.info("Starting first playback with hidden persistent WebView")
         }
 
         // Fetch full song metadata in the background to get feedbackTokens
@@ -424,15 +423,13 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
 
         self.pendingPlayVideoId = song.videoId
 
-        // If user has already interacted this session, auto-play without popup
+        // Keep first playback hidden; the persistent WebView will load from MainWindow.
+        self.showMiniPlayer = false
         if self.hasUserInteractedThisSession {
             self.logger.info("User has interacted before, auto-playing without popup")
-            self.showMiniPlayer = false
             SingletonPlayerWebView.shared.loadVideo(videoId: song.videoId, strategy: webLoadStrategy)
         } else {
-            // First time: show the mini player for user interaction
-            self.showMiniPlayer = true
-            self.logger.info("Showing mini player for first-time user interaction")
+            self.logger.info("Starting first playback with hidden persistent WebView")
         }
 
         // Fetch full song metadata if we don't have feedbackTokens
@@ -441,7 +438,7 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         }
     }
 
-    /// Called when the mini player confirms playback has started.
+    /// Called when playback is confirmed, either by the hidden WebView observer or fallback mini player.
     /// This is the only place that should open the session autoplay gate.
     func confirmPlaybackStarted() {
         self.showMiniPlayer = false
@@ -532,14 +529,9 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         }
 
         if shouldLoadPendingVideo {
-            if self.hasUserInteractedThisSession {
-                self.showMiniPlayer = false
-                self.state = .loading
-                SingletonPlayerWebView.shared.loadVideo(videoId: pendingPlayVideoId)
-            } else {
-                self.showMiniPlayer = true
-                self.logger.info("Showing mini player so the user can resume playback")
-            }
+            self.showMiniPlayer = false
+            self.state = .loading
+            SingletonPlayerWebView.shared.loadVideo(videoId: pendingPlayVideoId)
             return
         }
 

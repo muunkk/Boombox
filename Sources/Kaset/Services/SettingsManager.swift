@@ -18,6 +18,7 @@ final class SettingsManager {
         static let syncedLyricsEnabled = "settings.syncedLyricsEnabled"
         static let romanizationEnabled = "settings.romanizationEnabled"
         static let contentLanguage = "settings.contentLanguage"
+        static let showSidebarNowPlayingPanel = "settings.showSidebarNowPlayingPanel"
     }
 
     // MARK: - Launch Page Options
@@ -210,6 +211,13 @@ final class SettingsManager {
         }
     }
 
+    /// Whether the sidebar now-playing artwork panel is visible.
+    var showSidebarNowPlayingPanel: Bool {
+        didSet {
+            UserDefaults.standard.set(self.showSidebarNowPlayingPanel, forKey: Keys.showSidebarNowPlayingPanel)
+        }
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -220,6 +228,7 @@ final class SettingsManager {
 
         self.syncedLyricsEnabled = UserDefaults.standard.object(forKey: Keys.syncedLyricsEnabled) as? Bool ?? true
         self.romanizationEnabled = UserDefaults.standard.object(forKey: Keys.romanizationEnabled) as? Bool ?? true
+        self.showSidebarNowPlayingPanel = UserDefaults.standard.object(forKey: Keys.showSidebarNowPlayingPanel) as? Bool ?? false
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),
            let style = MediaControlStyle(rawValue: rawValue)

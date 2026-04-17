@@ -17,6 +17,10 @@ enum AccessibilityID {
         static let likedMusicItem = "sidebar.likedMusic"
         static let libraryItem = "sidebar.library"
         static let historyItem = "sidebar.history"
+        static let nowPlayingPanel = "sidebar.nowPlayingPanel"
+        static let nowPlayingArtwork = "sidebar.nowPlayingArtwork"
+        static let nowPlayingFocusButton = "sidebar.nowPlayingFocusButton"
+        static let nowPlayingHideButton = "sidebar.nowPlayingHideButton"
     }
 
     // MARK: - PlayerBar
@@ -32,16 +36,13 @@ enum AccessibilityID {
         static let dislikeButton = "playerBar.dislike"
         static let lyricsButton = "playerBar.lyrics"
         static let queueButton = "playerBar.queue"
+        static let nowPlayingPanelToggle = "playerBar.nowPlayingPanelToggle"
         static let airplayButton = "playerBar.airplayButton"
+        static let seekSlider = "playerBar.seekSlider"
         static let volumeSlider = "playerBar.volumeSlider"
         static let trackTitle = "playerBar.trackTitle"
         static let trackArtist = "playerBar.trackArtist"
         static let thumbnail = "playerBar.thumbnail"
-        static let nowPlayingTrigger = "playerBar.nowPlayingTrigger"
-        static let expandedPopover = "playerBar.expandedPopover"
-        static let expandedPopoverFocusButton = "playerBar.expandedPopover.focusButton"
-        static let expandedPopoverCollapseButton = "playerBar.expandedPopover.collapseButton"
-        static let expandedPopoverProgressSlider = "playerBar.expandedPopover.progressSlider"
     }
 
     // MARK: - Queue View

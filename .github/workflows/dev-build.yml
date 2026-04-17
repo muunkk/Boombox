@@ -68,10 +68,10 @@ jobs:
 
       - name: Create DMG
         run: |
-          APP_PATH=".build/app/Kaset.app"
+          APP_PATH=".build/app/YTMPrivate.app"
 
           if [ ! -d "$APP_PATH" ]; then
-            echo "Error: Could not find Kaset.app"
+            echo "Error: Could not find YTMPrivate.app"
             exit 1
           fi
 
@@ -82,15 +82,15 @@ jobs:
           cp -R "$APP_PATH" dmg_contents/
 
           # Create DMG
-          hdiutil create -volname "Kaset-dev" \
+          hdiutil create -volname "YTMPrivate-dev" \
             -srcfolder dmg_contents \
             -ov -format UDZO \
-            kaset-dev.dmg
+            ytmprivate-dev.dmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         if: github.event_name != 'pull_request'
         with:
-          name: kaset-dev-${{ steps.slug.outputs.sha_short }}
-          path: kaset-dev.dmg
+          name: ytmprivate-dev-${{ steps.slug.outputs.sha_short }}
+          path: ytmprivate-dev.dmg
           retention-days: 30

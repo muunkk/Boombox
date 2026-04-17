@@ -285,6 +285,14 @@ final class SingletonPlayerWebView {
         )
         configuration.userContentController.addUserScript(mediaControlBootstrapScript)
 
+        // Keep the embedded YouTube Music player audio-only by suppressing the Song/Video switcher.
+        let audioOnlyScript = WKUserScript(
+            source: Self.audioOnlyPlaybackScript,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true
+        )
+        configuration.userContentController.addUserScript(audioOnlyScript)
+
         // Inject mediaSession override at document end without allowing duplicate RAF loops.
         let mediaOverrideScript = WKUserScript(
             source: Self.mediaControlOverrideScript,

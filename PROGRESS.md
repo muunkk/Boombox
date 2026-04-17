@@ -4,11 +4,11 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `personal/main`
+- Branch: `feature/audio-only-playback`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: player UI feature suite merged to `personal/main` at `a26e3b5`; see the worktree branch log below
+- Latest completed checkpoint: removed visible first-start WebView tile on `feature/audio-only-playback`; stacked on `feature/player-button-layout`
 - `swift build`: passes
-- `swift test`: passes (892 tests after player UI feature-suite coverage)
+- `swift test`: passes (897 tests after audio-only playback coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -35,6 +35,10 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
 - [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
 - [x] Add player UI feature suite: expanded now-playing popover, Focus Player, Small Player, hidden dislike button, dynamic audio output icon, and exponential volume curve
+- [x] Add player bar polish branch: persistent sidebar now-playing panel, stable bottom scrubber, and removal of the player-bar popover
+- [x] Add audio output picker branch: native popover, CoreAudio output enumeration/switching, and AirPods active icon state
+- [x] Add player button layout branch: Like moved next to Repeat, Queue moved before Lyrics
+- [x] Add audio-only playback branch: suppress YouTube Music's in-page Song/Video switcher and keep playback in Song mode
 
 ## Worktree Branch Log
 
@@ -58,6 +62,81 @@ Final verification after merging to `personal/main`:
 - `Scripts/build-app.sh release`: passed
 - `codesign --verify --deep --strict .build/app/YTMPrivate.app`: passed
 - Packaged app launched from `.build/app/YTMPrivate.app`
+
+## Player Bar Polish Branch Log
+
+- Branch: `feature/player-bar-polish`
+- Base: `personal/main` at `3a8d6d1`
+- Implementation commit: `99d569f`
+- Visibility follow-up commit: `2aead9d`
+- Toggle placement follow-up commit: `a797c1e`
+- Leading toggle follow-up commit: `cce4773`
+- Summary:
+  - Added a persisted `showSidebarNowPlayingPanel` setting.
+  - Added a toggle button in the bottom player bar for the sidebar now-playing panel.
+  - Added `NowPlayingSidebarPanel` above the sidebar profile area with artwork/title/artist and hover actions for `Focus Player` and `Hide Panel`.
+  - Removed the player-bar now-playing popover so title/art no longer conflicts with the hover scrubber.
+  - Made the bottom seek slider stay visible while dragging and always show when the sidebar now-playing panel is enabled.
+  - Changed the toggle icon to the verified `sidebar.left` SF Symbol so the hidden/off state renders visibly on macOS 26.
+  - Moved the toggle into the left transport cluster before Previous and changed it to an up/down chevron toggle.
+  - Moved the toggle before Shuffle and changed the states to left/right chevrons.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 894 tests in 73 suites
+  - `Scripts/build-app.sh release`: passed
+
+## Audio Output Picker Branch Log
+
+- Branch: `feature/audio-output-picker`
+- Base: stacked on `feature/player-bar-polish` at `8e5ea3c`
+- Implementation commit: `291bacc`
+- Renamed AirPods detection fix: `6de4023`
+- AirPods Pro icon polish: `d8c838a`
+- Summary:
+  - Replaced the bottom player-bar AirPlay-only click action with a native SwiftUI output picker popover.
+  - Extended `AudioOutputDeviceInfo` to enumerate live CoreAudio output devices and set the macOS default output device.
+  - Restored the bar button to a speaker-picker icon by default, while switching to an active AirPods icon when the current output is AirPods.
+  - Detects renamed AirPods by Apple manufacturer + Bluetooth transport metadata, not only by visible device name.
+  - Uses the AirPods Pro SF Symbol for AirPods-class outputs when the exact model cannot be derived from CoreAudio.
+  - Added checkmarked popover rows with device names, transport descriptions, and a refresh action.
+  - Kept output switching available even when no track is playing.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 895 tests in 73 suites
+  - `Scripts/build-app.sh release`: passed
+  - Packaged app launched from `.build/app/YTMPrivate.app`
+
+## Player Button Layout Branch Log
+
+- Branch: `feature/player-button-layout`
+- Base: stacked on `feature/audio-output-picker` at `454f39f`
+- Implementation commit: `cbc066e`
+- Summary:
+  - Moved the Like button into the left transport control group immediately after Repeat.
+  - Reordered the right action group so Queue appears before Lyrics.
+  - Left the audio output picker and volume controls on the right side.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 895 tests in 73 suites
+
+## Audio-Only Playback Branch Log
+
+- Branch: `feature/audio-only-playback`
+- Base: stacked on `feature/player-button-layout` at `e01d340`
+- Implementation commit: `92e205d`
+- Startup flash fix commit: `5452e07`
+- Summary:
+  - Added a dedicated singleton WebView user script that forces YouTube Music's Song/Video switcher back to `Song`.
+  - Hides the Video toggle and the small Song/Video popup when YouTube Music injects it into the player page.
+  - Applies the hide pass immediately on page mutations.
+  - Removed the visible native audio startup tile so first playback can stay visually clean while the faster script handles the YouTube popup.
+  - Removed the visible first-start WebView tile gate; first playback now loads through the hidden persistent WebView and marks the session ready once playback is observed.
+  - Leaves the underlying WebKit media element alone so DRM audio playback, media keys, Now Playing, lyrics timing, and volume control keep using the existing path.
+  - Added JavaScriptCore coverage for the injected script so the popup-hiding behavior is locked in.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 897 tests in 74 suites
+  - `Scripts/build-app.sh release`: passed
 
 ## Resume Commands
 

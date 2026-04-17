@@ -12,6 +12,16 @@ enum TestAccessibilityID {
         static let exploreItem = "sidebar.explore"
         static let likedMusicItem = "sidebar.likedMusic"
         static let libraryItem = "sidebar.library"
+        static let nowPlayingPanel = "sidebar.nowPlayingPanel"
+        static let nowPlayingArtwork = "sidebar.nowPlayingArtwork"
+        static let nowPlayingFocusButton = "sidebar.nowPlayingFocusButton"
+        static let nowPlayingHideButton = "sidebar.nowPlayingHideButton"
+    }
+
+    enum PlayerBar {
+        static let nowPlayingPanelToggle = "playerBar.nowPlayingPanelToggle"
+        static let seekSlider = "playerBar.seekSlider"
+        static let trackTitle = "playerBar.trackTitle"
     }
 
     enum Home {

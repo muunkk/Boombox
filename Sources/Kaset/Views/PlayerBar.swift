@@ -8,10 +8,11 @@ struct PlayerBar: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
 
     @Environment(PlayerService.self) private var playerService
-    @Environment(WebKitManager.self) private var webKitManager
 
     /// Namespace for glass effect morphing and unioning.
     @Namespace private var playerNamespace
+
+    @State private var settings = SettingsManager.shared
 
     @State private var isHovering = false
 
@@ -23,14 +24,15 @@ struct PlayerBar: View {
     @State private var volumeValue: Double = 1.0
     @State private var isAdjustingVolume = false
     @State private var audioOutput = AudioOutputDeviceInfo.unknown
+    @State private var availableAudioOutputs: [AudioOutputDeviceInfo] = []
+    @State private var isAudioOutputPickerPresented = false
+    @State private var audioOutputSelectionError: String?
 
     /// Cached formatted progress string to avoid repeated formatting.
     @State private var formattedProgress: String = "0:00"
     @State private var formattedRemaining: String = "-0:00"
     /// Last integer second of progress to reduce string formatting frequency.
     @State private var lastProgressSecond: Int = -1
-    @State private var isTrackInfoHovering = false
-    @State private var isNowPlayingPopoverPresented = false
 
     var body: some View {
         GlassEffectContainer(spacing: 0) {
@@ -40,7 +42,7 @@ struct PlayerBar: View {
 
                 Spacer()
 
-                // Center section: Track info OR seek bar (on hover)
+                // Center section: track info or seek bar.
                 self.centerSection
 
                 Spacer()
@@ -143,7 +145,7 @@ struct PlayerBar: View {
         }
     }
 
-    // MARK: - Center Section (track info blurs, seek bar appears on hover)
+    // MARK: - Center Section
 
     private var centerSection: some View {
         ZStack {
@@ -151,27 +153,21 @@ struct PlayerBar: View {
             if case let .error(message) = playerService.state {
                 self.errorView(message: message)
             } else {
-                // Seek bar (shown when hovering and track is playing)
-                if self.shouldShowHoverSeekBar {
+                if self.shouldShowSeekBar {
                     self.seekBarView
                         .transition(.opacity)
+                } else {
+                    self.trackInfoView
+                        .transition(.opacity)
                 }
-
-                // Track info (blurred when hovering and track is playing)
-                self.trackInfoView
-                    .blur(radius: self.shouldShowHoverSeekBar ? 8 : 0)
-                    .opacity(self.shouldShowHoverSeekBar ? 0.001 : 1)
-                    .accessibilityHidden(self.shouldShowHoverSeekBar)
             }
         }
         .frame(maxWidth: 400)
     }
 
-    private var shouldShowHoverSeekBar: Bool {
-        self.isHovering
-            && self.playerService.currentTrack != nil
-            && !self.isTrackInfoHovering
-            && !self.isNowPlayingPopoverPresented
+    private var shouldShowSeekBar: Bool {
+        self.playerService.currentTrack != nil
+            && (self.settings.showSidebarNowPlayingPanel || self.isHovering || self.isSeeking)
     }
 
     // MARK: - Error View
@@ -208,27 +204,9 @@ struct PlayerBar: View {
     // MARK: - Track Info View
 
     private var trackInfoView: some View {
-        Button {
-            guard self.playerService.currentTrack != nil else { return }
-            HapticService.navigation()
-            withAnimation(AppAnimation.quick) {
-                self.isNowPlayingPopoverPresented = true
-            }
-        } label: {
-            self.trackInfoContent
-        }
-        .buttonStyle(.plain)
-        .disabled(self.playerService.currentTrack == nil)
-        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingTrigger)
+        self.trackInfoContent
         .accessibilityLabel(self.nowPlayingAccessibilityLabel)
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.12)) {
-                self.isTrackInfoHovering = hovering
-            }
-        }
-        .popover(isPresented: self.$isNowPlayingPopoverPresented, arrowEdge: .bottom) {
-            ExpandedNowPlayingPopoverView(isPresented: self.$isNowPlayingPopoverPresented)
-        }
+        .allowsHitTesting(false)
     }
 
     private var trackInfoContent: some View {
@@ -300,6 +278,8 @@ struct PlayerBar: View {
             }
             .controlSize(.small)
             .tint(Self.brandAccent)
+            .disabled(self.playerService.duration <= 0)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.seekSlider)
 
             // Remaining time - use cached formatted string when not seeking
             Text(self.isSeeking ? "-\(self.formatTime(self.playerService.duration - self.seekValue * self.playerService.duration))" : self.formattedRemaining)
@@ -313,6 +293,12 @@ struct PlayerBar: View {
     /// Performs the actual seek operation after slider interaction ends.
     private func performSeek() {
         guard self.isSeeking else { return }
+        guard self.playerService.currentTrack != nil, self.playerService.duration > 0 else {
+            self.isSeeking = false
+            self.seekValue = 0
+            return
+        }
+
         let seekTime = self.seekValue * self.playerService.duration
         Task {
             await self.playerService.seek(to: seekTime)
@@ -338,6 +324,8 @@ struct PlayerBar: View {
 
     private var playbackControls: some View {
         HStack(spacing: 16) {
+            self.nowPlayingPanelToggleButton
+
             // Shuffle
             Button {
                 HapticService.toggle()
@@ -409,6 +397,8 @@ struct PlayerBar: View {
             .buttonStyle(.pressable)
             .accessibilityLabel(String(localized: "Repeat"))
             .accessibilityValue(self.repeatAccessibilityValue)
+
+            self.likeButton
         }
     }
 
@@ -436,27 +426,38 @@ struct PlayerBar: View {
 
     private var volumeControl: some View {
         HStack(spacing: 8) {
-            // Like/Dislike/Library actions
+            // Queue and lyrics actions
             self.actionButtons
 
-            // AirPlay button
+            // Audio output picker
             Button {
                 HapticService.toggle()
-                self.playerService.showAirPlayPicker()
+                self.refreshAvailableAudioOutputs()
+                self.isAudioOutputPickerPresented.toggle()
             } label: {
                 Image(systemName: self.audioOutputIcon)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.isAirPlayConnected ? .red : .primary.opacity(0.85))
+                    .foregroundStyle(self.audioOutputButtonIsActive ? .red : .primary.opacity(0.85))
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
             .accessibilityIdentifier(AccessibilityID.PlayerBar.airplayButton)
-            .accessibilityLabel(
-                self.playerService.isAirPlayConnected
-                    ? String(localized: "AirPlay Connected")
-                    : String(localized: "Audio Output: \(self.audioOutput.accessibilityName)")
-            )
-            .disabled(self.playerService.currentTrack == nil)
+            .accessibilityLabel(String(localized: "Audio Output: \(self.audioOutput.accessibilityName)"))
+            .help(String(localized: "Click to select the speaker to use to listen to songs."))
+            .popover(isPresented: self.$isAudioOutputPickerPresented, arrowEdge: .bottom) {
+                AudioOutputPickerPopover(
+                    currentOutput: self.audioOutput,
+                    availableOutputs: self.availableAudioOutputs,
+                    selectionError: self.audioOutputSelectionError,
+                    onRefresh: {
+                        self.refreshAvailableAudioOutputs()
+                    },
+                    onSelect: { output in
+                        self.selectAudioOutput(output)
+                    }
+                )
+                .frame(width: 280)
+            }
 
             Divider()
                 .frame(height: 20)
@@ -499,47 +500,54 @@ struct PlayerBar: View {
         }
     }
 
-    // MARK: - Action Buttons (Like/Dislike/Lyrics/Queue)
+    // MARK: - Now Playing Panel Toggle
+
+    private var nowPlayingPanelToggleButton: some View {
+        Button {
+            HapticService.toggle()
+            withAnimation(AppAnimation.standard) {
+                self.settings.showSidebarNowPlayingPanel.toggle()
+            }
+        } label: {
+            Image(systemName: self.settings.showSidebarNowPlayingPanel ? "chevron.right" : "chevron.left")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
+                .frame(width: 18)
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.pressable)
+        .glassEffectID("nowPlayingPanel", in: self.playerNamespace)
+        .accessibilityIdentifier(AccessibilityID.PlayerBar.nowPlayingPanelToggle)
+        .accessibilityLabel(String(localized: "Now Playing Panel"))
+        .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
+        .help(String(localized: "Now Playing Panel"))
+    }
+
+    // MARK: - Action Buttons
+
+    private var likeButton: some View {
+        Button {
+            HapticService.toggle()
+            self.playerService.likeCurrentTrack()
+        } label: {
+            Image(systemName: self.playerService.currentTrackLikeStatus == .like
+                ? "hand.thumbsup.fill"
+                : "hand.thumbsup")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary.opacity(0.85))
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.pressable)
+        .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
+        .accessibilityLabel(String(localized: "Like"))
+        .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
+        .disabled(self.playerService.currentTrack == nil)
+    }
 
     private var actionButtons: some View {
         @Bindable var player = self.playerService
 
         return HStack(spacing: 12) {
-            // Like button
-            Button {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            } label: {
-                Image(systemName: self.playerService.currentTrackLikeStatus == .like
-                    ? "hand.thumbsup.fill"
-                    : "hand.thumbsup")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary.opacity(0.85))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.pressable)
-            .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
-            .accessibilityLabel(String(localized: "Like"))
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
-            .disabled(self.playerService.currentTrack == nil)
-
-            // Lyrics button
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showLyrics.toggle()
-                }
-            } label: {
-                Image(systemName: "quote.bubble")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.showLyrics ? .red : .primary.opacity(0.85))
-            }
-            .buttonStyle(.pressable)
-            .glassEffectID("lyrics", in: self.playerNamespace)
-            .accessibilityIdentifier(AccessibilityID.PlayerBar.lyricsButton)
-            .accessibilityLabel(String(localized: "Lyrics"))
-            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
-
             // Queue button
             Button {
                 HapticService.toggle()
@@ -557,6 +565,22 @@ struct PlayerBar: View {
             .accessibilityLabel(String(localized: "Queue"))
             .accessibilityValue(self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden"))
 
+            // Lyrics button
+            Button {
+                HapticService.toggle()
+                withAnimation(AppAnimation.standard) {
+                    player.showLyrics.toggle()
+                }
+            } label: {
+                Image(systemName: "quote.bubble")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(self.playerService.showLyrics ? .red : .primary.opacity(0.85))
+            }
+            .buttonStyle(.pressable)
+            .glassEffectID("lyrics", in: self.playerNamespace)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.lyricsButton)
+            .accessibilityLabel(String(localized: "Lyrics"))
+            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
         }
     }
 
@@ -572,14 +596,160 @@ struct PlayerBar: View {
     }
 
     private var audioOutputIcon: String {
-        self.audioOutput.systemImageName(fallbackVolumeIcon: self.volumeIcon)
+        self.audioOutput.pickerButtonSystemImageName()
+    }
+
+    private var audioOutputButtonIsActive: Bool {
+        self.audioOutput.isAirPods || self.playerService.isAirPlayConnected
+    }
+
+    private func refreshAvailableAudioOutputs() {
+        self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+        self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+        self.audioOutputSelectionError = nil
+    }
+
+    private func selectAudioOutput(_ output: AudioOutputDeviceInfo) {
+        guard output.isSelectable else { return }
+
+        if AudioOutputDeviceInfo.setDefaultOutput(output) {
+            HapticService.success()
+            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+            self.isAudioOutputPickerPresented = false
+            self.audioOutputSelectionError = nil
+        } else {
+            HapticService.error()
+            self.audioOutputSelectionError = String(localized: "Could not switch to \(output.accessibilityName).")
+        }
     }
 
     private func refreshAudioOutputLoop() async {
         while !Task.isCancelled {
             self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+            if self.isAudioOutputPickerPresented {
+                self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+            }
             try? await Task.sleep(for: .seconds(5))
         }
+    }
+}
+
+// MARK: - AudioOutputPickerPopover
+
+@available(macOS 26.0, *)
+private struct AudioOutputPickerPopover: View {
+    let currentOutput: AudioOutputDeviceInfo
+    let availableOutputs: [AudioOutputDeviceInfo]
+    let selectionError: String?
+    let onRefresh: () -> Void
+    let onSelect: (AudioOutputDeviceInfo) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Sound Output")
+                    .font(.headline)
+
+                Spacer()
+
+                Button {
+                    self.onRefresh()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.borderless)
+                .help(String(localized: "Refresh Output Devices"))
+            }
+
+            if self.availableOutputs.isEmpty {
+                ContentUnavailableView(
+                    "No Output Devices",
+                    systemImage: "speaker.slash",
+                    description: Text("macOS did not report any output devices.")
+                )
+                .frame(minHeight: 120)
+            } else {
+                VStack(spacing: 2) {
+                    ForEach(self.availableOutputs) { output in
+                        AudioOutputPickerRow(
+                            output: output,
+                            isSelected: self.isSelected(output)
+                        ) {
+                            self.onSelect(output)
+                        }
+                    }
+                }
+            }
+
+            if let selectionError {
+                Text(selectionError)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(14)
+    }
+
+    private func isSelected(_ output: AudioOutputDeviceInfo) -> Bool {
+        output.id == self.currentOutput.id && output.isSelectable
+    }
+}
+
+// MARK: - AudioOutputPickerRow
+
+@available(macOS 26.0, *)
+private struct AudioOutputPickerRow: View {
+    let output: AudioOutputDeviceInfo
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Button {
+            self.onSelect()
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: self.output.systemImageName(fallbackVolumeIcon: "hifispeaker"))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(self.isSelected ? .red : .primary.opacity(0.85))
+                    .frame(width: 22)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(self.output.accessibilityName)
+                        .font(.system(size: 13, weight: .medium))
+                        .lineLimit(1)
+
+                    Text(self.output.transportDescription)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                if self.isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.red)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+            .background {
+                RoundedRectangle(cornerRadius: 7)
+                    .fill(self.isHovering ? Color.primary.opacity(0.08) : Color.clear)
+            }
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            self.isHovering = hovering
+        }
+        .accessibilityLabel(self.output.accessibilityName)
+        .accessibilityValue(self.isSelected ? String(localized: "Selected") : self.output.transportDescription)
     }
 }
 

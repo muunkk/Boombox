@@ -1,3 +1,4 @@
+import CoreAudio
 import Testing
 @testable import Kaset
 
@@ -29,9 +30,28 @@ struct PlayerControlsTests {
 
     @Test("Audio output icon resolver recognizes common devices")
     func audioOutputIconResolverRecognizesCommonDevices() {
-        #expect(AudioOutputIconResolver.systemImageName(deviceName: "Mel's AirPods Pro", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "airpods")
+        #expect(AudioOutputIconResolver.systemImageName(deviceName: "Mel's AirPods Pro", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "airpodspro")
         #expect(AudioOutputIconResolver.systemImageName(deviceName: "Living Room AirPlay", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "airplayaudio")
         #expect(AudioOutputIconResolver.systemImageName(deviceName: "Bluetooth Headphones", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "headphones")
         #expect(AudioOutputIconResolver.systemImageName(deviceName: "MacBook Pro Speakers", transportType: nil, fallbackVolumeIcon: "speaker.wave.2.fill") == "speaker.wave.2.fill")
+    }
+
+    @Test("Audio output picker button uses speaker icon unless AirPods are active")
+    func audioOutputPickerButtonUsesSpeakerIconUnlessAirPodsAreActive() {
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "MacBook Pro Speakers", transportType: nil) == "hifispeaker")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Studio Display Speakers", transportType: nil) == "hifispeaker")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(deviceName: "Mel's AirPods Pro", transportType: nil) == "airpodspro")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(
+            deviceName: "ลาดพร้าวซาวด์",
+            transportType: kAudioDeviceTransportTypeBluetooth,
+            manufacturer: "Apple Inc.",
+            modelUID: "2024 4c"
+        ) == "airpodspro")
+        #expect(AudioOutputIconResolver.pickerButtonSystemImageName(
+            deviceName: "Mel's Beats",
+            transportType: kAudioDeviceTransportTypeBluetooth,
+            manufacturer: "Apple Inc.",
+            modelUID: nil
+        ) == "hifispeaker")
     }
 }
