@@ -8,7 +8,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
 - Latest completed commit: `796a598 strip: remove WKWebExtension subsystem`
 - `swift build`: passes
-- `swift test`: currently fails because AI/FoundationModels test files still reference stripped types
+- `swift test`: passes (896 tests after AI-only test cleanup)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -24,7 +24,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Remaining Work
 
-- [ ] Delete orphaned AI/FoundationModels tests so `swift test` can compile again
+- [x] Delete orphaned AI/FoundationModels tests so `swift test` can compile again
 - [ ] Remove distribution leftovers: `Casks/`, `appcast.xml`, Sparkle release scripts, GitHub release workflow, stale Sparkle signing code
 - [ ] Remove remaining floating-video metadata leftovers: `MusicVideoType`, `Song.hasVideo`, `Song.musicVideoType`, `currentTrackHasVideo`, `MOCK_HAS_VIDEO`, `VideoWindow` IDs
 - [ ] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
