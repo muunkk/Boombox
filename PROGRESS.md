@@ -4,11 +4,11 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `feature/player-button-layout`
+- Branch: `feature/audio-only-playback`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: player button layout tweak at `cbc066e` on `feature/player-button-layout`; stacked on `feature/audio-output-picker`
+- Latest completed checkpoint: audio-only playback UI guard at `92e205d` on `feature/audio-only-playback`; stacked on `feature/player-button-layout`
 - `swift build`: passes
-- `swift test`: passes (895 tests after audio output picker coverage)
+- `swift test`: passes (897 tests after audio-only playback coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -38,6 +38,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Add player bar polish branch: persistent sidebar now-playing panel, stable bottom scrubber, and removal of the player-bar popover
 - [x] Add audio output picker branch: native popover, CoreAudio output enumeration/switching, and AirPods active icon state
 - [x] Add player button layout branch: Like moved next to Repeat, Queue moved before Lyrics
+- [x] Add audio-only playback branch: suppress YouTube Music's in-page Song/Video switcher and keep playback in Song mode
 
 ## Worktree Branch Log
 
@@ -117,6 +118,21 @@ Final verification after merging to `personal/main`:
 - Verification:
   - `swift build`: passed
   - `swift test`: passed, 895 tests in 73 suites
+
+## Audio-Only Playback Branch Log
+
+- Branch: `feature/audio-only-playback`
+- Base: stacked on `feature/player-button-layout` at `e01d340`
+- Implementation commit: `92e205d`
+- Summary:
+  - Added a dedicated singleton WebView user script that forces YouTube Music's Song/Video switcher back to `Song`.
+  - Hides the Video toggle and the small Song/Video popup when YouTube Music injects it into the player page.
+  - Leaves the underlying WebKit media element alone so DRM audio playback, media keys, Now Playing, lyrics timing, and volume control keep using the existing path.
+  - Added JavaScriptCore coverage for the injected script so the popup-hiding behavior is locked in.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 897 tests in 74 suites
+  - `Scripts/build-app.sh release`: passed
 
 ## Resume Commands
 
