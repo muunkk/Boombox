@@ -78,13 +78,16 @@ final class PlayerBarUITests: KasetUITestCase {
         XCTAssertTrue(waitForElement(likeButton, timeout: 10), "Like button should exist")
     }
 
-    func testDislikeButtonExists() {
+    func testDislikeButtonHidden() {
         launchWithMockPlayer(isPlaying: true)
 
         navigateToHome()
 
+        let likeButton = app.buttons["Like"]
+        XCTAssertTrue(waitForElement(likeButton, timeout: 10), "Like button should exist before checking player actions")
+
         let dislikeButton = app.buttons["Dislike"]
-        XCTAssertTrue(waitForElement(dislikeButton, timeout: 10), "Dislike button should exist")
+        XCTAssertFalse(dislikeButton.exists, "Dislike button should be hidden from the player bar")
     }
 
     // MARK: - Lyrics Button
