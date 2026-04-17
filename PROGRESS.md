@@ -1,49 +1,47 @@
-# Private Fork — Build Progress
+# Private Fork Progress
 
-Tracks where we are in executing `/Users/melboonchan/.claude/plans/rosy-crafting-moore.md`.
-Update on every commit so we can resume after an interruption.
+This file tracks the private YouTube Music macOS fork work so another session can resume safely.
 
-## Current state
+## Current State
 
-**Branch:** `personal/main`
-**Upstream fork base:** see `FORK_BASE.txt` (`700b72d` on `sozercan/kaset`)
-**Build:** ✅ `swift build` passes
+- Branch: `personal/main`
+- Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
+- Latest completed commit: `796a598 strip: remove WKWebExtension subsystem`
+- `swift build`: passes
+- `swift test`: currently fails because AI/FoundationModels test files still reference stripped types
+- Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
-## Checklist
+## Completed
 
-- [x] §2  Clone, set up `upstream` remote, `personal/main` branch, `FORK_BASE.txt`
-- [x] §3  Audit — `AUDIT.md` committed (`c9715c9`)
-- [x] §4a/c/d AI strip — committed (`d54f7cc`)
-- [ ] §4a/c/d Last.fm scrobbling strip — **IN PROGRESS** (files deleted + `KasetApp.swift` edited, uncommitted)
-- [ ] §4a/b Sparkle / WhatsNew strip + `Package.swift` dep removal
-- [ ] §4a AppleScript strip
-- [ ] §4a Floating video window strip
-- [ ] §4a WebExtensions strip (added during audit — `ExtensionsSettingsView`, `ExtensionOptionsView`, `ExtensionsManager`, WKWebExtension bits in `WebKitManager`)
-- [ ] §4a Distribution strip (`Casks/`, release scripts)
-- [ ] §4e Test target cleanup (orphan imports)
-- [ ] §5    Rebrand — USER must do in Xcode GUI (bundle ID, team, scheme, Info.plist)
-- [ ] §6    Keybinding remap: ⌘K → ⌘L (command bar), ⌘L → ⌘Y (lyrics)
-- [ ] §6b F1 Modernize UA + load `https://music.youtube.com/` in login WebView
-- [ ] §6b F2 "Sign in via Safari" fallback view for passkey users
-- [ ] §6b F3 Tighten cookie Keychain accessibility, host allowlist, Sign Out action
-- [ ] §6b F4 Strip native script bridges from login WebView config
-- [ ] §9b   `STRIPPED.md` listing every deletion
-- [ ] §7    USER: build/sign in Xcode with Personal Team
-- [ ] §8    USER: smoke-test checklist
+- [x] Clone hygiene, upstream remote, `personal/main`, and `FORK_BASE.txt`
+- [x] Pre-strip audit in `AUDIT.md`
+- [x] FoundationModels / Apple Intelligence runtime strip
+- [x] Last.fm scrobbling and Cloudflare worker strip
+- [x] Sparkle auto-updater and What's New strip
+- [x] AppleScript service strip
+- [x] Floating video window strip
+- [x] WKWebExtension subsystem strip
 
-## Notes / findings (from audit)
+## Remaining Work
 
-- Keychain cookie uses `kSecAttrAccessibleWhenUnlocked` (line 143 of `WebKitManager+Cookies.swift`) — fix to `ThisDeviceOnly` in §6b F3.
-- WebExtensions subsystem (`WKWebExtensionController`) present in `WebKitManager.swift` lines 37, 50, 82, 173–214, 237–261, 521–527. Added to strip list.
-- `GeneralSettingsView.swift:143` has a `github.com/sozercan/kaset` link — update or remove during rebrand.
-- Only outbound network hosts (after strips): music.youtube.com, i.ytimg.com, accounts.google.com, lrclib.net.
-- `DiagnosticsLogger.scrobbling` still present at `DiagnosticsLogger.swift:43`; remove with the scrobbling commit.
-- `DiagnosticsLogger.extensions` at `DiagnosticsLogger.swift:49`; remove with the extensions commit.
+- [ ] Delete orphaned AI/FoundationModels tests so `swift test` can compile again
+- [ ] Remove distribution leftovers: `Casks/`, `appcast.xml`, Sparkle release scripts, GitHub release workflow, stale Sparkle signing code
+- [ ] Remove remaining floating-video metadata leftovers: `MusicVideoType`, `Song.hasVideo`, `Song.musicVideoType`, `currentTrackHasVideo`, `MOCK_HAS_VIDEO`, `VideoWindow` IDs
+- [ ] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
+- [ ] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, no `Cmd+K` palette action
+- [ ] Harden auth: modern Safari UA, direct `https://music.youtube.com/` login, login-only WebView config, device-only Keychain cookies, cookie allowlist, Safari passkey fallback
+- [ ] Rebrand app bundle and user-facing docs to `YTM Private`
+- [ ] Add `STRIPPED.md`
+- [ ] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
 
-## How to resume after interruption
+## Resume Commands
 
-1. `cd /Users/melboonchan/Master/Projects/YTM/kaset`
-2. `git status` + `git log --oneline -5` to see last commit
-3. `swift build 2>&1 | tail -3` to see current compile state
-4. Consult this checklist; continue from the first unchecked box.
-5. After completing each step, commit and update this file.
+```bash
+cd /Users/melboonchan/Master/Projects/YTM/kaset
+git status --short --branch
+git log --oneline -8
+swift build
+swift test
+```
+
+Continue from the first unchecked item above, then update this file before committing.
