@@ -4,9 +4,9 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `feature/audio-output-picker`
+- Branch: `feature/player-button-layout`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: AirPods Pro output icon at `d8c838a` on `feature/audio-output-picker`; stacked on `feature/player-bar-polish`
+- Latest completed checkpoint: player button layout tweak at `cbc066e` on `feature/player-button-layout`; stacked on `feature/audio-output-picker`
 - `swift build`: passes
 - `swift test`: passes (895 tests after audio output picker coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
@@ -37,6 +37,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Add player UI feature suite: expanded now-playing popover, Focus Player, Small Player, hidden dislike button, dynamic audio output icon, and exponential volume curve
 - [x] Add player bar polish branch: persistent sidebar now-playing panel, stable bottom scrubber, and removal of the player-bar popover
 - [x] Add audio output picker branch: native popover, CoreAudio output enumeration/switching, and AirPods active icon state
+- [x] Add player button layout branch: Like moved next to Repeat, Queue moved before Lyrics
 
 ## Worktree Branch Log
 
@@ -103,6 +104,19 @@ Final verification after merging to `personal/main`:
   - `swift test`: passed, 895 tests in 73 suites
   - `Scripts/build-app.sh release`: passed
   - Packaged app launched from `.build/app/YTMPrivate.app`
+
+## Player Button Layout Branch Log
+
+- Branch: `feature/player-button-layout`
+- Base: stacked on `feature/audio-output-picker` at `454f39f`
+- Implementation commit: `cbc066e`
+- Summary:
+  - Moved the Like button into the left transport control group immediately after Repeat.
+  - Reordered the right action group so Queue appears before Lyrics.
+  - Left the audio output picker and volume controls on the right side.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 895 tests in 73 suites
 
 ## Resume Commands
 
