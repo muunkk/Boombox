@@ -4,11 +4,11 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `personal/main`
+- Branch: `feature/player-bar-polish`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: player UI feature suite merged to `personal/main` at `a26e3b5`; see the worktree branch log below
+- Latest completed checkpoint: player bar polish implemented at `99d569f` on `feature/player-bar-polish`; merge to `personal/main` is still pending
 - `swift build`: passes
-- `swift test`: passes (892 tests after player UI feature-suite coverage)
+- `swift test`: passes (894 tests after player bar polish coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -35,6 +35,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
 - [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
 - [x] Add player UI feature suite: expanded now-playing popover, Focus Player, Small Player, hidden dislike button, dynamic audio output icon, and exponential volume curve
+- [x] Add player bar polish branch: persistent sidebar now-playing panel, stable bottom scrubber, and removal of the player-bar popover
 
 ## Worktree Branch Log
 
@@ -58,6 +59,22 @@ Final verification after merging to `personal/main`:
 - `Scripts/build-app.sh release`: passed
 - `codesign --verify --deep --strict .build/app/YTMPrivate.app`: passed
 - Packaged app launched from `.build/app/YTMPrivate.app`
+
+## Player Bar Polish Branch Log
+
+- Branch: `feature/player-bar-polish`
+- Base: `personal/main` at `3a8d6d1`
+- Implementation commit: `99d569f`
+- Summary:
+  - Added a persisted `showSidebarNowPlayingPanel` setting.
+  - Added a toggle button in the bottom player bar for the sidebar now-playing panel.
+  - Added `NowPlayingSidebarPanel` above the sidebar profile area with artwork/title/artist and hover actions for `Focus Player` and `Hide Panel`.
+  - Removed the player-bar now-playing popover so title/art no longer conflicts with the hover scrubber.
+  - Made the bottom seek slider stay visible while dragging and always show when the sidebar now-playing panel is enabled.
+- Verification:
+  - `swift build`: passed
+  - `swift test`: passed, 894 tests in 73 suites
+  - `Scripts/build-app.sh release`: passed
 
 ## Resume Commands
 
