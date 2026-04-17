@@ -397,6 +397,8 @@ struct PlayerBar: View {
             .buttonStyle(.pressable)
             .accessibilityLabel(String(localized: "Repeat"))
             .accessibilityValue(self.repeatAccessibilityValue)
+
+            self.likeButton
         }
     }
 
@@ -424,7 +426,7 @@ struct PlayerBar: View {
 
     private var volumeControl: some View {
         HStack(spacing: 8) {
-            // Like/Dislike/Library actions
+            // Queue and lyrics actions
             self.actionButtons
 
             // Audio output picker
@@ -521,47 +523,31 @@ struct PlayerBar: View {
         .help(String(localized: "Now Playing Panel"))
     }
 
-    // MARK: - Action Buttons (Like/Lyrics/Queue)
+    // MARK: - Action Buttons
+
+    private var likeButton: some View {
+        Button {
+            HapticService.toggle()
+            self.playerService.likeCurrentTrack()
+        } label: {
+            Image(systemName: self.playerService.currentTrackLikeStatus == .like
+                ? "hand.thumbsup.fill"
+                : "hand.thumbsup")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary.opacity(0.85))
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.pressable)
+        .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
+        .accessibilityLabel(String(localized: "Like"))
+        .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
+        .disabled(self.playerService.currentTrack == nil)
+    }
 
     private var actionButtons: some View {
         @Bindable var player = self.playerService
 
         return HStack(spacing: 12) {
-            // Like button
-            Button {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            } label: {
-                Image(systemName: self.playerService.currentTrackLikeStatus == .like
-                    ? "hand.thumbsup.fill"
-                    : "hand.thumbsup")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary.opacity(0.85))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.pressable)
-            .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
-            .accessibilityLabel(String(localized: "Like"))
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
-            .disabled(self.playerService.currentTrack == nil)
-
-            // Lyrics button
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showLyrics.toggle()
-                }
-            } label: {
-                Image(systemName: "quote.bubble")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(self.playerService.showLyrics ? .red : .primary.opacity(0.85))
-            }
-            .buttonStyle(.pressable)
-            .glassEffectID("lyrics", in: self.playerNamespace)
-            .accessibilityIdentifier(AccessibilityID.PlayerBar.lyricsButton)
-            .accessibilityLabel(String(localized: "Lyrics"))
-            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
-
             // Queue button
             Button {
                 HapticService.toggle()
@@ -579,6 +565,22 @@ struct PlayerBar: View {
             .accessibilityLabel(String(localized: "Queue"))
             .accessibilityValue(self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden"))
 
+            // Lyrics button
+            Button {
+                HapticService.toggle()
+                withAnimation(AppAnimation.standard) {
+                    player.showLyrics.toggle()
+                }
+            } label: {
+                Image(systemName: "quote.bubble")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(self.playerService.showLyrics ? .red : .primary.opacity(0.85))
+            }
+            .buttonStyle(.pressable)
+            .glassEffectID("lyrics", in: self.playerNamespace)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.lyricsButton)
+            .accessibilityLabel(String(localized: "Lyrics"))
+            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
         }
     }
 
