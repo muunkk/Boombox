@@ -4,11 +4,11 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 
 ## Current State
 
-- Branch: `feature/audio-only-playback`
+- Branch: `feature/dock-now-playing-controls`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: removed visible first-start WebView tile on `feature/audio-only-playback`; stacked on `feature/player-button-layout`
+- Latest completed checkpoint: upgraded the native Dock right-click menu with now-playing controls on `feature/dock-now-playing-controls`
 - `swift build`: passes
-- `swift test`: passes (897 tests after audio-only playback coverage)
+- `swift test`: passes (899 tests after Dock menu coverage)
 - Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
 
 ## Completed
@@ -39,6 +39,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Add audio output picker branch: native popover, CoreAudio output enumeration/switching, and AirPods active icon state
 - [x] Add player button layout branch: Like moved next to Repeat, Queue moved before Lyrics
 - [x] Add audio-only playback branch: suppress YouTube Music's in-page Song/Video switcher and keep playback in Song mode
+- [x] Add Dock now-playing controls branch: expanded native Dock right-click menu with playback, Like, Lyrics, Queue, presentation modes, and sidebar panel toggle
 
 ## Worktree Branch Log
 
@@ -137,6 +138,25 @@ Final verification after merging to `personal/main`:
   - `swift build`: passed
   - `swift test`: passed, 897 tests in 74 suites
   - `Scripts/build-app.sh release`: passed
+
+## Dock Now Playing Controls Branch Log
+
+- Branch: `feature/dock-now-playing-controls`
+- Base: `personal/main` at `0f9be58`
+- Implementation commit: `dd45a0e`
+- Summary:
+  - Replaced the tiny three-action Dock menu with a stateful native right-click menu.
+  - Shows disabled now-playing header rows for the current title and artist, or `No Track Playing` when idle.
+  - Adds playback controls for Play/Pause, Previous Track, and Next Track.
+  - Adds stateful Like, Lyrics, Queue, Focus Player, Small Player, and Now Playing Panel actions.
+  - Mirrors SwiftUI player presentation mode into `AppDelegate` so Dock labels show `Exit Focus Player` / `Exit Small Player` correctly.
+  - Uses a `playerPresentationModeRequested` notification so Dock menu actions can request Focus Player or Small Player without reaching around SwiftUI state ownership.
+  - Added Dock menu unit coverage for active playback and idle states.
+- Verification:
+  - `swift build`: passed
+  - `swift test --filter DockMenuTests`: passed, 2 tests
+  - `swift test`: passed, 899 tests in 75 suites
+  - `Scripts/build-app.sh release`: passed; app built at `.build/app/YTMPrivate.app`
 
 ## Resume Commands
 
