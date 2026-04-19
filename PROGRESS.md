@@ -1,15 +1,15 @@
-# Private Fork Progress
+# Boombox Fork Progress
 
-This file tracks the private YouTube Music macOS fork work so another session can resume safely.
+This file tracks the Boombox YouTube Music macOS fork work so another session can resume safely.
 
 ## Current State
 
 - Branch: `feature/dock-now-playing-controls`
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
-- Latest completed checkpoint: upgraded the native Dock right-click menu with now-playing controls on `feature/dock-now-playing-controls`
+- Latest completed checkpoint: upgraded the native Dock right-click menu with now-playing controls on `feature/dock-now-playing-controls`; renamed to Boombox ahead of public pre-release
 - `swift build`: passes
 - `swift test`: passes (899 tests after Dock menu coverage)
-- Target app identity: `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`
+- Target app identity: `Boombox` / `com.melboonchan.boombox` (Swift module name remains `Kaset` for upstream-attribution continuity)
 
 ## Completed
 
@@ -30,7 +30,7 @@ This file tracks the private YouTube Music macOS fork work so another session ca
 - [x] Strip the custom `kaset://` URL scheme and URL handler because it is outside the kept feature set
 - [x] Remap shortcuts: command bar `Cmd+L`, lyrics `Cmd+Y`, and remove the old command-k palette action
 - [x] Harden auth: modern Safari UA, direct `https://music.youtube.com/` login, login-only WebView config, device-only Keychain cookies, cookie allowlist, Safari passkey fallback
-- [x] Rebrand app bundle and user-facing docs to `YTM Private`
+- [x] Rebrand app bundle and user-facing docs (initially `YTM Private`, later renamed to `Boombox` for public pre-release)
 - [x] Add `STRIPPED.md`
 - [x] Run final verification: `swift build`, `swift test`, focused greps, and `Scripts/build-app.sh release`
 - [x] Fix command palette search submission and add YouTube Music autocomplete suggestions
@@ -61,8 +61,8 @@ Final verification after merging to `personal/main`:
 - `swift build`: passed
 - `swift test`: passed, 892 tests in 73 suites
 - `Scripts/build-app.sh release`: passed
-- `codesign --verify --deep --strict .build/app/YTMPrivate.app`: passed
-- Packaged app launched from `.build/app/YTMPrivate.app`
+- `codesign --verify --deep --strict .build/app/Boombox.app`: passed
+- Packaged app launched from `.build/app/Boombox.app`
 
 ## Player Bar Polish Branch Log
 
@@ -105,7 +105,7 @@ Final verification after merging to `personal/main`:
   - `swift build`: passed
   - `swift test`: passed, 895 tests in 73 suites
   - `Scripts/build-app.sh release`: passed
-  - Packaged app launched from `.build/app/YTMPrivate.app`
+  - Packaged app launched from `.build/app/Boombox.app`
 
 ## Player Button Layout Branch Log
 
@@ -156,7 +156,7 @@ Final verification after merging to `personal/main`:
   - `swift build`: passed
   - `swift test --filter DockMenuTests`: passed, 2 tests
   - `swift test`: passed, 899 tests in 75 suites
-  - `Scripts/build-app.sh release`: passed; app built at `.build/app/YTMPrivate.app`
+  - `Scripts/build-app.sh release`: passed; app built at `.build/app/Boombox.app`
 
 ## Resume Commands
 

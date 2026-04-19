@@ -1,9 +1,9 @@
 import Foundation
 import os
 
-/// Centralized logging for YTM Private.
+/// Centralized logging for Boombox.
 enum DiagnosticsLogger {
-    private static let subsystem = "com.melboonchan.ytmprivate"
+    private static let subsystem = "com.melboonchan.boombox"
 
     /// Logger for authentication-related events.
     static let auth = Logger(subsystem: Self.subsystem, category: "Auth")

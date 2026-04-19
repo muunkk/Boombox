@@ -11,7 +11,7 @@ let package = Package(
     ],
     products: [
         .executable(
-            name: "YTMPrivate",
+            name: "Boombox",
             targets: ["Kaset"]
         ),
     ],

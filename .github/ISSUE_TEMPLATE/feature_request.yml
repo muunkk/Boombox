@@ -1,12 +1,12 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for Kaset
+description: Suggest a new feature or enhancement for Boombox
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for suggesting a feature! Please describe what you'd like to see in Kaset.
+        Thanks for suggesting a feature! Please describe what you'd like to see in Boombox.
 
   - type: checkboxes
     id: existing-issue

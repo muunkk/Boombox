@@ -1,6 +1,6 @@
-# Stripped Private Fork Notes
+# Stripped Fork Notes
 
-This fork keeps the native YouTube Music macOS client surface and removes upstream subsystems that are unnecessary for a private local build.
+Boombox keeps the native YouTube Music macOS client surface from upstream [Kaset](https://github.com/sozercan/kaset) and removes subsystems that are unnecessary for a personal source-build distribution model.
 
 ## Deleted Subsystems
 
@@ -17,7 +17,7 @@ This fork keeps the native YouTube Music macOS client surface and removes upstre
 
 - Native SwiftUI macOS interface, player bar, sidebar navigation, command palette, queue, share sheet, lyrics, search, library, podcasts, and system media integration.
 - YouTube Music playback remains in the main `WKWebView` so Premium DRM playback is handled by Google's web player.
-- Auth cookies are persisted only through the app's `WKWebsiteDataStore` and macOS Keychain service `com.melboonchan.ytmprivate.auth-cookies`.
+- Auth cookies are persisted only through the app's `WKWebsiteDataStore` and macOS Keychain service `com.melboonchan.boombox.auth-cookies`.
 - The login WebView uses a login-only configuration with no native script message handlers.
 - Passkeys are supported through Safari sign-in plus local allowlisted cookie import, not through embedded-WebView passkey promises.
 
@@ -27,4 +27,4 @@ This fork keeps the native YouTube Music macOS client surface and removes upstre
 - **Apple frameworks**: WebKit, SwiftUI, AppKit, MediaPlayer, Security/Keychain, UserNotifications, and system media controls.
 - **LRCLib**: optional synced lyrics lookup when synced lyrics are enabled.
 
-No updater, public distribution channel, extension runtime, scrobbling service, AI service, AppleScript bridge, or custom URL scheme remains in the private app.
+No updater, binary distribution channel, extension runtime, scrobbling service, AI service, AppleScript bridge, or custom URL scheme remains in Boombox.

@@ -375,9 +375,9 @@ extension PlayerService {
     }
 
     /// UserDefaults keys for queue persistence (no expiry; saved queue is kept until overwritten or cleared).
-    private static let savedQueueKey = "ytmprivate.saved.queue"
-    private static let savedQueueIndexKey = "ytmprivate.saved.queueIndex"
-    private static let savedPlaybackSessionKey = "ytmprivate.saved.playbackSession"
+    private static let savedQueueKey = "boombox.saved.queue"
+    private static let savedQueueIndexKey = "boombox.saved.queueIndex"
+    private static let savedPlaybackSessionKey = "boombox.saved.playbackSession"
 
     /// Saves the current queue to UserDefaults for restoration on next launch.
     func saveQueueForPersistence() {

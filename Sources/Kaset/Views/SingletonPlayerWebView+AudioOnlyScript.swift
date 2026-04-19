@@ -7,12 +7,12 @@ extension SingletonPlayerWebView {
         (function() {
             'use strict';
 
-            if (window.__ytmPrivateAudioOnlyInstalled) {
+            if (window.__boomboxAudioOnlyInstalled) {
                 return;
             }
-            window.__ytmPrivateAudioOnlyInstalled = true;
+            window.__boomboxAudioOnlyInstalled = true;
 
-            const STYLE_ID = 'ytm-private-audio-only-style';
+            const STYLE_ID = 'boombox-audio-only-style';
             const CONTROL_SELECTOR = [
                 'button',
                 '[role="button"]',
@@ -176,11 +176,11 @@ extension SingletonPlayerWebView {
             }
 
             function hideElement(element) {
-                if (!element || element.__ytmPrivateAudioOnlyHidden) {
+                if (!element || element.__boomboxAudioOnlyHidden) {
                     return;
                 }
 
-                element.__ytmPrivateAudioOnlyHidden = true;
+                element.__boomboxAudioOnlyHidden = true;
 
                 if (typeof element.setAttribute === 'function') {
                     element.setAttribute('aria-hidden', 'true');
@@ -298,7 +298,7 @@ extension SingletonPlayerWebView {
                 }, 50);
             }
 
-            window.__ytmPrivateApplyAudioOnlyPlayback = applyAudioOnlyPlayback;
+            window.__boomboxApplyAudioOnlyPlayback = applyAudioOnlyPlayback;
             applyAudioOnlyPlayback();
 
             if (document.addEventListener) {

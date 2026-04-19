@@ -11,9 +11,9 @@ struct PlayerServiceQueueTests {
 
     init() {
         // Clean up UserDefaults before each test
-        UserDefaults.standard.removeObject(forKey: "ytmprivate.saved.queue")
-        UserDefaults.standard.removeObject(forKey: "ytmprivate.saved.queueIndex")
-        UserDefaults.standard.removeObject(forKey: "ytmprivate.saved.playbackSession")
+        UserDefaults.standard.removeObject(forKey: "boombox.saved.queue")
+        UserDefaults.standard.removeObject(forKey: "boombox.saved.queueIndex")
+        UserDefaults.standard.removeObject(forKey: "boombox.saved.playbackSession")
         SingletonPlayerWebView.shared.currentVideoId = nil
 
         self.mockClient = MockYTMusicClient()
@@ -311,9 +311,9 @@ struct PlayerServiceQueueTests {
     @Test("Restore queue with invalid data returns false")
     func restoreInvalidQueue() {
         // Arrange - Put invalid data in UserDefaults
-        UserDefaults.standard.set(Data("invalid data".utf8), forKey: "ytmprivate.saved.queue")
-        UserDefaults.standard.set(0, forKey: "ytmprivate.saved.queueIndex")
-        UserDefaults.standard.removeObject(forKey: "ytmprivate.saved.playbackSession")
+        UserDefaults.standard.set(Data("invalid data".utf8), forKey: "boombox.saved.queue")
+        UserDefaults.standard.set(0, forKey: "boombox.saved.queueIndex")
+        UserDefaults.standard.removeObject(forKey: "boombox.saved.playbackSession")
 
         // Act
         let restored = self.playerService.restoreQueueFromPersistence()
@@ -327,9 +327,9 @@ struct PlayerServiceQueueTests {
         // Arrange
         let songs = TestFixtures.makeSongs(count: 2)
         let queueData = try JSONEncoder().encode(songs)
-        UserDefaults.standard.set(queueData, forKey: "ytmprivate.saved.queue")
-        UserDefaults.standard.set(1, forKey: "ytmprivate.saved.queueIndex")
-        UserDefaults.standard.removeObject(forKey: "ytmprivate.saved.playbackSession")
+        UserDefaults.standard.set(queueData, forKey: "boombox.saved.queue")
+        UserDefaults.standard.set(1, forKey: "boombox.saved.queueIndex")
+        UserDefaults.standard.removeObject(forKey: "boombox.saved.playbackSession")
 
         // Act
         let restored = self.playerService.restoreQueueFromPersistence()
@@ -506,7 +506,7 @@ struct PlayerServiceQueueTests {
         self.playerService.toggleQueueDisplayMode()
 
         // Assert
-        let savedMode = UserDefaults.standard.string(forKey: "ytmprivate.queue.displayMode")
+        let savedMode = UserDefaults.standard.string(forKey: "boombox.queue.displayMode")
         #expect(savedMode == QueueDisplayMode.sidepanel.rawValue)
     }
 }

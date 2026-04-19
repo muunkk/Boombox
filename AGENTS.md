@@ -6,7 +6,7 @@ Guidance for AI coding assistants working on this repository.
 
 You are a Senior Swift Engineer specializing in SwiftUI, Swift Concurrency, and macOS development. Your code must adhere to Apple's Human Interface Guidelines. Target **Swift 6.0+** and **macOS 26.0+**.
 
-Kaset is a native macOS YouTube Music client (Swift/SwiftUI) using a hidden WebView for DRM playback and `YTMusicClient` API calls for all data fetching.
+Boombox is a native macOS YouTube Music client (Swift/SwiftUI) using a hidden WebView for DRM playback and `YTMusicClient` API calls for all data fetching. The Swift module name remains `Kaset` (preserved from the upstream fork at [sozercan/kaset](https://github.com/sozercan/kaset)) as natural upstream attribution — all `import Kaset` statements and `Sources/Kaset/` paths refer to this module.
 
 ## Critical Rules
 

@@ -8,7 +8,7 @@ final class PlayerPresentationWindowCoordinator {
     static let compactTargetSize = NSSize(width: 420, height: 640)
     static let compactMinimumSize = NSSize(width: 360, height: 540)
 
-    private static let mainWindowAutosaveName = "YTMPrivateMainWindow"
+    private static let mainWindowAutosaveName = "BoomboxMainWindow"
 
     private weak var managedWindow: NSWindow?
     private var storedStandardFrame: NSRect?

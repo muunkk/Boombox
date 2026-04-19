@@ -83,14 +83,14 @@ jobs:
 
       - name: Build app bundle for UI tests
         env:
-          KASET_SIGNING: adhoc
+          BOOMBOX_SIGNING: adhoc
         run: Scripts/build-app.sh debug
 
       - name: Install app for UI tests
         run: |
-          sudo cp -R .build/app/YTMPrivate.app /Applications/YTMPrivate.app
+          sudo cp -R .build/app/Boombox.app /Applications/Boombox.app
           # Register with Launch Services so XCUIApplication can find it
-          /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -f /Applications/YTMPrivate.app
+          /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -f /Applications/Boombox.app
 
       - name: Run UI tests
         run: |

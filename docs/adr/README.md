@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This directory contains retained Architecture Decision Records (ADRs) for the YTM Private fork.
+This directory contains retained Architecture Decision Records (ADRs) for Boombox.
 
 ## What is an ADR?
 
