@@ -38,7 +38,7 @@ Boombox is a personal source-build project in pre-release. There are no signed b
 ## Build from source
 
 ```bash
-git clone <this-repo-url>
+git clone https://github.com/muunkk/Boombox
 cd <repo>
 swift build
 swift test --skip KasetUITests
