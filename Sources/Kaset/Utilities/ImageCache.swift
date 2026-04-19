@@ -25,7 +25,7 @@ actor ImageCache {
 
         // Set up disk cache directory
         let cacheDir = self.fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        self.diskCacheURL = cacheDir.appendingPathComponent("com.melboonchan.ytmprivate.imagecache", isDirectory: true)
+        self.diskCacheURL = cacheDir.appendingPathComponent("com.melboonchan.boombox.imagecache", isDirectory: true)
         try? self.fileManager.createDirectory(at: self.diskCacheURL, withIntermediateDirectories: true)
 
         // Set up memory pressure monitoring

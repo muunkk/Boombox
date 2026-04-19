@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build script to create YTMPrivate.app bundle
+# Build script to create Boombox.app bundle
 # Based on Kuyruk/CodexBar packaging approach
 
 set -euo pipefail
@@ -12,12 +12,12 @@ source "$ROOT/version.env"
 
 # Configuration
 CONF=${1:-release}
-SIGNING_MODE=${YTM_PRIVATE_SIGNING:-${KASET_SIGNING:-dev}}
-APP_NAME="YTMPrivate"
-DISPLAY_NAME="YTM Private"
-APP_EXECUTABLE="YTMPrivate"
-SWIFT_EXECUTABLE="YTMPrivate"
-BUNDLE_ID="com.melboonchan.ytmprivate"
+SIGNING_MODE=${BOOMBOX_SIGNING:-dev}
+APP_NAME="Boombox"
+DISPLAY_NAME="Boombox"
+APP_EXECUTABLE="Boombox"
+SWIFT_EXECUTABLE="Boombox"
+BUNDLE_ID="com.melboonchan.boombox"
 DEVELOPMENT_LOCALIZATION="en"
 BUILD_DIR="$ROOT/.build/app"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
@@ -141,14 +141,14 @@ GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 echo -n "APPL????" > "$APP_BUNDLE/Contents/PkgInfo"
 
 # Copy app icon (.icon bundle for macOS 26+ Liquid Glass, .icns as fallback)
-ICON_SOURCE="$ROOT/Sources/Kaset/Resources/kaset.icon"
+ICON_SOURCE="$ROOT/Sources/Kaset/Resources/boombox.icon"
 if [[ -d "$ICON_SOURCE" ]]; then
   echo "🎨 Copying app icon..."
-  cp -R "$ICON_SOURCE" "$APP_BUNDLE/Contents/Resources/kaset.icon"
+  cp -R "$ICON_SOURCE" "$APP_BUNDLE/Contents/Resources/boombox.icon"
 fi
-ICNS_PATH="$ROOT/Sources/Kaset/Resources/kaset.icns"
+ICNS_PATH="$ROOT/Sources/Kaset/Resources/boombox.icns"
 if [[ -f "$ICNS_PATH" ]]; then
-  cp "$ICNS_PATH" "$APP_BUNDLE/Contents/Resources/kaset.icns"
+  cp "$ICNS_PATH" "$APP_BUNDLE/Contents/Resources/boombox.icns"
 fi
 
 # Compile asset catalog if actool is available
@@ -212,9 +212,9 @@ ${APP_LOCALIZATIONS_PLIST}
     <key>CFBundleExecutable</key>
     <string>${APP_EXECUTABLE}</string>
     <key>CFBundleIconFile</key>
-    <string>kaset</string>
+    <string>boombox</string>
     <key>CFBundleIconName</key>
-    <string>kaset</string>
+    <string>boombox</string>
     <key>NSAccentColorName</key>
     <string>AccentColor</string>
     <key>CFBundleIdentifier</key>
@@ -236,15 +236,15 @@ ${APP_LOCALIZATIONS_PLIST}
     <key>LSMinimumSystemVersion</key>
     <string>26.0</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Private source build by Mel Boonchan. Upstream copyright retained under the MIT license.</string>
+    <string>Boombox — fork of Kaset by sozercan, distributed under the MIT license.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>LSUIElement</key>
     <false/>
     <!-- Build Metadata -->
-    <key>YTMPrivateBuildTimestamp</key>
+    <key>BoomboxBuildTimestamp</key>
     <string>${BUILD_TIMESTAMP}</string>
-    <key>YTMPrivateGitCommit</key>
+    <key>BoomboxGitCommit</key>
     <string>${GIT_COMMIT}</string>
 </dict>
 </plist>

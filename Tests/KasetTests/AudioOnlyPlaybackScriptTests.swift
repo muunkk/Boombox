@@ -12,7 +12,7 @@ struct AudioOnlyPlaybackScriptTests {
         self.evaluate(Self.domFixtureScript, in: context)
         self.evaluate(SingletonPlayerWebView.audioOnlyPlaybackScript, in: context)
 
-        let result = context.evaluateScript("window.__ytmPrivateApplyAudioOnlyPlayback();")?.toString()
+        let result = context.evaluateScript("window.__boomboxApplyAudioOnlyPlayback();")?.toString()
         let songClicked = context.evaluateScript("songButton.clicked")?.toBool()
         let videoDisplay = context.evaluateScript("videoButton.style.display")?.toString()
         let popupDisplay = context.evaluateScript("popup.style.display")?.toString()

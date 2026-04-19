@@ -102,7 +102,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Enable automatic window frame persistence using autosave name
             // This ensures window size/position is restored across app launches
             if window.frameAutosaveName.isEmpty {
-                window.setFrameAutosaveName("YTMPrivateMainWindow")
+                window.setFrameAutosaveName("BoomboxMainWindow")
             }
             // Store reference to main window for reliable reopen
             self.mainWindow = window
@@ -334,7 +334,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Fallback: find main window by frameAutosaveName
-        for window in NSApplication.shared.windows where window.frameAutosaveName == "YTMPrivateMainWindow" {
+        for window in NSApplication.shared.windows where window.frameAutosaveName == "BoomboxMainWindow" {
             self.mainWindow = window
             if !window.isVisible {
                 window.makeKeyAndOrderFront(nil)

@@ -32,5 +32,5 @@ extension PlayerPresentationMode {
 }
 
 extension Notification.Name {
-    static let playerPresentationModeRequested = Notification.Name("YTMPrivatePlayerPresentationModeRequested")
+    static let playerPresentationModeRequested = Notification.Name("BoomboxPlayerPresentationModeRequested")
 }

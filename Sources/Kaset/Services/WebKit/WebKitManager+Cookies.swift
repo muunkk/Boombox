@@ -89,7 +89,7 @@ enum KeychainCookieStorage {
     private static let writeCoordinator = CookieArchiveWriteCoordinator()
 
     /// Keychain service identifier for cookie storage.
-    private static let service = "com.melboonchan.ytmprivate.auth-cookies"
+    private static let service = "com.melboonchan.boombox.auth-cookies"
 
     /// Keychain account identifier.
     private static let account = "youtube-music-cookies"

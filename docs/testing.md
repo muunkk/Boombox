@@ -13,7 +13,7 @@ For app packaging smoke tests:
 
 ```bash
 Scripts/build-app.sh release
-open .build/app/YTMPrivate.app
+open .build/app/Boombox.app
 ```
 
 Manual smoke coverage should include login, Safari fallback import, Premium playback, media keys, Control Center Now Playing, Dock menu actions, Library, Search, Lyrics, Queue reorder/shuffle/clear, Share, `Cmd+L` command palette, and `Cmd+Y` lyrics.

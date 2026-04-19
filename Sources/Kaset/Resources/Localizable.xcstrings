@@ -3339,7 +3339,7 @@
       }
     },
     "Item %lld": {},
-    "YTM Private": {},
+    "Boombox": {},
     "Keep listening even when the window is closed": {
       "localizations": {
         "ar": {
@@ -8634,36 +8634,36 @@
         }
       }
     },
-    "Welcome to YTM Private": {
+    "Welcome to Boombox": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مرحبًا بك في YTM Private"
+            "value": "مرحبًا بك في Boombox"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "YTM Private'e Hoş Geldiniz"
+            "value": "Boombox'a Hoş Geldiniz"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "YTM Private에 오신 것을 환영합니다"
+            "value": "Boombox에 오신 것을 환영합니다"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selamat datang di YTM Private"
+            "value": "Selamat datang di Boombox"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bienvenue sur YTM Private"
+            "value": "Bienvenue sur Boombox"
           }
         }
       }

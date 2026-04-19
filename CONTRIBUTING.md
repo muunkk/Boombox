@@ -1,6 +1,8 @@
-# Contributing to Kaset
+# Contributing to Boombox
 
-Thank you for your interest in contributing! This document provides guidelines and information for developers.
+Thank you for your interest in contributing! This document collects the development conventions used in Boombox.
+
+Boombox is a personal fork of [Kaset](https://github.com/sozercan/kaset). Issues are welcome. Pull requests are reviewed case-by-case — because this is a personal fork, not every contribution will be merged, but thoughtful patches will get read. For anything larger than a small fix, open an issue first so we can align on direction before you invest time.
 
 ## Getting Started
 
@@ -14,8 +16,8 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ```bash
 # Clone the repository
-git clone https://github.com/sozercan/kaset.git
-cd kaset
+git clone <this-repo-url>
+cd <repo>
 
 # Build from command line
 swift build
@@ -35,9 +37,9 @@ Or open `Package.swift` in Xcode to work in the IDE.
 ## Project Structure
 
 ```
-Package.swift           → SPM manifest (build configuration)
+Package.swift           → SPM manifest (product name: Boombox, module name: Kaset)
 Sources/
-  └── Kaset/            → Main app target
+  └── Kaset/            → Main app target (Swift module name preserved from upstream)
       ├── Models/       → Data models (Song, Playlist, Album, Artist, etc.)
       ├── Services/
       │   ├── API/      → YTMusicClient (YouTube Music API calls)
@@ -47,8 +49,7 @@ Sources/
       ├── ViewModels/   → HomeViewModel, LibraryViewModel, SearchViewModel
       ├── Utilities/    → DiagnosticsLogger, extensions
       └── Views/        → SwiftUI views (MainWindow, Sidebar, PlayerBar, etc.)
-  └── APIExplorer/      → API explorer CLI tool
-Tests/                  → Unit tests (KasetTests/)
+Tests/                  → Unit tests (KasetTests/) and UI tests (KasetUITests/)
 Scripts/                → Build scripts
 docs/                   → Detailed documentation
 ```

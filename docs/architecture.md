@@ -1,6 +1,6 @@
 # Architecture
 
-YTM Private is a SwiftPM-first macOS 26 app. The public app/product identity is `YTM Private` / `YTMPrivate` / `com.melboonchan.ytmprivate`, while the Swift target and module remain `Kaset` to avoid unnecessary source churn.
+Boombox is a SwiftPM-first macOS 26 app. The public app/product identity is `Boombox` / `com.melboonchan.boombox`, while the Swift target and module remain `Kaset` to avoid unnecessary source churn and to preserve an upstream-attribution breadcrumb.
 
 ## Core Shape
 
@@ -16,21 +16,21 @@ YTM Private is a SwiftPM-first macOS 26 app. The public app/product identity is 
 
 The main playback WebView and login WebView share the same `WKWebsiteDataStore`, but login uses `createLoginWebViewConfiguration()` so no native script message handlers are attached to the sign-in surface.
 
-Auth cookies are allowlisted by name and Google/YouTube domain before persistence. The Keychain item uses `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` under `com.melboonchan.ytmprivate.auth-cookies`.
+Auth cookies are allowlisted by name and Google/YouTube domain before persistence. The Keychain item uses `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` under `com.melboonchan.boombox.auth-cookies`.
 
 Google passkeys are handled through Safari. The fallback view opens YouTube Music in Safari and imports pasted allowlisted auth cookies locally into WebKit plus Keychain.
 
 ## Removed Attack Surface
 
-The private fork removes subsystems outside the kept feature set. See `STRIPPED.md` for the complete list.
+Boombox removes subsystems outside the kept feature set. See `STRIPPED.md` for the complete list.
 
 ## Persistence
 
-- Favorites: `~/Library/Application Support/YTMPrivate/favorites.json`
-- Queue state: `UserDefaults` keys under `ytmprivate.saved.*`
-- Queue display mode: `ytmprivate.queue.displayMode`
+- Favorites: `~/Library/Application Support/Boombox/favorites.json`
+- Queue state: `UserDefaults` keys under `boombox.saved.*`
+- Queue display mode: `boombox.queue.displayMode`
 - Auth cookies: macOS Keychain plus WebKit's persistent website data store
-- Image cache: `com.melboonchan.ytmprivate.imagecache`
+- Image cache: `com.melboonchan.boombox.imagecache`
 
 ## Verification
 

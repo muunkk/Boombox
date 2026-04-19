@@ -58,7 +58,7 @@ jobs:
 
       - name: Build app
         env:
-          KASET_SIGNING: adhoc
+          BOOMBOX_SIGNING: adhoc
           ARCHES: "arm64 x86_64"
         run: |
           # Override version for dev builds
@@ -68,10 +68,10 @@ jobs:
 
       - name: Create DMG
         run: |
-          APP_PATH=".build/app/YTMPrivate.app"
+          APP_PATH=".build/app/Boombox.app"
 
           if [ ! -d "$APP_PATH" ]; then
-            echo "Error: Could not find YTMPrivate.app"
+            echo "Error: Could not find Boombox.app"
             exit 1
           fi
 
@@ -82,15 +82,15 @@ jobs:
           cp -R "$APP_PATH" dmg_contents/
 
           # Create DMG
-          hdiutil create -volname "YTMPrivate-dev" \
+          hdiutil create -volname "Boombox-dev" \
             -srcfolder dmg_contents \
             -ov -format UDZO \
-            ytmprivate-dev.dmg
+            boombox-dev.dmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         if: github.event_name != 'pull_request'
         with:
-          name: ytmprivate-dev-${{ steps.slug.outputs.sha_short }}
-          path: ytmprivate-dev.dmg
+          name: boombox-dev-${{ steps.slug.outputs.sha_short }}
+          path: boombox-dev.dmg
           retention-days: 30

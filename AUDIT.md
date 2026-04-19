@@ -1,44 +1,40 @@
-# Pre-Strip Audit
+# Trust Boundary Audit
 
 Fork base: see `FORK_BASE.txt` (upstream `sozercan/kaset@700b72d`).
 
-Read-through of the upstream source before any modifications. Purpose: confirm what the code actually does against what the README claims, so the private fork can trust its audited surface.
+This file tracks the current public trust boundary for Boombox after the strip and rebrand. Historical strip notes live in `STRIPPED.md` and `PROGRESS.md`.
 
-## Network endpoints — `grep -rn "https://"` on `Sources/`
+## Network Endpoints
 
-All outbound HTTPS hosts present in upstream:
+`rg -n "https://" Sources/` currently shows:
 
 | Host | Where | Purpose | Verdict |
 |------|-------|---------|---------|
-| `music.youtube.com` | `YTMusicClient.swift`, `MiniPlayerWebView.swift`, `ShareService.swift`, `LoginWebView.swift` (redirect target), `APIExplorer/main.swift` | InnerTube API + playback + share-link construction | Expected |
+| `music.youtube.com` | `YTMusicClient.swift`, `MiniPlayerWebView.swift`, `ShareService.swift`, `WebKitManager.swift` | InnerTube API, playback, auth origin, share-link construction | Expected |
 | `i.ytimg.com` | `Song.swift` | Track thumbnails | Expected |
-| `accounts.google.com` | `LoginWebView.swift` | Legacy sign-in URL (modernizing) | Expected — fixing in §6b Fix 1 |
 | `lrclib.net` | `LRCLibProvider.swift` | Synced-lyrics fallback | Expected |
-| `api.github.com` / `github.com/sozercan/kaset` | `WhatsNewProvider.swift`, `GeneralSettingsView.swift` link | Sparkle release check + "Source on GitHub" link | **Being stripped** (Sparkle); GH link will be updated or removed |
-| `kaset-lastfm.sozercan.workers.dev` | `LastFMService.swift` | Last.fm scrobble proxy (third-party Cloudflare Worker) | **Being stripped** |
 | `example.com` | `AccountRowView.swift` | `#Preview` placeholder avatar | Harmless (dev-only) |
 
-**No telemetry, no analytics SDKs, no crash reporters, no A/B hosts.** Clean.
+**No telemetry, no analytics SDKs, no crash reporters, no A/B hosts.**
 
-After strip: `api.github.com`, `github.com/sozercan/kaset`, and `kaset-lastfm.*.workers.dev` will be gone. Remaining hosts: Google/YouTube/YTImg + LRCLib. Nothing talks to this fork's author, Sparkle, or any third party.
+Removed upstream endpoints: Sparkle/GitHub release checks and the Last.fm scrobble proxy are gone. Remaining network trust is Google/YouTube/YTImg for the music service and LRCLib for optional synced lyrics.
 
-## Cookies & Keychain
+## Cookies And Keychain
 
 All cookie & Keychain logic lives in `Sources/Kaset/Services/WebKit/WebKitManager+Cookies.swift`. Read end-to-end. Behavior:
 
 - Serializes auth cookies (SAPISID, `__Secure-3PAPISID`, SID, HSID, SSID, APISID, LOGIN_INFO, etc.) via `NSKeyedArchiver`.
+- Allows only YouTube/Google auth cookie names and YouTube/Google cookie domains.
 - Stores archive in Keychain with:
   - `kSecClass = kSecClassGenericPassword`
-  - `kSecAttrService = "com.kaset.cookies"`
-  - `kSecAttrAccount = "youtube-auth"`
-  - **`kSecAttrAccessible = kSecAttrAccessibleWhenUnlocked`** ⚠️
+  - `kSecAttrService = "com.melboonchan.boombox.auth-cookies"`
+  - `kSecAttrAccount = "youtube-music-cookies"`
+  - `kSecAttrAccessible = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`
 - Restores cookies into `WKWebsiteDataStore.default()` on launch via `WebKitManager`.
 
-**Finding A — Keychain accessibility is iCloud-syncable.** `kSecAttrAccessibleWhenUnlocked` does not prevent iCloud Keychain sync. For an auth cookie, we want `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` so the cookie cannot leave this Mac even if iCloud Keychain is enabled. Fix planned in §6b Fix 3. Location: `WebKitManager+Cookies.swift:143`.
+The cookie lives in `WKWebsiteDataStore` scoped to the `music.youtube.com` / `.youtube.com` / `.google.com` domains. WebKit handles per-host scoping. The `SAPISIDHASH` header computation in `YTMusicClient.swift` is only added to InnerTube requests targeting `music.youtube.com/youtubei/v1`, so the hash is not sent to non-Google hosts.
 
-**Finding B — Per-host scope.** The cookie lives in `WKWebsiteDataStore` scoped to the `music.youtube.com` / `.youtube.com` / `.google.com` domains — WebKit handles per-host scoping correctly. The `SAPISIDHASH` header computation in `YTMusicClient.swift` is only ever added to InnerTube requests targeting `music.youtube.com/youtubei/v1`, so the hash never leaks to non-Google hosts. Verified by reading the request-construction paths.
-
-## JavaScript bridges
+## JavaScript Bridges
 
 `WKScriptMessageHandler` attach points:
 
@@ -46,11 +42,8 @@ All cookie & Keychain logic lives in `Sources/Kaset/Services/WebKit/WebKitManage
 |--------------|------|---------|
 | `singletonPlayer` | `MiniPlayerWebView.swift:273` | Core player-state events (play/pause/progress/track-change) from the hidden YTM WebView |
 | `miniPlayer` | `MiniPlayerWebView.swift:49` | UI overlay / media-control relay in the visible mini-player |
-| `optionsDebug` | `ExtensionOptionsView.swift:41` | Pipes WebKit Extension options-page console to `DiagnosticsLogger` |
 
-**Finding C — `optionsDebug` is being removed** with the WebExtensions strip. Leaves only `singletonPlayer` and `miniPlayer`, both scoped to our own WebView content (not to Google-served login pages).
-
-**Finding D — Login WebView (`LoginWebView.swift`) currently reuses `WebKitManager.createWebViewConfiguration()`**, which attaches `webExtensionController`. During login the user is on a Google-controlled page; there should be no extension surface or native bridges active in that window. Fix planned in §6b Fix 4: split config into `createLoginWebViewConfiguration()` that returns a stripped-down setup with no bridges and no extension controller.
+The login WebView uses `createLoginWebViewConfiguration()`, which installs a fresh `WKUserContentController` and no native script message handlers for the sign-in surface.
 
 ## Logging
 
@@ -64,17 +57,15 @@ Current result: log messages mention "cookies" by count (e.g. `"Saved \(cookieCo
 
 Redaction posture will be preserved after strip. If future code paths add cookie-adjacent logging, the CLAUDE.md rule ("NEVER leak secrets...") already covers it.
 
-## Telemetry, analytics, crash reporters, update check-ins
+## Telemetry, Analytics, Crash Reporters, Update Check-Ins
 
 Grep: `Analytics`, `Telemetry`, `Mixpanel`, `Segment`, `Sentry`, `Crashlytics`, `PostHog`, `Amplitude`, `Firebase`. **Zero hits** in `Sources/`. ✅
 
-Sparkle does phone home to the GitHub releases API (`api.github.com/repos/sozercan/kaset/releases/*` via `WhatsNewProvider.swift`) for update checks. Removed as part of the strip.
+Sparkle and release-check code were removed. Boombox has no auto-updater and no update check-in.
 
 ## Package.swift dependencies
 
-Only non-Apple dep: `https://github.com/sparkle-project/Sparkle@2.8.1`. Being removed.
-
-Post-strip, the dependency graph contains zero external packages. All remaining imports are Apple frameworks (`SwiftUI`, `WebKit`, `AppKit`, `MediaPlayer`, `Foundation`, `os`).
+`Package.swift` currently has an empty `dependencies` array. All remaining imports are Apple frameworks (`SwiftUI`, `WebKit`, `AppKit`, `MediaPlayer`, `Foundation`, `os`, `Security`, and related system frameworks).
 
 ## Entitlements (`Kaset.entitlements`)
 
@@ -88,12 +79,6 @@ files.bookmarks.app-scope = true  security-scoped bookmarks (persistent user-sel
 
 Nothing broad. No `network.server`, no `device.audio-input`, no `automation.apple-events`, no `inherit`. Reasonable. No changes needed.
 
-## Summary of findings fed into the strip/hardening plan
+## Summary
 
-1. **Keychain accessibility** — tighten to `ThisDeviceOnly` (Fix 3 in plan §6b).
-2. **Legacy Google login URL + stale Safari 17 UA** — modernize (Fix 1).
-3. **Login WebView reuses full config with WebExtensions enabled** — split out a stripped login config (Fix 4).
-4. **WebExtensions subsystem is a latent attack surface** not listed among kept features — strip entirely.
-5. **GitHub "Source on GitHub" link in GeneralSettingsView** — update to point at the private fork or remove, since upstream attribution now lives in `LICENSE` and `STRIPPED.md`.
-
-All other surfaces reviewed clean.
+Remaining external trust: Google/YouTube Music, Apple's system frameworks, and optional LRCLib lyrics lookup. Removed surfaces include Sparkle auto-update, Last.fm scrobbling, WebExtensions, AppleScript, custom URL schemes, the API explorer, AI features, and binary distribution tooling.
