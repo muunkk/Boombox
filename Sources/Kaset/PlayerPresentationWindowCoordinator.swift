@@ -77,7 +77,7 @@ final class PlayerPresentationWindowCoordinator {
 
     private func restoreStandardWindowFrame() {
         guard let window = self.managedWindow ?? self.mainWindow() else {
-            self.clearStoredWindowState()
+            self.clearStoredFrameState()
             return
         }
 
@@ -93,10 +93,10 @@ final class PlayerPresentationWindowCoordinator {
             window.setFrame(storedStandardFrame, display: true, animate: true)
         }
 
-        self.clearStoredWindowState()
+        self.clearStoredFrameState()
     }
 
-    private func clearStoredWindowState() {
+    private func clearStoredFrameState() {
         self.managedWindow = nil
         self.storedStandardFrame = nil
         self.storedMinimumSize = nil

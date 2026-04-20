@@ -1,6 +1,12 @@
 import Foundation
 import SwiftUI
 
+private enum PlayerPresentationChromeLayout {
+    static let trafficLightReserveWidth: CGFloat = 76
+    static let compactTopPadding: CGFloat = 22
+    static let compactIconButtonSize: CGFloat = 34
+}
+
 // MARK: - FocusPlayerView
 
 /// Full-window now-playing surface used by Focus Player mode.
@@ -62,6 +68,10 @@ struct FocusPlayerView: View {
 
     private var header: some View {
         HStack {
+            Color.clear
+                .frame(width: PlayerPresentationChromeLayout.trafficLightReserveWidth, height: 1)
+                .accessibilityHidden(true)
+
             Text(PlayerPresentationMode.focus.displayName)
                 .font(.headline)
                 .foregroundStyle(.secondary)
@@ -120,7 +130,7 @@ struct CompactPlayerView: View {
         static let minimumSize = CGSize(width: 360, height: 540)
         static let idealSize = CGSize(width: 420, height: 640)
         static let horizontalPadding: CGFloat = 24
-        static let verticalPadding: CGFloat = 14
+        static let bottomPadding: CGFloat = 14
     }
 
     @Environment(PlayerService.self) private var playerService
@@ -167,7 +177,8 @@ struct CompactPlayerView: View {
                     NowPlayingVolumeControl()
                 }
                 .padding(.horizontal, Self.Layout.horizontalPadding)
-                .padding(.vertical, Self.Layout.verticalPadding)
+                .padding(.top, PlayerPresentationChromeLayout.compactTopPadding)
+                .padding(.bottom, Self.Layout.bottomPadding)
             }
         }
         .frame(
@@ -181,6 +192,10 @@ struct CompactPlayerView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 12) {
+            Color.clear
+                .frame(width: PlayerPresentationChromeLayout.trafficLightReserveWidth, height: 1)
+                .accessibilityHidden(true)
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(PlayerPresentationMode.compact.displayName)
                     .font(.headline)
@@ -199,11 +214,14 @@ struct CompactPlayerView: View {
                     self.playerPresentationMode.wrappedValue = .standard
                 }
             } label: {
-                Label("Back to Full App", systemImage: "arrow.up.left.and.arrow.down.right")
-                    .labelStyle(.titleAndIcon)
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .frame(width: 30, height: 30)
             }
             .buttonStyle(.glass)
             .controlSize(.small)
+            .help(String(localized: "Back to Full App"))
+            .accessibilityLabel(String(localized: "Back to Full App"))
             .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayerBackButton)
         }
     }
@@ -229,54 +247,56 @@ struct CompactPlayerActionRow: View {
     @Environment(PlayerService.self) private var playerService
 
     var body: some View {
-        HStack(spacing: 10) {
-            CompactPlayerActionButton(
-                title: String(localized: "Like"),
-                systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
-                isActive: self.playerService.currentTrackLikeStatus == .like,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLikeButton
-            ) {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            }
-            .disabled(self.playerService.currentTrack == nil)
-
-            CompactPlayerActionButton(
-                title: String(localized: "Lyrics"),
-                systemImage: "quote.bubble",
-                isActive: self.playerService.showLyrics,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLyricsButton
-            ) {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    self.playerService.showLyrics.toggle()
+        GlassEffectContainer(spacing: 10) {
+            HStack(spacing: 10) {
+                CompactPlayerActionButton(
+                    title: String(localized: "Like"),
+                    systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
+                    isActive: self.playerService.currentTrackLikeStatus == .like,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLikeButton
+                ) {
+                    HapticService.toggle()
+                    self.playerService.likeCurrentTrack()
                 }
-            }
-            .disabled(self.playerService.currentTrack == nil)
+                .disabled(self.playerService.currentTrack == nil)
 
-            CompactPlayerActionButton(
-                title: String(localized: "Queue"),
-                systemImage: "list.bullet",
-                isActive: self.playerService.showQueue,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerQueueButton
-            ) {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    self.playerService.showQueue.toggle()
+                CompactPlayerActionButton(
+                    title: String(localized: "Lyrics"),
+                    systemImage: "quote.bubble",
+                    isActive: self.playerService.showLyrics,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLyricsButton
+                ) {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        self.playerService.showLyrics.toggle()
+                    }
                 }
-            }
-            .disabled(self.playerService.currentTrack == nil)
+                .disabled(self.playerService.currentTrack == nil)
 
-            CompactPlayerActionButton(
-                title: String(localized: "Output"),
-                systemImage: "airplayaudio",
-                isActive: self.playerService.isAirPlayConnected,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerAirPlayButton
-            ) {
-                HapticService.toggle()
-                self.playerService.showAirPlayPicker()
+                CompactPlayerActionButton(
+                    title: String(localized: "Queue"),
+                    systemImage: "list.bullet",
+                    isActive: self.playerService.showQueue,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerQueueButton
+                ) {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        self.playerService.showQueue.toggle()
+                    }
+                }
+                .disabled(self.playerService.currentTrack == nil)
+
+                CompactPlayerActionButton(
+                    title: String(localized: "Output"),
+                    systemImage: "airplayaudio",
+                    isActive: self.playerService.isAirPlayConnected,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerAirPlayButton
+                ) {
+                    HapticService.toggle()
+                    self.playerService.showAirPlayPicker()
+                }
+                .disabled(self.playerService.currentTrack == nil)
             }
-            .disabled(self.playerService.currentTrack == nil)
         }
     }
 }
@@ -294,19 +314,17 @@ struct CompactPlayerActionButton: View {
 
     var body: some View {
         Button(action: self.action) {
-            VStack(spacing: 4) {
-                Image(systemName: self.systemImage)
-                    .font(.system(size: 16, weight: .medium))
-                    .contentTransition(.symbolEffect(.replace))
-
-                Text(self.title)
-                    .font(.caption2)
-                    .lineLimit(1)
-            }
-            .frame(width: 64, height: 44)
+            Image(systemName: self.systemImage)
+                .font(.system(size: 16, weight: .medium))
+                .contentTransition(.symbolEffect(.replace))
+                .frame(
+                    width: PlayerPresentationChromeLayout.compactIconButtonSize,
+                    height: PlayerPresentationChromeLayout.compactIconButtonSize
+                )
         }
         .buttonStyle(.glass)
         .foregroundStyle(self.isActive ? Color.red : Color.primary)
+        .help(self.title)
         .accessibilityIdentifier(self.accessibilityIdentifier)
         .accessibilityLabel(self.title)
         .accessibilityValue(self.isActive ? String(localized: "On") : String(localized: "Off"))
@@ -589,37 +607,39 @@ struct NowPlayingTransportControls: View {
     let size: Size
 
     var body: some View {
-        HStack(spacing: 30) {
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.previous() }
-            } label: {
-                Image(systemName: "backward.fill")
-                    .font(.system(size: self.size.sideFontSize, weight: .medium))
-            }
-            .buttonStyle(.glass)
-            .accessibilityLabel(String(localized: "Previous track"))
+        GlassEffectContainer(spacing: 30) {
+            HStack(spacing: 30) {
+                Button {
+                    HapticService.playback()
+                    Task { await self.playerService.previous() }
+                } label: {
+                    Image(systemName: "backward.fill")
+                        .font(.system(size: self.size.sideFontSize, weight: .medium))
+                }
+                .buttonStyle(.glass)
+                .accessibilityLabel(String(localized: "Previous track"))
 
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.playPause() }
-            } label: {
-                Image(systemName: self.playerService.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: self.size.playFontSize, weight: .medium))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glassProminent)
-            .accessibilityLabel(self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
+                Button {
+                    HapticService.playback()
+                    Task { await self.playerService.playPause() }
+                } label: {
+                    Image(systemName: self.playerService.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: self.size.playFontSize, weight: .medium))
+                        .contentTransition(.symbolEffect(.replace))
+                }
+                .buttonStyle(.glassProminent)
+                .accessibilityLabel(self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
 
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.next() }
-            } label: {
-                Image(systemName: "forward.fill")
-                    .font(.system(size: self.size.sideFontSize, weight: .medium))
+                Button {
+                    HapticService.playback()
+                    Task { await self.playerService.next() }
+                } label: {
+                    Image(systemName: "forward.fill")
+                        .font(.system(size: self.size.sideFontSize, weight: .medium))
+                }
+                .buttonStyle(.glass)
+                .accessibilityLabel(String(localized: "Next track"))
             }
-            .buttonStyle(.glass)
-            .accessibilityLabel(String(localized: "Next track"))
         }
         .disabled(self.playerService.currentTrack == nil)
     }
@@ -635,48 +655,50 @@ struct NowPlayingFocusActions: View {
     var body: some View {
         @Bindable var player = self.playerService
 
-        return HStack(spacing: 12) {
-            Button {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            } label: {
-                Label("Like", systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup")
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLikeButton)
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
-            .disabled(self.playerService.currentTrack == nil)
-
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showLyrics.toggle()
+        return GlassEffectContainer(spacing: 12) {
+            HStack(spacing: 12) {
+                Button {
+                    HapticService.toggle()
+                    self.playerService.likeCurrentTrack()
+                } label: {
+                    Label("Like", systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup")
+                        .contentTransition(.symbolEffect(.replace))
                 }
-            } label: {
-                Label("Lyrics", systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble")
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.showLyrics ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLyricsButton)
-            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
-            .disabled(self.playerService.currentTrack == nil)
+                .buttonStyle(.glass)
+                .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary)
+                .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLikeButton)
+                .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
+                .disabled(self.playerService.currentTrack == nil)
 
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showQueue.toggle()
+                Button {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        player.showLyrics.toggle()
+                    }
+                } label: {
+                    Label("Lyrics", systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble")
+                        .contentTransition(.symbolEffect(.replace))
                 }
-            } label: {
-                Label("Queue", systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet")
-                    .contentTransition(.symbolEffect(.replace))
+                .buttonStyle(.glass)
+                .foregroundStyle(self.playerService.showLyrics ? .red : .primary)
+                .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLyricsButton)
+                .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
+                .disabled(self.playerService.currentTrack == nil)
+
+                Button {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        player.showQueue.toggle()
+                    }
+                } label: {
+                    Label("Queue", systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet")
+                        .contentTransition(.symbolEffect(.replace))
+                }
+                .buttonStyle(.glass)
+                .foregroundStyle(self.playerService.showQueue ? .red : .primary)
+                .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerQueueButton)
+                .accessibilityValue(self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden"))
             }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.showQueue ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerQueueButton)
-            .accessibilityValue(self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden"))
         }
         .font(.system(size: 14, weight: .medium))
     }

@@ -151,6 +151,7 @@ struct KasetApp: App {
                     }
             }
         }
+        .windowStyle(.hiddenTitleBar)
 
         Settings {
             SettingsView()
