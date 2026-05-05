@@ -10,9 +10,7 @@ final class HomeViewUITests: KasetUITestCase {
 
         navigateToHome()
 
-        // Verify Home title is displayed
-        let title = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(title), "Home title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container), "Home view should be visible")
     }
 
     func testHomeViewShowsLoadingState() {
@@ -21,10 +19,7 @@ final class HomeViewUITests: KasetUITestCase {
 
         navigateToHome()
 
-        // The view should eventually load or show content
-        // In test mode, it should transition quickly
-        let homeTitle = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(homeTitle, timeout: 10))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container), "Home view should load")
     }
 
     // MARK: - Content Display
@@ -77,12 +72,10 @@ final class HomeViewUITests: KasetUITestCase {
 
         // Navigate to Search
         navigateToSearch()
-        let searchTitle = app.staticTexts["Search"]
-        XCTAssertTrue(waitForElement(searchTitle))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Search.container), "Search view should be visible")
 
         // Navigate back to Home
         navigateToHome()
-        let homeTitle = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(homeTitle))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container), "Home view should be visible")
     }
 }

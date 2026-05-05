@@ -35,6 +35,8 @@ struct ExploreView: View {
             .localizedNavigationTitle("Explore")
             .navigationDestinations(client: self.viewModel.client)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.Explore.container)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

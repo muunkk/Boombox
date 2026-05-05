@@ -29,9 +29,7 @@ final class SidebarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        // Verify Home view is displayed (check for navigation title)
-        let navigationTitle = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(navigationTitle), "Home navigation title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container), "Home view should be visible")
     }
 
     func testNavigateToSearch() {
@@ -39,9 +37,7 @@ final class SidebarUITests: KasetUITestCase {
 
         navigateToSearch()
 
-        // Verify Search view is displayed
-        let navigationTitle = app.staticTexts["Search"]
-        XCTAssertTrue(waitForElement(navigationTitle), "Search navigation title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Search.container), "Search view should be visible")
 
         // Search field should be present
         let searchField = app.textFields.firstMatch
@@ -53,9 +49,7 @@ final class SidebarUITests: KasetUITestCase {
 
         navigateToExplore()
 
-        // Verify Explore view is displayed
-        let navigationTitle = app.staticTexts["Explore"]
-        XCTAssertTrue(waitForElement(navigationTitle), "Explore navigation title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Explore.container), "Explore view should be visible")
     }
 
     func testNavigateToLikedMusic() {
@@ -63,9 +57,7 @@ final class SidebarUITests: KasetUITestCase {
 
         navigateToLikedMusic()
 
-        // Verify Liked Music view is displayed
-        let navigationTitle = app.staticTexts["Liked Music"]
-        XCTAssertTrue(waitForElement(navigationTitle), "Liked Music navigation title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.LikedMusic.container), "Liked Music view should be visible")
     }
 
     func testNavigateToLibrary() {
@@ -73,9 +65,7 @@ final class SidebarUITests: KasetUITestCase {
 
         navigateToLibrary()
 
-        // Verify Library view is displayed
-        let navigationTitle = app.staticTexts["Library"]
-        XCTAssertTrue(waitForElement(navigationTitle), "Library navigation title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Library.container), "Library view should be visible")
     }
 
     // MARK: - Navigation Persistence
@@ -85,17 +75,14 @@ final class SidebarUITests: KasetUITestCase {
 
         // Navigate to Search
         navigateToSearch()
-        let searchTitle = app.staticTexts["Search"]
-        XCTAssertTrue(waitForElement(searchTitle))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Search.container))
 
         // Navigate to Explore
         navigateToExplore()
-        let exploreTitle = app.staticTexts["Explore"]
-        XCTAssertTrue(waitForElement(exploreTitle))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Explore.container))
 
         // Navigate back to Home
         navigateToHome()
-        let homeTitle = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(homeTitle))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container))
     }
 }

@@ -10,9 +10,7 @@ final class LibraryViewUITests: KasetUITestCase {
 
         navigateToLibrary()
 
-        // Verify Library title is displayed
-        let title = app.staticTexts["Library"]
-        XCTAssertTrue(waitForElement(title), "Library title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Library.container), "Library view should be visible")
     }
 
     func testLibraryViewShowsLoadingState() {
@@ -20,9 +18,7 @@ final class LibraryViewUITests: KasetUITestCase {
 
         navigateToLibrary()
 
-        // Should eventually show content or loading
-        let title = app.staticTexts["Library"]
-        XCTAssertTrue(waitForElement(title, timeout: 10))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Library.container), "Library view should load")
     }
 
     // MARK: - Playlist Display
@@ -57,8 +53,7 @@ final class LibraryViewUITests: KasetUITestCase {
         // Navigate to Library via sidebar using accessibility identifier
         navigateToLibrary()
 
-        let title = app.staticTexts["Library"]
-        XCTAssertTrue(waitForElement(title))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Library.container), "Library view should be visible")
     }
 
     // MARK: - Player Bar Integration

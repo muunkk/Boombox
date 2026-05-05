@@ -30,9 +30,7 @@ final class AppLaunchUITests: KasetUITestCase {
     func testAppDefaultsToHomeView() {
         launchDefault()
 
-        // Home is the default selected view
-        let homeTitle = app.staticTexts["Home"]
-        XCTAssertTrue(waitForElement(homeTitle, timeout: 10), "Home should be the default view")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Home.container), "Home should be the default view")
     }
 
     // MARK: - Window Properties

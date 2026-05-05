@@ -10,8 +10,7 @@ final class LikedMusicViewUITests: KasetUITestCase {
 
         navigateToLikedMusic()
 
-        let title = app.staticTexts["Liked Music"]
-        XCTAssertTrue(waitForElement(title), "Liked Music title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.LikedMusic.container), "Liked Music view should be visible")
     }
 
     func testLikedMusicViewShowsEmptyState() {
@@ -19,9 +18,7 @@ final class LikedMusicViewUITests: KasetUITestCase {
 
         navigateToLikedMusic()
 
-        // With no liked songs, should show empty state or loading
-        let title = app.staticTexts["Liked Music"]
-        XCTAssertTrue(waitForElement(title, timeout: 10))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.LikedMusic.container), "Liked Music view should load")
     }
 
     // MARK: - Navigation
@@ -31,8 +28,7 @@ final class LikedMusicViewUITests: KasetUITestCase {
 
         navigateToLikedMusic()
 
-        let title = app.staticTexts["Liked Music"]
-        XCTAssertTrue(waitForElement(title))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.LikedMusic.container), "Liked Music view should be visible")
     }
 
     // MARK: - Player Bar Integration

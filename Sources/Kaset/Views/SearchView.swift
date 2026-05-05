@@ -41,6 +41,8 @@ struct SearchView: View {
             .localizedNavigationTitle("Search")
             .navigationDestinations(client: self.viewModel.client)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.Search.container)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

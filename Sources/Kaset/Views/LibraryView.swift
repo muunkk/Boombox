@@ -97,6 +97,8 @@ struct LibraryView: View {
                 PodcastShowView(show: show, client: self.viewModel.client)
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.Library.container)
         .environment(self.viewModel)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()

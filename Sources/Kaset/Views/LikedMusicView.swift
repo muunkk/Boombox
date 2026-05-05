@@ -63,6 +63,8 @@ struct LikedMusicView: View {
                 )
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.LikedMusic.container)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
