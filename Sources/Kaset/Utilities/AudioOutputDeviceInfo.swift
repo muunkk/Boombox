@@ -89,14 +89,14 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
 
     static func availableOutputDevices() -> [AudioOutputDeviceInfo] {
         self.allDeviceIDs()
-            .filter { Self.deviceHasOutputChannels($0) && Self.deviceIsAlive($0) }
+            .filter { self.deviceHasOutputChannels($0) && self.deviceIsAlive($0) }
             .map { deviceID in
                 AudioOutputDeviceInfo(
                     id: deviceID,
-                    name: Self.deviceName(for: deviceID) ?? String(localized: "Audio Output"),
-                    transportType: Self.transportType(for: deviceID),
-                    manufacturer: Self.manufacturer(for: deviceID),
-                    modelUID: Self.modelUID(for: deviceID)
+                    name: self.deviceName(for: deviceID) ?? String(localized: "Audio Output"),
+                    transportType: self.transportType(for: deviceID),
+                    manufacturer: self.manufacturer(for: deviceID),
+                    modelUID: self.modelUID(for: deviceID)
                 )
             }
             .sorted { lhs, rhs in
