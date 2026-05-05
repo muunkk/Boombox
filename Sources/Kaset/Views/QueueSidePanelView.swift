@@ -492,10 +492,13 @@ class DraggableTableView: NSTableView {
             guard let rowView = self.rowView(atRow: swipeRemoveTargetRow, makeIfNecessary: false) else {
                 return
             }
-            if self.swipeTrackedInitialOriginX == nil {
-                self.swipeTrackedInitialOriginX = rowView.frame.origin.x
+            let initialX: CGFloat
+            if let existing = self.swipeTrackedInitialOriginX {
+                initialX = existing
+            } else {
+                initialX = rowView.frame.origin.x
+                self.swipeTrackedInitialOriginX = initialX
             }
-            let initialX = self.swipeTrackedInitialOriginX!
             let maxDrag = rowView.bounds.width * Self.swipeMaxDragFactor
             let clamped = max(-maxDrag, min(maxDrag, self.horizontalSwipeAccumulator))
             var f = rowView.frame

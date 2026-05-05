@@ -264,12 +264,13 @@ final class SingletonPlayerWebView {
         self.logger.info("Creating singleton WebView")
 
         // Create coordinator
-        self.coordinator = Coordinator(playerService: playerService)
+        let coordinator = Coordinator(playerService: playerService)
+        self.coordinator = coordinator
 
         let configuration = webKitManager.createWebViewConfiguration()
 
         // Add script message handler
-        configuration.userContentController.add(self.coordinator!, name: "singletonPlayer")
+        configuration.userContentController.add(coordinator, name: "singletonPlayer")
 
         // Note: We do NOT inject a static volume init script here because the volume
         // may change between WebView creation and page loads. Instead, we:
@@ -386,7 +387,10 @@ final class SingletonPlayerWebView {
         self.logger.info("Will apply volume \(currentVolume) after page load")
 
         // Stop current playback first, then load new video
-        let urlToLoad = URL(string: "https://music.youtube.com/watch?v=\(videoId)")!
+        guard let urlToLoad = URL(string: "https://music.youtube.com/watch?v=\(videoId)") else {
+            self.logger.error("Failed to build watch URL for videoId: \(videoId, privacy: .public)")
+            return
+        }
         webView.evaluateJavaScript("document.querySelector('video')?.pause()") { [weak self] _, _ in
             guard let self, let webView = self.webView else { return }
 
