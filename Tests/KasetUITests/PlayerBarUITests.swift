@@ -98,7 +98,7 @@ final class PlayerBarUITests: KasetUITestCase {
         let toggle = app.buttons[TestAccessibilityID.PlayerBar.nowPlayingPanelToggle]
         XCTAssertTrue(waitForElement(toggle, timeout: 10), "Now Playing Panel toggle should exist")
 
-        let panel = app.otherElements[TestAccessibilityID.Sidebar.nowPlayingPanel]
+        let panel = element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingPanel)
         if panel.exists {
             toggle.click()
             XCTAssertTrue(waitForElementToDisappear(panel), "Sidebar now-playing panel should hide before retesting reveal")
@@ -107,7 +107,13 @@ final class PlayerBarUITests: KasetUITestCase {
         toggle.click()
 
         XCTAssertTrue(waitForElement(panel, timeout: 10), "Sidebar now-playing panel should appear")
-        XCTAssertTrue(waitForElement(app.otherElements[TestAccessibilityID.Sidebar.nowPlayingArtwork], timeout: 10), "Sidebar artwork should appear")
+        XCTAssertTrue(
+            waitForElement(
+                element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingArtwork),
+                timeout: 10
+            ),
+            "Sidebar artwork should appear"
+        )
         XCTAssertTrue(waitForElement(app.sliders[TestAccessibilityID.PlayerBar.seekSlider], timeout: 10), "Player bar seek slider should be visible while sidebar panel is shown")
         XCTAssertFalse(app.buttons["Now Playing Song"].exists, "Track title should not be a clickable player-bar popover trigger")
     }
@@ -120,7 +126,7 @@ final class PlayerBarUITests: KasetUITestCase {
         let toggle = app.buttons[TestAccessibilityID.PlayerBar.nowPlayingPanelToggle]
         XCTAssertTrue(waitForElement(toggle, timeout: 10), "Now Playing Panel toggle should exist")
 
-        let panel = app.otherElements[TestAccessibilityID.Sidebar.nowPlayingPanel]
+        let panel = element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingPanel)
         if !panel.exists {
             toggle.click()
             XCTAssertTrue(waitForElement(panel, timeout: 10), "Sidebar now-playing panel should appear before hiding")

@@ -37,6 +37,7 @@ struct NowPlayingSidebarPanel: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 12)
         .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 14))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Sidebar.nowPlayingPanel)
     }
 

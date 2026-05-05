@@ -10,8 +10,7 @@ final class ExploreViewUITests: KasetUITestCase {
 
         navigateToExplore()
 
-        let title = app.staticTexts["Explore"]
-        XCTAssertTrue(waitForElement(title), "Explore title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Explore.container), "Explore view should be visible")
     }
 
     func testExploreViewShowsContent() {
@@ -42,8 +41,7 @@ final class ExploreViewUITests: KasetUITestCase {
 
         navigateToExplore()
 
-        let title = app.staticTexts["Explore"]
-        XCTAssertTrue(waitForElement(title))
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Explore.container), "Explore view should be visible")
     }
 
     // MARK: - Player Bar Integration

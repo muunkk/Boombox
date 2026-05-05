@@ -28,6 +28,22 @@ enum TestAccessibilityID {
         static let container = "homeView"
     }
 
+    enum Explore {
+        static let container = "exploreView"
+    }
+
+    enum Search {
+        static let container = "searchView"
+    }
+
+    enum Library {
+        static let container = "libraryView"
+    }
+
+    enum LikedMusic {
+        static let container = "likedMusicView"
+    }
+
     enum MainWindow {
         static let container = "mainWindow"
         static let commandBar = "mainWindow.commandBar"
@@ -382,6 +398,27 @@ class KasetUITestCase: XCTestCase {
     }
 
     // MARK: - Wait Helpers
+
+    /// Finds an element by accessibility identifier without assuming its accessibility element type.
+    func element(matchingAccessibilityID accessibilityID: String) -> XCUIElement {
+        self.app.descendants(matching: .any)[accessibilityID].firstMatch
+    }
+
+    /// Waits for a screen root to exist by stable accessibility identifier.
+    @discardableResult
+    func waitForScreen(
+        _ accessibilityID: String,
+        timeout: TimeInterval = 10,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Bool {
+        self.waitForElement(
+            self.element(matchingAccessibilityID: accessibilityID),
+            timeout: timeout,
+            file: file,
+            line: line
+        )
+    }
 
     /// Waits for an element to exist with a timeout.
     @discardableResult

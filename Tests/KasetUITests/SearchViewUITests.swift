@@ -127,7 +127,6 @@ final class SearchViewUITests: KasetUITestCase {
 
         navigateToSearch()
 
-        let title = app.staticTexts["Search"]
-        XCTAssertTrue(waitForElement(title), "Search title should be visible")
+        XCTAssertTrue(waitForScreen(TestAccessibilityID.Search.container), "Search view should be visible")
     }
 }

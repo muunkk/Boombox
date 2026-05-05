@@ -37,6 +37,8 @@ struct HomeView: View {
             .localizedNavigationTitle("Home")
             .navigationDestinations(client: self.viewModel.client)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.Home.container)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
