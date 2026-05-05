@@ -221,10 +221,9 @@ struct PlaylistDetailView: View {
         LazyVStack(spacing: 0) {
             ForEach(Array(tracks.enumerated()), id: \.element.id) { index, track in
                 self.trackRow(track, index: index, tracks: tracks, isAlbum: isAlbum, author: author, fallbackAlbum: fallbackAlbum)
-                    .onAppear {
-                        // Load more when reaching the last few items
+                    .task {
                         if index >= tracks.count - 3, self.viewModel.hasMore {
-                            Task { await self.viewModel.loadMore() }
+                            await self.viewModel.loadMore()
                         }
                     }
 

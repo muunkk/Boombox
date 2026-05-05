@@ -92,10 +92,9 @@ struct LikedMusicView: View {
                 } else {
                     ForEach(Array(self.viewModel.songs.enumerated()), id: \.element.id) { index, song in
                         self.songRow(song, index: index)
-                            .onAppear {
-                                // Load more when reaching the last few items
+                            .task {
                                 if index >= self.viewModel.songs.count - 3, self.viewModel.hasMore {
-                                    Task { await self.viewModel.loadMore() }
+                                    await self.viewModel.loadMore()
                                 }
                             }
                         if index < self.viewModel.songs.count - 1 {

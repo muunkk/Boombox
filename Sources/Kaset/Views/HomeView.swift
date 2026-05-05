@@ -40,11 +40,9 @@ struct HomeView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
-        .onAppear {
+        .task {
             if self.viewModel.loadingState == .idle {
-                Task {
-                    await self.viewModel.load()
-                }
+                await self.viewModel.load()
             }
         }
         .refreshable {
