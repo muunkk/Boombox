@@ -4,7 +4,7 @@ import SwiftUI
 private enum PlayerPresentationChromeLayout {
     static let artworkCornerRadius: CGFloat = 12
     static let trafficLightReserveHeight: CGFloat = 36
-    static let exitButtonInset: CGFloat = 14
+    static let exitButtonInset: CGFloat = 16
     static let compactIconButtonSize: CGFloat = 34
     static let focusIconButtonSize: CGFloat = 40
 }
@@ -27,8 +27,8 @@ struct FocusPlayerView: View {
                 AccentBackground(imageURL: self.playerService.currentTrack?.thumbnailURL?.highQualityThumbnailURL)
                     .ignoresSafeArea()
 
-                Color(nsColor: .windowBackgroundColor)
-                    .opacity(0.18)
+                Rectangle()
+                    .fill(.regularMaterial)
                     .ignoresSafeArea()
 
                 HStack(alignment: .center, spacing: self.layoutSpacing(for: geometry.size)) {
@@ -42,17 +42,17 @@ struct FocusPlayerView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, self.horizontalPadding(for: geometry.size))
                 .padding(.top, PlayerPresentationChromeLayout.trafficLightReserveHeight)
-                .padding(.bottom, 30)
-            }
-            .overlay(alignment: .topTrailing) {
-                self.exitButton
-                    .padding(.top, PlayerPresentationChromeLayout.exitButtonInset)
-                    .padding(.trailing, PlayerPresentationChromeLayout.exitButtonInset)
+                .padding(.bottom, 32)
             }
             .overlay(alignment: .trailing) {
                 PlayerPresentationSidebarOverlay(client: self.client)
                     .padding(.trailing, 16)
                     .padding(.vertical, 16)
+            }
+            .overlay(alignment: .topTrailing) {
+                self.exitButton
+                    .padding(.top, PlayerPresentationChromeLayout.exitButtonInset)
+                    .padding(.trailing, PlayerPresentationChromeLayout.exitButtonInset)
             }
         }
         .frame(minWidth: 900, minHeight: 600)
@@ -75,6 +75,8 @@ struct FocusPlayerView: View {
             .accessibilityHidden(true)
         }
         .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayer)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(String(localized: "Focus Player"))
     }
 
     private var exitButton: some View {
@@ -82,7 +84,7 @@ struct FocusPlayerView: View {
             self.exitToStandard()
         } label: {
             Image(systemName: "arrow.down.right.and.arrow.up.left")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(.primary)
                 .frame(
                     width: PlayerPresentationChromeLayout.focusIconButtonSize,
@@ -91,7 +93,7 @@ struct FocusPlayerView: View {
                 .contentShape(Circle())
                 .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .help(String(localized: "Return to Full App"))
         .accessibilityLabel(String(localized: "Return to Full App"))
         .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerExitButton)
@@ -155,8 +157,8 @@ struct CompactPlayerView: View {
                 AccentBackground(imageURL: self.playerService.currentTrack?.thumbnailURL?.highQualityThumbnailURL)
                     .ignoresSafeArea()
 
-                Color(nsColor: .windowBackgroundColor)
-                    .opacity(0.22)
+                Rectangle()
+                    .fill(.regularMaterial)
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
@@ -192,15 +194,15 @@ struct CompactPlayerView: View {
                 .padding(.top, PlayerPresentationChromeLayout.trafficLightReserveHeight)
                 .padding(.bottom, Self.Layout.bottomPadding)
             }
-            .overlay(alignment: .topTrailing) {
-                self.backButton
-                    .padding(.top, 10)
-                    .padding(.trailing, 10)
-            }
             .overlay(alignment: .trailing) {
                 PlayerPresentationSidebarOverlay(client: self.client)
                     .padding(.trailing, 12)
                     .padding(.vertical, 12)
+            }
+            .overlay(alignment: .topTrailing) {
+                self.backButton
+                    .padding(.top, 12)
+                    .padding(.trailing, 12)
             }
         }
         .frame(
@@ -211,6 +213,8 @@ struct CompactPlayerView: View {
         )
         .ignoresSafeArea()
         .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayer)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(String(localized: "Small Player"))
     }
 
     private var backButton: some View {
@@ -220,13 +224,13 @@ struct CompactPlayerView: View {
             }
         } label: {
             Image(systemName: "arrow.up.left.and.arrow.down.right")
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.primary)
                 .frame(width: 30, height: 30)
                 .contentShape(Circle())
                 .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .help(String(localized: "Back to Full App"))
         .accessibilityLabel(String(localized: "Back to Full App"))
         .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayerBackButton)
@@ -295,6 +299,7 @@ struct CompactPlayerActionRow: View {
                 }
                 .disabled(self.playerService.currentTrack == nil)
             }
+            .glassEffect(.regular.interactive(), in: .capsule)
         }
     }
 }
@@ -314,16 +319,14 @@ struct CompactPlayerActionButton: View {
         Button(action: self.action) {
             Image(systemName: self.systemImage)
                 .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(self.isActive ? PackageResourceLookup.brandAccent : Color.primary.opacity(0.9))
+                .foregroundStyle(self.isActive ? Color.red : Color.primary.opacity(0.85))
                 .contentTransition(.symbolEffect(.replace))
                 .frame(
                     width: PlayerPresentationChromeLayout.compactIconButtonSize,
                     height: PlayerPresentationChromeLayout.compactIconButtonSize
                 )
-                .contentShape(Circle())
-                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .help(self.title)
         .accessibilityIdentifier(self.accessibilityIdentifier)
         .accessibilityLabel(self.title)
@@ -388,9 +391,6 @@ struct NowPlayingVolumeControl: View {
                 await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 7)
-        .glassEffect(.regular, in: .capsule)
     }
 
     private var volumeIcon: String {
@@ -666,6 +666,7 @@ struct NowPlayingTransportControls: View {
                     Task { await self.playerService.next() }
                 }
             }
+            .glassEffect(.regular.interactive(), in: .capsule)
         }
         .disabled(self.playerService.currentTrack == nil)
     }
@@ -683,14 +684,12 @@ struct NowPlayingTransportControls: View {
             action()
         } label: {
             Image(systemName: systemImage)
-                .font(.system(size: fontSize, weight: .semibold))
+                .font(.system(size: fontSize, weight: .medium))
                 .foregroundStyle(.primary)
                 .contentTransition(.symbolEffect(.replace))
                 .frame(width: hitSize, height: hitSize)
-                .contentShape(Circle())
-                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel(accessibilityLabel)
     }
 }
@@ -700,8 +699,6 @@ struct NowPlayingTransportControls: View {
 /// Shared Focus Player secondary actions.
 @available(macOS 26.0, *)
 struct NowPlayingFocusActions: View {
-    private static let brandAccent = PackageResourceLookup.brandAccent
-
     @Environment(PlayerService.self) private var playerService
 
     var body: some View {
@@ -743,6 +740,7 @@ struct NowPlayingFocusActions: View {
                     }
                 }
             }
+            .glassEffect(.regular.interactive(), in: .capsule)
         }
         .disabled(self.playerService.currentTrack == nil)
     }
@@ -761,16 +759,14 @@ struct NowPlayingFocusActions: View {
         } label: {
             Image(systemName: systemImage)
                 .font(.system(size: 17, weight: .medium))
-                .foregroundStyle(isActive ? Self.brandAccent : Color.primary.opacity(0.9))
+                .foregroundStyle(isActive ? Color.red : Color.primary.opacity(0.85))
                 .contentTransition(.symbolEffect(.replace))
                 .frame(
                     width: PlayerPresentationChromeLayout.focusIconButtonSize,
                     height: PlayerPresentationChromeLayout.focusIconButtonSize
                 )
-                .contentShape(Circle())
-                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .help(title)
         .accessibilityIdentifier(accessibilityIdentifier)
         .accessibilityLabel(title)
