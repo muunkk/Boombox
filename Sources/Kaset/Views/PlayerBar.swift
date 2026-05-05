@@ -337,6 +337,7 @@ struct PlayerBar: View {
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.shuffleButton)
             .accessibilityLabel(String(localized: "Shuffle"))
             .accessibilityValue(self.playerService.shuffleEnabled ? String(localized: "On") : String(localized: "Off"))
 
@@ -352,6 +353,7 @@ struct PlayerBar: View {
                     .foregroundStyle(.primary)
             }
             .buttonStyle(.pressable)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.previousButton)
             .accessibilityLabel(String(localized: "Previous track"))
 
             // Play/Pause
@@ -368,6 +370,7 @@ struct PlayerBar: View {
             }
             .buttonStyle(.pressable)
             .glassEffectID("playPause", in: self.playerNamespace)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.playPauseButton)
             .accessibilityLabel(self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
 
             // Next
@@ -382,6 +385,7 @@ struct PlayerBar: View {
                     .foregroundStyle(.primary)
             }
             .buttonStyle(.pressable)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.nextButton)
             .accessibilityLabel(String(localized: "Next track"))
 
             // Repeat
@@ -395,6 +399,7 @@ struct PlayerBar: View {
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.pressable)
+            .accessibilityIdentifier(AccessibilityID.PlayerBar.repeatButton)
             .accessibilityLabel(String(localized: "Repeat"))
             .accessibilityValue(self.repeatAccessibilityValue)
 
@@ -539,6 +544,7 @@ struct PlayerBar: View {
         }
         .buttonStyle(.pressable)
         .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
+        .accessibilityIdentifier(AccessibilityID.PlayerBar.likeButton)
         .accessibilityLabel(String(localized: "Like"))
         .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
         .disabled(self.playerService.currentTrack == nil)

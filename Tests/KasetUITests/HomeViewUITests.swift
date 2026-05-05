@@ -57,9 +57,7 @@ final class HomeViewUITests: KasetUITestCase {
 
         // Player bar should be visible at the bottom
         // Look for play/pause button as indicator
-        let playPauseButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        let playPauseButton = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPauseButton, timeout: 10), "Player bar should show play/pause button")
     }
 

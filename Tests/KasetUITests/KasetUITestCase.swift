@@ -19,6 +19,13 @@ enum TestAccessibilityID {
     }
 
     enum PlayerBar {
+        static let playPauseButton = "playerBar.playPause"
+        static let previousButton = "playerBar.previous"
+        static let nextButton = "playerBar.next"
+        static let shuffleButton = "playerBar.shuffle"
+        static let repeatButton = "playerBar.repeat"
+        static let likeButton = "playerBar.like"
+        static let lyricsButton = "playerBar.lyrics"
         static let nowPlayingPanelToggle = "playerBar.nowPlayingPanelToggle"
         static let seekSlider = "playerBar.seekSlider"
         static let trackTitle = "playerBar.trackTitle"
@@ -458,6 +465,34 @@ class KasetUITestCase: XCTestCase {
         return true
     }
 
+    /// Clicks an element that exists, falling back to a centered coordinate click when
+    /// macOS accessibility reports a visible SwiftUI control as not hittable in CI.
+    @discardableResult
+    func clickElement(
+        _ element: XCUIElement,
+        timeout: TimeInterval = 10,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Bool {
+        guard self.waitForElement(element, timeout: timeout, file: file, line: line) else {
+            return false
+        }
+
+        if element.isHittable {
+            element.click()
+            return true
+        }
+
+        let frame = element.frame
+        guard frame.width > 0, frame.height > 0 else {
+            XCTFail("Element exists but has no clickable frame: \(element)", file: file, line: line)
+            return false
+        }
+
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        return true
+    }
+
     /// Waits for element count to match expected value.
     @discardableResult
     func waitForElementCount(
@@ -522,10 +557,7 @@ class KasetUITestCase: XCTestCase {
             return
         }
 
-        // Then wait for it to be hittable (may need time for layout)
-        if self.waitForHittable(sidebarItem, timeout: 10) {
-            sidebarItem.click()
-        }
+        self.clickElement(sidebarItem, timeout: 10)
     }
 
     /// Navigates to a sidebar item by label text.
@@ -543,10 +575,7 @@ class KasetUITestCase: XCTestCase {
             return
         }
 
-        // Then wait for it to be hittable (may need time for layout)
-        if self.waitForHittable(sidebarItem, timeout: 10) {
-            sidebarItem.click()
-        }
+        self.clickElement(sidebarItem, timeout: 10)
     }
 
     /// Navigates to Home via sidebar.
