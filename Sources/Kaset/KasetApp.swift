@@ -117,6 +117,8 @@ struct KasetApp: App {
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)
                     .environment(\.playerPresentationMode, self.$playerPresentationMode)
+                    .toolbar(self.playerPresentationMode == .standard ? .automatic : .hidden, for: .windowToolbar)
+                    .toolbarBackgroundVisibility(self.playerPresentationMode == .standard ? .automatic : .hidden, for: .windowToolbar)
                     .onAppear {
                         DiagnosticsLogger.app.info("KasetApp: App content appeared")
                         // Wire up PlayerService to AppDelegate for dock menu actions
@@ -151,6 +153,7 @@ struct KasetApp: App {
                     }
             }
         }
+        .windowStyle(.hiddenTitleBar)
 
         Settings {
             SettingsView()

@@ -1,6 +1,14 @@
 import Foundation
 import SwiftUI
 
+private enum PlayerPresentationChromeLayout {
+    static let artworkCornerRadius: CGFloat = 12
+    static let trafficLightReserveHeight: CGFloat = 36
+    static let exitButtonInset: CGFloat = 14
+    static let compactIconButtonSize: CGFloat = 34
+    static let focusIconButtonSize: CGFloat = 40
+}
+
 // MARK: - FocusPlayerView
 
 /// Full-window now-playing surface used by Focus Player mode.
@@ -8,6 +16,8 @@ import SwiftUI
 struct FocusPlayerView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(\.playerPresentationMode) private var playerPresentationMode
+
+    let client: any YTMusicClientProtocol
 
     @FocusState private var hasKeyboardFocus: Bool
 
@@ -21,25 +31,32 @@ struct FocusPlayerView: View {
                     .opacity(0.18)
                     .ignoresSafeArea()
 
-                VStack(spacing: 0) {
-                    self.header
+                HStack(alignment: .center, spacing: self.layoutSpacing(for: geometry.size)) {
+                    NowPlayingArtworkView(
+                        size: self.artworkSize(for: geometry.size),
+                        cornerRadius: PlayerPresentationChromeLayout.artworkCornerRadius
+                    )
 
-                    Spacer(minLength: 24)
-
-                    HStack(alignment: .center, spacing: self.layoutSpacing(for: geometry.size)) {
-                        NowPlayingArtworkView(size: self.artworkSize(for: geometry.size), cornerRadius: 18)
-
-                        self.detailColumn
-                    }
-                    .frame(maxWidth: .infinity)
-
-                    Spacer(minLength: 24)
+                    self.detailColumn
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, self.horizontalPadding(for: geometry.size))
-                .padding(.vertical, 30)
+                .padding(.top, PlayerPresentationChromeLayout.trafficLightReserveHeight)
+                .padding(.bottom, 30)
+            }
+            .overlay(alignment: .topTrailing) {
+                self.exitButton
+                    .padding(.top, PlayerPresentationChromeLayout.exitButtonInset)
+                    .padding(.trailing, PlayerPresentationChromeLayout.exitButtonInset)
+            }
+            .overlay(alignment: .trailing) {
+                PlayerPresentationSidebarOverlay(client: self.client)
+                    .padding(.trailing, 16)
+                    .padding(.vertical, 16)
             }
         }
         .frame(minWidth: 900, minHeight: 600)
+        .ignoresSafeArea()
         .focusable()
         .focused(self.$hasKeyboardFocus)
         .onAppear {
@@ -60,22 +77,24 @@ struct FocusPlayerView: View {
         .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayer)
     }
 
-    private var header: some View {
-        HStack {
-            Text(PlayerPresentationMode.focus.displayName)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-
-            Button {
-                self.exitToStandard()
-            } label: {
-                Label("Return to Full App", systemImage: "arrow.down.right.and.arrow.up.left")
-            }
-            .buttonStyle(.glass)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerExitButton)
+    private var exitButton: some View {
+        Button {
+            self.exitToStandard()
+        } label: {
+            Image(systemName: "arrow.down.right.and.arrow.up.left")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(.primary)
+                .frame(
+                    width: PlayerPresentationChromeLayout.focusIconButtonSize,
+                    height: PlayerPresentationChromeLayout.focusIconButtonSize
+                )
+                .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
         }
+        .buttonStyle(.plain)
+        .help(String(localized: "Return to Full App"))
+        .accessibilityLabel(String(localized: "Return to Full App"))
+        .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerExitButton)
     }
 
     private var detailColumn: some View {
@@ -120,11 +139,13 @@ struct CompactPlayerView: View {
         static let minimumSize = CGSize(width: 360, height: 540)
         static let idealSize = CGSize(width: 420, height: 640)
         static let horizontalPadding: CGFloat = 24
-        static let verticalPadding: CGFloat = 14
+        static let bottomPadding: CGFloat = 14
     }
 
     @Environment(PlayerService.self) private var playerService
     @Environment(\.playerPresentationMode) private var playerPresentationMode
+
+    let client: any YTMusicClientProtocol
 
     var body: some View {
         GeometryReader { proxy in
@@ -139,11 +160,12 @@ struct CompactPlayerView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    self.header
-
                     Spacer(minLength: 4)
 
-                    NowPlayingArtworkView(size: artworkSize, cornerRadius: 18)
+                    NowPlayingArtworkView(
+                        size: artworkSize,
+                        cornerRadius: PlayerPresentationChromeLayout.artworkCornerRadius
+                    )
                         .accessibilityHidden(self.playerService.currentTrack == nil)
 
                     Spacer(minLength: 8)
@@ -167,7 +189,18 @@ struct CompactPlayerView: View {
                     NowPlayingVolumeControl()
                 }
                 .padding(.horizontal, Self.Layout.horizontalPadding)
-                .padding(.vertical, Self.Layout.verticalPadding)
+                .padding(.top, PlayerPresentationChromeLayout.trafficLightReserveHeight)
+                .padding(.bottom, Self.Layout.bottomPadding)
+            }
+            .overlay(alignment: .topTrailing) {
+                self.backButton
+                    .padding(.top, 10)
+                    .padding(.trailing, 10)
+            }
+            .overlay(alignment: .trailing) {
+                PlayerPresentationSidebarOverlay(client: self.client)
+                    .padding(.trailing, 12)
+                    .padding(.vertical, 12)
             }
         }
         .frame(
@@ -176,44 +209,27 @@ struct CompactPlayerView: View {
             minHeight: Self.Layout.minimumSize.height,
             idealHeight: Self.Layout.idealSize.height
         )
+        .ignoresSafeArea()
         .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayer)
     }
 
-    private var header: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(PlayerPresentationMode.compact.displayName)
-                    .font(.headline)
-                    .lineLimit(1)
-
-                Text(self.playbackStateLabel)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+    private var backButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                self.playerPresentationMode.wrappedValue = .standard
             }
-
-            Spacer(minLength: 8)
-
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    self.playerPresentationMode.wrappedValue = .standard
-                }
-            } label: {
-                Label("Back to Full App", systemImage: "arrow.up.left.and.arrow.down.right")
-                    .labelStyle(.titleAndIcon)
-            }
-            .buttonStyle(.glass)
-            .controlSize(.small)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayerBackButton)
+        } label: {
+            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.primary)
+                .frame(width: 30, height: 30)
+                .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
         }
-    }
-
-    private var playbackStateLabel: String {
-        guard self.playerService.currentTrack != nil else {
-            return String(localized: "Nothing Playing")
-        }
-
-        return self.playerService.isPlaying ? String(localized: "Playing") : String(localized: "Paused")
+        .buttonStyle(.plain)
+        .help(String(localized: "Back to Full App"))
+        .accessibilityLabel(String(localized: "Back to Full App"))
+        .accessibilityIdentifier(AccessibilityID.MainWindow.compactPlayerBackButton)
     }
 
     private func artworkSize(for availableSize: CGSize) -> CGFloat {
@@ -229,54 +245,56 @@ struct CompactPlayerActionRow: View {
     @Environment(PlayerService.self) private var playerService
 
     var body: some View {
-        HStack(spacing: 10) {
-            CompactPlayerActionButton(
-                title: String(localized: "Like"),
-                systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
-                isActive: self.playerService.currentTrackLikeStatus == .like,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLikeButton
-            ) {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            }
-            .disabled(self.playerService.currentTrack == nil)
-
-            CompactPlayerActionButton(
-                title: String(localized: "Lyrics"),
-                systemImage: "quote.bubble",
-                isActive: self.playerService.showLyrics,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLyricsButton
-            ) {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    self.playerService.showLyrics.toggle()
+        GlassEffectContainer(spacing: 12) {
+            HStack(spacing: 12) {
+                CompactPlayerActionButton(
+                    title: String(localized: "Like"),
+                    systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
+                    isActive: self.playerService.currentTrackLikeStatus == .like,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLikeButton
+                ) {
+                    HapticService.toggle()
+                    self.playerService.likeCurrentTrack()
                 }
-            }
-            .disabled(self.playerService.currentTrack == nil)
+                .disabled(self.playerService.currentTrack == nil)
 
-            CompactPlayerActionButton(
-                title: String(localized: "Queue"),
-                systemImage: "list.bullet",
-                isActive: self.playerService.showQueue,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerQueueButton
-            ) {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    self.playerService.showQueue.toggle()
+                CompactPlayerActionButton(
+                    title: String(localized: "Lyrics"),
+                    systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble",
+                    isActive: self.playerService.showLyrics,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerLyricsButton
+                ) {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        self.playerService.showLyrics.toggle()
+                    }
                 }
-            }
-            .disabled(self.playerService.currentTrack == nil)
+                .disabled(self.playerService.currentTrack == nil)
 
-            CompactPlayerActionButton(
-                title: String(localized: "Output"),
-                systemImage: "airplayaudio",
-                isActive: self.playerService.isAirPlayConnected,
-                accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerAirPlayButton
-            ) {
-                HapticService.toggle()
-                self.playerService.showAirPlayPicker()
+                CompactPlayerActionButton(
+                    title: String(localized: "Queue"),
+                    systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet",
+                    isActive: self.playerService.showQueue,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerQueueButton
+                ) {
+                    HapticService.toggle()
+                    withAnimation(AppAnimation.standard) {
+                        self.playerService.showQueue.toggle()
+                    }
+                }
+                .disabled(self.playerService.currentTrack == nil)
+
+                CompactPlayerActionButton(
+                    title: String(localized: "Output"),
+                    systemImage: "airplayaudio",
+                    isActive: self.playerService.isAirPlayConnected,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.compactPlayerAirPlayButton
+                ) {
+                    HapticService.toggle()
+                    self.playerService.showAirPlayPicker()
+                }
+                .disabled(self.playerService.currentTrack == nil)
             }
-            .disabled(self.playerService.currentTrack == nil)
         }
     }
 }
@@ -294,19 +312,19 @@ struct CompactPlayerActionButton: View {
 
     var body: some View {
         Button(action: self.action) {
-            VStack(spacing: 4) {
-                Image(systemName: self.systemImage)
-                    .font(.system(size: 16, weight: .medium))
-                    .contentTransition(.symbolEffect(.replace))
-
-                Text(self.title)
-                    .font(.caption2)
-                    .lineLimit(1)
-            }
-            .frame(width: 64, height: 44)
+            Image(systemName: self.systemImage)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(self.isActive ? PackageResourceLookup.brandAccent : Color.primary.opacity(0.9))
+                .contentTransition(.symbolEffect(.replace))
+                .frame(
+                    width: PlayerPresentationChromeLayout.compactIconButtonSize,
+                    height: PlayerPresentationChromeLayout.compactIconButtonSize
+                )
+                .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .buttonStyle(.glass)
-        .foregroundStyle(self.isActive ? Color.red : Color.primary)
+        .buttonStyle(.plain)
+        .help(self.title)
         .accessibilityIdentifier(self.accessibilityIdentifier)
         .accessibilityLabel(self.title)
         .accessibilityValue(self.isActive ? String(localized: "On") : String(localized: "Off"))
@@ -370,6 +388,9 @@ struct NowPlayingVolumeControl: View {
                 await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
             }
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 7)
+        .glassEffect(.regular, in: .capsule)
     }
 
     private var volumeIcon: String {
@@ -565,21 +586,48 @@ struct NowPlayingTransportControls: View {
         case regular
         case large
 
+        var spacing: CGFloat {
+            switch self {
+            case .regular:
+                12
+            case .large:
+                16
+            }
+        }
+
         var playFontSize: CGFloat {
             switch self {
             case .regular:
-                32
+                22
             case .large:
-                40
+                26
             }
         }
 
         var sideFontSize: CGFloat {
             switch self {
             case .regular:
-                22
+                17
             case .large:
-                28
+                20
+            }
+        }
+
+        var playHitSize: CGFloat {
+            switch self {
+            case .regular:
+                54
+            case .large:
+                58
+            }
+        }
+
+        var sideHitSize: CGFloat {
+            switch self {
+            case .regular:
+                42
+            case .large:
+                46
             }
         }
     }
@@ -589,39 +637,61 @@ struct NowPlayingTransportControls: View {
     let size: Size
 
     var body: some View {
-        HStack(spacing: 30) {
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.previous() }
-            } label: {
-                Image(systemName: "backward.fill")
-                    .font(.system(size: self.size.sideFontSize, weight: .medium))
-            }
-            .buttonStyle(.glass)
-            .accessibilityLabel(String(localized: "Previous track"))
+        GlassEffectContainer(spacing: self.size.spacing) {
+            HStack(spacing: self.size.spacing) {
+                self.transportButton(
+                    systemImage: "backward.fill",
+                    fontSize: self.size.sideFontSize,
+                    hitSize: self.size.sideHitSize,
+                    accessibilityLabel: String(localized: "Previous track")
+                ) {
+                    Task { await self.playerService.previous() }
+                }
 
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.playPause() }
-            } label: {
-                Image(systemName: self.playerService.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: self.size.playFontSize, weight: .medium))
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glassProminent)
-            .accessibilityLabel(self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
+                self.transportButton(
+                    systemImage: self.playerService.isPlaying ? "pause.fill" : "play.fill",
+                    fontSize: self.size.playFontSize,
+                    hitSize: self.size.playHitSize,
+                    accessibilityLabel: self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play")
+                ) {
+                    Task { await self.playerService.playPause() }
+                }
 
-            Button {
-                HapticService.playback()
-                Task { await self.playerService.next() }
-            } label: {
-                Image(systemName: "forward.fill")
-                    .font(.system(size: self.size.sideFontSize, weight: .medium))
+                self.transportButton(
+                    systemImage: "forward.fill",
+                    fontSize: self.size.sideFontSize,
+                    hitSize: self.size.sideHitSize,
+                    accessibilityLabel: String(localized: "Next track")
+                ) {
+                    Task { await self.playerService.next() }
+                }
             }
-            .buttonStyle(.glass)
-            .accessibilityLabel(String(localized: "Next track"))
         }
         .disabled(self.playerService.currentTrack == nil)
+    }
+
+    @ViewBuilder
+    private func transportButton(
+        systemImage: String,
+        fontSize: CGFloat,
+        hitSize: CGFloat,
+        accessibilityLabel: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            HapticService.playback()
+            action()
+        } label: {
+            Image(systemName: systemImage)
+                .font(.system(size: fontSize, weight: .semibold))
+                .foregroundStyle(.primary)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: hitSize, height: hitSize)
+                .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 
@@ -630,68 +700,123 @@ struct NowPlayingTransportControls: View {
 /// Shared Focus Player secondary actions.
 @available(macOS 26.0, *)
 struct NowPlayingFocusActions: View {
+    private static let brandAccent = PackageResourceLookup.brandAccent
+
     @Environment(PlayerService.self) private var playerService
 
     var body: some View {
         @Bindable var player = self.playerService
 
-        return HStack(spacing: 12) {
-            Button {
-                HapticService.toggle()
-                self.playerService.likeCurrentTrack()
-            } label: {
-                Label("Like", systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup")
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLikeButton)
-            .accessibilityValue(self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked"))
-            .disabled(self.playerService.currentTrack == nil)
-
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showLyrics.toggle()
+        return GlassEffectContainer(spacing: 12) {
+            HStack(spacing: 12) {
+                self.actionButton(
+                    title: String(localized: "Like"),
+                    systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
+                    isActive: self.playerService.currentTrackLikeStatus == .like,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerLikeButton,
+                    accessibilityValue: self.likeAccessibilityValue
+                ) {
+                    self.playerService.likeCurrentTrack()
                 }
-            } label: {
-                Label("Lyrics", systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble")
-                    .contentTransition(.symbolEffect(.replace))
-            }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.showLyrics ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerLyricsButton)
-            .accessibilityValue(self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden"))
-            .disabled(self.playerService.currentTrack == nil)
 
-            Button {
-                HapticService.toggle()
-                withAnimation(AppAnimation.standard) {
-                    player.showQueue.toggle()
+                self.actionButton(
+                    title: String(localized: "Lyrics"),
+                    systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble",
+                    isActive: self.playerService.showLyrics,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerLyricsButton,
+                    accessibilityValue: self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden")
+                ) {
+                    withAnimation(AppAnimation.standard) {
+                        player.showLyrics.toggle()
+                    }
                 }
-            } label: {
-                Label("Queue", systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet")
-                    .contentTransition(.symbolEffect(.replace))
+
+                self.actionButton(
+                    title: String(localized: "Queue"),
+                    systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet",
+                    isActive: self.playerService.showQueue,
+                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerQueueButton,
+                    accessibilityValue: self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden")
+                ) {
+                    withAnimation(AppAnimation.standard) {
+                        player.showQueue.toggle()
+                    }
+                }
             }
-            .buttonStyle(.glass)
-            .foregroundStyle(self.playerService.showQueue ? .red : .primary)
-            .accessibilityIdentifier(AccessibilityID.MainWindow.focusPlayerQueueButton)
-            .accessibilityValue(self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden"))
         }
-        .font(.system(size: 14, weight: .medium))
+        .disabled(self.playerService.currentTrack == nil)
+    }
+
+    private func actionButton(
+        title: String,
+        systemImage: String,
+        isActive: Bool,
+        accessibilityIdentifier: String,
+        accessibilityValue: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            HapticService.toggle()
+            action()
+        } label: {
+            Image(systemName: systemImage)
+                .font(.system(size: 17, weight: .medium))
+                .foregroundStyle(isActive ? Self.brandAccent : Color.primary.opacity(0.9))
+                .contentTransition(.symbolEffect(.replace))
+                .frame(
+                    width: PlayerPresentationChromeLayout.focusIconButtonSize,
+                    height: PlayerPresentationChromeLayout.focusIconButtonSize
+                )
+                .contentShape(Circle())
+                .glassEffect(.regular.interactive(), in: .circle)
+        }
+        .buttonStyle(.plain)
+        .help(title)
+        .accessibilityIdentifier(accessibilityIdentifier)
+        .accessibilityLabel(title)
+        .accessibilityValue(accessibilityValue)
+    }
+
+    private var likeAccessibilityValue: String {
+        self.playerService.currentTrackLikeStatus == .like ? String(localized: "Liked") : String(localized: "Not liked")
+    }
+}
+
+// MARK: - PlayerPresentationSidebarOverlay
+
+@available(macOS 26.0, *)
+private struct PlayerPresentationSidebarOverlay: View {
+    @Environment(PlayerService.self) private var playerService
+
+    let client: any YTMusicClientProtocol
+
+    var body: some View {
+        if self.playerService.showLyrics || self.playerService.showQueue {
+            Group {
+                if self.playerService.showLyrics {
+                    LyricsView(client: self.client)
+                } else if self.playerService.queueDisplayMode == .sidepanel {
+                    QueueSidePanelView()
+                } else {
+                    QueueView()
+                }
+            }
+            .transition(.move(edge: .trailing).combined(with: .opacity))
+        }
     }
 }
 
 @available(macOS 26.0, *)
 #Preview("Focus Player") {
-    FocusPlayerView()
+    FocusPlayerView(client: MockUITestYTMusicClient())
         .environment(PlayerService())
         .environment(\.playerPresentationMode, .constant(.focus))
 }
 
 @available(macOS 26.0, *)
 #Preview("Compact Player") {
-    CompactPlayerView()
+    CompactPlayerView(client: MockUITestYTMusicClient())
         .environment(PlayerService())
         .environment(\.playerPresentationMode, .constant(.compact))
 }
+
