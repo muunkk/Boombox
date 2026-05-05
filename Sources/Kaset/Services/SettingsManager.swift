@@ -228,7 +228,10 @@ final class SettingsManager {
 
         self.syncedLyricsEnabled = UserDefaults.standard.object(forKey: Keys.syncedLyricsEnabled) as? Bool ?? true
         self.romanizationEnabled = UserDefaults.standard.object(forKey: Keys.romanizationEnabled) as? Bool ?? true
-        self.showSidebarNowPlayingPanel = UserDefaults.standard.object(forKey: Keys.showSidebarNowPlayingPanel) as? Bool ?? false
+        let persistedSidebarPanel = UserDefaults.standard.object(forKey: Keys.showSidebarNowPlayingPanel) as? Bool ?? false
+        // UI tests launch multiple app instances in one runner; reset this layout-only
+        // preference so one test cannot clip sidebar rows for the next launch.
+        self.showSidebarNowPlayingPanel = UITestConfig.isUITestMode ? false : persistedSidebarPanel
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),
            let style = MediaControlStyle(rawValue: rawValue)
