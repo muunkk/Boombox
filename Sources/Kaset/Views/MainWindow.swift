@@ -235,9 +235,9 @@ struct MainWindow: View {
         case .standard:
             self.mainContent
         case .focus:
-            FocusPlayerView()
+            FocusPlayerView(client: self.client)
         case .compact:
-            CompactPlayerView()
+            CompactPlayerView(client: self.client)
         }
     }
 
