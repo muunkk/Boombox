@@ -339,7 +339,6 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
             self.state = isPlaying ? .playing : .paused
             self.logger.debug("Loaded mock playing state: \(isPlaying)")
         }
-
     }
 
     /// Sets the YTMusicClient for API calls (dependency injection).

@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - PlayerPresentationMode
+
 /// App-level player presentation modes.
 enum PlayerPresentationMode: String, CaseIterable, Identifiable {
     /// Standard app layout with navigation content and bottom player bar.

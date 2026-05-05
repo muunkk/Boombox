@@ -51,10 +51,10 @@ final class PlayerPresentationWindowCoordinator {
 
     static func compactFrame(centeredAround sourceFrame: NSRect) -> NSRect {
         NSRect(
-            x: sourceFrame.midX - Self.compactTargetSize.width / 2,
-            y: sourceFrame.midY - Self.compactTargetSize.height / 2,
-            width: Self.compactTargetSize.width,
-            height: Self.compactTargetSize.height
+            x: sourceFrame.midX - self.compactTargetSize.width / 2,
+            y: sourceFrame.midY - self.compactTargetSize.height / 2,
+            width: self.compactTargetSize.width,
+            height: self.compactTargetSize.height
         ).integral
     }
 

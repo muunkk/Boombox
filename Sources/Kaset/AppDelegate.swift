@@ -128,19 +128,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.addDockMenuItem(
             to: menu,
             title: self.playerService?.isPlaying == true ? "Pause" : "Play",
-            action: #selector(dockMenuPlayPause),
+            action: #selector(self.dockMenuPlayPause),
             enabled: canControlPlayback
         )
         self.addDockMenuItem(
             to: menu,
             title: "Previous Track",
-            action: #selector(dockMenuPrevious),
+            action: #selector(self.dockMenuPrevious),
             enabled: canControlPlayback
         )
         self.addDockMenuItem(
             to: menu,
             title: "Next Track",
-            action: #selector(dockMenuNext),
+            action: #selector(self.dockMenuNext),
             enabled: canControlPlayback
         )
 
@@ -149,21 +149,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.addDockMenuItem(
             to: menu,
             title: self.playerService?.currentTrackLikeStatus == .like ? "Unlike" : "Like",
-            action: #selector(dockMenuToggleLike),
+            action: #selector(self.dockMenuToggleLike),
             enabled: hasCurrentTrack,
             state: self.playerService?.currentTrackLikeStatus == .like ? .on : .off
         )
         self.addDockMenuItem(
             to: menu,
             title: self.playerService?.showLyrics == true ? "Hide Lyrics" : "Show Lyrics",
-            action: #selector(dockMenuToggleLyrics),
+            action: #selector(self.dockMenuToggleLyrics),
             enabled: hasCurrentTrack || self.playerService?.showLyrics == true,
             state: self.playerService?.showLyrics == true ? .on : .off
         )
         self.addDockMenuItem(
             to: menu,
             title: self.playerService?.showQueue == true ? "Hide Queue" : "Show Queue",
-            action: #selector(dockMenuToggleQueue),
+            action: #selector(self.dockMenuToggleQueue),
             enabled: self.playerService != nil,
             state: self.playerService?.showQueue == true ? .on : .off
         )
@@ -173,21 +173,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.addDockMenuItem(
             to: menu,
             title: self.currentPlayerPresentationMode == .focus ? "Exit Focus Player" : "Focus Player",
-            action: #selector(dockMenuToggleFocusPlayer),
+            action: #selector(self.dockMenuToggleFocusPlayer),
             enabled: hasCurrentTrack || self.currentPlayerPresentationMode == .focus,
             state: self.currentPlayerPresentationMode == .focus ? .on : .off
         )
         self.addDockMenuItem(
             to: menu,
             title: self.currentPlayerPresentationMode == .compact ? "Exit Small Player" : "Small Player",
-            action: #selector(dockMenuToggleSmallPlayer),
+            action: #selector(self.dockMenuToggleSmallPlayer),
             enabled: hasCurrentTrack || self.currentPlayerPresentationMode == .compact,
             state: self.currentPlayerPresentationMode == .compact ? .on : .off
         )
         self.addDockMenuItem(
             to: menu,
             title: SettingsManager.shared.showSidebarNowPlayingPanel ? "Hide Now Playing Panel" : "Show Now Playing Panel",
-            action: #selector(dockMenuToggleNowPlayingPanel),
+            action: #selector(self.dockMenuToggleNowPlayingPanel),
             state: SettingsManager.shared.showSidebarNowPlayingPanel ? .on : .off
         )
 

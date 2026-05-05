@@ -453,7 +453,6 @@ struct PlaylistDetailView: View {
             }
         }
     }
-
 }
 
 #Preview {

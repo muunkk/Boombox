@@ -205,8 +205,8 @@ struct PlayerBar: View {
 
     private var trackInfoView: some View {
         self.trackInfoContent
-        .accessibilityLabel(self.nowPlayingAccessibilityLabel)
-        .allowsHitTesting(false)
+            .accessibilityLabel(self.nowPlayingAccessibilityLabel)
+            .allowsHitTesting(false)
     }
 
     private var trackInfoContent: some View {
