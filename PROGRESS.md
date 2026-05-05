@@ -8,7 +8,7 @@ This file tracks the Boombox YouTube Music macOS fork work so another session ca
 - Upstream fork base: `700b72d49e47d55d6f1b2fde6c5a73f70228843c` (`sozercan/kaset`)
 - Latest completed checkpoint: upgraded the native Dock right-click menu with now-playing controls on `feature/dock-now-playing-controls`; renamed to Boombox ahead of public pre-release
 - `swift build`: passes
-- `swift test`: passes (899 tests after Dock menu coverage)
+- `swift test`: passes (900 tests in 75 suites)
 - Target app identity: `Boombox` / `com.melboonchan.boombox` (Swift module name remains `Kaset` for upstream-attribution continuity)
 
 ## Completed

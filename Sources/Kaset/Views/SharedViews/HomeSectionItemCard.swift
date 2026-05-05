@@ -87,15 +87,12 @@ struct HomeSectionItemCard: View {
         .overlay {
             // Play overlay on hover (for songs)
             if case .song = self.item, self.isHovering {
-                Circle()
-                    .fill(.ultraThinMaterial)
+                Image(systemName: "play.fill")
+                    .font(.title2)
+                    .foregroundStyle(.primary)
+                    .offset(x: 2)
                     .frame(width: 48, height: 48)
-                    .overlay {
-                        Image(systemName: "play.fill")
-                            .font(.title2)
-                            .foregroundStyle(.primary)
-                            .offset(x: 2)
-                    }
+                    .glassEffect(.regular, in: .circle)
                     .transition(.scale.combined(with: .opacity))
             }
         }

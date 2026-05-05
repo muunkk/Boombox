@@ -315,7 +315,6 @@ struct KasetApp: App {
                 }
                 .keyboardShortcut("0", modifiers: .command)
             }
-
         }
     }
 
@@ -347,7 +346,6 @@ struct KasetApp: App {
             "Repeat Off"
         }
     }
-
 }
 
 // MARK: - SettingsView

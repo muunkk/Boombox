@@ -120,7 +120,7 @@ struct WebKitManagerTests {
             .name: name,
             .value: "redacted-token",
             .secure: "TRUE",
-            .expires: Date(timeIntervalSinceNow: 3_600),
+            .expires: Date(timeIntervalSinceNow: 3600),
         ])
     }
 }

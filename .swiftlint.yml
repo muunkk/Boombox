@@ -33,7 +33,6 @@ excluded:
   - .build
   - DerivedData
   - Packages
-  - Sources/APIExplorer
 
 # Rules configuration
 identifier_name:

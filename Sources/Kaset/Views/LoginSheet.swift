@@ -74,9 +74,9 @@ struct LoginSheet: View {
     private var loginHelpText: String {
         switch self.loginMode {
         case .embedded:
-            return "Embedded sign-in may work for passwords, but Google passkeys usually need Safari for this private app."
+            "Embedded sign-in may work for passwords, but Google passkeys usually need Safari for this private app."
         case .safariFallback:
-            return "Safari handles the passkey. This app only imports allowlisted auth cookies into local WebKit and Keychain storage."
+            "Safari handles the passkey. This app only imports allowlisted auth cookies into local WebKit and Keychain storage."
         }
     }
 

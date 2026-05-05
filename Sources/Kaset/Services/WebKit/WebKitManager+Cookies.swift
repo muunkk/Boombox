@@ -49,12 +49,14 @@ final class CookieArchiveWriteCoordinator: @unchecked Sendable {
     }
 }
 
-// MARK: - KeychainCookieStorage
+// MARK: - AuthCookieImportResult
 
 struct AuthCookieImportResult: Equatable {
     let importedCount: Int
     let importedCookieNames: [String]
 }
+
+// MARK: - ManualCookieCandidate
 
 private struct ManualCookieCandidate {
     let name: String
@@ -65,6 +67,8 @@ private struct ManualCookieCandidate {
     let isSecure: Bool
 }
 
+// MARK: - AuthCookieImportError
+
 enum AuthCookieImportError: LocalizedError, Equatable {
     case emptyInput
     case noSupportedCookies
@@ -73,14 +77,16 @@ enum AuthCookieImportError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .emptyInput:
-            return "Paste one or more YouTube or Google auth cookies first."
+            "Paste one or more YouTube or Google auth cookies first."
         case .noSupportedCookies:
-            return "No supported YouTube Music auth cookies were found. Include SAPISID or __Secure-3PAPISID from Safari."
+            "No supported YouTube Music auth cookies were found. Include SAPISID or __Secure-3PAPISID from Safari."
         case .missingPrimaryAuthCookie:
-            return "The import needs SAPISID or __Secure-3PAPISID so YouTube Music API requests can be signed."
+            "The import needs SAPISID or __Secure-3PAPISID so YouTube Music API requests can be signed."
         }
     }
 }
+
+// MARK: - KeychainCookieStorage
 
 /// Securely stores auth cookies in the macOS Keychain.
 /// Provides encryption at rest and app-specific access control.
@@ -189,11 +195,10 @@ enum KeychainCookieStorage {
         let domain = parts[0].trimmingCharacters(in: .whitespacesAndNewlines)
         let path = parts[2].trimmingCharacters(in: .whitespacesAndNewlines)
         let isSecure = parts[3].caseInsensitiveCompare("TRUE") == .orderedSame
-        let expiresDate: Date?
-        if let timestamp = TimeInterval(parts[4]), timestamp > 0 {
-            expiresDate = Date(timeIntervalSince1970: timestamp)
+        let expiresDate: Date? = if let timestamp = TimeInterval(parts[4]), timestamp > 0 {
+            Date(timeIntervalSince1970: timestamp)
         } else {
-            expiresDate = nil
+            nil
         }
 
         return ManualCookieCandidate(

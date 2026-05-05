@@ -320,9 +320,8 @@ struct SearchView: View {
                         .padding(.vertical, 16)
                 }
                 .buttonStyle(.plain)
-                .onAppear {
-                    // Auto-load more when this view appears (infinite scroll)
-                    Task { await self.viewModel.loadMore() }
+                .task {
+                    await self.viewModel.loadMore()
                 }
             }
         }

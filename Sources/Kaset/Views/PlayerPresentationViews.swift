@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+// MARK: - PlayerPresentationChromeLayout
+
 private enum PlayerPresentationChromeLayout {
     static let artworkCornerRadius: CGFloat = 12
     static let trafficLightReserveHeight: CGFloat = 36
@@ -168,7 +170,7 @@ struct CompactPlayerView: View {
                         size: artworkSize,
                         cornerRadius: PlayerPresentationChromeLayout.artworkCornerRadius
                     )
-                        .accessibilityHidden(self.playerService.currentTrack == nil)
+                    .accessibilityHidden(self.playerService.currentTrack == nil)
 
                     Spacer(minLength: 8)
 
@@ -671,7 +673,6 @@ struct NowPlayingTransportControls: View {
         .disabled(self.playerService.currentTrack == nil)
     }
 
-    @ViewBuilder
     private func transportButton(
         systemImage: String,
         fontSize: CGFloat,
@@ -710,8 +711,10 @@ struct NowPlayingFocusActions: View {
                     title: String(localized: "Like"),
                     systemImage: self.playerService.currentTrackLikeStatus == .like ? "hand.thumbsup.fill" : "hand.thumbsup",
                     isActive: self.playerService.currentTrackLikeStatus == .like,
-                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerLikeButton,
-                    accessibilityValue: self.likeAccessibilityValue
+                    accessibility: .init(
+                        identifier: AccessibilityID.MainWindow.focusPlayerLikeButton,
+                        value: self.likeAccessibilityValue
+                    )
                 ) {
                     self.playerService.likeCurrentTrack()
                 }
@@ -720,8 +723,10 @@ struct NowPlayingFocusActions: View {
                     title: String(localized: "Lyrics"),
                     systemImage: self.playerService.showLyrics ? "quote.bubble.fill" : "quote.bubble",
                     isActive: self.playerService.showLyrics,
-                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerLyricsButton,
-                    accessibilityValue: self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden")
+                    accessibility: .init(
+                        identifier: AccessibilityID.MainWindow.focusPlayerLyricsButton,
+                        value: self.playerService.showLyrics ? String(localized: "Showing") : String(localized: "Hidden")
+                    )
                 ) {
                     withAnimation(AppAnimation.standard) {
                         player.showLyrics.toggle()
@@ -732,8 +737,10 @@ struct NowPlayingFocusActions: View {
                     title: String(localized: "Queue"),
                     systemImage: self.playerService.showQueue ? "list.bullet.rectangle.fill" : "list.bullet",
                     isActive: self.playerService.showQueue,
-                    accessibilityIdentifier: AccessibilityID.MainWindow.focusPlayerQueueButton,
-                    accessibilityValue: self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden")
+                    accessibility: .init(
+                        identifier: AccessibilityID.MainWindow.focusPlayerQueueButton,
+                        value: self.playerService.showQueue ? String(localized: "Showing") : String(localized: "Hidden")
+                    )
                 ) {
                     withAnimation(AppAnimation.standard) {
                         player.showQueue.toggle()
@@ -745,12 +752,16 @@ struct NowPlayingFocusActions: View {
         .disabled(self.playerService.currentTrack == nil)
     }
 
+    private struct ActionButtonAccessibility {
+        let identifier: String
+        let value: String
+    }
+
     private func actionButton(
         title: String,
         systemImage: String,
         isActive: Bool,
-        accessibilityIdentifier: String,
-        accessibilityValue: String,
+        accessibility: ActionButtonAccessibility,
         action: @escaping () -> Void
     ) -> some View {
         Button {
@@ -768,9 +779,9 @@ struct NowPlayingFocusActions: View {
         }
         .buttonStyle(.pressable)
         .help(title)
-        .accessibilityIdentifier(accessibilityIdentifier)
+        .accessibilityIdentifier(accessibility.identifier)
         .accessibilityLabel(title)
-        .accessibilityValue(accessibilityValue)
+        .accessibilityValue(accessibility.value)
     }
 
     private var likeAccessibilityValue: String {
@@ -815,4 +826,3 @@ private struct PlayerPresentationSidebarOverlay: View {
         .environment(PlayerService())
         .environment(\.playerPresentationMode, .constant(.compact))
 }
-

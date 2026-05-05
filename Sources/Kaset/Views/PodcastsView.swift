@@ -44,11 +44,9 @@ struct PodcastsView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
-        .onAppear {
+        .task {
             if self.viewModel.loadingState == .idle {
-                Task {
-                    await self.viewModel.load()
-                }
+                await self.viewModel.load()
             }
         }
         .refreshable {
@@ -190,8 +188,7 @@ private struct PodcastEpisodeCard: View {
                             .fontWeight(.medium)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .glassEffect(.regular, in: .rect(cornerRadius: 4))
                             .padding(6)
                     }
                 }
@@ -605,10 +602,8 @@ struct AllEpisodesView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding()
-                            .onAppear {
-                                Task {
-                                    await self.loadMoreEpisodes()
-                                }
+                            .task {
+                                await self.loadMoreEpisodes()
                             }
                     }
                 }

@@ -191,5 +191,4 @@ enum AccessibilityID {
     enum History {
         static let scrollView = "historyView.scrollView"
     }
-
 }

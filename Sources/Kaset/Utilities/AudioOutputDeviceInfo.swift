@@ -1,6 +1,8 @@
 import CoreAudio
 import Foundation
 
+// MARK: - AudioOutputDeviceInfo
+
 /// Best-effort description of an available system audio output.
 struct AudioOutputDeviceInfo: Equatable, Identifiable {
     let id: AudioDeviceID
@@ -72,7 +74,7 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 
     static func currentDefaultOutput() -> AudioOutputDeviceInfo {
-        guard let deviceID = Self.defaultOutputDeviceID() else {
+        guard let deviceID = defaultOutputDeviceID() else {
             return .unknown
         }
 
@@ -86,7 +88,7 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 
     static func availableOutputDevices() -> [AudioOutputDeviceInfo] {
-        Self.allDeviceIDs()
+        self.allDeviceIDs()
             .filter { Self.deviceHasOutputChannels($0) && Self.deviceIsAlive($0) }
             .map { deviceID in
                 AudioOutputDeviceInfo(
@@ -265,15 +267,15 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 
     private static func deviceName(for deviceID: AudioDeviceID) -> String? {
-        Self.stringProperty(kAudioObjectPropertyName, for: deviceID)
+        self.stringProperty(kAudioObjectPropertyName, for: deviceID)
     }
 
     private static func manufacturer(for deviceID: AudioDeviceID) -> String? {
-        Self.stringProperty(kAudioObjectPropertyManufacturer, for: deviceID)
+        self.stringProperty(kAudioObjectPropertyManufacturer, for: deviceID)
     }
 
     private static func modelUID(for deviceID: AudioDeviceID) -> String? {
-        Self.stringProperty(kAudioDevicePropertyModelUID, for: deviceID)
+        self.stringProperty(kAudioDevicePropertyModelUID, for: deviceID)
     }
 
     private static func stringProperty(_ selector: AudioObjectPropertySelector, for deviceID: AudioDeviceID) -> String? {
@@ -337,9 +339,11 @@ struct AudioOutputDeviceInfo: Equatable, Identifiable {
     }
 }
 
+// MARK: - AudioOutputIconResolver
+
 enum AudioOutputIconResolver {
     static func pickerButtonSystemImageName(deviceName: String, transportType: UInt32?, manufacturer: String? = nil, modelUID: String? = nil) -> String {
-        if Self.isAirPods(
+        if self.isAirPods(
             deviceName: deviceName,
             transportType: transportType,
             manufacturer: manufacturer,
@@ -404,29 +408,31 @@ enum AudioOutputIconResolver {
     }
 }
 
+// MARK: - AudioOutputTransportDescription
+
 private enum AudioOutputTransportDescription {
     static func name(for transportType: UInt32?) -> String {
         switch transportType {
         case kAudioDeviceTransportTypeBuiltIn:
-            return String(localized: "Built-In")
+            String(localized: "Built-In")
         case kAudioDeviceTransportTypeBluetooth:
-            return String(localized: "Bluetooth")
+            String(localized: "Bluetooth")
         case kAudioDeviceTransportTypeBluetoothLE:
-            return String(localized: "Bluetooth")
+            String(localized: "Bluetooth")
         case kAudioDeviceTransportTypeAirPlay:
-            return String(localized: "AirPlay")
+            String(localized: "AirPlay")
         case kAudioDeviceTransportTypeUSB:
-            return String(localized: "USB")
+            String(localized: "USB")
         case kAudioDeviceTransportTypeHDMI:
-            return String(localized: "HDMI")
+            String(localized: "HDMI")
         case kAudioDeviceTransportTypeDisplayPort:
-            return String(localized: "DisplayPort")
+            String(localized: "DisplayPort")
         case kAudioDeviceTransportTypeAggregate:
-            return String(localized: "Aggregate Device")
+            String(localized: "Aggregate Device")
         case kAudioDeviceTransportTypeVirtual:
-            return String(localized: "Virtual Device")
+            String(localized: "Virtual Device")
         default:
-            return String(localized: "Output Device")
+            String(localized: "Output Device")
         }
     }
 }
