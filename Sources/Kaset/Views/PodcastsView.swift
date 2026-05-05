@@ -188,8 +188,7 @@ private struct PodcastEpisodeCard: View {
                             .fontWeight(.medium)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .glassEffect(.regular, in: .rect(cornerRadius: 4))
                             .padding(6)
                     }
                 }
