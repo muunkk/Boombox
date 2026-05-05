@@ -24,7 +24,6 @@ Use this skill when playback, auth recovery, queue sync, or hidden WebView state
    `subsystem:Kaset category:auth`
 3. In debug builds, verify `webView.isInspectable = true`, then inspect the player WebView with Safari Web Inspector.
 4. To simulate auth expiry, delete `__Secure-3PAPISID` via Safari Web Inspector storage tools and trigger an authenticated API call.
-5. If auth cookies or headers look suspicious, run `swift run api-explorer auth` and compare against the exported cookie state.
 
 ## Landmarks
 

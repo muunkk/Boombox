@@ -18,8 +18,6 @@ Boombox is a native macOS YouTube Music client (Swift/SwiftUI) using a hidden We
 
 > ⚠️ **Prefer API over WebView** — Always use `YTMusicClient` API calls when functionality exists. Only use WebView for playback (DRM-protected audio) and authentication.
 
-> 🔧 **Improve API Explorer, Don't Write One-Off Scripts** — When exploring or debugging API-related functionality, **always enhance `Sources/APIExplorer/main.swift`** instead of writing temporary scripts.
-
 > 📝 **Document Architectural Decisions** — For significant design changes, create an ADR in `docs/adr/`.
 
 > ⌨️ **Preserve Standard macOS Shortcuts** — Do not override standard app/window shortcuts such as `⌘M`, `⌘W`, `⌘Q`, `⌘H`, or `⌘,` unless the human explicitly asks for it. When adding media shortcuts, prefer native macOS and Apple Music conventions, and update `docs/keyboard-shortcuts.md`.
@@ -44,16 +42,6 @@ Default local workflow is CLI-first: use the commands above for day-to-day verif
 > - In instance methods, use `self.property` explicitly
 >
 > Always run `swiftformat .` before completing work to auto-fix these issues.
-
-## API Discovery
-
-> ⚠️ **MANDATORY**: Before implementing ANY feature that requires a new or modified API call, you MUST explore the endpoint first using `swift run api-explorer`. Do NOT guess or assume API response structures.
-
-```bash
-swift run api-explorer auth          # Check auth status
-swift run api-explorer list          # List known endpoints
-swift run api-explorer browse FEmusic_home -v  # Explore with verbose output
-```
 
 Put repeatable, repo-specific workflows in `.agents/skills/` so `AGENTS.md` stays focused on repo-wide rules.
 
