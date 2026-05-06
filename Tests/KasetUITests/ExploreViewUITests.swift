@@ -51,9 +51,7 @@ final class ExploreViewUITests: KasetUITestCase {
 
         navigateToExplore()
 
-        let playPauseButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        let playPauseButton = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPauseButton, timeout: 10))
     }
 }

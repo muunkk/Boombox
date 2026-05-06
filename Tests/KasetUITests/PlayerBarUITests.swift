@@ -10,11 +10,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        // Player bar should be visible when there's a current track
-        // Look for the play/pause button
-        let playPauseButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        let playPauseButton = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPauseButton, timeout: 10))
     }
 
@@ -25,10 +21,8 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let playPauseButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
-        XCTAssertTrue(waitForHittable(playPauseButton))
+        let playPauseButton = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
+        XCTAssertTrue(waitForElement(playPauseButton, timeout: 10))
     }
 
     func testNextButtonExists() {
@@ -36,7 +30,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let nextButton = app.buttons["Next track"]
+        let nextButton = app.buttons[TestAccessibilityID.PlayerBar.nextButton]
         XCTAssertTrue(waitForElement(nextButton, timeout: 10), "Next button should exist")
     }
 
@@ -45,7 +39,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let previousButton = app.buttons["Previous track"]
+        let previousButton = app.buttons[TestAccessibilityID.PlayerBar.previousButton]
         XCTAssertTrue(waitForElement(previousButton, timeout: 10), "Previous button should exist")
     }
 
@@ -54,7 +48,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let shuffleButton = app.buttons["Shuffle"]
+        let shuffleButton = app.buttons[TestAccessibilityID.PlayerBar.shuffleButton]
         XCTAssertTrue(waitForElement(shuffleButton, timeout: 10), "Shuffle button should exist")
     }
 
@@ -63,7 +57,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let repeatButton = app.buttons["Repeat"]
+        let repeatButton = app.buttons[TestAccessibilityID.PlayerBar.repeatButton]
         XCTAssertTrue(waitForElement(repeatButton, timeout: 10), "Repeat button should exist")
     }
 
@@ -74,7 +68,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let likeButton = app.buttons["Like"]
+        let likeButton = app.buttons[TestAccessibilityID.PlayerBar.likeButton]
         XCTAssertTrue(waitForElement(likeButton, timeout: 10), "Like button should exist")
     }
 
@@ -83,7 +77,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let likeButton = app.buttons["Like"]
+        let likeButton = app.buttons[TestAccessibilityID.PlayerBar.likeButton]
         XCTAssertTrue(waitForElement(likeButton, timeout: 10), "Like button should exist before checking player actions")
 
         let dislikeButton = app.buttons["Dislike"]
@@ -100,11 +94,11 @@ final class PlayerBarUITests: KasetUITestCase {
 
         let panel = element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingPanel)
         if panel.exists {
-            toggle.click()
+            clickElement(toggle)
             XCTAssertTrue(waitForElementToDisappear(panel), "Sidebar now-playing panel should hide before retesting reveal")
         }
 
-        toggle.click()
+        clickElement(toggle)
 
         XCTAssertTrue(waitForElement(panel, timeout: 10), "Sidebar now-playing panel should appear")
         XCTAssertTrue(
@@ -128,11 +122,11 @@ final class PlayerBarUITests: KasetUITestCase {
 
         let panel = element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingPanel)
         if !panel.exists {
-            toggle.click()
+            clickElement(toggle)
             XCTAssertTrue(waitForElement(panel, timeout: 10), "Sidebar now-playing panel should appear before hiding")
         }
 
-        toggle.click()
+        clickElement(toggle)
 
         XCTAssertTrue(waitForElementToDisappear(panel), "Sidebar now-playing panel should hide")
     }
@@ -144,7 +138,7 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let lyricsButton = app.buttons["Lyrics"]
+        let lyricsButton = app.buttons[TestAccessibilityID.PlayerBar.lyricsButton]
         XCTAssertTrue(waitForElement(lyricsButton, timeout: 10), "Lyrics button should exist")
     }
 
@@ -155,14 +149,8 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let shuffleButton = app.buttons["Shuffle"]
-        XCTAssertTrue(waitForHittable(shuffleButton))
-
-        // Check initial state
-        let initialValue = shuffleButton.value as? String ?? ""
-
-        // Click to toggle
-        shuffleButton.click()
+        let shuffleButton = app.buttons[TestAccessibilityID.PlayerBar.shuffleButton]
+        XCTAssertTrue(clickElement(shuffleButton))
 
         // State should change
         Thread.sleep(forTimeInterval: 0.5)
@@ -174,17 +162,17 @@ final class PlayerBarUITests: KasetUITestCase {
 
         navigateToHome()
 
-        let repeatButton = app.buttons["Repeat"]
-        XCTAssertTrue(waitForHittable(repeatButton))
+        let repeatButton = app.buttons[TestAccessibilityID.PlayerBar.repeatButton]
+        XCTAssertTrue(waitForElement(repeatButton, timeout: 10))
 
         // Click to cycle through modes: off -> all -> one -> off
-        repeatButton.click()
+        clickElement(repeatButton)
         Thread.sleep(forTimeInterval: 0.3)
 
-        repeatButton.click()
+        clickElement(repeatButton)
         Thread.sleep(forTimeInterval: 0.3)
 
-        repeatButton.click()
+        clickElement(repeatButton)
         Thread.sleep(forTimeInterval: 0.3)
     }
 
@@ -196,21 +184,15 @@ final class PlayerBarUITests: KasetUITestCase {
         // Navigate to different views and verify player bar is present
 
         navigateToHome()
-        var playPause = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        var playPause = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPause, timeout: 10))
 
         navigateToSearch()
-        playPause = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        playPause = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPause))
 
         navigateToExplore()
-        playPause = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS 'Play' OR label CONTAINS 'Pause'")
-        ).firstMatch
+        playPause = app.buttons[TestAccessibilityID.PlayerBar.playPauseButton]
         XCTAssertTrue(waitForElement(playPause))
     }
 }
