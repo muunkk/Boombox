@@ -14,8 +14,6 @@ struct SettingsManagerTests {
     func launchPageDisplayNames() {
         #expect(SettingsManager.LaunchPage.home.displayName == "Home")
         #expect(SettingsManager.LaunchPage.explore.displayName == "Explore")
-        #expect(SettingsManager.LaunchPage.charts.displayName == "Charts")
-        #expect(SettingsManager.LaunchPage.moodsAndGenres.displayName == "Moods & Genres")
         #expect(SettingsManager.LaunchPage.newReleases.displayName == "New Releases")
         #expect(SettingsManager.LaunchPage.likedMusic.displayName == "Liked Music")
         #expect(SettingsManager.LaunchPage.playlists.displayName == "Playlists")
@@ -42,8 +40,6 @@ struct SettingsManagerTests {
     func launchPageNavigationItem() {
         #expect(SettingsManager.LaunchPage.home.navigationItem == .home)
         #expect(SettingsManager.LaunchPage.explore.navigationItem == .explore)
-        #expect(SettingsManager.LaunchPage.charts.navigationItem == .charts)
-        #expect(SettingsManager.LaunchPage.moodsAndGenres.navigationItem == .moodsAndGenres)
         #expect(SettingsManager.LaunchPage.newReleases.navigationItem == .newReleases)
         #expect(SettingsManager.LaunchPage.likedMusic.navigationItem == .likedMusic)
         #expect(SettingsManager.LaunchPage.playlists.navigationItem == .library)
@@ -178,9 +174,9 @@ struct SettingsManagerTests {
         let originalLastUsed = manager.lastUsedPage
 
         manager.defaultLaunchPage = .lastUsed
-        manager.lastUsedPage = .charts
+        manager.lastUsedPage = .explore
 
-        #expect(manager.launchPage == .charts)
+        #expect(manager.launchPage == .explore)
 
         // Restore
         manager.defaultLaunchPage = originalPage
@@ -236,6 +232,6 @@ struct SettingsManagerTests {
     @Test("All LaunchPage cases are covered")
     func allLaunchPageCasesCovered() {
         // Verify we have the expected number of cases
-        #expect(SettingsManager.LaunchPage.allCases.count == 8)
+        #expect(SettingsManager.LaunchPage.allCases.count == 6)
     }
 }

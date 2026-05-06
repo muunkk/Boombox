@@ -283,6 +283,11 @@ final class SearchViewModel {
             self.lastSearchedFilter = currentFilter
             self.loadingState = .loaded
             self.logger.info("Search complete: \(searchResults.allItems.count) results, hasMore: \(searchResults.hasMore)")
+
+            // Persist successful queries (with at least one result) to history.
+            if !searchResults.allItems.isEmpty {
+                RecentSearchesStore.shared.record(currentQuery)
+            }
         } catch {
             // CancellationError is thrown when task is cancelled during URLSession request
             if !Task.isCancelled, self.query == currentQuery {

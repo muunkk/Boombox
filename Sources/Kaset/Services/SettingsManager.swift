@@ -21,6 +21,7 @@ final class SettingsManager {
         static let showSidebarNowPlayingPanel = "settings.showSidebarNowPlayingPanel"
         static let menuBarItemEnabled = "settings.menuBarItemEnabled"
         static let menuBarHotkey = "settings.menuBarHotkey"
+        static let sidebarToggleHotkey = "settings.sidebarToggleHotkey"
     }
 
     // MARK: - Launch Page Options
@@ -29,8 +30,6 @@ final class SettingsManager {
     enum LaunchPage: String, CaseIterable, Identifiable {
         case home
         case explore
-        case charts
-        case moodsAndGenres
         case newReleases
         case likedMusic
         case playlists
@@ -44,8 +43,6 @@ final class SettingsManager {
             switch self {
             case .home: String(localized: "Home")
             case .explore: String(localized: "Explore")
-            case .charts: String(localized: "Charts")
-            case .moodsAndGenres: String(localized: "Moods & Genres")
             case .newReleases: String(localized: "New Releases")
             case .likedMusic: String(localized: "Liked Music")
             case .playlists: String(localized: "Playlists")
@@ -58,8 +55,6 @@ final class SettingsManager {
             switch self {
             case .home: .home
             case .explore: .explore
-            case .charts: .charts
-            case .moodsAndGenres: .moodsAndGenres
             case .newReleases: .newReleases
             case .likedMusic: .likedMusic
             case .playlists: .library
@@ -240,6 +235,19 @@ final class SettingsManager {
         }
     }
 
+    /// Optional global keyboard shortcut that toggles the main window sidebar.
+    var sidebarToggleHotkey: HotkeyShortcut? {
+        didSet {
+            if let sidebarToggleHotkey,
+               let data = try? JSONEncoder().encode(sidebarToggleHotkey)
+            {
+                UserDefaults.standard.set(data, forKey: Keys.sidebarToggleHotkey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Keys.sidebarToggleHotkey)
+            }
+        }
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -266,6 +274,14 @@ final class SettingsManager {
             self.menuBarHotkey = shortcut
         } else {
             self.menuBarHotkey = nil
+        }
+
+        if let data = UserDefaults.standard.data(forKey: Keys.sidebarToggleHotkey),
+           let shortcut = try? JSONDecoder().decode(HotkeyShortcut.self, from: data)
+        {
+            self.sidebarToggleHotkey = shortcut
+        } else {
+            self.sidebarToggleHotkey = nil
         }
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),

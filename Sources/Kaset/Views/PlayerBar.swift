@@ -8,6 +8,7 @@ struct PlayerBar: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
 
     @Environment(PlayerService.self) private var playerService
+    @Environment(\.isSidebarCollapsed) private var isSidebarCollapsed
 
     /// Namespace for glass effect morphing and unioning.
     @Namespace private var playerNamespace
@@ -514,7 +515,7 @@ struct PlayerBar: View {
                 self.settings.showSidebarNowPlayingPanel.toggle()
             }
         } label: {
-            Image(systemName: self.settings.showSidebarNowPlayingPanel ? "chevron.right" : "chevron.left")
+            Image(systemName: self.nowPlayingPanelChevronIcon)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(self.settings.showSidebarNowPlayingPanel ? .red : .primary.opacity(0.85))
                 .frame(width: 18)
@@ -526,6 +527,17 @@ struct PlayerBar: View {
         .accessibilityLabel(String(localized: "Now Playing Panel"))
         .accessibilityValue(self.settings.showSidebarNowPlayingPanel ? String(localized: "Shown") : String(localized: "Hidden"))
         .help(String(localized: "Now Playing Panel"))
+    }
+
+    /// Chevron direction varies by sidebar visibility:
+    /// - sidebar visible: left/right (panel docks/undocks horizontally with sidebar)
+    /// - sidebar hidden: up/down (the toggle now reveals/hides a free-floating panel)
+    private var nowPlayingPanelChevronIcon: String {
+        if self.isSidebarCollapsed {
+            self.settings.showSidebarNowPlayingPanel ? "chevron.up" : "chevron.down"
+        } else {
+            self.settings.showSidebarNowPlayingPanel ? "chevron.right" : "chevron.left"
+        }
     }
 
     // MARK: - Action Buttons

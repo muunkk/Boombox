@@ -96,6 +96,32 @@ struct HomeSectionItemCard: View {
                     .transition(.scale.combined(with: .opacity))
             }
         }
+        .overlay(alignment: .bottomTrailing) {
+            self.kindBadge
+                .padding(6)
+        }
+    }
+
+    /// Small corner badge that distinguishes songs vs. albums vs. playlists vs. artists.
+    @ViewBuilder
+    private var kindBadge: some View {
+        if let icon = self.kindBadgeIcon {
+            Image(systemName: icon)
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 3)
+                .background(.black.opacity(0.55), in: .capsule)
+        }
+    }
+
+    private var kindBadgeIcon: String? {
+        switch self.item {
+        case .song: "music.note"
+        case .album: "square.stack.fill"
+        case .playlist: "music.note.list"
+        case .artist: "person.fill"
+        }
     }
 
     /// Placeholder view for items without thumbnails.

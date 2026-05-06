@@ -32,10 +32,7 @@ struct MainWindow: View {
     @State private var homeViewModel: HomeViewModel?
     @State private var exploreViewModel: ExploreViewModel?
     @State private var searchViewModel: SearchViewModel?
-    @State private var chartsViewModel: ChartsViewModel?
-    @State private var moodsAndGenresViewModel: MoodsAndGenresViewModel?
     @State private var newReleasesViewModel: NewReleasesViewModel?
-    @State private var podcastsViewModel: PodcastsViewModel?
     @State private var likedMusicViewModel: LikedMusicViewModel?
     @State private var libraryViewModel: LibraryViewModel?
     @State private var historyViewModel: HistoryViewModel?
@@ -43,16 +40,20 @@ struct MainWindow: View {
     /// Column visibility state for NavigationSplitView - persisted to fix restoration from dock.
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
+    @State private var settings = SettingsManager.shared
+
+    /// Whether the sidebar's leading column is currently hidden.
+    private var isSidebarCollapsed: Bool {
+        self.columnVisibility != .all
+    }
+
     init(navigationSelection: Binding<NavigationItem?>, client: any YTMusicClientProtocol) {
         self._navigationSelection = navigationSelection
         self.client = client
         _homeViewModel = State(initialValue: HomeViewModel(client: client))
         _exploreViewModel = State(initialValue: ExploreViewModel(client: client))
         _searchViewModel = State(initialValue: SearchViewModel(client: client))
-        _chartsViewModel = State(initialValue: ChartsViewModel(client: client))
-        _moodsAndGenresViewModel = State(initialValue: MoodsAndGenresViewModel(client: client))
         _newReleasesViewModel = State(initialValue: NewReleasesViewModel(client: client))
-        _podcastsViewModel = State(initialValue: PodcastsViewModel(client: client))
         _likedMusicViewModel = State(initialValue: LikedMusicViewModel(client: client))
         _libraryViewModel = State(initialValue: LibraryViewModel(client: client))
         _historyViewModel = State(initialValue: HistoryViewModel(client: client))
@@ -248,12 +249,53 @@ struct MainWindow: View {
                 Sidebar(selection: self.$navigationSelection)
             } detail: {
                 self.detailView(for: self.navigationSelection, client: self.client)
+                    .overlay(alignment: .bottomLeading) {
+                        // When the sidebar collapses, the inline now-playing
+                        // card disappears with it. Render a floating copy
+                        // anchored where the original sat. The overlay region
+                        // is clipped to end at the PlayerBar's top edge, so
+                        // the slide-up / slide-down animation appears to come
+                        // from behind the PlayerBar.
+                        ZStack(alignment: .bottomLeading) {
+                            if self.isSidebarCollapsed, self.settings.showSidebarNowPlayingPanel {
+                                NowPlayingSidebarPanel()
+                                    .frame(width: 200)
+                                    .padding(.leading, 16)
+                                    .padding(.bottom, 4)
+                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                        .padding(.bottom, 76) // clear PlayerBar
+                        .clipped()
+                        .allowsHitTesting(self.isSidebarCollapsed && self.settings.showSidebarNowPlayingPanel)
+                    }
+                    .animation(.easeInOut(duration: 0.2), value: self.isSidebarCollapsed)
+                    .animation(.easeInOut(duration: 0.2), value: self.settings.showSidebarNowPlayingPanel)
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button {
+                                Task { await self.refreshCurrentPage() }
+                            } label: {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            .keyboardShortcut("r", modifiers: .command)
+                            .disabled(!self.currentPageSupportsRefresh)
+                            .help(String(localized: "Refresh"))
+                            .accessibilityLabel(String(localized: "Refresh"))
+                        }
+                    }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
                 // Ensure the sidebar returns when the app is re-activated from the Dock or app switcher.
                 if self.columnVisibility != .all {
                     self.columnVisibility = .all
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .sidebarToggleRequested)) { _ in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    self.columnVisibility = self.columnVisibility == .all ? .detailOnly : .all
                 }
             }
 
@@ -263,6 +305,25 @@ struct MainWindow: View {
         .animation(.easeInOut(duration: 0.25), value: self.playerService.showLyrics)
         .animation(.easeInOut(duration: 0.25), value: self.playerService.showQueue)
         .frame(minWidth: 900, minHeight: 600)
+        .environment(\.isSidebarCollapsed, self.isSidebarCollapsed)
+        .background {
+            // Hidden Esc shortcut — closes the lyrics or queue panel when shown.
+            if self.playerService.showLyrics || self.playerService.showQueue {
+                Button("") {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        if self.playerService.showLyrics {
+                            self.playerService.showLyrics = false
+                        }
+                        if self.playerService.showQueue {
+                            self.playerService.showQueue = false
+                        }
+                    }
+                }
+                .keyboardShortcut(.escape, modifiers: [])
+                .opacity(0)
+                .accessibilityHidden(true)
+            }
+        }
     }
 
     /// Right sidebar overlay showing either lyrics or queue as glass panels (mutually exclusive).
@@ -317,7 +378,7 @@ struct MainWindow: View {
     }
 
     /// Returns the view for a specific navigation item.
-    private func viewForNavigationItem(_ item: NavigationItem) -> some View { // swiftlint:disable:this cyclomatic_complexity
+    private func viewForNavigationItem(_ item: NavigationItem) -> some View {
         Group {
             switch item {
             case .home:
@@ -328,14 +389,8 @@ struct MainWindow: View {
                 if let vm = searchViewModel {
                     SearchView(viewModel: vm, focusTrigger: self.searchFocusTrigger)
                 }
-            case .charts:
-                if let vm = chartsViewModel { ChartsView(viewModel: vm) }
-            case .moodsAndGenres:
-                if let vm = moodsAndGenresViewModel { MoodsAndGenresView(viewModel: vm) }
             case .newReleases:
                 if let vm = newReleasesViewModel { NewReleasesView(viewModel: vm) }
-            case .podcasts:
-                if let vm = podcastsViewModel { PodcastsView(viewModel: vm) }
             case .likedMusic:
                 if let vm = likedMusicViewModel { LikedMusicView(viewModel: vm) }
             case .library:
@@ -401,13 +456,33 @@ struct MainWindow: View {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { await self.homeViewModel?.refresh() }
             group.addTask { await self.exploreViewModel?.refresh() }
-            group.addTask { await self.chartsViewModel?.refresh() }
-            group.addTask { await self.moodsAndGenresViewModel?.refresh() }
             group.addTask { await self.newReleasesViewModel?.refresh() }
-            group.addTask { await self.podcastsViewModel?.refresh() }
             group.addTask { await self.likedMusicViewModel?.refresh() }
             group.addTask { await self.historyViewModel?.load() }
             group.addTask { await self.libraryViewModel?.refresh() }
+        }
+    }
+
+    /// Whether the current navigation page supports refreshing.
+    fileprivate var currentPageSupportsRefresh: Bool {
+        switch self.navigationSelection {
+        case .home, .explore, .newReleases, .likedMusic, .library, .history:
+            true
+        case .search, .none:
+            false
+        }
+    }
+
+    /// Refreshes the currently visible page's data.
+    fileprivate func refreshCurrentPage() async {
+        switch self.navigationSelection {
+        case .home: await self.homeViewModel?.refresh()
+        case .explore: await self.exploreViewModel?.refresh()
+        case .newReleases: await self.newReleasesViewModel?.refresh()
+        case .likedMusic: await self.likedMusicViewModel?.refresh()
+        case .library: await self.libraryViewModel?.refresh()
+        case .history: _ = await self.historyViewModel?.refresh()
+        case .search, .none: break
         }
     }
 }
@@ -415,15 +490,12 @@ struct MainWindow: View {
 // MARK: - NavigationItem
 
 enum NavigationItem: String, Hashable, CaseIterable, Identifiable {
-    case home = "Home"
-    case explore = "Explore"
     case search = "Search"
-    case charts = "Charts"
-    case moodsAndGenres = "Moods & Genres"
-    case newReleases = "New Releases"
-    case podcasts = "Podcasts"
-    case likedMusic = "Liked Music"
+    case home = "Home"
     case library = "Library"
+    case likedMusic = "Liked Music"
+    case explore = "Explore"
+    case newReleases = "New Releases"
     case history = "History"
 
     var id: String {
@@ -432,24 +504,18 @@ enum NavigationItem: String, Hashable, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .home:
-            String(localized: "Home")
-        case .explore:
-            String(localized: "Explore")
         case .search:
             String(localized: "Search")
-        case .charts:
-            String(localized: "Charts")
-        case .moodsAndGenres:
-            String(localized: "Moods & Genres")
-        case .newReleases:
-            String(localized: "New Releases")
-        case .podcasts:
-            String(localized: "Podcasts")
-        case .likedMusic:
-            String(localized: "Liked Music")
+        case .home:
+            String(localized: "Home")
         case .library:
             String(localized: "Library")
+        case .likedMusic:
+            String(localized: "Liked Music")
+        case .explore:
+            String(localized: "Explore")
+        case .newReleases:
+            String(localized: "New Releases")
         case .history:
             String(localized: "History")
         }
@@ -457,24 +523,18 @@ enum NavigationItem: String, Hashable, CaseIterable, Identifiable {
 
     var icon: String {
         switch self {
-        case .home:
-            "house"
-        case .explore:
-            "globe"
         case .search:
             "magnifyingglass"
-        case .charts:
-            "chart.line.uptrend.xyaxis"
-        case .moodsAndGenres:
-            "theatermask.and.paintbrush"
-        case .newReleases:
-            "sparkles"
-        case .podcasts:
-            "mic.fill"
-        case .likedMusic:
-            "heart.fill"
+        case .home:
+            "house"
         case .library:
             "square.stack.fill"
+        case .likedMusic:
+            "heart.fill"
+        case .explore:
+            "globe"
+        case .newReleases:
+            "sparkles"
         case .history:
             "clock.arrow.circlepath"
         }

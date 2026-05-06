@@ -35,4 +35,5 @@ extension PlayerPresentationMode {
 
 extension Notification.Name {
     static let playerPresentationModeRequested = Notification.Name("BoomboxPlayerPresentationModeRequested")
+    static let sidebarToggleRequested = Notification.Name("BoomboxSidebarToggleRequested")
 }

@@ -21,6 +21,8 @@ struct SearchView: View {
     /// Index of currently selected suggestion for keyboard navigation.
     @State private var selectedSuggestionIndex: Int = -1
 
+    @State private var recentSearchesStore = RecentSearchesStore.shared
+
     /// Initializes SearchView with optional focus trigger binding.
     init(viewModel: SearchViewModel, focusTrigger: Binding<Bool> = .constant(false)) {
         _viewModel = State(initialValue: viewModel)
@@ -43,6 +45,7 @@ struct SearchView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Search.container)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
@@ -246,21 +249,92 @@ struct SearchView: View {
         }
     }
 
+    @ViewBuilder
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "magnifyingglass")
-                .font(.system(size: 48))
-                .foregroundStyle(.tertiary)
+        if self.viewModel.query.isEmpty, !self.recentSearchesStore.recent.isEmpty {
+            self.recentSearchesView
+        } else {
+            VStack(spacing: 16) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.tertiary)
 
-            Text(self.viewModel.query.isEmpty ? String(localized: "Search for your favorite music") : String(localized: "Press Enter to search"))
-                .font(.title3)
-                .foregroundStyle(.secondary)
+                Text(self.viewModel.query.isEmpty ? String(localized: "Search for your favorite music") : String(localized: "Press Enter to search"))
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
 
-            Text("Find songs, albums, artists, and playlists")
-                .font(.subheadline)
-                .foregroundStyle(.tertiary)
+                Text("Find songs, albums, artists, and playlists")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var recentSearchesView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text("Recent Searches")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
+
+                    Button("Clear All") {
+                        self.recentSearchesStore.clearAll()
+                    }
+                    .buttonStyle(.borderless)
+                    .font(.system(size: 12))
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+                .padding(.bottom, 8)
+
+                ForEach(self.recentSearchesStore.recent, id: \.self) { entry in
+                    self.recentRow(entry)
+                    Divider()
+                        .padding(.leading, 56)
+                }
+            }
+        }
+    }
+
+    private func recentRow(_ entry: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.system(size: 14))
+                .foregroundStyle(.secondary)
+                .frame(width: 20)
+
+            Button {
+                HapticService.success()
+                self.viewModel.query = entry
+                Task { await self.viewModel.searchImmediately() }
+            } label: {
+                Text(entry)
+                    .font(.system(size: 13))
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                self.recentSearchesStore.remove(entry)
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(String(localized: "Remove from history"))
+            .accessibilityLabel(String(localized: "Remove from history"))
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 8)
     }
 
     private var noResultsView: some View {

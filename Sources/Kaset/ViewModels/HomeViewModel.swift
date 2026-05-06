@@ -12,6 +12,18 @@ final class HomeViewModel {
     /// Home sections to display.
     private(set) var sections: [HomeSection] = []
 
+    /// Sections in display order, with "Quick Picks" hoisted to the top so
+    /// the resume-listening shelf is always within reach.
+    var displaySections: [HomeSection] {
+        let pinned = self.sections.filter { Self.isQuickPicks($0) }
+        let rest = self.sections.filter { !Self.isQuickPicks($0) }
+        return pinned + rest
+    }
+
+    private static func isQuickPicks(_ section: HomeSection) -> Bool {
+        section.title.localizedLowercase.contains("quick pick")
+    }
+
     /// Whether more sections are available to load.
     private(set) var hasMoreSections: Bool = true
 

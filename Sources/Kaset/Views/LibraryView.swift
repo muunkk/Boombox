@@ -100,6 +100,7 @@ struct LibraryView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Library.container)
         .environment(self.viewModel)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

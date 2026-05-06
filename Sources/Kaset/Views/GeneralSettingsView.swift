@@ -53,6 +53,18 @@ struct GeneralSettingsView: View {
                 }
                 .disabled(!self.settings.menuBarItemEnabled)
 
+                // Sidebar Toggle Hotkey
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Toggle Sidebar Shortcut")
+                        Text("Global hotkey to show/hide the sidebar.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    HotkeyRecorderField(shortcut: self.$settings.sidebarToggleHotkey)
+                }
+
                 // Haptic Feedback
                 Toggle("Haptic Feedback", isOn: self.$settings.hapticFeedbackEnabled)
                     .help("Provide tactile feedback for actions on Force Touch trackpads")

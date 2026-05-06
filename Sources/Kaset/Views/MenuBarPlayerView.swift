@@ -28,11 +28,15 @@ struct MenuBarPlayerView: View {
     @State private var audioOutput = AudioOutputDeviceInfo.unknown
     @State private var availableAudioOutputs: [AudioOutputDeviceInfo] = []
 
+    @State private var volumeValue: Double = 1.0
+    @State private var isAdjustingVolume = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             self.header
             self.scrubber
             self.transport
+            self.volumeRow
             self.footer
 
             // Snap the queue layout in/out instantly. NSPopover then animates
@@ -52,6 +56,12 @@ struct MenuBarPlayerView: View {
         .onAppear {
             self.syncFormattedTimes(progress: self.playerService.progress)
             self.refreshAudioOutputs()
+            self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: self.playerService.volume)
+        }
+        .onChange(of: self.playerService.volume) { _, newValue in
+            if !self.isAdjustingVolume {
+                self.volumeValue = VolumeCurve.sliderValue(forOutputVolume: newValue)
+            }
         }
         .onChange(of: self.playerService.progress) { _, newValue in
             if !self.isSeeking, self.playerService.duration > 0 {
@@ -278,6 +288,75 @@ struct MenuBarPlayerView: View {
             "repeat"
         case .one:
             "repeat.1"
+        }
+    }
+
+    // MARK: - Volume
+
+    private var volumeRow: some View {
+        HStack(spacing: 8) {
+            Image(systemName: self.volumeIcon)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.secondary)
+                .frame(width: 14)
+                .contentTransition(.symbolEffect(.replace))
+
+            Slider(value: self.$volumeValue, in: 0 ... 1) { editing in
+                if editing {
+                    self.isAdjustingVolume = true
+                } else {
+                    self.isAdjustingVolume = false
+                    Task {
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: self.volumeValue))
+                    }
+                }
+            }
+            .controlSize(.mini)
+            .tint(Self.brandAccent)
+            .onChange(of: self.volumeValue) { _, newValue in
+                if self.isAdjustingVolume {
+                    Task {
+                        await self.playerService.setVolume(VolumeCurve.outputVolume(forSliderValue: newValue))
+                    }
+                }
+            }
+        }
+        .background {
+            ScrollWheelCapture { deltaY in
+                self.handleVolumeScroll(deltaY: deltaY)
+            }
+        }
+    }
+
+    private var volumeIcon: String {
+        let current = VolumeCurve.outputVolume(forSliderValue: self.volumeValue)
+        if current == 0 {
+            return "speaker.slash.fill"
+        } else if current < 0.5 {
+            return "speaker.wave.1.fill"
+        } else {
+            return "speaker.wave.2.fill"
+        }
+    }
+
+    private func handleVolumeScroll(deltaY: CGFloat) {
+        // Continuous volume adjustment: each scroll frame nudges the slider by
+        // a small fraction. Sensitivity tuned so a typical trackpad swipe
+        // covers ~30% of the range and a wheel detent moves ~5%.
+        let sensitivity = 0.01
+        let proposed = self.volumeValue + Double(deltaY) * sensitivity
+        let clamped = max(0, min(1, proposed))
+        guard abs(clamped - self.volumeValue) > 0.001 else { return }
+
+        let hitBoundary = (self.volumeValue > 0 && clamped == 0)
+            || (self.volumeValue < 1 && clamped == 1)
+        self.volumeValue = clamped
+        let newOutput = VolumeCurve.outputVolume(forSliderValue: clamped)
+        Task {
+            await self.playerService.setVolume(newOutput)
+        }
+        if hitBoundary {
+            HapticService.sliderBoundary()
         }
     }
 

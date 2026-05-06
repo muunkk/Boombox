@@ -17,6 +17,10 @@ extension EnvironmentValues {
     @Entry var playerPresentationMode: Binding<PlayerPresentationMode> = .constant(.standard)
 }
 
+extension EnvironmentValues {
+    @Entry var isSidebarCollapsed: Bool = false
+}
+
 // MARK: - KasetApp
 
 /// Main entry point for the Boombox macOS application.
@@ -140,6 +144,17 @@ struct KasetApp: App {
                                 self.settings.menuBarHotkey,
                                 menuBarEnabled: self.settings.menuBarItemEnabled
                             )
+
+                            // Configure sidebar toggle hotkey to broadcast a
+                            // notification that MainWindow listens to.
+                            self.appDelegate.sidebarHotkeyService.onTrigger = {
+                                NotificationCenter.default.post(name: .sidebarToggleRequested, object: nil)
+                            }
+                            if let shortcut = self.settings.sidebarToggleHotkey {
+                                self.appDelegate.sidebarHotkeyService.register(shortcut)
+                            } else {
+                                self.appDelegate.sidebarHotkeyService.unregister()
+                            }
                         }
                     }
                     .task {
@@ -167,6 +182,13 @@ struct KasetApp: App {
                             newValue,
                             menuBarEnabled: self.settings.menuBarItemEnabled
                         )
+                    }
+                    .onChange(of: self.settings.sidebarToggleHotkey) { _, newValue in
+                        if let newValue {
+                            self.appDelegate.sidebarHotkeyService.register(newValue)
+                        } else {
+                            self.appDelegate.sidebarHotkeyService.unregister()
+                        }
                     }
                     .onReceive(NotificationCenter.default.publisher(for: .playerPresentationModeRequested)) { notification in
                         guard let rawMode = notification.userInfo?[PlayerPresentationMode.requestNotificationModeKey] as? String,
@@ -261,11 +283,11 @@ struct KasetApp: App {
                 }
                 .keyboardShortcut("s", modifiers: .command)
 
-                // Repeat - ⌘R
+                // Repeat - ⌥⌘R (⌘R is reserved for page refresh)
                 Button(self.repeatModeLabel) {
                     self.playerService.cycleRepeatMode()
                 }
-                .keyboardShortcut("r", modifiers: .command)
+                .keyboardShortcut("r", modifiers: [.command, .option])
 
                 Divider()
 
@@ -296,30 +318,48 @@ struct KasetApp: App {
                 .disabled(self.playerService.currentTrack == nil && self.playerPresentationMode != .compact)
             }
 
-            // Navigation commands - replace default sidebar toggle
+            // Navigation commands - replace default sidebar toggle.
+            // Cmd+1..N follows Sidebar.cmdOrder; keep both lists in sync.
             CommandGroup(replacing: .sidebar) {
-                // Home - ⌘1
-                Button("Home") {
-                    self.navigationSelection = .home
+                Button("Search") {
+                    self.navigationSelection = .search
                 }
                 .keyboardShortcut("1", modifiers: .command)
 
-                // Explore - ⌘2
-                Button("Explore") {
-                    self.navigationSelection = .explore
+                Button("Home") {
+                    self.navigationSelection = .home
                 }
                 .keyboardShortcut("2", modifiers: .command)
 
-                // Library - ⌘3
                 Button("Library") {
                     self.navigationSelection = .library
                 }
                 .keyboardShortcut("3", modifiers: .command)
 
+                Button("Liked Music") {
+                    self.navigationSelection = .likedMusic
+                }
+                .keyboardShortcut("4", modifiers: .command)
+
+                Button("Explore") {
+                    self.navigationSelection = .explore
+                }
+                .keyboardShortcut("5", modifiers: .command)
+
+                Button("New Releases") {
+                    self.navigationSelection = .newReleases
+                }
+                .keyboardShortcut("6", modifiers: .command)
+
+                Button("History") {
+                    self.navigationSelection = .history
+                }
+                .keyboardShortcut("7", modifiers: .command)
+
                 Divider()
 
-                // Search - ⌘F
-                Button("Search") {
+                // Search field focus - ⌘F
+                Button("Find") {
                     self.navigationSelection = .search
                     // Trigger focus after a brief delay to allow view to appear
                     Task { @MainActor in

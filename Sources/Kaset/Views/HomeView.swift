@@ -39,6 +39,7 @@ struct HomeView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Home.container)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
@@ -71,8 +72,8 @@ struct HomeView: View {
                     .staggeredAppearance(index: 0)
                 }
 
-                // API sections - use stable id without array enumeration
-                ForEach(self.viewModel.sections) { section in
+                // API sections - Quick Picks pinned first, rest in API order
+                ForEach(self.viewModel.displaySections) { section in
                     self.sectionView(section)
                         .task {
                             await self.prefetchImagesAsync(for: section)
