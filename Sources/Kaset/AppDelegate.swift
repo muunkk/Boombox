@@ -11,6 +11,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Set by KasetApp after initialization.
     weak var playerService: PlayerService?
 
+    /// Optional menu bar controller. Created lazily by KasetApp once
+    /// dependencies are available so tests and headless launches don't pay
+    /// for a status item they never use.
+    var menuBarController: MenuBarController?
+
     /// Reference to the main window for reliable reopen behavior.
     /// Using strong reference to prevent deallocation when window is hidden.
     private var mainWindow: NSWindow?
