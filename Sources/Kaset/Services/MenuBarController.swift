@@ -15,10 +15,15 @@ final class MenuBarController: NSObject {
     private var popover: NSPopover?
     private var eventMonitor: Any?
 
+    private let hotkeyService = GlobalHotkeyService()
+
     init(playerService: PlayerService, webKitManager: WebKitManager) {
         self.playerService = playerService
         self.webKitManager = webKitManager
         super.init()
+        self.hotkeyService.onTrigger = { [weak self] in
+            self?.togglePopover()
+        }
     }
 
     // No deinit cleanup: NSStatusItem and the global event monitor are torn
@@ -33,7 +38,26 @@ final class MenuBarController: NSObject {
             self.installStatusItem()
         } else {
             self.removeStatusItem()
+            self.hotkeyService.unregister()
         }
+    }
+
+    /// Registers (or unregisters) the global toggle hotkey. The hotkey only
+    /// works while the menu bar item is enabled, since the popover is anchored
+    /// to its status item.
+    func applyHotkey(_ shortcut: HotkeyShortcut?, menuBarEnabled: Bool) {
+        guard menuBarEnabled, let shortcut else {
+            self.hotkeyService.unregister()
+            return
+        }
+        self.hotkeyService.register(shortcut)
+    }
+
+    /// Toggles the popover; used by the hotkey trigger.
+    func togglePopover() {
+        // Without a status item we have nothing to anchor to.
+        guard self.statusItem != nil else { return }
+        self.statusItemClicked(nil)
     }
 
     // MARK: - Status Item Lifecycle
@@ -82,9 +106,11 @@ final class MenuBarController: NSObject {
             return
         }
 
-        let rootView = MenuBarPlayerView()
-            .environment(playerService)
-            .environment(webKitManager)
+        let rootView = MenuBarPlayerView(openApp: { [weak self] in
+            self?.openMainAppWindow()
+        })
+        .environment(playerService)
+        .environment(webKitManager)
 
         let popover = NSPopover()
         popover.behavior = .transient
@@ -109,6 +135,22 @@ final class MenuBarController: NSObject {
         if let monitor = self.eventMonitor {
             NSEvent.removeMonitor(monitor)
             self.eventMonitor = nil
+        }
+    }
+
+    /// Brings the Boombox main window forward and dismisses the popover.
+    private func openMainAppWindow() {
+        self.dismissPopover()
+        NSApplication.shared.activate(ignoringOtherApps: true)
+
+        // Prefer the autosaved main window; fall back to any main-capable window.
+        let windows = NSApplication.shared.windows
+        if let main = windows.first(where: { $0.frameAutosaveName == "BoomboxMainWindow" }) {
+            main.makeKeyAndOrderFront(nil)
+            return
+        }
+        if let any = windows.first(where: { $0.canBecomeMain }) {
+            any.makeKeyAndOrderFront(nil)
         }
     }
 }

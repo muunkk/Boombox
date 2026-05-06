@@ -40,6 +40,19 @@ struct GeneralSettingsView: View {
                 Toggle("Show in Menu Bar", isOn: self.$settings.menuBarItemEnabled)
                     .help("Add a menu bar item with a compact player.")
 
+                // Menu Bar Hotkey
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Menu Bar Shortcut")
+                        Text("Global hotkey to open the menu bar player.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    HotkeyRecorderField(shortcut: self.$settings.menuBarHotkey)
+                }
+                .disabled(!self.settings.menuBarItemEnabled)
+
                 // Haptic Feedback
                 Toggle("Haptic Feedback", isOn: self.$settings.hapticFeedbackEnabled)
                     .help("Provide tactile feedback for actions on Force Touch trackpads")

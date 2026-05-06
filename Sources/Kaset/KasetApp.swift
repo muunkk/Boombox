@@ -136,6 +136,10 @@ struct KasetApp: App {
                                 )
                             }
                             self.appDelegate.menuBarController?.setEnabled(self.settings.menuBarItemEnabled)
+                            self.appDelegate.menuBarController?.applyHotkey(
+                                self.settings.menuBarHotkey,
+                                menuBarEnabled: self.settings.menuBarItemEnabled
+                            )
                         }
                     }
                     .task {
@@ -153,6 +157,16 @@ struct KasetApp: App {
                     }
                     .onChange(of: self.settings.menuBarItemEnabled) { _, newValue in
                         self.appDelegate.menuBarController?.setEnabled(newValue)
+                        self.appDelegate.menuBarController?.applyHotkey(
+                            self.settings.menuBarHotkey,
+                            menuBarEnabled: newValue
+                        )
+                    }
+                    .onChange(of: self.settings.menuBarHotkey) { _, newValue in
+                        self.appDelegate.menuBarController?.applyHotkey(
+                            newValue,
+                            menuBarEnabled: self.settings.menuBarItemEnabled
+                        )
                     }
                     .onReceive(NotificationCenter.default.publisher(for: .playerPresentationModeRequested)) { notification in
                         guard let rawMode = notification.userInfo?[PlayerPresentationMode.requestNotificationModeKey] as? String,

@@ -20,6 +20,7 @@ final class SettingsManager {
         static let contentLanguage = "settings.contentLanguage"
         static let showSidebarNowPlayingPanel = "settings.showSidebarNowPlayingPanel"
         static let menuBarItemEnabled = "settings.menuBarItemEnabled"
+        static let menuBarHotkey = "settings.menuBarHotkey"
     }
 
     // MARK: - Launch Page Options
@@ -226,6 +227,19 @@ final class SettingsManager {
         }
     }
 
+    /// Optional global keyboard shortcut that toggles the menu bar popover.
+    var menuBarHotkey: HotkeyShortcut? {
+        didSet {
+            if let menuBarHotkey,
+               let data = try? JSONEncoder().encode(menuBarHotkey)
+            {
+                UserDefaults.standard.set(data, forKey: Keys.menuBarHotkey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Keys.menuBarHotkey)
+            }
+        }
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -245,6 +259,14 @@ final class SettingsManager {
         // UI tests should not spawn a status item; status items can outlive
         // the test process and confuse subsequent runs.
         self.menuBarItemEnabled = UITestConfig.isUITestMode ? false : persistedMenuBarEnabled
+
+        if let data = UserDefaults.standard.data(forKey: Keys.menuBarHotkey),
+           let shortcut = try? JSONDecoder().decode(HotkeyShortcut.self, from: data)
+        {
+            self.menuBarHotkey = shortcut
+        } else {
+            self.menuBarHotkey = nil
+        }
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),
            let style = MediaControlStyle(rawValue: rawValue)

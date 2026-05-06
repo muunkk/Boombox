@@ -5,10 +5,14 @@ import SwiftUI
 /// Compact now-playing controller shown inside the menu bar popover.
 /// Layout intentionally mirrors Apple's native Now Playing menu extra:
 /// artwork on the left, title/artist on the right, scrubber underneath,
-/// and centered previous / play-pause / next controls at the bottom.
+/// and centered transport controls. A footer row exposes like / queue
+/// toggles, and the queue list expands inline below the player.
 struct MenuBarPlayerView: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
-    private static let popoverWidth: CGFloat = 320
+    private static let popoverWidth: CGFloat = 340
+
+    /// Closure that brings the main app window forward.
+    let openApp: () -> Void
 
     @Environment(PlayerService.self) private var playerService
 
@@ -19,11 +23,20 @@ struct MenuBarPlayerView: View {
     @State private var formattedRemaining: String = "-0:00"
     @State private var lastProgressSecond: Int = -1
 
+    @State private var isQueueExpanded = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             self.header
             self.scrubber
-            self.controls
+            self.transport
+            self.footer
+
+            if self.isQueueExpanded {
+                Divider()
+                    .opacity(0.4)
+                self.queueList
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
@@ -72,6 +85,17 @@ struct MenuBarPlayerView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button {
+                self.openApp()
+            } label: {
+                Image(systemName: "macwindow")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+            .help(String(localized: "Open Boombox"))
+            .accessibilityLabel(String(localized: "Open Boombox"))
         }
     }
 
@@ -123,11 +147,24 @@ struct MenuBarPlayerView: View {
         }
     }
 
-    // MARK: - Controls
+    // MARK: - Transport
 
-    private var controls: some View {
-        HStack(spacing: 28) {
+    private var transport: some View {
+        HStack(spacing: 22) {
             Spacer(minLength: 0)
+
+            Button {
+                HapticService.toggle()
+                self.playerService.toggleShuffle()
+            } label: {
+                Image(systemName: "shuffle")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(self.playerService.shuffleEnabled ? .red : .primary.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+            .help(String(localized: "Shuffle"))
+            .accessibilityLabel(String(localized: "Shuffle"))
+            .accessibilityValue(self.playerService.shuffleEnabled ? String(localized: "On") : String(localized: "Off"))
 
             Button {
                 HapticService.playback()
@@ -172,8 +209,111 @@ struct MenuBarPlayerView: View {
             .accessibilityLabel(String(localized: "Next track"))
             .disabled(!self.canControlPlayback)
 
+            Button {
+                HapticService.toggle()
+                self.playerService.cycleRepeatMode()
+            } label: {
+                Image(systemName: self.repeatIcon)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(self.playerService.repeatMode != .off ? .red : .primary.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+            .help(String(localized: "Repeat"))
+            .accessibilityLabel(String(localized: "Repeat"))
+
             Spacer(minLength: 0)
         }
+    }
+
+    private var repeatIcon: String {
+        switch self.playerService.repeatMode {
+        case .off, .all:
+            "repeat"
+        case .one:
+            "repeat.1"
+        }
+    }
+
+    // MARK: - Footer
+
+    private var footer: some View {
+        HStack {
+            Button {
+                HapticService.toggle()
+                self.playerService.likeCurrentTrack()
+            } label: {
+                Image(systemName: self.playerService.currentTrackLikeStatus == .like
+                    ? "hand.thumbsup.fill"
+                    : "hand.thumbsup")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(self.playerService.currentTrackLikeStatus == .like ? .red : .primary.opacity(0.85))
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .buttonStyle(.plain)
+            .symbolEffect(.bounce, value: self.playerService.currentTrackLikeStatus == .like)
+            .disabled(self.playerService.currentTrack == nil)
+            .help(String(localized: "Like"))
+            .accessibilityLabel(String(localized: "Like"))
+
+            Spacer()
+
+            Button {
+                HapticService.toggle()
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    self.isQueueExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: "list.bullet")
+                        .font(.system(size: 13, weight: .medium))
+                    Text(self.isQueueExpanded ? String(localized: "Hide Queue") : String(localized: "Show Queue"))
+                        .font(.system(size: 11, weight: .medium))
+                }
+                .foregroundStyle(self.isQueueExpanded ? .red : .primary.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(String(localized: "Queue"))
+            .accessibilityValue(self.isQueueExpanded ? String(localized: "Showing") : String(localized: "Hidden"))
+        }
+    }
+
+    // MARK: - Queue List
+
+    private var queueList: some View {
+        Group {
+            if self.upcomingQueue.isEmpty {
+                Text("Queue is empty")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 12)
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 4) {
+                        ForEach(Array(self.upcomingQueue.enumerated()), id: \.element.id) { offset, song in
+                            MenuBarQueueRow(
+                                song: song,
+                                onPlay: {
+                                    let absoluteIndex = self.playerService.currentIndex + 1 + offset
+                                    Task {
+                                        await self.playerService.playFromQueue(at: absoluteIndex)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+                .frame(maxHeight: 200)
+            }
+        }
+    }
+
+    private var upcomingQueue: [Song] {
+        let queue = self.playerService.queue
+        let nextIndex = self.playerService.currentIndex + 1
+        guard nextIndex >= 0, nextIndex < queue.count else { return [] }
+        return Array(queue[nextIndex...])
     }
 
     // MARK: - Helpers
@@ -214,6 +354,48 @@ struct MenuBarPlayerView: View {
             return String(format: "%d:%02d:%02d", hours, mins, secs)
         } else {
             return String(format: "%d:%02d", mins, secs)
+        }
+    }
+}
+
+// MARK: - MenuBarQueueRow
+
+private struct MenuBarQueueRow: View {
+    let song: Song
+    let onPlay: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: self.onPlay) {
+            HStack(spacing: 8) {
+                SongThumbnailView(song: self.song, size: 28, cornerRadius: 4)
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(self.song.title)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+
+                    Text(self.song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : self.song.artistsDisplay)
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
+            .background {
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(self.isHovering ? Color.primary.opacity(0.08) : .clear)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            self.isHovering = hovering
         }
     }
 }
