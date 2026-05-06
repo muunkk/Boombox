@@ -90,16 +90,16 @@ struct Sidebar: View {
     private func row(_ item: NavigationItem, accessibility: String) -> some View {
         NavigationLink(value: item) {
             Label(item.displayName, systemImage: item.icon)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .trailing) {
+                    if let badgeNumber = self.cmdNumber(for: item), self.isCommandHeld {
+                        CmdShortcutBadge(number: badgeNumber)
+                            .transition(.opacity.combined(with: .scale(scale: 0.85)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.12), value: self.isCommandHeld)
         }
         .accessibilityIdentifier(accessibility)
-        .overlay(alignment: .trailing) {
-            if let badgeNumber = self.cmdNumber(for: item), self.isCommandHeld {
-                CmdShortcutBadge(number: badgeNumber)
-                    .padding(.trailing, 4)
-                    .transition(.opacity)
-            }
-        }
-        .animation(.easeInOut(duration: 0.12), value: self.isCommandHeld)
     }
 
     private func cmdNumber(for item: NavigationItem) -> Int? {
@@ -139,16 +139,18 @@ private struct CmdShortcutBadge: View {
 
     var body: some View {
         Text("⌘\(self.number)")
-            .font(.system(size: 10, weight: .semibold, design: .rounded))
+            .font(.system(size: 10, weight: .semibold, design: .monospaced))
             .foregroundStyle(.primary)
-            .padding(.horizontal, 5)
-            .padding(.vertical, 1.5)
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
             .background {
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .fill(.quaternary)
+                    .fill(.regularMaterial)
                     .overlay {
                         RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .strokeBorder(.tertiary, lineWidth: 0.5)
+                            .strokeBorder(Color.primary.opacity(0.18), lineWidth: 0.5)
                     }
             }
             .accessibilityHidden(true)
