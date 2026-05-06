@@ -19,6 +19,7 @@ final class SettingsManager {
         static let romanizationEnabled = "settings.romanizationEnabled"
         static let contentLanguage = "settings.contentLanguage"
         static let showSidebarNowPlayingPanel = "settings.showSidebarNowPlayingPanel"
+        static let menuBarItemEnabled = "settings.menuBarItemEnabled"
     }
 
     // MARK: - Launch Page Options
@@ -218,6 +219,13 @@ final class SettingsManager {
         }
     }
 
+    /// Whether a menu bar item with a compact player is shown.
+    var menuBarItemEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(self.menuBarItemEnabled, forKey: Keys.menuBarItemEnabled)
+        }
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -232,6 +240,11 @@ final class SettingsManager {
         // UI tests launch multiple app instances in one runner; reset this layout-only
         // preference so one test cannot clip sidebar rows for the next launch.
         self.showSidebarNowPlayingPanel = UITestConfig.isUITestMode ? false : persistedSidebarPanel
+
+        let persistedMenuBarEnabled = UserDefaults.standard.object(forKey: Keys.menuBarItemEnabled) as? Bool ?? false
+        // UI tests should not spawn a status item; status items can outlive
+        // the test process and confuse subsequent runs.
+        self.menuBarItemEnabled = UITestConfig.isUITestMode ? false : persistedMenuBarEnabled
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),
            let style = MediaControlStyle(rawValue: rawValue)

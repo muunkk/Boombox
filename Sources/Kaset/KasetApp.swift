@@ -126,6 +126,17 @@ struct KasetApp: App {
                         self.appDelegate.currentPlayerPresentationMode = self.playerPresentationMode
                         // Reference notificationService to keep SwiftUI from deallocating it
                         _ = self.notificationService
+
+                        // Lazily create the menu bar controller and sync its visibility.
+                        if !UITestConfig.isRunningUnitTests {
+                            if self.appDelegate.menuBarController == nil {
+                                self.appDelegate.menuBarController = MenuBarController(
+                                    playerService: self.playerService,
+                                    webKitManager: self.webKitManager
+                                )
+                            }
+                            self.appDelegate.menuBarController?.setEnabled(self.settings.menuBarItemEnabled)
+                        }
                     }
                     .task {
                         DiagnosticsLogger.app.info("KasetApp: Root task started")
@@ -139,6 +150,9 @@ struct KasetApp: App {
                     .onChange(of: self.playerPresentationMode) { oldMode, newMode in
                         self.appDelegate.currentPlayerPresentationMode = newMode
                         self.appDelegate.transitionPlayerPresentationMode(from: oldMode, to: newMode)
+                    }
+                    .onChange(of: self.settings.menuBarItemEnabled) { _, newValue in
+                        self.appDelegate.menuBarController?.setEnabled(newValue)
                     }
                     .onReceive(NotificationCenter.default.publisher(for: .playerPresentationModeRequested)) { notification in
                         guard let rawMode = notification.userInfo?[PlayerPresentationMode.requestNotificationModeKey] as? String,

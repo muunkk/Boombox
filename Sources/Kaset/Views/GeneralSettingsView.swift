@@ -36,6 +36,10 @@ struct GeneralSettingsView: View {
                 // Now Playing Notifications
                 Toggle("Show Now Playing Notifications", isOn: self.$settings.showNowPlayingNotifications)
 
+                // Menu Bar Item
+                Toggle("Show in Menu Bar", isOn: self.$settings.menuBarItemEnabled)
+                    .help("Add a menu bar item with a compact player.")
+
                 // Haptic Feedback
                 Toggle("Haptic Feedback", isOn: self.$settings.hapticFeedbackEnabled)
                     .help("Provide tactile feedback for actions on Force Touch trackpads")
