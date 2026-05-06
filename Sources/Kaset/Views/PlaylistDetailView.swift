@@ -157,6 +157,17 @@ struct PlaylistDetailView: View {
                 .controlSize(.large)
                 .disabled(detail.tracks.isEmpty)
 
+                // Shuffle button
+                Button {
+                    let fallbackAlbum = self.makeFallbackAlbum(from: detail)
+                    self.playAll(detail.tracks.shuffled(), fallbackArtist: detail.author, fallbackAlbum: fallbackAlbum)
+                } label: {
+                    Label("Shuffle", systemImage: "shuffle")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .disabled(detail.tracks.isEmpty)
+
                 // Play Next button
                 Button {
                     let fallbackAlbum = self.makeFallbackAlbum(from: detail)
