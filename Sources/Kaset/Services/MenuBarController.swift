@@ -115,7 +115,12 @@ final class MenuBarController: NSObject {
         let popover = NSPopover()
         popover.behavior = .transient
         popover.animates = true
-        popover.contentViewController = NSHostingController(rootView: rootView)
+
+        let hostingController = NSHostingController(rootView: rootView)
+        // Track SwiftUI's intrinsic content size so the popover grows when the
+        // queue list expands.
+        hostingController.sizingOptions = [.preferredContentSize, .intrinsicContentSize]
+        popover.contentViewController = hostingController
 
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         self.popover = popover

@@ -281,7 +281,7 @@ struct MenuBarPlayerView: View {
 
     private var queueList: some View {
         Group {
-            if self.upcomingQueue.isEmpty {
+            if self.playerService.queue.isEmpty {
                 Text("Queue is empty")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
@@ -289,14 +289,14 @@ struct MenuBarPlayerView: View {
                     .padding(.vertical, 12)
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 4) {
-                        ForEach(Array(self.upcomingQueue.enumerated()), id: \.element.id) { offset, song in
+                    LazyVStack(spacing: 2) {
+                        ForEach(Array(self.playerService.queue.enumerated()), id: \.offset) { index, song in
                             MenuBarQueueRow(
                                 song: song,
+                                isCurrent: index == self.playerService.currentIndex,
                                 onPlay: {
-                                    let absoluteIndex = self.playerService.currentIndex + 1 + offset
                                     Task {
-                                        await self.playerService.playFromQueue(at: absoluteIndex)
+                                        await self.playerService.playFromQueue(at: index)
                                     }
                                 }
                             )
@@ -304,16 +304,16 @@ struct MenuBarPlayerView: View {
                     }
                     .padding(.vertical, 2)
                 }
-                .frame(maxHeight: 200)
+                .frame(height: self.queueListHeight)
             }
         }
     }
 
-    private var upcomingQueue: [Song] {
-        let queue = self.playerService.queue
-        let nextIndex = self.playerService.currentIndex + 1
-        guard nextIndex >= 0, nextIndex < queue.count else { return [] }
-        return Array(queue[nextIndex...])
+    /// Caps queue height at ~6 visible rows to keep the popover compact.
+    private var queueListHeight: CGFloat {
+        let rowHeight: CGFloat = 36
+        let count = CGFloat(min(self.playerService.queue.count, 6))
+        return max(count, 1) * rowHeight + 8
     }
 
     // MARK: - Helpers
@@ -362,6 +362,7 @@ struct MenuBarPlayerView: View {
 
 private struct MenuBarQueueRow: View {
     let song: Song
+    let isCurrent: Bool
     let onPlay: () -> Void
 
     @State private var isHovering = false
@@ -373,8 +374,8 @@ private struct MenuBarQueueRow: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     Text(self.song.title)
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 11, weight: self.isCurrent ? .semibold : .medium))
+                        .foregroundStyle(self.isCurrent ? Color.red : .primary)
                         .lineLimit(1)
 
                     Text(self.song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : self.song.artistsDisplay)
@@ -384,6 +385,12 @@ private struct MenuBarQueueRow: View {
                 }
 
                 Spacer(minLength: 0)
+
+                if self.isCurrent {
+                    Image(systemName: "speaker.wave.2.fill")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.red)
+                }
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
