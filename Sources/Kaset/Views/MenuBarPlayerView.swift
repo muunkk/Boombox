@@ -25,6 +25,9 @@ struct MenuBarPlayerView: View {
 
     @State private var isQueueExpanded = false
 
+    @State private var audioOutput = AudioOutputDeviceInfo.unknown
+    @State private var availableAudioOutputs: [AudioOutputDeviceInfo] = []
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             self.header
@@ -32,10 +35,15 @@ struct MenuBarPlayerView: View {
             self.transport
             self.footer
 
+            // Snap the queue layout in/out instantly. NSPopover then animates
+            // its frame to the new intrinsic content size, which looks
+            // smoother than trying to tween a SwiftUI frame against the
+            // popover's own resize.
             if self.isQueueExpanded {
                 Divider()
                     .opacity(0.4)
                 self.queueList
+                    .transition(.opacity)
             }
         }
         .padding(.horizontal, 16)
@@ -43,6 +51,7 @@ struct MenuBarPlayerView: View {
         .frame(width: Self.popoverWidth)
         .onAppear {
             self.syncFormattedTimes(progress: self.playerService.progress)
+            self.refreshAudioOutputs()
         }
         .onChange(of: self.playerService.progress) { _, newValue in
             if !self.isSeeking, self.playerService.duration > 0 {
@@ -86,6 +95,8 @@ struct MenuBarPlayerView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
+            self.audioOutputMenu
+
             Button {
                 self.openApp()
             } label: {
@@ -97,6 +108,42 @@ struct MenuBarPlayerView: View {
             .help(String(localized: "Open Boombox"))
             .accessibilityLabel(String(localized: "Open Boombox"))
         }
+    }
+
+    private var audioOutputMenu: some View {
+        Menu {
+            if self.availableAudioOutputs.isEmpty {
+                Text("No Output Devices")
+            } else {
+                ForEach(self.availableAudioOutputs) { output in
+                    Button {
+                        self.selectAudioOutput(output)
+                    } label: {
+                        if output.id == self.audioOutput.id, output.isSelectable {
+                            Label(output.accessibilityName, systemImage: "checkmark")
+                        } else {
+                            Text(output.accessibilityName)
+                        }
+                    }
+                    .disabled(!output.isSelectable)
+                }
+            }
+
+            Divider()
+
+            Button("Refresh Devices") {
+                self.refreshAudioOutputs()
+            }
+        } label: {
+            Image(systemName: self.audioOutput.pickerButtonSystemImageName())
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(self.audioOutput.isAirPods ? .red : .secondary)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .help(String(localized: "Audio Output"))
+        .accessibilityLabel(String(localized: "Audio Output"))
     }
 
     @ViewBuilder
@@ -259,7 +306,7 @@ struct MenuBarPlayerView: View {
 
             Button {
                 HapticService.toggle()
-                withAnimation(.easeInOut(duration: 0.18)) {
+                withAnimation(.easeOut(duration: 0.2)) {
                     self.isQueueExpanded.toggle()
                 }
             } label: {
@@ -341,6 +388,21 @@ struct MenuBarPlayerView: View {
         self.formattedProgress = self.formatTime(progress)
         let remaining = max(self.playerService.duration - progress, 0)
         self.formattedRemaining = "-\(self.formatTime(remaining))"
+    }
+
+    private func refreshAudioOutputs() {
+        self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
+        self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+    }
+
+    private func selectAudioOutput(_ output: AudioOutputDeviceInfo) {
+        guard output.isSelectable else { return }
+        if AudioOutputDeviceInfo.setDefaultOutput(output) {
+            HapticService.success()
+            self.refreshAudioOutputs()
+        } else {
+            HapticService.error()
+        }
     }
 
     private func formatTime(_ seconds: TimeInterval) -> String {
