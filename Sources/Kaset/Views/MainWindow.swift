@@ -563,7 +563,12 @@ struct MainWindow: View {
 
     /// Whether the current page can switch between grid and list layouts.
     fileprivate var currentPageSupportsViewMode: Bool {
-        self.navigationSelection == .library
+        switch self.navigationSelection {
+        case .library, .home:
+            true
+        default:
+            false
+        }
     }
 
     /// Whether the current page reflects the global density setting.
