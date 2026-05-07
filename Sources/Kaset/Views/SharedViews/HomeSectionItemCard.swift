@@ -9,9 +9,16 @@ struct HomeSectionItemCard: View {
     let rank: Int?
     let action: () -> Void
 
-    /// Card dimensions.
-    private static let cardWidth: CGFloat = 160
-    private static let cardHeight: CGFloat = 160
+    @State private var settings = SettingsManager.shared
+
+    /// Card dimensions vary with the global density setting.
+    private var cardWidth: CGFloat {
+        self.settings.displayDensity == .compact ? 120 : 160
+    }
+
+    private var cardHeight: CGFloat {
+        self.cardWidth
+    }
 
     /// Hover state for play overlay.
     @State private var isHovering = false
@@ -82,7 +89,7 @@ struct HomeSectionItemCard: View {
                 self.placeholderView
             }
         }
-        .frame(width: Self.cardWidth, height: Self.cardHeight)
+        .frame(width: self.cardWidth, height: self.cardHeight)
         .clipShape(.rect(cornerRadius: 8))
         .overlay {
             // Play overlay on hover (for songs)
@@ -191,14 +198,14 @@ struct HomeSectionItemCard: View {
                 .font(.system(size: 13, weight: .medium))
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
-                .frame(width: Self.cardWidth, alignment: .leading)
+                .frame(width: self.cardWidth, alignment: .leading)
 
             if let subtitle = item.subtitle {
                 Text(subtitle)
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
-                    .frame(width: Self.cardWidth, alignment: .leading)
+                    .frame(width: self.cardWidth, alignment: .leading)
             }
         }
     }

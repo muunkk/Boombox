@@ -41,6 +41,8 @@ struct KasetApp: App {
     @State private var syncedLyricsService: SyncedLyricsService
     @State private var settings = SettingsManager.shared
 
+    @State private var globalNavigation = GlobalNavigationCoordinator()
+
     /// Triggers search field focus when set to true.
     @State private var searchFocusTrigger = false
 
@@ -109,6 +111,7 @@ struct KasetApp: App {
             } else {
                 MainWindow(navigationSelection: self.$navigationSelection, client: self.sharedClient)
                     .id(self.settings.contentLanguage)
+                    .scrollIndicators(.hidden)
                     .environment(\.locale, self.settings.contentLanguage.locale)
                     .environment(self.authService)
                     .environment(self.webKitManager)
@@ -117,6 +120,7 @@ struct KasetApp: App {
                     .environment(self.likeStatusManager)
                     .environment(self.accountService)
                     .environment(self.syncedLyricsService)
+                    .environment(self.globalNavigation)
                     .environment(\.searchFocusTrigger, self.$searchFocusTrigger)
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)

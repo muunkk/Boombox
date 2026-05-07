@@ -12,7 +12,9 @@ import SwiftUI
 ///    "Swipe between pages" set to "Swipe with two fingers" (or three).
 /// 2. Scroll-wheel-driven swipes — the macOS default ("Swipe with two or
 ///    three fingers"), where horizontal momentum on a scroll gesture is
-///    promoted to a navigation swipe via `NSEvent.trackSwipeEvent`.
+///    promoted to a navigation swipe via `NSEvent.trackSwipeEvent`. While
+///    the gesture is in flight a Safari-style chevron tracks the user's
+///    finger as a visual confirmation.
 @available(macOS 26.0, *)
 struct NavigationSwipeGestures: ViewModifier {
     @Binding var path: NavigationPath
@@ -21,12 +23,32 @@ struct NavigationSwipeGestures: ViewModifier {
     @State private var scrollMonitor: Any?
     @State private var forwardStack: [NavigationPath.CodableRepresentation] = []
     @State private var isRestoringForward = false
+
+    /// Current gesture progress in `[-1, 1]`. Positive = back (swipe right),
+    /// negative = forward (swipe left). Drives the on-screen indicator.
+    @State private var gestureProgress: CGFloat = 0
     /// Suppresses overlapping `trackSwipeEvent` calls so a single physical
     /// gesture only triggers one navigation.
     @State private var isTrackingSwipe = false
 
     func body(content: Content) -> some View {
         content
+            .overlay(alignment: .leading) {
+                if self.gestureProgress > 0.02, !self.path.isEmpty {
+                    SwipeNavIndicator(direction: .back, progress: self.gestureProgress)
+                        .padding(.leading, 12)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
+            .overlay(alignment: .trailing) {
+                if self.gestureProgress < -0.02, !self.forwardStack.isEmpty {
+                    SwipeNavIndicator(direction: .forward, progress: -self.gestureProgress)
+                        .padding(.trailing, 12)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
             .onAppear { self.startMonitoring() }
             .onDisappear { self.stopMonitoring() }
             .onChange(of: self.path.count) { oldCount, newCount in
@@ -48,8 +70,10 @@ struct NavigationSwipeGestures: ViewModifier {
                 let dx = event.deltaX
                 Task { @MainActor in
                     if dx > 0 {
+                        self.flashIndicator(progress: 1.0)
                         self.goBack()
                     } else if dx < 0 {
+                        self.flashIndicator(progress: -1.0)
                         self.goForward()
                     }
                 }
@@ -73,6 +97,8 @@ struct NavigationSwipeGestures: ViewModifier {
             NSEvent.removeMonitor(monitor)
             self.scrollMonitor = nil
         }
+        self.gestureProgress = 0
+        self.isTrackingSwipe = false
     }
 
     /// Promotes a horizontal scroll to a navigation swipe via AppKit's
@@ -104,17 +130,40 @@ struct NavigationSwipeGestures: ViewModifier {
             dampenAmountThresholdMin: -1.0,
             max: 1.0,
             usingHandler: { gestureAmount, _, isComplete, _ in
-                guard isComplete else { return }
                 Task { @MainActor in
-                    self.isTrackingSwipe = false
-                    if gestureAmount >= 0.999 {
-                        self.goBack()
-                    } else if gestureAmount <= -0.999 {
-                        self.goForward()
+                    // Suppress reverse-direction progress when the user has
+                    // nothing to navigate to that side.
+                    if (gestureAmount > 0 && !canBack) || (gestureAmount < 0 && !canForward) {
+                        self.gestureProgress = 0
+                    } else {
+                        self.gestureProgress = gestureAmount
+                    }
+
+                    if isComplete {
+                        self.isTrackingSwipe = false
+                        let triggeredBack = gestureAmount >= 0.999
+                        let triggeredForward = gestureAmount <= -0.999
+                        if triggeredBack {
+                            self.goBack()
+                        } else if triggeredForward {
+                            self.goForward()
+                        }
+                        // Smoothly fade the indicator out at the end.
+                        withAnimation(.easeOut(duration: 0.18)) {
+                            self.gestureProgress = 0
+                        }
                     }
                 }
             }
         )
+    }
+
+    /// One-shot indicator flash for `.swipe` events (no progressive callback).
+    private func flashIndicator(progress: CGFloat) {
+        self.gestureProgress = progress
+        withAnimation(.easeOut(duration: 0.22)) {
+            self.gestureProgress = 0
+        }
     }
 
     private func goBack() {
@@ -129,6 +178,48 @@ struct NavigationSwipeGestures: ViewModifier {
         guard let snapshot = self.forwardStack.popLast() else { return }
         self.isRestoringForward = true
         self.path = NavigationPath(snapshot)
+    }
+}
+
+// MARK: - SwipeNavIndicator
+
+/// Small Safari-style pill that grows and brightens with swipe progress.
+@available(macOS 26.0, *)
+private struct SwipeNavIndicator: View {
+    enum Direction {
+        case back, forward
+
+        var symbol: String {
+            switch self {
+            case .back: "chevron.left"
+            case .forward: "chevron.right"
+            }
+        }
+    }
+
+    let direction: Direction
+    /// Progress in `[0, 1]` representing swipe distance from rest.
+    let progress: CGFloat
+
+    var body: some View {
+        let clamped = max(0, min(1, self.progress))
+        let scale = 0.7 + 0.3 * clamped
+        let opacity = 0.4 + 0.6 * clamped
+
+        Image(systemName: self.direction.symbol)
+            .font(.system(size: 16, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 36, height: 36)
+            .background {
+                Circle()
+                    .fill(.black.opacity(0.55))
+                    .overlay {
+                        Circle().strokeBorder(.white.opacity(0.18), lineWidth: 0.5)
+                    }
+            }
+            .scaleEffect(scale)
+            .opacity(opacity)
+            .animation(.easeOut(duration: 0.08), value: self.progress)
     }
 }
 

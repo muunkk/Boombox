@@ -49,7 +49,7 @@ struct QueueSidePanelView: View {
 
             QueueFooterActions()
         }
-        .frame(width: 400)
+        .frame(maxWidth: .infinity)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .accessibilityIdentifier(AccessibilityID.Queue.container)

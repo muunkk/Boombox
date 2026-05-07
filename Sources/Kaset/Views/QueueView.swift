@@ -24,7 +24,7 @@ struct QueueView: View {
                 // Content
                 self.contentView
             }
-            .frame(width: 280)
+            .frame(maxWidth: .infinity)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
             .glassEffectID("queuePanel", in: self.queueNamespace)
         }

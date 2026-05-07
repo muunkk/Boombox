@@ -14,6 +14,7 @@ struct MainWindow: View {
     @Environment(WebKitManager.self) private var webKitManager
     @Environment(AccountService.self) private var accountService
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
     @Environment(\.searchFocusTrigger) private var searchFocusTrigger
     @Environment(\.showCommandBar) private var showCommandBar
     @Environment(\.playerPresentationMode) private var playerPresentationMode
@@ -46,6 +47,10 @@ struct MainWindow: View {
     private var isSidebarCollapsed: Bool {
         self.columnVisibility != .all
     }
+
+    /// Snapshot of `settings.sidePanelWidth` at the start of a drag, so each
+    /// `onChanged` can compute `initial - translation` instead of compounding.
+    @State private var dragStartPanelWidth: CGFloat?
 
     init(navigationSelection: Binding<NavigationItem?>, client: any YTMusicClientProtocol) {
         self._navigationSelection = navigationSelection
@@ -213,6 +218,17 @@ struct MainWindow: View {
         .task {
             NowPlayingManager.shared.configure(playerService: self.playerService)
         }
+        .onChange(of: self.globalNavigation.pendingTab) { _, newTab in
+            if let newTab, self.navigationSelection != newTab {
+                self.navigationSelection = newTab
+            }
+            // Always clear so a re-request to the same tab is detected.
+            if newTab != nil {
+                Task { @MainActor in
+                    self.globalNavigation.pendingTab = nil
+                }
+            }
+        }
         .onChange(of: self.likeStatusManager.lastLikeEvent) { _, event in
             guard let event else { return }
 
@@ -284,6 +300,30 @@ struct MainWindow: View {
                             .help(String(localized: "Refresh"))
                             .accessibilityLabel(String(localized: "Refresh"))
                         }
+                        if self.currentPageSupportsViewMode {
+                            ToolbarItem(placement: .navigation) {
+                                Picker("Display Mode", selection: self.$settings.displayMode) {
+                                    ForEach(SettingsManager.DisplayMode.allCases) { mode in
+                                        Image(systemName: mode.systemImage).tag(mode)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .help(String(localized: "Display Mode"))
+                                .accessibilityLabel(String(localized: "Display Mode"))
+                            }
+                        }
+                        if self.currentPageSupportsDensity {
+                            ToolbarItem(placement: .navigation) {
+                                Picker("Density", selection: self.$settings.displayDensity) {
+                                    ForEach(SettingsManager.DisplayDensity.allCases) { density in
+                                        Image(systemName: density.systemImage).tag(density)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .help(String(localized: "Density"))
+                                .accessibilityLabel(String(localized: "Density"))
+                            }
+                        }
                     }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -332,29 +372,77 @@ struct MainWindow: View {
         let showRightSidebar = self.playerService.showLyrics || self.playerService.showQueue
 
         if showRightSidebar {
-            VStack {
-                Spacer()
+            HStack(spacing: 0) {
+                Spacer(minLength: 0)
 
-                Group {
-                    if self.playerService.showLyrics {
-                        LyricsView(client: client)
-                    } else if self.playerService.showQueue {
-                        if self.playerService.queueDisplayMode == .sidepanel {
-                            QueueSidePanelView()
-                        } else {
-                            QueueView()
+                self.sidePanelDragHandle
+
+                VStack {
+                    Spacer()
+
+                    Group {
+                        if self.playerService.showLyrics {
+                            LyricsView(client: client)
+                        } else if self.playerService.showQueue {
+                            if self.playerService.queueDisplayMode == .sidepanel {
+                                QueueSidePanelView()
+                            } else {
+                                QueueView()
+                            }
                         }
                     }
-                }
-                .frame(maxHeight: .infinity)
-                .padding(.top, 12)
-                .padding(.bottom, 76) // Space for PlayerBar
-                .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .frame(maxHeight: .infinity)
+                    .padding(.top, 12)
+                    .padding(.bottom, 76) // Space for PlayerBar
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
 
-                Spacer()
+                    Spacer()
+                }
+                .frame(width: self.settings.sidePanelWidth)
+                .modifier(SidePanelSwipeSwitchModifier(playerService: self.playerService))
             }
             .padding(.trailing, 16)
         }
+    }
+
+    /// 4pt drag handle on the leading edge of the side panel — drag left to
+    /// widen, right to narrow. Persisted to `SettingsManager.sidePanelWidth`.
+    private var sidePanelDragHandle: some View {
+        Rectangle()
+            .fill(.clear)
+            .frame(width: 8)
+            .contentShape(Rectangle())
+            .overlay {
+                Capsule()
+                    .fill(.tertiary)
+                    .frame(width: 3, height: 36)
+            }
+            .onHover { hovering in
+                if hovering {
+                    NSCursor.resizeLeftRight.push()
+                } else {
+                    NSCursor.pop()
+                }
+            }
+            .gesture(
+                DragGesture(minimumDistance: 1)
+                    .onChanged { value in
+                        // Dragging leftward (negative translation.width) widens the panel.
+                        if self.dragStartPanelWidth == nil {
+                            self.dragStartPanelWidth = self.settings.sidePanelWidth
+                        }
+                        let initial = self.dragStartPanelWidth ?? self.settings.sidePanelWidth
+                        let proposed = initial - value.translation.width
+                        let clamped = max(SettingsManager.sidePanelWidthMin, min(SettingsManager.sidePanelWidthMax, proposed))
+                        if clamped != self.settings.sidePanelWidth {
+                            self.settings.sidePanelWidth = clamped
+                        }
+                    }
+                    .onEnded { _ in
+                        self.dragStartPanelWidth = nil
+                    }
+            )
+            .accessibilityLabel(String(localized: "Resize panel"))
     }
 
     private func detailView(for item: NavigationItem?, client _: any YTMusicClientProtocol) -> some View {
@@ -469,6 +557,21 @@ struct MainWindow: View {
         case .home, .explore, .newReleases, .likedMusic, .library, .history:
             true
         case .search, .none:
+            false
+        }
+    }
+
+    /// Whether the current page can switch between grid and list layouts.
+    fileprivate var currentPageSupportsViewMode: Bool {
+        self.navigationSelection == .library
+    }
+
+    /// Whether the current page reflects the global density setting.
+    fileprivate var currentPageSupportsDensity: Bool {
+        switch self.navigationSelection {
+        case .home, .library:
+            true
+        default:
             false
         }
     }

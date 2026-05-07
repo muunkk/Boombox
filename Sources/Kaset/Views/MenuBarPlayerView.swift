@@ -294,6 +294,9 @@ struct MenuBarPlayerView: View {
     // MARK: - Volume
 
     private var volumeRow: some View {
+        // Scroll-to-adjust is handled at the popover level by MenuBarController
+        // so a scroll anywhere in the popover changes volume — not just over
+        // the slider.
         HStack(spacing: 8) {
             Image(systemName: self.volumeIcon)
                 .font(.system(size: 11, weight: .medium))
@@ -321,11 +324,6 @@ struct MenuBarPlayerView: View {
                 }
             }
         }
-        .background {
-            ScrollWheelCapture { deltaY in
-                self.handleVolumeScroll(deltaY: deltaY)
-            }
-        }
     }
 
     private var volumeIcon: String {
@@ -336,27 +334,6 @@ struct MenuBarPlayerView: View {
             return "speaker.wave.1.fill"
         } else {
             return "speaker.wave.2.fill"
-        }
-    }
-
-    private func handleVolumeScroll(deltaY: CGFloat) {
-        // Continuous volume adjustment: each scroll frame nudges the slider by
-        // a small fraction. Sensitivity tuned so a typical trackpad swipe
-        // covers ~30% of the range and a wheel detent moves ~5%.
-        let sensitivity = 0.01
-        let proposed = self.volumeValue + Double(deltaY) * sensitivity
-        let clamped = max(0, min(1, proposed))
-        guard abs(clamped - self.volumeValue) > 0.001 else { return }
-
-        let hitBoundary = (self.volumeValue > 0 && clamped == 0)
-            || (self.volumeValue < 1 && clamped == 1)
-        self.volumeValue = clamped
-        let newOutput = VolumeCurve.outputVolume(forSliderValue: clamped)
-        Task {
-            await self.playerService.setVolume(newOutput)
-        }
-        if hitBoundary {
-            HapticService.sliderBoundary()
         }
     }
 

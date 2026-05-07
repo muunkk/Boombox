@@ -14,6 +14,9 @@ final class MenuBarController: NSObject {
     private var statusItem: NSStatusItem?
     private var popover: NSPopover?
     private var eventMonitor: Any?
+    /// Local scrollWheel monitor active only while the popover is visible.
+    /// Routes scrolls inside the popover to volume changes.
+    private var scrollMonitor: Any?
 
     private let hotkeyService = GlobalHotkeyService()
 
@@ -109,6 +112,7 @@ final class MenuBarController: NSObject {
         let rootView = MenuBarPlayerView(openApp: { [weak self] in
             self?.openMainAppWindow()
         })
+        .scrollIndicators(.hidden)
         .environment(playerService)
         .environment(webKitManager)
 
@@ -132,6 +136,44 @@ final class MenuBarController: NSObject {
                 self?.dismissPopover()
             }
         }
+
+        // Volume-on-scroll: any scroll inside the popover adjusts volume.
+        self.scrollMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
+            guard let self,
+                  let popoverWindow = self.popover?.contentViewController?.view.window,
+                  event.window === popoverWindow
+            else {
+                return event
+            }
+            Task { @MainActor in
+                self.handleVolumeScroll(event)
+            }
+            return event
+        }
+    }
+
+    /// Adjusts volume continuously based on a scroll wheel event delivered
+    /// to the popover window.
+    private func handleVolumeScroll(_ event: NSEvent) {
+        guard let player = self.playerService else { return }
+        let delta: CGFloat = event.hasPreciseScrollingDeltas ? event.scrollingDeltaY : event.deltaY
+        guard delta != 0 else { return }
+
+        let sensitivity = 0.01
+        let currentSlider = VolumeCurve.sliderValue(forOutputVolume: player.volume)
+        let proposed = currentSlider + Double(delta) * sensitivity
+        let clamped = max(0, min(1, proposed))
+        guard abs(clamped - currentSlider) > 0.001 else { return }
+
+        let hitBoundary = (currentSlider > 0 && clamped == 0)
+            || (currentSlider < 1 && clamped == 1)
+
+        Task { @MainActor in
+            await player.setVolume(VolumeCurve.outputVolume(forSliderValue: clamped))
+            if hitBoundary {
+                HapticService.sliderBoundary()
+            }
+        }
     }
 
     private func dismissPopover() {
@@ -140,6 +182,10 @@ final class MenuBarController: NSObject {
         if let monitor = self.eventMonitor {
             NSEvent.removeMonitor(monitor)
             self.eventMonitor = nil
+        }
+        if let monitor = self.scrollMonitor {
+            NSEvent.removeMonitor(monitor)
+            self.scrollMonitor = nil
         }
     }
 

@@ -22,6 +22,57 @@ final class SettingsManager {
         static let menuBarItemEnabled = "settings.menuBarItemEnabled"
         static let menuBarHotkey = "settings.menuBarHotkey"
         static let sidebarToggleHotkey = "settings.sidebarToggleHotkey"
+        static let sidePanelWidth = "settings.sidePanelWidth"
+        static let displayMode = "settings.displayMode"
+        static let displayDensity = "settings.displayDensity"
+    }
+
+    // MARK: - Display Mode / Density
+
+    enum DisplayMode: String, CaseIterable, Identifiable {
+        case grid
+        case list
+
+        var id: String {
+            rawValue
+        }
+
+        var displayName: String {
+            switch self {
+            case .grid: String(localized: "Grid")
+            case .list: String(localized: "List")
+            }
+        }
+
+        var systemImage: String {
+            switch self {
+            case .grid: "square.grid.2x2"
+            case .list: "list.bullet"
+            }
+        }
+    }
+
+    enum DisplayDensity: String, CaseIterable, Identifiable {
+        case `default`
+        case compact
+
+        var id: String {
+            rawValue
+        }
+
+        var displayName: String {
+            switch self {
+            case .default: String(localized: "Default")
+            case .compact: String(localized: "Compact")
+            }
+        }
+
+        var systemImage: String {
+            switch self {
+            case .default: "rectangle.compress.vertical"
+            case .compact: "rectangle.expand.vertical"
+            }
+        }
     }
 
     // MARK: - Launch Page Options
@@ -235,6 +286,36 @@ final class SettingsManager {
         }
     }
 
+    /// Width of the lyrics/queue side panel, in points. Persisted across launches.
+    var sidePanelWidth: CGFloat {
+        didSet {
+            let clamped = max(Self.sidePanelWidthMin, min(Self.sidePanelWidthMax, self.sidePanelWidth))
+            if clamped != self.sidePanelWidth {
+                self.sidePanelWidth = clamped
+                return
+            }
+            UserDefaults.standard.set(Double(self.sidePanelWidth), forKey: Keys.sidePanelWidth)
+        }
+    }
+
+    static let sidePanelWidthMin: CGFloat = 280
+    static let sidePanelWidthMax: CGFloat = 600
+    static let sidePanelWidthDefault: CGFloat = 400
+
+    /// Grid vs. list across pages that support both layouts.
+    var displayMode: DisplayMode {
+        didSet {
+            UserDefaults.standard.set(self.displayMode.rawValue, forKey: Keys.displayMode)
+        }
+    }
+
+    /// Default vs. compact density — affects row height, card size, padding.
+    var displayDensity: DisplayDensity {
+        didSet {
+            UserDefaults.standard.set(self.displayDensity.rawValue, forKey: Keys.displayDensity)
+        }
+    }
+
     /// Optional global keyboard shortcut that toggles the main window sidebar.
     var sidebarToggleHotkey: HotkeyShortcut? {
         didSet {
@@ -282,6 +363,26 @@ final class SettingsManager {
             self.sidebarToggleHotkey = shortcut
         } else {
             self.sidebarToggleHotkey = nil
+        }
+
+        let persistedPanelWidth = UserDefaults.standard.object(forKey: Keys.sidePanelWidth) as? Double
+        let initialWidth: CGFloat = persistedPanelWidth.map { CGFloat($0) } ?? Self.sidePanelWidthDefault
+        self.sidePanelWidth = max(Self.sidePanelWidthMin, min(Self.sidePanelWidthMax, initialWidth))
+
+        if let raw = UserDefaults.standard.string(forKey: Keys.displayMode),
+           let mode = DisplayMode(rawValue: raw)
+        {
+            self.displayMode = mode
+        } else {
+            self.displayMode = .grid
+        }
+
+        if let raw = UserDefaults.standard.string(forKey: Keys.displayDensity),
+           let density = DisplayDensity(rawValue: raw)
+        {
+            self.displayDensity = density
+        } else {
+            self.displayDensity = .default
         }
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.mediaControlStyle),
