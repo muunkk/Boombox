@@ -21,7 +21,6 @@ final class SettingsManager {
         static let showSidebarNowPlayingPanel = "settings.showSidebarNowPlayingPanel"
         static let menuBarItemEnabled = "settings.menuBarItemEnabled"
         static let menuBarHotkey = "settings.menuBarHotkey"
-        static let sidebarToggleHotkey = "settings.sidebarToggleHotkey"
         static let sidePanelWidth = "settings.sidePanelWidth"
         static let displayMode = "settings.displayMode"
         static let displayDensity = "settings.displayDensity"
@@ -316,19 +315,6 @@ final class SettingsManager {
         }
     }
 
-    /// Optional global keyboard shortcut that toggles the main window sidebar.
-    var sidebarToggleHotkey: HotkeyShortcut? {
-        didSet {
-            if let sidebarToggleHotkey,
-               let data = try? JSONEncoder().encode(sidebarToggleHotkey)
-            {
-                UserDefaults.standard.set(data, forKey: Keys.sidebarToggleHotkey)
-            } else {
-                UserDefaults.standard.removeObject(forKey: Keys.sidebarToggleHotkey)
-            }
-        }
-    }
-
     // MARK: - Initialization
 
     private init() {
@@ -355,14 +341,6 @@ final class SettingsManager {
             self.menuBarHotkey = shortcut
         } else {
             self.menuBarHotkey = nil
-        }
-
-        if let data = UserDefaults.standard.data(forKey: Keys.sidebarToggleHotkey),
-           let shortcut = try? JSONDecoder().decode(HotkeyShortcut.self, from: data)
-        {
-            self.sidebarToggleHotkey = shortcut
-        } else {
-            self.sidebarToggleHotkey = nil
         }
 
         let persistedPanelWidth = UserDefaults.standard.object(forKey: Keys.sidePanelWidth) as? Double

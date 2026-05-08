@@ -248,6 +248,10 @@ struct HomeView: View {
     private func contextMenuItems(for item: HomeSectionItem, in _: HomeSection, at _: Int) -> some View {
         switch item {
         case let .song(song):
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 Task { await self.playerService.play(song: song) }
             } label: {
@@ -269,10 +273,6 @@ struct HomeView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: song)
-
-            Divider()
-
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
 
             Divider()
 

@@ -16,9 +16,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// for a status item they never use.
     var menuBarController: MenuBarController?
 
-    /// Global hotkey for toggling the sidebar.
-    let sidebarHotkeyService = GlobalHotkeyService()
-
     /// Reference to the main window for reliable reopen behavior.
     /// Using strong reference to prevent deallocation when window is hidden.
     private var mainWindow: NSWindow?

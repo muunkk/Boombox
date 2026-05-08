@@ -30,10 +30,11 @@ struct HotkeyShortcut: Codable, Equatable {
 }
 
 extension HotkeyShortcut {
-    /// Builds a shortcut from an `NSEvent` produced during recording. Returns
-    /// `nil` for events without modifier keys (we require a modifier so the
-    /// shortcut can't collide with normal typing).
-    static func from(event: NSEvent) -> HotkeyShortcut? {
+    /// Builds a shortcut from an `NSEvent` produced during recording.
+    /// `requireModifiers` is on by default: global hotkeys (Carbon) need a
+    /// modifier to be system-registrable. In-app shortcuts can opt out so
+    /// users can bind plain keys like Space.
+    static func from(event: NSEvent, requireModifiers: Bool = true) -> HotkeyShortcut? {
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
 
         var carbon: UInt32 = 0
@@ -42,7 +43,7 @@ extension HotkeyShortcut {
         if flags.contains(.control) { carbon |= UInt32(controlKey) }
         if flags.contains(.shift) { carbon |= UInt32(shiftKey) }
 
-        guard carbon != 0 else { return nil }
+        if requireModifiers, carbon == 0 { return nil }
 
         return HotkeyShortcut(
             keyCode: UInt32(event.keyCode),

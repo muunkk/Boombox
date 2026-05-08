@@ -318,6 +318,10 @@ struct PlaylistDetailView: View {
         .buttonStyle(.interactiveRow(cornerRadius: 6))
         .staggeredAppearance(index: min(index, 10))
         .contextMenu {
+            AddToQueueContextMenu(song: track, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 self.playTrackInQueue(tracks: tracks, startingAt: index, fallbackArtist: author, fallbackAlbum: fallbackAlbum)
             } label: {
@@ -347,10 +351,6 @@ struct PlaylistDetailView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: track)
-
-            Divider()
-
-            AddToQueueContextMenu(song: track, playerService: self.playerService)
 
             Divider()
 

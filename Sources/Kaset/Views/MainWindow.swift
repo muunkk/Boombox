@@ -295,7 +295,7 @@ struct MainWindow: View {
                             } label: {
                                 Image(systemName: "arrow.clockwise")
                             }
-                            .keyboardShortcut("r", modifiers: .command)
+                            .keyboardShortcut(for: .refreshPage)
                             .disabled(!self.currentPageSupportsRefresh)
                             .help(String(localized: "Refresh"))
                             .accessibilityLabel(String(localized: "Refresh"))
@@ -333,11 +333,6 @@ struct MainWindow: View {
                     self.columnVisibility = .all
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: .sidebarToggleRequested)) { _ in
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    self.columnVisibility = self.columnVisibility == .all ? .detailOnly : .all
-                }
-            }
 
             // Right sidebar overlay - either lyrics or queue (mutually exclusive)
             self.rightSidebarOverlay(client: self.client)
@@ -363,6 +358,18 @@ struct MainWindow: View {
                 .opacity(0)
                 .accessibilityHidden(true)
             }
+        }
+        .background {
+            // Hidden in-app shortcut to toggle the sidebar. Only fires while
+            // Boombox is the active application — no global conflicts.
+            Button("") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    self.columnVisibility = self.columnVisibility == .all ? .detailOnly : .all
+                }
+            }
+            .keyboardShortcut(for: .toggleSidebar)
+            .opacity(0)
+            .accessibilityHidden(true)
         }
     }
 

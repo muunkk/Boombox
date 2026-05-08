@@ -7,6 +7,12 @@ import SwiftUI
 struct QueueCellActions {
     let onPlay: () -> Void
     let onRemove: () -> Void
+    /// Optional: invoked when the title text is clicked, if the song's album
+    /// is navigable.
+    var onNavigateAlbum: (() -> Void)?
+    /// Optional: invoked when the artist text is clicked, if the song's
+    /// primary artist is navigable.
+    var onNavigateArtist: (() -> Void)?
 }
 
 // MARK: - QueueTableCellView
@@ -15,6 +21,8 @@ struct QueueCellActions {
 class QueueTableCellView: NSView {
     private var onPlay: (() -> Void)?
     private var onRemove: (() -> Void)?
+    private var onNavigateAlbum: (() -> Void)?
+    private var onNavigateArtist: (() -> Void)?
     private var isCurrentTrack: Bool = false
     private var isPlaying: Bool = false
     private var indicatorLabel = NSTextField()
@@ -22,8 +30,8 @@ class QueueTableCellView: NSView {
     private let thumbnailImageView = NSImageView()
     private var imageLoadTask: Task<Void, Never>?
     private var currentSongId: String?
-    private let titleLabel = NSTextField()
-    private let artistLabel = NSTextField()
+    private let titleLabel = NavigableLabel()
+    private let artistLabel = NavigableLabel()
     private let durationLabel = NSTextField()
 
     override init(frame frameRect: NSRect) {
@@ -130,6 +138,12 @@ class QueueTableCellView: NSView {
 
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick))
         addGestureRecognizer(clickGesture)
+
+        // Per-label clicks for title→album / artist→artist navigation.
+        // The labels intercept clicks and stop propagation when their
+        // navigation closure is set, so the row's play handler doesn't fire.
+        self.titleLabel.onClick = { [weak self] in self?.handleTitleClick() }
+        self.artistLabel.onClick = { [weak self] in self?.handleArtistClick() }
     }
 
     override func layout() {
@@ -143,6 +157,10 @@ class QueueTableCellView: NSView {
     func configure(song: Song, index: Int, isCurrentTrack: Bool, isPlaying: Bool, actions: QueueCellActions) {
         self.onPlay = actions.onPlay
         self.onRemove = actions.onRemove
+        self.onNavigateAlbum = actions.onNavigateAlbum
+        self.onNavigateArtist = actions.onNavigateArtist
+        self.titleLabel.isClickable = actions.onNavigateAlbum != nil
+        self.artistLabel.isClickable = actions.onNavigateArtist != nil
         self.isCurrentTrack = isCurrentTrack
         self.isPlaying = isPlaying
         self.updateAppearance(isCurrentTrack: isCurrentTrack, isPlaying: isPlaying, index: index)
@@ -231,6 +249,22 @@ class QueueTableCellView: NSView {
         self.onPlay?()
     }
 
+    private func handleTitleClick() {
+        if let onNavigateAlbum = self.onNavigateAlbum {
+            onNavigateAlbum()
+        } else {
+            self.onPlay?()
+        }
+    }
+
+    private func handleArtistClick() {
+        if let onNavigateArtist = self.onNavigateArtist {
+            onNavigateArtist()
+        } else {
+            self.onPlay?()
+        }
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
         self.imageLoadTask?.cancel()
@@ -239,6 +273,117 @@ class QueueTableCellView: NSView {
         self.thumbnailImageView.image = nil
         self.waveformView?.removeFromSuperview()
         self.waveformView = nil
+    }
+}
+
+// MARK: - NavigableLabel
+
+/// `NSTextField` that intercepts mouse clicks and shows the pointing-hand
+/// cursor while clickable. Used for the queue row's title/artist labels so
+/// clicks navigate to album/artist pages instead of playing the row.
+@available(macOS 26.0, *)
+@MainActor
+final class NavigableLabel: NSTextField {
+    /// Set to `true` while a navigation closure is wired up — drives both
+    /// the cursor affordance and click capturing.
+    var isClickable = false {
+        didSet {
+            self.updateTrackingArea()
+            self.window?.invalidateCursorRects(for: self)
+        }
+    }
+
+    /// Invoked when the label is clicked while `isClickable` is true.
+    var onClick: (() -> Void)?
+
+    private var trackingArea: NSTrackingArea?
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        self.commonInit()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.commonInit()
+    }
+
+    private func commonInit() {
+        self.isEditable = false
+        self.isBordered = false
+        self.isSelectable = false
+        self.backgroundColor = .clear
+        self.refusesFirstResponder = true
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        guard self.isClickable else {
+            super.mouseDown(with: event)
+            return
+        }
+        // Swallow the event so the row's gesture recognizer doesn't also
+        // fire. We invoke the click on mouseUp inside our bounds, matching
+        // standard button behavior.
+        let downPoint = self.convert(event.locationInWindow, from: nil)
+        guard self.bounds.contains(downPoint) else {
+            super.mouseDown(with: event)
+            return
+        }
+
+        // Drain to mouseUp to mimic a button press.
+        var upEvent: NSEvent?
+        let mask: NSEvent.EventTypeMask = [.leftMouseUp, .leftMouseDragged]
+        while upEvent == nil {
+            guard let next = self.window?.nextEvent(matching: mask) else { break }
+            if next.type == .leftMouseUp {
+                upEvent = next
+            }
+        }
+
+        if let upEvent {
+            let upPoint = self.convert(upEvent.locationInWindow, from: nil)
+            if self.bounds.contains(upPoint) {
+                self.onClick?()
+            }
+        }
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        self.updateTrackingArea()
+    }
+
+    private func updateTrackingArea() {
+        if let trackingArea {
+            self.removeTrackingArea(trackingArea)
+            self.trackingArea = nil
+        }
+        guard self.isClickable else { return }
+        let area = NSTrackingArea(
+            rect: self.bounds,
+            options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect],
+            owner: self,
+            userInfo: nil
+        )
+        self.addTrackingArea(area)
+        self.trackingArea = area
+    }
+
+    override func mouseEntered(with _: NSEvent) {
+        guard self.isClickable else { return }
+        NSCursor.pointingHand.push()
+    }
+
+    override func mouseExited(with _: NSEvent) {
+        guard self.isClickable else { return }
+        NSCursor.pop()
+    }
+
+    override func resetCursorRects() {
+        super.resetCursorRects()
+        if self.isClickable {
+            self.addCursorRect(self.bounds, cursor: .pointingHand)
+        }
     }
 }
 

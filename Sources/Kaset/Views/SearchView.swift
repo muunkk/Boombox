@@ -485,6 +485,10 @@ struct SearchView: View {
 
     @ViewBuilder
     private func songContextMenu(_ song: Song) -> some View {
+        AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+        Divider()
+
         Button {
             Task { await self.playerService.playWithRadio(song: song) }
         } label: {
@@ -514,10 +518,6 @@ struct SearchView: View {
         Divider()
 
         ShareContextMenu.menuItem(for: song)
-
-        Divider()
-
-        AddToQueueContextMenu(song: song, playerService: self.playerService)
 
         Divider()
 

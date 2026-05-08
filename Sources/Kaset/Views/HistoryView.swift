@@ -192,6 +192,10 @@ struct HistoryView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 Task { await self.playerService.play(song: song) }
             } label: {
@@ -209,10 +213,6 @@ struct HistoryView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: song)
-
-            Divider()
-
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
 
             Divider()
 
