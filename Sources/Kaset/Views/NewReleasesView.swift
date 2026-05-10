@@ -35,6 +35,7 @@ struct NewReleasesView: View {
             .localizedNavigationTitle("New Releases")
             .navigationDestinations(client: self.viewModel.client)
         }
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

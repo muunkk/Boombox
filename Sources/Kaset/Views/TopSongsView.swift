@@ -117,6 +117,10 @@ struct TopSongsView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 self.playSongInQueue(startingAt: index)
             } label: {
@@ -146,10 +150,6 @@ struct TopSongsView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: song)
-
-            Divider()
-
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
 
             Divider()
 

@@ -94,8 +94,12 @@ struct FavoritesSection: View {
 
     @ViewBuilder
     private func contextMenu(for item: FavoriteItem) -> some View {
-        // Play button for songs
+        // Play Next / Add to Queue first for songs.
         if case let .song(song) = item.itemType {
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 Task { await self.playerService.play(song: song) }
             } label: {
@@ -169,12 +173,6 @@ struct FavoritesSection: View {
         Divider()
 
         ShareContextMenu.menuItem(for: item)
-
-        // Add to Queue for songs
-        if case let .song(song) = item.itemType {
-            Divider()
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
-        }
 
         Divider()
 

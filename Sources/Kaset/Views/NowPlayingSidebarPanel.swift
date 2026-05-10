@@ -11,6 +11,7 @@ struct NowPlayingSidebarPanel: View {
     }
 
     @Environment(PlayerService.self) private var playerService
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
     @Environment(\.playerPresentationMode) private var playerPresentationMode
 
     @State private var settings = SettingsManager.shared
@@ -21,17 +22,8 @@ struct NowPlayingSidebarPanel: View {
             self.artwork
 
             VStack(spacing: 3) {
-                Text(self.title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
-                Text(self.subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .frame(maxWidth: .infinity)
+                self.titleView
+                self.subtitleView
             }
         }
         .padding(.horizontal, 12)
@@ -41,8 +33,10 @@ struct NowPlayingSidebarPanel: View {
         .accessibilityIdentifier(AccessibilityID.Sidebar.nowPlayingPanel)
     }
 
+    // MARK: - Artwork
+
     private var artwork: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             Group {
                 if let track = self.playerService.currentTrack {
                     SongThumbnailView(song: track, size: Self.Layout.artworkSize, cornerRadius: Self.Layout.cornerRadius)
@@ -58,8 +52,17 @@ struct NowPlayingSidebarPanel: View {
             }
             .shadow(color: .black.opacity(0.18), radius: 14, y: 7)
 
-            self.hoverActions
-                .padding(8)
+            // Center play/pause button — visible on hover.
+            if self.isHoveringArtwork, self.playerService.currentTrack != nil {
+                self.playPauseButton
+                    .transition(.opacity.combined(with: .scale(scale: 0.85)))
+            }
+
+            VStack {
+                Spacer()
+                self.hoverActions
+                    .padding(8)
+            }
         }
         .frame(width: Self.Layout.artworkSize, height: Self.Layout.artworkSize)
         .onHover { hovering in
@@ -69,6 +72,30 @@ struct NowPlayingSidebarPanel: View {
         }
         .accessibilityIdentifier(AccessibilityID.Sidebar.nowPlayingArtwork)
         .accessibilityLabel(self.artworkAccessibilityLabel)
+    }
+
+    private var playPauseButton: some View {
+        Button {
+            HapticService.playback()
+            Task {
+                await self.playerService.playPause()
+            }
+        } label: {
+            Image(systemName: self.playerService.isPlaying ? "pause.fill" : "play.fill")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background {
+                    Circle()
+                        .fill(.black.opacity(0.55))
+                        .overlay {
+                            Circle().strokeBorder(.white.opacity(0.2), lineWidth: 0.5)
+                        }
+                }
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(self.playerService.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
     }
 
     private var hoverActions: some View {
@@ -107,6 +134,71 @@ struct NowPlayingSidebarPanel: View {
         .accessibilityHidden(!self.isHoveringArtwork)
     }
 
+    // MARK: - Title / Subtitle (tappable when navigable)
+
+    private var titleView: some View {
+        Group {
+            if let album = self.albumDestination {
+                Button {
+                    HapticService.navigation()
+                    self.globalNavigation.openAlbum(album, fallbackThumbnail: self.playerService.currentTrack?.thumbnailURL)
+                } label: {
+                    Text(self.title)
+                        .font(.system(size: 13, weight: .semibold))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help(String(localized: "Go to Album"))
+            } else {
+                Text(self.title)
+                    .font(.system(size: 13, weight: .semibold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    private var subtitleView: some View {
+        Group {
+            if let artist = self.artistDestination {
+                Button {
+                    HapticService.navigation()
+                    self.globalNavigation.openArtist(artist)
+                } label: {
+                    Text(self.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help(String(localized: "Go to Artist"))
+            } else {
+                Text(self.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    private var albumDestination: Album? {
+        guard let album = self.playerService.currentTrack?.album, album.hasNavigableId else { return nil }
+        return album
+    }
+
+    private var artistDestination: Artist? {
+        self.playerService.currentTrack?.artists.first(where: { $0.hasNavigableId })
+    }
+
+    // MARK: - Strings
+
     private var title: String {
         self.playerService.currentTrack?.title ?? String(localized: "Nothing Playing")
     }
@@ -133,6 +225,7 @@ struct NowPlayingSidebarPanel: View {
 #Preview {
     NowPlayingSidebarPanel()
         .environment(PlayerService())
+        .environment(GlobalNavigationCoordinator())
         .environment(\.playerPresentationMode, .constant(.standard))
         .frame(width: 220)
 }

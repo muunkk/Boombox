@@ -6,6 +6,7 @@ import SwiftUI
 struct QueueSidePanelView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
 
     var body: some View {
         // Use regular material: GlassEffectContainer breaks NSTableView drag-and-drop
@@ -24,6 +25,8 @@ struct QueueSidePanelView: View {
                     currentIndex: self.playerService.currentIndex,
                     isPlaying: self.playerService.isPlaying,
                     favoritesManager: self.favoritesManager,
+                    playerService: self.playerService,
+                    globalNavigation: self.globalNavigation,
                     onSelect: { index in
                         Task {
                             await self.playerService.playFromQueue(at: index)
@@ -49,7 +52,7 @@ struct QueueSidePanelView: View {
 
             QueueFooterActions()
         }
-        .frame(width: 400)
+        .frame(maxWidth: .infinity)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .accessibilityIdentifier(AccessibilityID.Queue.container)
@@ -84,6 +87,8 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
     let currentIndex: Int
     let isPlaying: Bool
     let favoritesManager: FavoritesManager
+    let playerService: PlayerService
+    let globalNavigation: GlobalNavigationCoordinator
     let onSelect: (Int) -> Void
     let onReorder: (Int, Int) -> Void
     let onRemove: (String) -> Void
@@ -101,6 +106,8 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         context.coordinator.currentIndex = self.currentIndex
         context.coordinator.isPlaying = self.isPlaying
         context.coordinator.favoritesManager = self.favoritesManager
+        context.coordinator.playerService = self.playerService
+        context.coordinator.globalNavigation = self.globalNavigation
 
         if !context.coordinator.isDragging {
             viewController.tableView?.reloadData()
@@ -126,6 +133,8 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
             currentIndex: self.currentIndex,
             isPlaying: self.isPlaying,
             favoritesManager: self.favoritesManager,
+            playerService: self.playerService,
+            globalNavigation: self.globalNavigation,
             onSelect: self.onSelect,
             onReorder: self.onReorder,
             onRemove: self.onRemove,
@@ -195,6 +204,8 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         var currentIndex: Int
         var isPlaying: Bool
         var favoritesManager: FavoritesManager
+        weak var playerService: PlayerService?
+        weak var globalNavigation: GlobalNavigationCoordinator?
         let onSelect: (Int) -> Void
         let onReorder: (Int, Int) -> Void
         let onRemove: (String) -> Void
@@ -204,12 +215,15 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         private let dragType = NSPasteboard.PasteboardType("com.melboonchan.boombox.queueitem")
 
         init(queue: [Song], currentIndex: Int, isPlaying: Bool, favoritesManager: FavoritesManager,
+             playerService: PlayerService, globalNavigation: GlobalNavigationCoordinator,
              onSelect: @escaping (Int) -> Void, onReorder: @escaping (Int, Int) -> Void, onRemove: @escaping (String) -> Void, onStartRadio: @escaping (Song) -> Void)
         {
             self.queue = queue
             self.currentIndex = currentIndex
             self.isPlaying = isPlaying
             self.favoritesManager = favoritesManager
+            self.playerService = playerService
+            self.globalNavigation = globalNavigation
             self.onSelect = onSelect
             self.onReorder = onReorder
             self.onRemove = onRemove
@@ -253,6 +267,23 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         func tableView(_: NSTableView, viewFor _: NSTableColumn?, row: Int) -> NSView? {
             let cellView = QueueTableCellView()
             let song = self.queue[row]
+
+            let albumNavigation: (() -> Void)? = if let album = song.album, album.hasNavigableId {
+                { [weak self] in
+                    self?.globalNavigation?.openAlbum(album, fallbackThumbnail: song.thumbnailURL)
+                }
+            } else {
+                nil
+            }
+
+            let artistNavigation: (() -> Void)? = if let artist = song.artists.first(where: { $0.hasNavigableId }) {
+                { [weak self] in
+                    self?.globalNavigation?.openArtist(artist)
+                }
+            } else {
+                nil
+            }
+
             cellView.configure(
                 song: song,
                 index: row,
@@ -260,7 +291,9 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
                 isPlaying: self.isPlaying,
                 actions: QueueCellActions(
                     onPlay: { [weak self] in self?.onSelect(row) },
-                    onRemove: { [weak self] in self?.onRemove(song.videoId) }
+                    onRemove: { [weak self] in self?.onRemove(song.videoId) },
+                    onNavigateAlbum: albumNavigation,
+                    onNavigateArtist: artistNavigation
                 )
             )
             return cellView
@@ -324,6 +357,42 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
             let manager = self.favoritesManager
             let isPinned = MainActor.assumeIsolated { manager.isPinned(song: song) }
 
+            // Play Next + Add to Queue first per user request.
+            let playNextItem = NSMenuItem(title: String(localized: "Play Next"), action: #selector(Coordinator.contextMenuPlayNext(_:)), keyEquivalent: "")
+            playNextItem.target = self
+            playNextItem.representedObject = song
+            playNextItem.image = NSImage(systemSymbolName: "text.insert", accessibilityDescription: nil)
+            menu.addItem(playNextItem)
+
+            let addToQueueItem = NSMenuItem(title: String(localized: "Add to Queue"), action: #selector(Coordinator.contextMenuAddToQueue(_:)), keyEquivalent: "")
+            addToQueueItem.target = self
+            addToQueueItem.representedObject = song
+            addToQueueItem.image = NSImage(systemSymbolName: "text.append", accessibilityDescription: nil)
+            menu.addItem(addToQueueItem)
+
+            menu.addItem(NSMenuItem.separator())
+
+            // Navigation: Go to Album / Go to Artist when available.
+            if let album = song.album, album.hasNavigableId {
+                let goAlbumItem = NSMenuItem(title: String(localized: "Go to Album"), action: #selector(Coordinator.contextMenuGoToAlbum(_:)), keyEquivalent: "")
+                goAlbumItem.target = self
+                goAlbumItem.representedObject = song
+                goAlbumItem.image = NSImage(systemSymbolName: "square.stack", accessibilityDescription: nil)
+                menu.addItem(goAlbumItem)
+            }
+
+            if song.artists.contains(where: \.hasNavigableId) {
+                let goArtistItem = NSMenuItem(title: String(localized: "Go to Artist"), action: #selector(Coordinator.contextMenuGoToArtist(_:)), keyEquivalent: "")
+                goArtistItem.target = self
+                goArtistItem.representedObject = song
+                goArtistItem.image = NSImage(systemSymbolName: "person", accessibilityDescription: nil)
+                menu.addItem(goArtistItem)
+            }
+
+            if menu.items.last?.isSeparatorItem == false, song.album?.hasNavigableId == true || song.artists.contains(where: \.hasNavigableId) {
+                menu.addItem(NSMenuItem.separator())
+            }
+
             let favoritesItem = NSMenuItem(
                 title: isPinned ? "Remove from Favorites" : "Add to Favorites",
                 action: #selector(Coordinator.contextMenuFavorites(_:)),
@@ -362,6 +431,28 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
             }
 
             return menu
+        }
+
+        @objc private func contextMenuPlayNext(_ sender: NSMenuItem) {
+            guard let song = sender.representedObject as? Song, let player = self.playerService else { return }
+            SongActionsHelper.addToQueueNext(song, playerService: player)
+        }
+
+        @objc private func contextMenuAddToQueue(_ sender: NSMenuItem) {
+            guard let song = sender.representedObject as? Song, let player = self.playerService else { return }
+            SongActionsHelper.addToQueueLast(song, playerService: player)
+        }
+
+        @objc private func contextMenuGoToAlbum(_ sender: NSMenuItem) {
+            guard let song = sender.representedObject as? Song, let album = song.album, album.hasNavigableId else { return }
+            self.globalNavigation?.openAlbum(album, fallbackThumbnail: song.thumbnailURL)
+        }
+
+        @objc private func contextMenuGoToArtist(_ sender: NSMenuItem) {
+            guard let song = sender.representedObject as? Song,
+                  let artist = song.artists.first(where: { $0.hasNavigableId })
+            else { return }
+            self.globalNavigation?.openArtist(artist)
         }
 
         @objc private func contextMenuFavorites(_ sender: NSMenuItem) {

@@ -9,6 +9,7 @@ struct HomeView: View {
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @State private var navigationPath = NavigationPath()
     @State private var networkMonitor = NetworkMonitor.shared
+    @State private var settings = SettingsManager.shared
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -39,6 +40,7 @@ struct HomeView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Home.container)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
@@ -71,8 +73,8 @@ struct HomeView: View {
                     .staggeredAppearance(index: 0)
                 }
 
-                // API sections - use stable id without array enumeration
-                ForEach(self.viewModel.sections) { section in
+                // API sections - Quick Picks pinned first, rest in API order
+                ForEach(self.viewModel.displaySections) { section in
                     self.sectionView(section)
                         .task {
                             await self.prefetchImagesAsync(for: section)
@@ -84,11 +86,18 @@ struct HomeView: View {
         }
     }
 
+    @ViewBuilder
     private func sectionView(_ section: HomeSection) -> some View {
+        if self.settings.displayMode == .list {
+            self.sectionListView(section)
+        } else {
+            self.sectionGridView(section)
+        }
+    }
+
+    private func sectionGridView(_ section: HomeSection) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(section.title)
-                .font(.title2)
-                .fontWeight(.semibold)
+            self.sectionHeader(section)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
@@ -118,12 +127,131 @@ struct HomeView: View {
         }
     }
 
+    private func sectionListView(_ section: HomeSection) -> some View {
+        let isCompact = self.settings.displayDensity == .compact
+        let thumbSize: CGFloat = isCompact ? 36 : 48
+        let columnMin: CGFloat = isCompact ? 240 : 300
+
+        return VStack(alignment: .leading, spacing: 8) {
+            self.sectionHeader(section)
+
+            // Stacked columns: adaptive grid lays items out in 1+ columns
+            // depending on window width, keeping section context tidy.
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: columnMin), spacing: 6)],
+                alignment: .leading,
+                spacing: 4
+            ) {
+                ForEach(Array(section.items.enumerated()), id: \.element.id) { index, item in
+                    self.sectionListRow(
+                        item: item,
+                        rank: section.isChart ? index + 1 : nil,
+                        thumbSize: thumbSize,
+                        verticalPadding: isCompact ? 4 : 6,
+                        action: { self.playItem(item, in: section, at: index) }
+                    )
+                    .contextMenu {
+                        self.contextMenuItems(for: item, in: section, at: index)
+                    }
+                }
+            }
+        }
+    }
+
+    private func sectionHeader(_ section: HomeSection) -> some View {
+        Text(section.title)
+            .font(.title2)
+            .fontWeight(.semibold)
+    }
+
+    private func sectionListRow(
+        item: HomeSectionItem,
+        rank: Int?,
+        thumbSize: CGFloat,
+        verticalPadding: CGFloat,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                if let rank {
+                    Text("\(rank)")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 22, alignment: .trailing)
+                        .monospacedDigit()
+                }
+
+                self.listThumbnail(for: item, size: thumbSize)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.title)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+
+                    if let subtitle = item.subtitle {
+                        Text(subtitle)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: self.listKindIcon(for: item))
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, verticalPadding)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.interactiveRow(cornerRadius: 6))
+    }
+
+    @ViewBuilder
+    private func listThumbnail(for item: HomeSectionItem, size: CGFloat) -> some View {
+        let url = item.thumbnailURL?.highQualityThumbnailURL
+        let cornerRadius: CGFloat = {
+            if case .artist = item { return size / 2 }
+            return 6
+        }()
+
+        CachedAsyncImage(url: url) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } placeholder: {
+            Rectangle()
+                .fill(.quaternary)
+                .overlay {
+                    Image(systemName: self.listKindIcon(for: item))
+                        .foregroundStyle(.secondary)
+                }
+        }
+        .frame(width: size, height: size)
+        .clipShape(.rect(cornerRadius: cornerRadius))
+    }
+
+    private func listKindIcon(for item: HomeSectionItem) -> String {
+        switch item {
+        case .song: "music.note"
+        case .album: "square.stack.fill"
+        case .playlist: "music.note.list"
+        case .artist: "person.fill"
+        }
+    }
+
     // MARK: - Context Menu
 
     @ViewBuilder
     private func contextMenuItems(for item: HomeSectionItem, in _: HomeSection, at _: Int) -> some View {
         switch item {
         case let .song(song):
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 Task { await self.playerService.play(song: song) }
             } label: {
@@ -145,10 +273,6 @@ struct HomeView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: song)
-
-            Divider()
-
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
 
             Divider()
 

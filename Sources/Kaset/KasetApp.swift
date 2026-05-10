@@ -17,6 +17,10 @@ extension EnvironmentValues {
     @Entry var playerPresentationMode: Binding<PlayerPresentationMode> = .constant(.standard)
 }
 
+extension EnvironmentValues {
+    @Entry var isSidebarCollapsed: Bool = false
+}
+
 // MARK: - KasetApp
 
 /// Main entry point for the Boombox macOS application.
@@ -36,6 +40,10 @@ struct KasetApp: App {
     @State private var accountService: AccountService?
     @State private var syncedLyricsService: SyncedLyricsService
     @State private var settings = SettingsManager.shared
+
+    @State private var globalNavigation = GlobalNavigationCoordinator()
+
+    @State private var shortcuts = KeyboardShortcutsManager.shared
 
     /// Triggers search field focus when set to true.
     @State private var searchFocusTrigger = false
@@ -105,6 +113,7 @@ struct KasetApp: App {
             } else {
                 MainWindow(navigationSelection: self.$navigationSelection, client: self.sharedClient)
                     .id(self.settings.contentLanguage)
+                    .scrollIndicators(.hidden)
                     .environment(\.locale, self.settings.contentLanguage.locale)
                     .environment(self.authService)
                     .environment(self.webKitManager)
@@ -113,6 +122,7 @@ struct KasetApp: App {
                     .environment(self.likeStatusManager)
                     .environment(self.accountService)
                     .environment(self.syncedLyricsService)
+                    .environment(self.globalNavigation)
                     .environment(\.searchFocusTrigger, self.$searchFocusTrigger)
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)
@@ -197,7 +207,7 @@ struct KasetApp: App {
                         await self.playerService.playPause()
                     }
                 }
-                .keyboardShortcut(.space, modifiers: [])
+                .keyboardShortcut(for: .playPause)
                 .disabled(self.playerService.currentTrack == nil && self.playerService.pendingPlayVideoId == nil)
 
                 Divider()
@@ -208,15 +218,15 @@ struct KasetApp: App {
                         await self.playerService.next()
                     }
                 }
-                .keyboardShortcut(.rightArrow, modifiers: .command)
+                .keyboardShortcut(for: .nextTrack)
 
-                // Previous Track - ⌘←
+                // Previous Track
                 Button("Previous") {
                     Task {
                         await self.playerService.previous()
                     }
                 }
-                .keyboardShortcut(.leftArrow, modifiers: .command)
+                .keyboardShortcut(for: .previousTrack)
 
                 Divider()
 
@@ -231,9 +241,9 @@ struct KasetApp: App {
                         )
                     }
                 }
-                .keyboardShortcut(.upArrow, modifiers: .command)
+                .keyboardShortcut(for: .volumeUp)
 
-                // Volume Down - ⌘↓
+                // Volume Down
                 Button("Volume Down") {
                     Task {
                         await self.playerService.setVolume(
@@ -244,7 +254,7 @@ struct KasetApp: App {
                         )
                     }
                 }
-                .keyboardShortcut(.downArrow, modifiers: .command)
+                .keyboardShortcut(for: .volumeDown)
 
                 // Mute
                 Button(self.playerService.isMuted ? "Unmute" : "Mute") {
@@ -259,23 +269,23 @@ struct KasetApp: App {
                 Button(self.playerService.shuffleEnabled ? "Shuffle Off" : "Shuffle On") {
                     self.playerService.toggleShuffle()
                 }
-                .keyboardShortcut("s", modifiers: .command)
+                .keyboardShortcut(for: .toggleShuffle)
 
-                // Repeat - ⌘R
+                // Repeat (default ⌥⌘R since ⌘R is page refresh)
                 Button(self.repeatModeLabel) {
                     self.playerService.cycleRepeatMode()
                 }
-                .keyboardShortcut("r", modifiers: .command)
+                .keyboardShortcut(for: .cycleRepeat)
 
                 Divider()
 
-                // Lyrics - ⌘Y
+                // Lyrics
                 Button(self.playerService.showLyrics ? "Hide Lyrics" : "Show Lyrics") {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         self.playerService.showLyrics.toggle()
                     }
                 }
-                .keyboardShortcut("y", modifiers: .command)
+                .keyboardShortcut(for: .toggleLyrics)
 
                 Divider()
 
@@ -284,7 +294,7 @@ struct KasetApp: App {
                         self.playerPresentationMode = self.playerPresentationMode == .focus ? .standard : .focus
                     }
                 }
-                .keyboardShortcut("f", modifiers: [.command, .shift])
+                .keyboardShortcut(for: .toggleFocusPlayer)
                 .disabled(self.playerService.currentTrack == nil)
 
                 Button(self.playerPresentationMode == .compact ? "Exit Small Player" : "Small Player") {
@@ -292,34 +302,52 @@ struct KasetApp: App {
                         self.playerPresentationMode = self.playerPresentationMode == .compact ? .standard : .compact
                     }
                 }
-                .keyboardShortcut("m", modifiers: [.command, .shift])
+                .keyboardShortcut(for: .toggleSmallPlayer)
                 .disabled(self.playerService.currentTrack == nil && self.playerPresentationMode != .compact)
             }
 
-            // Navigation commands - replace default sidebar toggle
+            // Navigation commands - replace default sidebar toggle.
+            // Cmd+1..N follows Sidebar.cmdOrder; keep both lists in sync.
             CommandGroup(replacing: .sidebar) {
-                // Home - ⌘1
+                Button("Search") {
+                    self.navigationSelection = .search
+                }
+                .keyboardShortcut(for: .goToSearch)
+
                 Button("Home") {
                     self.navigationSelection = .home
                 }
-                .keyboardShortcut("1", modifiers: .command)
+                .keyboardShortcut(for: .goToHome)
 
-                // Explore - ⌘2
-                Button("Explore") {
-                    self.navigationSelection = .explore
-                }
-                .keyboardShortcut("2", modifiers: .command)
-
-                // Library - ⌘3
                 Button("Library") {
                     self.navigationSelection = .library
                 }
-                .keyboardShortcut("3", modifiers: .command)
+                .keyboardShortcut(for: .goToLibrary)
+
+                Button("Liked Music") {
+                    self.navigationSelection = .likedMusic
+                }
+                .keyboardShortcut(for: .goToLikedMusic)
+
+                Button("Explore") {
+                    self.navigationSelection = .explore
+                }
+                .keyboardShortcut(for: .goToExplore)
+
+                Button("New Releases") {
+                    self.navigationSelection = .newReleases
+                }
+                .keyboardShortcut(for: .goToNewReleases)
+
+                Button("History") {
+                    self.navigationSelection = .history
+                }
+                .keyboardShortcut(for: .goToHistory)
 
                 Divider()
 
-                // Search - ⌘F
-                Button("Search") {
+                // Search field focus
+                Button("Find") {
                     self.navigationSelection = .search
                     // Trigger focus after a brief delay to allow view to appear
                     Task { @MainActor in
@@ -327,13 +355,13 @@ struct KasetApp: App {
                         self.searchFocusTrigger = true
                     }
                 }
-                .keyboardShortcut("f", modifiers: .command)
+                .keyboardShortcut(for: .focusSearchField)
 
-                // Command Bar - ⌘L
+                // Command Bar
                 Button("Command Bar") {
                     self.showCommandBar = true
                 }
-                .keyboardShortcut("l", modifiers: .command)
+                .keyboardShortcut(for: .openCommandBar)
             }
 
             // Window menu - show main window
@@ -341,7 +369,7 @@ struct KasetApp: App {
                 Button("Boombox") {
                     self.showMainWindow()
                 }
-                .keyboardShortcut("0", modifiers: .command)
+                .keyboardShortcut(for: .showMainWindow)
             }
         }
     }
@@ -387,7 +415,12 @@ struct SettingsView: View {
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }
+
+            HotkeysSettingsView()
+                .tabItem {
+                    Label("Hotkeys", systemImage: "keyboard")
+                }
         }
-        .frame(width: 460, height: 420)
+        .frame(minWidth: 460, minHeight: 480)
     }
 }

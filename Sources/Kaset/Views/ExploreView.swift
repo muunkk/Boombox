@@ -37,6 +37,7 @@ struct ExploreView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Explore.container)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

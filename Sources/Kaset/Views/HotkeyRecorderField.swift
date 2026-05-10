@@ -3,11 +3,17 @@ import SwiftUI
 
 // MARK: - HotkeyRecorderField
 
-/// A single-row recorder for a global keyboard shortcut. Click to start
+/// A single-row recorder for a keyboard shortcut. Click to start
 /// recording, then press a modifier + key combo. Pressing Escape cancels.
+///
+/// `requireModifiers` defaults to `true` (global hotkeys must include a
+/// modifier so Carbon can register them). Set to `false` for in-app
+/// shortcuts so users can bind plain keys like Space.
 @available(macOS 26.0, *)
 struct HotkeyRecorderField: View {
     @Binding var shortcut: HotkeyShortcut?
+    var requireModifiers: Bool = true
+    var placeholder: String = .init(localized: "Set Shortcut")
 
     @State private var isRecording = false
     @State private var monitor: Any?
@@ -37,7 +43,7 @@ struct HotkeyRecorderField: View {
         if self.isRecording {
             return String(localized: "Press shortcut…")
         }
-        return self.shortcut?.displayString ?? String(localized: "Set Shortcut")
+        return self.shortcut?.displayString ?? self.placeholder
     }
 
     private func toggleRecording() {
@@ -51,15 +57,21 @@ struct HotkeyRecorderField: View {
     private func startRecording() {
         self.isRecording = true
         self.monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            // Escape cancels.
-            if event.keyCode == 53 {
+            // Escape cancels (only when no modifiers held — otherwise it's a
+            // valid shortcut to capture).
+            if event.keyCode == 53,
+               !event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.command),
+               !event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.option),
+               !event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.control),
+               !event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.shift)
+            {
                 Task { @MainActor in
                     self.stopRecording()
                 }
                 return nil
             }
 
-            if let captured = HotkeyShortcut.from(event: event) {
+            if let captured = HotkeyShortcut.from(event: event, requireModifiers: self.requireModifiers) {
                 Task { @MainActor in
                     self.shortcut = captured
                     self.stopRecording()
@@ -68,7 +80,7 @@ struct HotkeyRecorderField: View {
                 return nil
             }
 
-            // No modifier — let the event pass through and stay in record mode.
+            // Insufficient input (no modifier, requireModifiers=true) — keep listening.
             return event
         }
     }

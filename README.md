@@ -17,16 +17,39 @@ Boombox is a personal source-build project in pre-release. There are no signed b
 
 ## Features
 
-- **Native macOS, SwiftUI.** Liquid Glass player bar, sidebar navigation, Focus and Small Player presentation modes.
+### Playback & sound
 - **YouTube Music Premium playback.** DRM-protected playback stays inside a hidden `WKWebView` using your existing subscription.
 - **System integration.** Now Playing in Control Center, media keys, Dock right-click menu, haptics, optional track notifications.
-- **Library.** Browse playlists, liked songs, artists, albums, and subscribed podcasts.
-- **Search.** Songs, albums, artists, playlists, podcasts.
-- **Lyrics.** Plain YouTube Music lyrics and synced [LRCLib](https://lrclib.net) lyrics with line-by-line highlighting.
-- **Queue management.** View, reorder, shuffle, and clear the playback queue.
-- **Share sheet.** Share songs, playlists, albums, and artists through the native macOS share sheet.
-- **Command palette.** `⌘L` opens the command palette; `⌘Y` toggles lyrics.
 - **Audio-only playback** and a CoreAudio output picker with AirPods detection.
+- **Lyrics.** Plain YouTube Music lyrics and synced [LRCLib](https://lrclib.net) lyrics with line-by-line highlighting.
+- **Queue management.** View, reorder, shuffle, undo/redo, and clear the playback queue.
+
+### Native macOS UI
+- **SwiftUI + Liquid Glass.** Glass player bar, sidebar navigation, Focus and Small Player presentation modes.
+- **Resizable side panel.** Drag the leading edge of the lyrics/queue panel; width persists across launches. Two-finger swipe inside the panel switches between lyrics and queue.
+- **Trackpad navigation.** Two-finger swipe back/forward in any tab, with a Safari-style chevron indicator that tracks the gesture. Works with both the "swipe with two fingers" and the default "swipe with two or three fingers" trackpad settings.
+- **Esc** closes the lyrics or queue panel.
+- **Hidden scrollbars** across the app for a cleaner look.
+- **Album / song badges** on cards and rows so you can tell content types apart at a glance.
+
+### Menu bar player
+- **Optional menu bar item** with a compact Now Playing-style popover: artwork, scrubber, shuffle / prev / play / next / repeat, like, queue list, audio-output picker, volume slider (scroll anywhere in the popover to adjust volume), open-app shortcut.
+- **Recordable global hotkey** to toggle the popover from anywhere (`Settings → General → Menu Bar Shortcut`).
+
+### Sidebar
+- **Search → Home → Library → Liked Music → Explore → New Releases → History.** `⌘1`–`⌘7` jump between them. Hold `⌘` to see Ghostty-style `⌘N` keycap badges next to each row.
+- **Recordable hotkey** to show/hide the sidebar.
+- **Now-playing card** with hover play/pause on the artwork, click title/artist to navigate to the album/artist page, and persists as a floating card when the sidebar is collapsed (the card slides in from behind the player bar).
+
+### Browsing
+- **Library and Home** support **grid / list** view modes plus **default / compact** density (toolbar pickers).
+- **Search history.** Recent searches appear when the search box is empty; click to re-run, remove individual entries, or clear all.
+- **Refresh button** in the toolbar (and `⌘R`).
+- **Quick Picks** is pinned to the top of Home regardless of API order.
+
+### Share & command
+- **Share sheet** — songs, playlists, albums, artists.
+- **Command palette** (`⌘L`).
 
 ## Requirements
 
@@ -72,15 +95,18 @@ Embedded sign-in is still available from the same sheet and may work for passwor
 
 ## Using Boombox
 
-- **Home** shows personalized YouTube Music recommendations.
-- **Explore** opens charts, new releases, moods, and genres.
-- **Library** loads your playlists, liked songs, artists, albums, and podcasts.
-- **Search** finds songs, albums, artists, playlists, and podcasts.
+- **Home** shows personalized YouTube Music recommendations with Quick Picks pinned at the top. Toggle grid vs. list and default vs. compact from the toolbar.
+- **Library** loads your playlists, liked songs, artists, albums, and podcasts. Same grid/list and density toggles available.
+- **Liked Music**, **Explore**, **New Releases**, and **History** round out the sidebar.
+- **Search** finds songs, albums, artists, playlists, and podcasts. Recent queries are saved; click to re-run.
 - **Command Bar** (`⌘L`) is the fast path: type a query, run a search, or use quick actions.
 - **Player bar** controls playback, shuffle, repeat, likes/dislikes, queue, lyrics, AirPlay, and output volume.
-- **Queue** can be opened as a popup or side panel. The side panel supports reorder, remove, undo, redo, shuffle, and clear.
-- **Lyrics** shows YouTube Music plain lyrics and optional synced LRCLib lyrics.
+- **Queue / Lyrics side panel** is resizable (drag the leading edge) and you can swipe horizontally inside the panel to switch between queue and lyrics. `Esc` dismisses it.
 - **Focus Player** and **Small Player** switch the window into now-playing layouts while music continues.
+- **Trackpad gestures** — two-finger swipe goes back/forward through navigation; a Safari-style chevron tracks the gesture.
+- **Sidebar now-playing card** shows artwork (hover to play/pause), title (click to open the album), artist (click to open the artist), and stays visible as a floating card when you collapse the sidebar.
+- **Menu bar item** (opt in from `Settings → General → Show in Menu Bar`) puts a compact Now Playing popover in the system menu bar with optional global hotkey. Scroll anywhere inside the popover to change volume.
+- **Sidebar hotkey** — assign a global shortcut to show/hide the sidebar in `Settings → General`.
 - **Media keys**, Control Center Now Playing, and the Dock right-click menu work with playback.
 
 ## Keyboard shortcuts
@@ -93,16 +119,24 @@ Embedded sign-in is still available from the same sheet and may work for passwor
 | `⌘↑` | Volume up |
 | `⌘↓` | Volume down |
 | `⌘S` | Toggle shuffle |
-| `⌘R` | Cycle repeat mode: Off, All, One |
+| `⌥⌘R` | Cycle repeat mode: Off, All, One |
 | `⌘Y` | Toggle lyrics |
 | `⇧⌘F` | Toggle Focus Player |
 | `⇧⌘M` | Toggle Small Player |
-| `⌘1` | Go to Home |
-| `⌘2` | Go to Explore |
+| `⌘1` | Go to Search |
+| `⌘2` | Go to Home |
 | `⌘3` | Go to Library |
-| `⌘F` | Go to Search |
+| `⌘4` | Go to Liked Music |
+| `⌘5` | Go to Explore |
+| `⌘6` | Go to New Releases |
+| `⌘7` | Go to History |
+| `⌘F` | Focus search field |
 | `⌘L` | Open Command Bar |
+| `⌘R` | Refresh page |
 | `⌘0` | Show the main Boombox window |
+| `Esc` | Dismiss the queue or lyrics panel |
+
+Hold `⌘` over the sidebar to see the number for each section as a small `⌘N` badge. Two extra global hotkeys can be assigned in `Settings → General`: one to toggle the menu bar player, one to show/hide the sidebar.
 
 Mute is available from the Playback menu. It intentionally has no default shortcut so macOS can keep `⌘M` for Minimize. Full reference: [docs/keyboard-shortcuts.md](docs/keyboard-shortcuts.md).
 

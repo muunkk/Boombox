@@ -304,6 +304,10 @@ struct ArtistDetailView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
+            AddToQueueContextMenu(song: song, playerService: self.playerService)
+
+            Divider()
+
             Button {
                 Task {
                     let allSongs = await self.viewModel.getAllSongs()
@@ -337,10 +341,6 @@ struct ArtistDetailView: View {
             Divider()
 
             ShareContextMenu.menuItem(for: song)
-
-            Divider()
-
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
 
             // Go to Album - show if album has valid browse ID
             if let album = song.album, album.hasNavigableId {

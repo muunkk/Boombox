@@ -1,4 +1,7 @@
+import AppKit
 import SwiftUI
+
+// MARK: - Sidebar
 
 /// Sidebar navigation for the main window, styled like Apple Music.
 @available(macOS 26.0, *)
@@ -10,67 +13,45 @@ struct Sidebar: View {
 
     @State private var settings = SettingsManager.shared
 
+    /// Whether the user is currently holding ⌘ — used to overlay the
+    /// Cmd-number badges on each navigation row.
+    @State private var isCommandHeld = false
+    @State private var modifierMonitor: Any?
+
+    /// Order of top-level navigation items. Cmd+1 maps to index 0, Cmd+2 to
+    /// index 1, etc. Keep this in sync with the rendered list below and the
+    /// shortcuts declared in `KasetApp.swift`.
+    static let cmdOrder: [NavigationItem] = [
+        .search,
+        .home,
+        .library,
+        .likedMusic,
+        .explore,
+        .newReleases,
+        .history,
+    ]
+
     var body: some View {
         VStack(spacing: 0) {
             GlassEffectContainer(spacing: 0) {
                 List(selection: self.$selection) {
-                    // Main navigation
                     Section {
-                        NavigationLink(value: NavigationItem.search) {
-                            Label(NavigationItem.search.displayName, systemImage: NavigationItem.search.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.searchItem)
-
-                        NavigationLink(value: NavigationItem.home) {
-                            Label(NavigationItem.home.displayName, systemImage: NavigationItem.home.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.homeItem)
+                        self.row(.search, accessibility: AccessibilityID.Sidebar.searchItem)
+                        self.row(.home, accessibility: AccessibilityID.Sidebar.homeItem)
                     }
 
-                    // Discover section
+                    Section(String(localized: "Library")) {
+                        self.row(.library, accessibility: AccessibilityID.Sidebar.libraryItem)
+                        self.row(.likedMusic, accessibility: AccessibilityID.Sidebar.likedMusicItem)
+                    }
+
                     Section(String(localized: "Discover")) {
-                        NavigationLink(value: NavigationItem.explore) {
-                            Label(NavigationItem.explore.displayName, systemImage: NavigationItem.explore.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.exploreItem)
-
-                        NavigationLink(value: NavigationItem.charts) {
-                            Label(NavigationItem.charts.displayName, systemImage: NavigationItem.charts.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.chartsItem)
-
-                        NavigationLink(value: NavigationItem.moodsAndGenres) {
-                            Label(NavigationItem.moodsAndGenres.displayName, systemImage: NavigationItem.moodsAndGenres.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.moodsAndGenresItem)
-
-                        NavigationLink(value: NavigationItem.newReleases) {
-                            Label(NavigationItem.newReleases.displayName, systemImage: NavigationItem.newReleases.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.newReleasesItem)
-
-                        NavigationLink(value: NavigationItem.podcasts) {
-                            Label(NavigationItem.podcasts.displayName, systemImage: NavigationItem.podcasts.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.podcastsItem)
+                        self.row(.explore, accessibility: AccessibilityID.Sidebar.exploreItem)
+                        self.row(.newReleases, accessibility: AccessibilityID.Sidebar.newReleasesItem)
                     }
 
-                    // Collection section
-                    Section(String(localized: "Collection")) {
-                        NavigationLink(value: NavigationItem.library) {
-                            Label(NavigationItem.library.displayName, systemImage: NavigationItem.library.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.libraryItem)
-
-                        NavigationLink(value: NavigationItem.likedMusic) {
-                            Label(NavigationItem.likedMusic.displayName, systemImage: NavigationItem.likedMusic.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.likedMusicItem)
-
-                        NavigationLink(value: NavigationItem.history) {
-                            Label(NavigationItem.history.displayName, systemImage: NavigationItem.history.icon)
-                        }
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.historyItem)
+                    Section(String(localized: "Activity")) {
+                        self.row(.history, accessibility: AccessibilityID.Sidebar.historyItem)
                     }
                 }
                 .listStyle(.sidebar)
@@ -98,6 +79,81 @@ struct Sidebar: View {
             SidebarProfileView()
         }
         .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 300)
+        .onAppear {
+            self.startCommandKeyMonitor()
+        }
+        .onDisappear {
+            self.stopCommandKeyMonitor()
+        }
+    }
+
+    private func row(_ item: NavigationItem, accessibility: String) -> some View {
+        NavigationLink(value: item) {
+            Label(item.displayName, systemImage: item.icon)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .trailing) {
+                    if let badgeNumber = self.cmdNumber(for: item), self.isCommandHeld {
+                        CmdShortcutBadge(number: badgeNumber)
+                            .transition(.opacity.combined(with: .scale(scale: 0.85)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.12), value: self.isCommandHeld)
+        }
+        .accessibilityIdentifier(accessibility)
+    }
+
+    private func cmdNumber(for item: NavigationItem) -> Int? {
+        guard let index = Self.cmdOrder.firstIndex(of: item), index < 9 else { return nil }
+        return index + 1
+    }
+
+    private func startCommandKeyMonitor() {
+        guard self.modifierMonitor == nil else { return }
+        self.modifierMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { event in
+            let isHeld = event.modifierFlags.contains(.command)
+            Task { @MainActor in
+                if self.isCommandHeld != isHeld {
+                    self.isCommandHeld = isHeld
+                }
+            }
+            return event
+        }
+    }
+
+    private func stopCommandKeyMonitor() {
+        if let monitor = self.modifierMonitor {
+            NSEvent.removeMonitor(monitor)
+            self.modifierMonitor = nil
+        }
+        self.isCommandHeld = false
+    }
+}
+
+// MARK: - CmdShortcutBadge
+
+/// Small "⌘N" pill drawn on a sidebar row when the user holds Command,
+/// modeled after Ghostty's tab number indicator.
+@available(macOS 26.0, *)
+private struct CmdShortcutBadge: View {
+    let number: Int
+
+    var body: some View {
+        Text("⌘\(self.number)")
+            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            .foregroundStyle(.primary)
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background {
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .fill(.regularMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .strokeBorder(Color.primary.opacity(0.18), lineWidth: 0.5)
+                    }
+            }
+            .accessibilityHidden(true)
     }
 }
 

@@ -24,7 +24,7 @@ struct QueueView: View {
                 // Content
                 self.contentView
             }
-            .frame(width: 280)
+            .frame(maxWidth: .infinity)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20))
             .glassEffectID("queuePanel", in: self.queueNamespace)
         }
@@ -141,50 +141,70 @@ private struct QueueRowView: View {
     let onRemove: () -> Void
     let onTap: () -> Void
 
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
+
     @State private var isHovering = false
 
     var body: some View {
-        Button(action: self.onTap) {
-            HStack(spacing: 12) {
-                // Now Playing indicator or track number
-                self.leadingIndicator
-                    .frame(width: 24)
+        HStack(spacing: 12) {
+            // Now Playing indicator or track number
+            self.leadingIndicator
+                .frame(width: 24)
 
-                // Thumbnail
-                SongThumbnailView(song: self.song, size: 40, cornerRadius: 4)
+            // Thumbnail
+            SongThumbnailView(song: self.song, size: 40, cornerRadius: 4)
 
-                // Track info
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(self.song.title)
-                        .font(.system(size: 13, weight: self.isCurrentTrack ? .semibold : .regular))
-                        .lineLimit(1)
-                        .foregroundStyle(self.isCurrentTrack ? .red : .primary)
-
-                    Text(self.song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : self.song.artistsDisplay)
-                        .font(.system(size: 11))
-                        .lineLimit(1)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                // Duration
-                if let duration = song.duration {
-                    Text(self.formatDuration(duration))
-                        .font(.system(size: 11))
-                        .foregroundStyle(.tertiary)
-                }
+            // Track info — title and artist are clickable for navigation.
+            VStack(alignment: .leading, spacing: 2) {
+                self.titleText
+                self.artistText
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(self.backgroundColor)
-            .contentShape(Rectangle())
+
+            Spacer()
+
+            // Duration
+            if let duration = song.duration {
+                Text(self.formatDuration(duration))
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(self.backgroundColor)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            self.onTap()
+        }
         .onHover { hovering in
             self.isHovering = hovering
         }
         .contextMenu {
+            // Play Next / Add to Queue first per user request.
+            AddToQueueContextMenu(song: self.song, playerService: self.playerService)
+
+            Divider()
+
+            if let album = self.albumDestination {
+                Button {
+                    self.globalNavigation.openAlbum(album, fallbackThumbnail: self.song.thumbnailURL)
+                } label: {
+                    Label("Go to Album", systemImage: "square.stack")
+                }
+            }
+
+            if let artist = self.artistDestination {
+                Button {
+                    self.globalNavigation.openArtist(artist)
+                } label: {
+                    Label("Go to Artist", systemImage: "person")
+                }
+            }
+
+            if self.albumDestination != nil || self.artistDestination != nil {
+                Divider()
+            }
+
             FavoritesContextMenu.menuItem(for: self.song, manager: self.favoritesManager)
 
             Divider()
@@ -203,6 +223,57 @@ private struct QueueRowView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private var titleText: some View {
+        let titleView = Text(self.song.title)
+            .font(.system(size: 13, weight: self.isCurrentTrack ? .semibold : .regular))
+            .lineLimit(1)
+            .foregroundStyle(self.isCurrentTrack ? Color.red : .primary)
+
+        if let album = self.albumDestination {
+            Button {
+                self.globalNavigation.openAlbum(album, fallbackThumbnail: self.song.thumbnailURL)
+            } label: {
+                titleView.contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .pointingHandCursor()
+            .help(String(localized: "Go to Album"))
+        } else {
+            titleView
+        }
+    }
+
+    @ViewBuilder
+    private var artistText: some View {
+        let artistView = Text(self.song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : self.song.artistsDisplay)
+            .font(.system(size: 11))
+            .lineLimit(1)
+            .foregroundStyle(.secondary)
+
+        if let artist = self.artistDestination {
+            Button {
+                self.globalNavigation.openArtist(artist)
+            } label: {
+                artistView.contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .pointingHandCursor()
+            .help(String(localized: "Go to Artist"))
+        } else {
+            artistView
+        }
+    }
+
+    private var albumDestination: Album? {
+        guard let album = self.song.album, album.hasNavigableId else { return nil }
+        return album
+    }
+
+    private var artistDestination: Artist? {
+        self.song.artists.first(where: { $0.hasNavigableId })
     }
 
     @ViewBuilder

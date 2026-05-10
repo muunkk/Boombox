@@ -9,9 +9,16 @@ struct HomeSectionItemCard: View {
     let rank: Int?
     let action: () -> Void
 
-    /// Card dimensions.
-    private static let cardWidth: CGFloat = 160
-    private static let cardHeight: CGFloat = 160
+    @State private var settings = SettingsManager.shared
+
+    /// Card dimensions vary with the global density setting.
+    private var cardWidth: CGFloat {
+        self.settings.displayDensity == .compact ? 120 : 160
+    }
+
+    private var cardHeight: CGFloat {
+        self.cardWidth
+    }
 
     /// Hover state for play overlay.
     @State private var isHovering = false
@@ -82,7 +89,7 @@ struct HomeSectionItemCard: View {
                 self.placeholderView
             }
         }
-        .frame(width: Self.cardWidth, height: Self.cardHeight)
+        .frame(width: self.cardWidth, height: self.cardHeight)
         .clipShape(.rect(cornerRadius: 8))
         .overlay {
             // Play overlay on hover (for songs)
@@ -95,6 +102,32 @@ struct HomeSectionItemCard: View {
                     .glassEffect(.regular, in: .circle)
                     .transition(.scale.combined(with: .opacity))
             }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            self.kindBadge
+                .padding(6)
+        }
+    }
+
+    /// Small corner badge that distinguishes songs vs. albums vs. playlists vs. artists.
+    @ViewBuilder
+    private var kindBadge: some View {
+        if let icon = self.kindBadgeIcon {
+            Image(systemName: icon)
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 3)
+                .background(.black.opacity(0.55), in: .capsule)
+        }
+    }
+
+    private var kindBadgeIcon: String? {
+        switch self.item {
+        case .song: "music.note"
+        case .album: "square.stack.fill"
+        case .playlist: "music.note.list"
+        case .artist: "person.fill"
         }
     }
 
@@ -165,14 +198,14 @@ struct HomeSectionItemCard: View {
                 .font(.system(size: 13, weight: .medium))
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
-                .frame(width: Self.cardWidth, alignment: .leading)
+                .frame(width: self.cardWidth, alignment: .leading)
 
             if let subtitle = item.subtitle {
                 Text(subtitle)
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
-                    .frame(width: Self.cardWidth, alignment: .leading)
+                    .frame(width: self.cardWidth, alignment: .leading)
             }
         }
     }

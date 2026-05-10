@@ -44,7 +44,9 @@ struct LibraryView: View {
     @State var viewModel: LibraryViewModel
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
     @State private var networkMonitor = NetworkMonitor.shared
+    @State private var settings = SettingsManager.shared
 
     @State private var navigationPath = NavigationPath()
     @State private var selectedFilter: LibraryFilter = .all
@@ -100,6 +102,7 @@ struct LibraryView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Library.container)
         .environment(self.viewModel)
+        .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
@@ -109,12 +112,34 @@ struct LibraryView: View {
             }
             await self.viewModel.reloadIfNeededOnActivation()
         }
+        .onAppear {
+            self.consumePendingNavigation()
+        }
+        .onChange(of: self.globalNavigation.pendingArtist) { _, _ in
+            self.consumePendingNavigation()
+        }
+        .onChange(of: self.globalNavigation.pendingPlaylist) { _, _ in
+            self.consumePendingNavigation()
+        }
         .task(id: "\(self.navigationPath.count)-\(self.viewModel.activationReloadGeneration)") {
             guard self.navigationPath.isEmpty else { return }
             await self.viewModel.reloadIfNeededOnActivation()
         }
         .refreshable {
             await self.viewModel.refresh()
+        }
+    }
+
+    /// Drains any cross-tab navigation requests posted to the global
+    /// coordinator (e.g. clicks on the sidebar now-playing card).
+    private func consumePendingNavigation() {
+        if let artist = self.globalNavigation.pendingArtist {
+            self.navigationPath.append(artist)
+            self.globalNavigation.pendingArtist = nil
+        }
+        if let playlist = self.globalNavigation.pendingPlaylist {
+            self.navigationPath.append(playlist)
+            self.globalNavigation.pendingPlaylist = nil
         }
     }
 
@@ -188,22 +213,139 @@ struct LibraryView: View {
         Group {
             if self.filteredItems.isEmpty {
                 self.emptyStateView
+            } else if self.settings.displayMode == .list {
+                self.libraryList
             } else {
-                LazyVGrid(columns: [
-                    GridItem(.adaptive(minimum: 160, maximum: 200), spacing: 16),
-                ], spacing: 16) {
-                    ForEach(self.filteredItems) { item in
-                        switch item {
-                        case let .playlist(playlist):
-                            self.playlistCard(playlist)
-                        case let .artist(artist):
-                            self.artistCard(artist)
-                        case let .podcast(show):
-                            self.podcastCard(show)
-                        }
-                    }
+                self.libraryGridContent
+            }
+        }
+    }
+
+    private var libraryGridContent: some View {
+        let isCompact = self.settings.displayDensity == .compact
+        let minSize: CGFloat = isCompact ? 120 : 160
+        let maxSize: CGFloat = isCompact ? 150 : 200
+        let spacing: CGFloat = isCompact ? 10 : 16
+
+        return LazyVGrid(columns: [
+            GridItem(.adaptive(minimum: minSize, maximum: maxSize), spacing: spacing),
+        ], spacing: spacing) {
+            ForEach(self.filteredItems) { item in
+                switch item {
+                case let .playlist(playlist):
+                    self.playlistCard(playlist)
+                case let .artist(artist):
+                    self.artistCard(artist)
+                case let .podcast(show):
+                    self.podcastCard(show)
                 }
             }
+        }
+    }
+
+    private var libraryList: some View {
+        let isCompact = self.settings.displayDensity == .compact
+        let thumbSize: CGFloat = isCompact ? 36 : 48
+        let rowVPadding: CGFloat = isCompact ? 4 : 8
+
+        return LazyVStack(spacing: 0) {
+            ForEach(self.filteredItems) { item in
+                self.listRow(item, thumbSize: thumbSize, vPadding: rowVPadding)
+                Divider().padding(.leading, thumbSize + 28)
+            }
+        }
+    }
+
+    private func listRow(_ item: LibraryItem, thumbSize: CGFloat, vPadding: CGFloat) -> some View {
+        Button {
+            switch item {
+            case let .playlist(p): self.navigationPath.append(p)
+            case let .artist(a): self.navigationPath.append(a)
+            case let .podcast(s): self.navigationPath.append(s)
+            }
+        } label: {
+            HStack(spacing: 12) {
+                self.listThumbnail(for: item, size: thumbSize)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(self.listTitle(for: item))
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+
+                    if let subtitle = self.listSubtitle(for: item) {
+                        Text(subtitle)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+
+                Spacer()
+
+                Image(systemName: self.listKindIcon(for: item))
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, vPadding)
+            .padding(.horizontal, 12)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.interactiveRow(cornerRadius: 6))
+    }
+
+    @ViewBuilder
+    private func listThumbnail(for item: LibraryItem, size: CGFloat) -> some View {
+        let url: URL? = switch item {
+        case let .playlist(p): p.thumbnailURL?.highQualityThumbnailURL
+        case let .artist(a): a.thumbnailURL?.highQualityThumbnailURL
+        case let .podcast(s): s.thumbnailURL
+        }
+        let cornerRadius: CGFloat = {
+            if case .artist = item { return size / 2 }
+            return 6
+        }()
+
+        CachedAsyncImage(url: url) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } placeholder: {
+            Rectangle()
+                .fill(.quaternary)
+                .overlay {
+                    Image(systemName: self.listKindIcon(for: item))
+                        .foregroundStyle(.secondary)
+                }
+        }
+        .frame(width: size, height: size)
+        .clipShape(.rect(cornerRadius: cornerRadius))
+    }
+
+    private func listTitle(for item: LibraryItem) -> String {
+        switch item {
+        case let .playlist(p): p.title
+        case let .artist(a): a.name
+        case let .podcast(s): s.title
+        }
+    }
+
+    private func listSubtitle(for item: LibraryItem) -> String? {
+        switch item {
+        case let .playlist(p):
+            p.author ?? (p.trackCount.map { "\($0) tracks" })
+        case .artist:
+            String(localized: "Artist")
+        case let .podcast(s):
+            s.author
+        }
+    }
+
+    private func listKindIcon(for item: LibraryItem) -> String {
+        switch item {
+        case .playlist: "music.note.list"
+        case .artist: "person.fill"
+        case .podcast: "mic.fill"
         }
     }
 
