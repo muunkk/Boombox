@@ -118,10 +118,22 @@ struct PlaylistDetailView: View {
                     .font(.title)
                     .fontWeight(.bold)
 
-                if let author = detail.author {
-                    Text(author)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                if let displayName = self.displayAuthor(for: detail) {
+                    if let artist = self.navigableArtist(for: detail) {
+                        NavigationLink(value: artist) {
+                            Text(displayName)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .pointingHandCursor()
+                        .help(String(localized: "Go to Artist"))
+                    } else {
+                        Text(displayName)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer()
@@ -376,6 +388,33 @@ struct PlaylistDetailView: View {
                 }
             }
         }
+    }
+
+    /// Resolves a navigable Artist for the header subtitle on album pages.
+    /// PlaylistDetail only exposes `author` as a String, so we pick the first
+    /// artist with a navigable id from the tracks. Returns nil on non-album
+    /// pages (regular playlists usually have a user/creator name as author).
+    private func navigableArtist(for detail: PlaylistDetail) -> Artist? {
+        guard detail.isAlbum else { return nil }
+        return detail.tracks.lazy.compactMap { track in
+            track.artists.first(where: { $0.hasNavigableId })
+        }.first
+    }
+
+    /// Resolves a non-empty author string to display under the title.
+    /// Falls back to the first track's artists when the API/playlist row
+    /// didn't carry an author through.
+    private func displayAuthor(for detail: PlaylistDetail) -> String? {
+        if let author = detail.author, !author.isEmpty {
+            return author
+        }
+        if detail.isAlbum,
+           let firstTrack = detail.tracks.first,
+           !firstTrack.artistsDisplay.isEmpty
+        {
+            return firstTrack.artistsDisplay
+        }
+        return nil
     }
 
     // MARK: - Actions
