@@ -151,6 +151,7 @@ struct NowPlayingSidebarPanel: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
                 .help(String(localized: "Go to Album"))
             } else {
                 Text(self.title)
@@ -177,6 +178,7 @@ struct NowPlayingSidebarPanel: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .pointingHandCursor()
                 .help(String(localized: "Go to Artist"))
             } else {
                 Text(self.subtitle)
