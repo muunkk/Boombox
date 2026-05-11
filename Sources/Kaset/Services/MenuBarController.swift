@@ -70,7 +70,7 @@ final class MenuBarController: NSObject {
 
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: "music.note", accessibilityDescription: "Boombox")
+            button.image = NSImage(systemSymbolName: "radio.fill", accessibilityDescription: "Boombox")
             button.image?.isTemplate = true
             button.target = self
             button.action = #selector(self.statusItemClicked(_:))
