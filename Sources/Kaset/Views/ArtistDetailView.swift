@@ -346,59 +346,64 @@ struct ArtistDetailView: View {
             }
         }
         .contextMenu {
-            AddToQueueContextMenu(song: song, playerService: self.playerService)
+            self.topSongRowContextMenu(for: song, index: index)
+        }
+    }
 
-            Divider()
+    @ViewBuilder
+    private func topSongRowContextMenu(for song: Song, index: Int) -> some View {
+        AddToQueueContextMenu(song: song, playerService: self.playerService)
 
-            Button {
-                Task {
-                    let allSongs = await self.viewModel.getAllSongs()
-                    let startIndex = allSongs.firstIndex(where: { $0.videoId == song.videoId }) ?? index
-                    await self.playerService.playQueue(allSongs, startingAt: startIndex)
-                }
-            } label: {
-                Label("Play", systemImage: "play.fill")
+        Divider()
+
+        Button {
+            Task {
+                let allSongs = await self.viewModel.getAllSongs()
+                let startIndex = allSongs.firstIndex(where: { $0.videoId == song.videoId }) ?? index
+                await self.playerService.playQueue(allSongs, startingAt: startIndex)
             }
+        } label: {
+            Label("Play", systemImage: "play.fill")
+        }
 
+        Divider()
+
+        FavoritesContextMenu.menuItem(for: song, manager: self.favoritesManager)
+
+        Divider()
+
+        LikeDislikeContextMenu(song: song, likeStatusManager: self.likeStatusManager)
+
+        Divider()
+
+        StartRadioContextMenu.menuItem(for: song, playerService: self.playerService)
+
+        Divider()
+
+        Button {
+            SongActionsHelper.addToLibrary(song, playerService: self.playerService)
+        } label: {
+            Label("Add to Library", systemImage: "plus.circle")
+        }
+
+        Divider()
+
+        ShareContextMenu.menuItem(for: song)
+
+        // Go to Album - show if album has valid browse ID
+        if let album = song.album, album.hasNavigableId {
             Divider()
 
-            FavoritesContextMenu.menuItem(for: song, manager: self.favoritesManager)
-
-            Divider()
-
-            LikeDislikeContextMenu(song: song, likeStatusManager: self.likeStatusManager)
-
-            Divider()
-
-            StartRadioContextMenu.menuItem(for: song, playerService: self.playerService)
-
-            Divider()
-
-            Button {
-                SongActionsHelper.addToLibrary(song, playerService: self.playerService)
-            } label: {
-                Label("Add to Library", systemImage: "plus.circle")
-            }
-
-            Divider()
-
-            ShareContextMenu.menuItem(for: song)
-
-            // Go to Album - show if album has valid browse ID
-            if let album = song.album, album.hasNavigableId {
-                Divider()
-
-                let playlist = Playlist(
-                    id: album.id,
-                    title: album.title,
-                    description: nil,
-                    thumbnailURL: album.thumbnailURL ?? song.thumbnailURL,
-                    trackCount: album.trackCount,
-                    author: album.artistsDisplay
-                )
-                NavigationLink(value: playlist) {
-                    Label("Go to Album", systemImage: "square.stack")
-                }
+            let playlist = Playlist(
+                id: album.id,
+                title: album.title,
+                description: nil,
+                thumbnailURL: album.thumbnailURL ?? song.thumbnailURL,
+                trackCount: album.trackCount,
+                author: album.artistsDisplay
+            )
+            NavigationLink(value: playlist) {
+                Label("Go to Album", systemImage: "square.stack")
             }
         }
     }

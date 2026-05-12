@@ -12,6 +12,8 @@ extension View {
     }
 }
 
+// MARK: - LinkHoverModifier
+
 private struct LinkHoverModifier: ViewModifier {
     @State private var isHovering = false
 
