@@ -10,6 +10,7 @@ struct HistoryView: View {
     @State private var navigationPath = NavigationPath()
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var isRefreshing = false
+    @State private var hoveredSongId: String?
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -157,13 +158,27 @@ struct HistoryView: View {
     // MARK: - Song Row
 
     private func songRow(_ song: Song, allSongs: [Song], index: Int) -> some View {
-        Button {
+        let isHovering = self.hoveredSongId == "\(song.id)-\(index)"
+        let hoverKey = "\(song.id)-\(index)"
+
+        return Button {
             Task {
                 await self.playerService.playQueue(allSongs, startingAt: index)
             }
         } label: {
             HStack(spacing: 12) {
-                SongThumbnailView(song: song)
+                ZStack {
+                    SongThumbnailView(song: song)
+                    if isHovering {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(.black.opacity(0.45))
+                            .frame(width: 48, height: 48)
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .pointingHandCursor()
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(song.title)
@@ -189,8 +204,21 @@ struct HistoryView: View {
             .padding(.horizontal, 24)
             .padding(.vertical, 8)
             .contentShape(Rectangle())
+            .background {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isHovering ? Color.primary.opacity(0.06) : .clear)
+                    .padding(.horizontal, 12)
+            }
         }
         .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.12), value: isHovering)
+        .onHover { hovering in
+            if hovering {
+                self.hoveredSongId = hoverKey
+            } else if self.hoveredSongId == hoverKey {
+                self.hoveredSongId = nil
+            }
+        }
         .contextMenu {
             AddToQueueContextMenu(song: song, playerService: self.playerService)
 

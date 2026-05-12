@@ -21,6 +21,7 @@ struct NavigationSwipeGestures: ViewModifier {
 
     @State private var swipeMonitor: Any?
     @State private var scrollMonitor: Any?
+    @State private var mouseButtonMonitor: Any?
     @State private var forwardStack: [NavigationPath.CodableRepresentation] = []
     @State private var isRestoringForward = false
 
@@ -86,6 +87,29 @@ struct NavigationSwipeGestures: ViewModifier {
                 return event
             }
         }
+        if self.mouseButtonMonitor == nil {
+            // Mouse 4 (button 3) = back, Mouse 5 (button 4) = forward — the
+            // standard mapping on multi-button mice. We consume the event so
+            // it doesn't leak through to the page underneath.
+            self.mouseButtonMonitor = NSEvent.addLocalMonitorForEvents(matching: .otherMouseDown) { event in
+                switch event.buttonNumber {
+                case 3:
+                    Task { @MainActor in
+                        self.flashIndicator(progress: 1.0)
+                        self.goBack()
+                    }
+                    return nil
+                case 4:
+                    Task { @MainActor in
+                        self.flashIndicator(progress: -1.0)
+                        self.goForward()
+                    }
+                    return nil
+                default:
+                    return event
+                }
+            }
+        }
     }
 
     private func stopMonitoring() {
@@ -96,6 +120,10 @@ struct NavigationSwipeGestures: ViewModifier {
         if let monitor = self.scrollMonitor {
             NSEvent.removeMonitor(monitor)
             self.scrollMonitor = nil
+        }
+        if let monitor = self.mouseButtonMonitor {
+            NSEvent.removeMonitor(monitor)
+            self.mouseButtonMonitor = nil
         }
         self.gestureProgress = 0
         self.isTrackingSwipe = false
