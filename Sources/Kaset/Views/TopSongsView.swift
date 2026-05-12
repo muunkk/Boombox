@@ -4,6 +4,7 @@ import SwiftUI
 @available(macOS 26.0, *)
 struct TopSongsView: View {
     @State var viewModel: TopSongsViewModel
+    @State private var hoveredSongId: String?
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
@@ -72,12 +73,25 @@ struct TopSongsView: View {
     // MARK: - Song Row
 
     private func songRow(_ song: Song, index: Int) -> some View {
-        Button {
+        let isHovering = self.hoveredSongId == song.id
+
+        return Button {
             self.playSongInQueue(startingAt: index)
         } label: {
             HStack(spacing: 12) {
-                // Thumbnail
-                SongThumbnailView(song: song, size: 44, cornerRadius: 4)
+                // Thumbnail with play overlay on hover
+                ZStack {
+                    SongThumbnailView(song: song, size: 44, cornerRadius: 4)
+                    if isHovering {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.black.opacity(0.45))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .pointingHandCursor()
 
                 // Title
                 Text(song.title)
@@ -95,11 +109,25 @@ struct TopSongsView: View {
 
                 // Album column (if available)
                 if let album = song.album {
-                    Text(album.title)
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .frame(width: 180, alignment: .leading)
+                    if album.hasNavigableId {
+                        NavigationLink(value: self.playlistFromAlbum(album, fallbackSong: song)) {
+                            Text(album.title)
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .frame(width: 180, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .pointingHandCursor()
+                        .help(String(localized: "Go to Album"))
+                    } else {
+                        Text(album.title)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .frame(width: 180, alignment: .leading)
+                    }
                 } else {
                     Spacer()
                         .frame(width: 180)
@@ -114,8 +142,20 @@ struct TopSongsView: View {
             .padding(.vertical, 10)
             .padding(.horizontal, 4)
             .contentShape(Rectangle())
+            .background {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isHovering ? Color.primary.opacity(0.06) : .clear)
+            }
         }
         .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.12), value: isHovering)
+        .onHover { hovering in
+            if hovering {
+                self.hoveredSongId = song.id
+            } else if self.hoveredSongId == song.id {
+                self.hoveredSongId = nil
+            }
+        }
         .contextMenu {
             AddToQueueContextMenu(song: song, playerService: self.playerService)
 
@@ -183,6 +223,17 @@ struct TopSongsView: View {
         Task {
             await self.playerService.playQueue(self.viewModel.songs, startingAt: index)
         }
+    }
+
+    private func playlistFromAlbum(_ album: Album, fallbackSong: Song) -> Playlist {
+        Playlist(
+            id: album.id,
+            title: album.title,
+            description: nil,
+            thumbnailURL: album.thumbnailURL ?? fallbackSong.thumbnailURL,
+            trackCount: album.trackCount,
+            author: album.artistsDisplay
+        )
     }
 }
 

@@ -5,6 +5,9 @@ import SwiftUI
 struct ArtistDetailView: View {
     let artist: Artist
     @State var viewModel: ArtistDetailViewModel
+    /// Tracks which song row is currently hovered so the thumbnail can
+    /// surface a play affordance and the row gets a background highlight.
+    @State private var hoveredSongId: String?
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
@@ -253,7 +256,9 @@ struct ArtistDetailView: View {
 
     /// Song row for top songs section - fetches all songs and plays as queue.
     private func topSongRow(_ song: Song, index: Int) -> some View {
-        Button {
+        let isHovering = self.hoveredSongId == song.id
+
+        return Button {
             // Fetch all songs and play as queue starting from the selected song
             Task {
                 let allSongs = await self.viewModel.getAllSongs()
@@ -263,8 +268,19 @@ struct ArtistDetailView: View {
             }
         } label: {
             HStack(spacing: 12) {
-                // Thumbnail
-                SongThumbnailView(song: song, size: 40, cornerRadius: 4)
+                // Thumbnail with play overlay on hover
+                ZStack {
+                    SongThumbnailView(song: song, size: 40, cornerRadius: 4)
+                    if isHovering {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.black.opacity(0.45))
+                            .frame(width: 40, height: 40)
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .pointingHandCursor()
 
                 // Title
                 Text(song.title)
@@ -282,11 +298,25 @@ struct ArtistDetailView: View {
 
                 // Album column (if available)
                 if let album = song.album {
-                    Text(album.title)
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .frame(width: 150, alignment: .leading)
+                    if album.hasNavigableId {
+                        NavigationLink(value: self.playlistFromAlbum(album)) {
+                            Text(album.title)
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .frame(width: 150, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .pointingHandCursor()
+                        .help(String(localized: "Go to Album"))
+                    } else {
+                        Text(album.title)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .frame(width: 150, alignment: .leading)
+                    }
                 } else {
                     Text("")
                         .frame(width: 150, alignment: .leading)
@@ -301,8 +331,20 @@ struct ArtistDetailView: View {
             .padding(.vertical, 8)
             .padding(.horizontal, 4)
             .contentShape(Rectangle())
+            .background {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isHovering ? Color.primary.opacity(0.06) : .clear)
+            }
         }
         .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.12), value: isHovering)
+        .onHover { hovering in
+            if hovering {
+                self.hoveredSongId = song.id
+            } else if self.hoveredSongId == song.id {
+                self.hoveredSongId = nil
+            }
+        }
         .contextMenu {
             AddToQueueContextMenu(song: song, playerService: self.playerService)
 
