@@ -13,6 +13,10 @@ enum PlaylistParser {
         var description: String?
         var thumbnailURL: URL?
         var author: String?
+        /// Channel ID of the album/playlist's artist when YT Music includes a
+        /// navigation endpoint on the artist run. Lets the UI link the header
+        /// subtitle to the artist page.
+        var authorChannelId: String?
         var trackCount: Int?
         var duration: String?
     }
@@ -276,8 +280,9 @@ enum PlaylistParser {
             )
             podcastShows.append(show)
             Self.logger.info("parseLibraryItemFromResponsive: Added podcast show: \(title)")
-        } else if browseId.hasPrefix("VL") || browseId.hasPrefix("PL") {
-            // Playlist
+        } else if browseId.hasPrefix("VL") || browseId.hasPrefix("PL") || browseId.hasPrefix("RDCLAK") {
+            // Playlist (VL = saved playlists, PL = standard playlists, RDCLAK = mixes/radio playlists).
+            // The twoRow path already accepted RDCLAK; the responsive path was silently dropping mixes.
             let playlist = Playlist(
                 id: browseId,
                 title: title,
@@ -315,7 +320,8 @@ enum PlaylistParser {
             description: header.description,
             thumbnailURL: header.thumbnailURL,
             trackCount: trackCount,
-            author: header.author
+            author: header.author,
+            authorChannelId: header.authorChannelId
         )
 
         return PlaylistDetail(playlist: playlist, tracks: tracks, duration: header.duration)
@@ -335,7 +341,8 @@ enum PlaylistParser {
             description: header.description,
             thumbnailURL: header.thumbnailURL,
             trackCount: trackCount,
-            author: header.author
+            author: header.author,
+            authorChannelId: header.authorChannelId
         )
 
         let detail = PlaylistDetail(playlist: playlist, tracks: tracks, duration: header.duration)
@@ -852,6 +859,9 @@ enum PlaylistParser {
            let runs = subtitleData["runs"] as? [[String: Any]]
         {
             header.author = runs.compactMap { $0["text"] as? String }.first
+            if header.authorChannelId == nil {
+                header.authorChannelId = Self.extractNavigableArtistBrowseId(from: runs)
+            }
             Self.applyMetadata(from: runs, to: &header)
         }
 
@@ -888,6 +898,9 @@ enum PlaylistParser {
            let runs = subtitleData["runs"] as? [[String: Any]]
         {
             header.author = runs.compactMap { $0["text"] as? String }.first
+            if header.authorChannelId == nil {
+                header.authorChannelId = Self.extractNavigableArtistBrowseId(from: runs)
+            }
             Self.applyMetadata(from: runs, to: &header)
         }
     }
@@ -929,6 +942,9 @@ enum PlaylistParser {
            let runs = subtitleData["runs"] as? [[String: Any]]
         {
             header.author = runs.compactMap { $0["text"] as? String }.first
+            if header.authorChannelId == nil {
+                header.authorChannelId = Self.extractNavigableArtistBrowseId(from: runs)
+            }
             Self.applyMetadata(from: runs, to: &header)
         }
 
@@ -1012,6 +1028,24 @@ enum PlaylistParser {
             header.description = runs.compactMap { $0["text"] as? String }.joined()
         }
 
+        // straplineTextOne carries the album/playlist's primary artist with a
+        // browse endpoint to their channel — the only header field that exposes
+        // a navigable artist ID on the modern responsive layout.
+        if let strapline = renderer["straplineTextOne"] as? [String: Any],
+           let runs = strapline["runs"] as? [[String: Any]]
+        {
+            if header.author == nil {
+                let artistName = runs.compactMap { $0["text"] as? String }
+                    .first(where: { !$0.isEmpty && $0 != " • " && $0 != " & " && $0 != ", " })
+                if let name = artistName, !name.isEmpty {
+                    header.author = name
+                }
+            }
+            if header.authorChannelId == nil {
+                header.authorChannelId = Self.extractNavigableArtistBrowseId(from: runs)
+            }
+        }
+
         if header.author == nil,
            let facepile = renderer["facepile"] as? [String: Any],
            let avatarStackViewModel = facepile["avatarStackViewModel"] as? [String: Any],
@@ -1025,6 +1059,9 @@ enum PlaylistParser {
         if let subtitleData = renderer["subtitle"] as? [String: Any],
            let runs = subtitleData["runs"] as? [[String: Any]]
         {
+            if header.authorChannelId == nil {
+                header.authorChannelId = Self.extractNavigableArtistBrowseId(from: runs)
+            }
             Self.applyMetadata(from: runs, to: &header)
         }
 
@@ -1033,6 +1070,24 @@ enum PlaylistParser {
         {
             Self.applyMetadata(from: runs, to: &header)
         }
+    }
+
+    /// Walks a header's `subtitle`/`straplineTextOne` runs and returns the first
+    /// run whose `navigationEndpoint` points at an artist page. Channel IDs come
+    /// in two flavors here: public `UC…` IDs and library `MPLAUC…` IDs — both
+    /// satisfy `Artist.isNavigableId`.
+    private static func extractNavigableArtistBrowseId(from runs: [[String: Any]]) -> String? {
+        for run in runs {
+            guard let endpoint = run["navigationEndpoint"] as? [String: Any],
+                  let browseEndpoint = endpoint["browseEndpoint"] as? [String: Any],
+                  let browseId = browseEndpoint["browseId"] as? String,
+                  Artist.isNavigableId(browseId)
+            else {
+                continue
+            }
+            return browseId
+        }
+        return nil
     }
 
     private static func applyMetadata(from runs: [[String: Any]], to header: inout HeaderData) {

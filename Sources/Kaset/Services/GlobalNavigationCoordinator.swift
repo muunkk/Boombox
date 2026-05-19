@@ -17,11 +17,20 @@ final class GlobalNavigationCoordinator {
     var pendingArtist: Artist?
     var pendingPlaylist: Playlist?
     var pendingTab: NavigationItem?
+    /// Increments to request the Search tab pop its NavigationStack to root.
+    /// Observed by `SearchView`; producers call `popSearchToRoot()`.
+    var popSearchToRootSignal: Int = 0
 
     /// Request opening an artist in the Library tab.
     func openArtist(_ artist: Artist) {
         self.pendingArtist = artist
         self.pendingTab = .library
+    }
+
+    /// Request the Search tab clear its navigation stack so the user lands on the
+    /// search root (search bar + results), not whatever detail page they last opened.
+    func popSearchToRoot() {
+        self.popSearchToRootSignal &+= 1
     }
 
     /// Request opening an album. Albums navigate as Playlist destinations

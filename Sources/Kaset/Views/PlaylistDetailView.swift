@@ -7,6 +7,9 @@ import SwiftUI
 struct PlaylistDetailView: View {
     let playlist: Playlist
     @State var viewModel: PlaylistDetailViewModel
+    /// Index of the currently hovered track row, used to swap the index column
+    /// for a play icon and to render the row's background highlight.
+    @State private var hoveredRowIndex: Int?
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
@@ -271,131 +274,180 @@ struct PlaylistDetailView: View {
         }
     }
 
+    @ViewBuilder
+    private func trackLeadingIndicator(
+        index: Int,
+        isCurrent: Bool,
+        isHovering: Bool,
+        play: @escaping () -> Void
+    ) -> some View {
+        if isCurrent {
+            NowPlayingIndicator(isPlaying: self.playerService.isPlaying, size: 14)
+        } else if isHovering {
+            Button(action: play) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.primary)
+            }
+            .buttonStyle(.plain)
+            .pointingHandCursor()
+            .accessibilityLabel(String(localized: "Play"))
+        } else {
+            Text("\(index + 1)")
+                .font(.system(size: 14))
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private func trackRow(_ track: Song, index: Int, tracks: [Song], isAlbum: Bool, author: String?, fallbackAlbum: Album? = nil) -> some View {
-        Button {
+        let isCurrent = self.playerService.currentTrack?.videoId == track.videoId
+        let isHovering = self.hoveredRowIndex == index
+
+        let play = {
             self.playTrackInQueue(tracks: tracks, startingAt: index, fallbackArtist: author, fallbackAlbum: fallbackAlbum)
-        } label: {
-            HStack(spacing: 12) {
-                // Now playing indicator or index
-                Group {
-                    if self.playerService.currentTrack?.videoId == track.videoId {
-                        NowPlayingIndicator(isPlaying: self.playerService.isPlaying, size: 14)
-                    } else {
-                        Text("\(index + 1)")
-                            .font(.system(size: 14))
-                            .foregroundStyle(.secondary)
-                    }
-                }
+        }
+
+        return HStack(spacing: 12) {
+            // On hover, the index swaps to a play.fill that single-clicks to play,
+            // giving discoverability for the double-click-to-play row behavior below.
+            self.trackLeadingIndicator(index: index, isCurrent: isCurrent, isHovering: isHovering, play: play)
                 .frame(width: 28, alignment: .trailing)
 
-                // Thumbnail - only show for playlists (different album art per track)
-                // Albums share the same artwork, so we hide per-track thumbnails
-                if !isAlbum {
-                    CachedAsyncImage(url: track.thumbnailURL) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        Rectangle()
-                            .fill(.quaternary)
-                    }
-                    .frame(width: 40, height: 40)
-                    .clipShape(.rect(cornerRadius: 4))
+            // Thumbnail - only show for playlists (different album art per track)
+            // Albums share the same artwork, so we hide per-track thumbnails
+            if !isAlbum {
+                CachedAsyncImage(url: track.thumbnailURL) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(.quaternary)
                 }
+                .frame(width: 40, height: 40)
+                .clipShape(.rect(cornerRadius: 4))
+            }
 
-                // Title and artist
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(track.title)
-                        .font(.system(size: 14))
-                        .foregroundStyle(self.playerService.currentTrack?.videoId == track.videoId ? .red : .primary)
-                        .lineLimit(1)
+            // Title and artist
+            VStack(alignment: .leading, spacing: 2) {
+                Text(track.title)
+                    .font(.system(size: 14))
+                    .foregroundStyle(isCurrent ? .red : .primary)
+                    .lineLimit(1)
 
-                    Text(track.artistsDisplay)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                // Duration
-                Text(track.durationDisplay)
+                Text(track.artistsDisplay)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-                    .frame(width: 45, alignment: .trailing)
+                    .lineLimit(1)
             }
-            .padding(.vertical, 8)
-            .padding(.horizontal, 4)
-            .contentShape(Rectangle())
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Duration
+            Text(track.durationDisplay)
+                .font(.system(size: 12))
+                .foregroundStyle(.secondary)
+                .frame(width: 45, alignment: .trailing)
         }
-        .buttonStyle(.interactiveRow(cornerRadius: 6))
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .contentShape(Rectangle())
+        .background {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(isHovering ? Color.primary.opacity(0.06) : .clear)
+        }
+        .animation(.easeInOut(duration: 0.12), value: isHovering)
+        .onHover { hovering in
+            if hovering {
+                self.hoveredRowIndex = index
+            } else if self.hoveredRowIndex == index {
+                self.hoveredRowIndex = nil
+            }
+        }
+        .onTapGesture(count: 2, perform: play)
         .staggeredAppearance(index: min(index, 10))
         .contextMenu {
-            AddToQueueContextMenu(song: track, playerService: self.playerService)
+            self.trackContextMenu(track: track, play: play)
+        }
+    }
 
-            Divider()
+    @ViewBuilder
+    private func trackContextMenu(track: Song, play: @escaping () -> Void) -> some View {
+        AddToQueueContextMenu(song: track, playerService: self.playerService)
 
-            Button {
-                self.playTrackInQueue(tracks: tracks, startingAt: index, fallbackArtist: author, fallbackAlbum: fallbackAlbum)
-            } label: {
-                Label("Play", systemImage: "play.fill")
+        Divider()
+
+        Button(action: play) {
+            Label("Play", systemImage: "play.fill")
+        }
+
+        Divider()
+
+        FavoritesContextMenu.menuItem(for: track, manager: self.favoritesManager)
+
+        Divider()
+
+        LikeDislikeContextMenu(song: track, likeStatusManager: self.likeStatusManager)
+
+        Divider()
+
+        StartRadioContextMenu.menuItem(for: track, playerService: self.playerService)
+
+        Divider()
+
+        Button {
+            SongActionsHelper.addToLibrary(track, playerService: self.playerService)
+        } label: {
+            Label("Add to Library", systemImage: "plus.circle")
+        }
+
+        Divider()
+
+        ShareContextMenu.menuItem(for: track)
+
+        Divider()
+
+        // Go to Artist - show first artist with valid ID
+        if let artist = track.artists.first(where: { $0.hasNavigableId }) {
+            NavigationLink(value: artist) {
+                Label("Go to Artist", systemImage: "person")
             }
+        }
 
-            Divider()
-
-            FavoritesContextMenu.menuItem(for: track, manager: self.favoritesManager)
-
-            Divider()
-
-            LikeDislikeContextMenu(song: track, likeStatusManager: self.likeStatusManager)
-
-            Divider()
-
-            StartRadioContextMenu.menuItem(for: track, playerService: self.playerService)
-
-            Divider()
-
-            Button {
-                SongActionsHelper.addToLibrary(track, playerService: self.playerService)
-            } label: {
-                Label("Add to Library", systemImage: "plus.circle")
-            }
-
-            Divider()
-
-            ShareContextMenu.menuItem(for: track)
-
-            Divider()
-
-            // Go to Artist - show first artist with valid ID
-            if let artist = track.artists.first(where: { $0.hasNavigableId }) {
-                NavigationLink(value: artist) {
-                    Label("Go to Artist", systemImage: "person")
-                }
-            }
-
-            // Go to Album - show if album has valid browse ID
-            if let album = track.album, album.hasNavigableId {
-                let playlist = Playlist(
-                    id: album.id,
-                    title: album.title,
-                    description: nil,
-                    thumbnailURL: album.thumbnailURL ?? track.thumbnailURL,
-                    trackCount: album.trackCount,
-                    author: album.artistsDisplay
-                )
-                NavigationLink(value: playlist) {
-                    Label("Go to Album", systemImage: "square.stack")
-                }
+        // Go to Album - show if album has valid browse ID
+        if let album = track.album, album.hasNavigableId {
+            let playlist = Playlist(
+                id: album.id,
+                title: album.title,
+                description: nil,
+                thumbnailURL: album.thumbnailURL ?? track.thumbnailURL,
+                trackCount: album.trackCount,
+                author: album.artistsDisplay
+            )
+            NavigationLink(value: playlist) {
+                Label("Go to Album", systemImage: "square.stack")
             }
         }
     }
 
     /// Resolves a navigable Artist for the header subtitle on album pages.
-    /// PlaylistDetail only exposes `author` as a String, so we pick the first
-    /// artist with a navigable id from the tracks. Returns nil on non-album
-    /// pages (regular playlists usually have a user/creator name as author).
+    ///
+    /// Preference order:
+    ///   1. The header's own `authorChannelId` (extracted from
+    ///      `straplineTextOne` / `subtitle` navigation endpoints). This is the
+    ///      authoritative source — without it, albums whose track rows have
+    ///      text-only artist runs (common on YT Music) had no path back to the
+    ///      artist page.
+    ///   2. The first track that carries a navigable artist.
+    /// Returns nil on non-album pages (regular playlists usually have a
+    /// user/creator name as author, not an artist channel).
     private func navigableArtist(for detail: PlaylistDetail) -> Artist? {
         guard detail.isAlbum else { return nil }
+        if let channelId = detail.authorChannelId,
+           Artist.isNavigableId(channelId),
+           let name = detail.author, !name.isEmpty
+        {
+            return Artist(id: channelId, name: name)
+        }
         return detail.tracks.lazy.compactMap { track in
             track.artists.first(where: { $0.hasNavigableId })
         }.first

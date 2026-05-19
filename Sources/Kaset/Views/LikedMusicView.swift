@@ -54,6 +54,14 @@ struct LikedMusicView: View {
                     )
                 )
             }
+            .navigationDestination(for: AllAlbumsDestination.self) { destination in
+                AllAlbumsView(
+                    viewModel: AllAlbumsViewModel(
+                        destination: destination,
+                        client: self.viewModel.client
+                    )
+                )
+            }
             .navigationDestination(for: Playlist.self) { playlist in
                 PlaylistDetailView(
                     playlist: playlist,

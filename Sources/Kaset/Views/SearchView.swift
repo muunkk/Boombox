@@ -10,6 +10,7 @@ struct SearchView: View {
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @Environment(LibraryViewModel.self) private var libraryViewModel: LibraryViewModel?
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
     @State private var navigationPath = NavigationPath()
     @State private var networkMonitor = NetworkMonitor.shared
 
@@ -57,6 +58,9 @@ struct SearchView: View {
                 self.isSearchFieldFocused = true
                 self.focusTrigger = false
             }
+        }
+        .onChange(of: self.globalNavigation.popSearchToRootSignal) { _, _ in
+            self.navigationPath = NavigationPath()
         }
     }
 

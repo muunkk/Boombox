@@ -10,6 +10,28 @@ struct Playlist: Identifiable, Codable, Hashable {
     let thumbnailURL: URL?
     let trackCount: Int?
     let author: String?
+    /// Channel ID of the album/playlist's artist, when YT Music provides a navigable
+    /// `straplineTextOne`/`subtitle` endpoint. Used to wire the header subtitle to
+    /// the artist page on album detail views.
+    let authorChannelId: String?
+
+    init(
+        id: String,
+        title: String,
+        description: String? = nil,
+        thumbnailURL: URL? = nil,
+        trackCount: Int? = nil,
+        author: String? = nil,
+        authorChannelId: String? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.thumbnailURL = thumbnailURL
+        self.trackCount = trackCount
+        self.author = author
+        self.authorChannelId = authorChannelId
+    }
 
     /// Whether this is an album (vs a playlist).
     /// Albums have IDs starting with "OLAK" or "MPRE".
@@ -64,6 +86,8 @@ extension Playlist {
         } else {
             self.author = data["author"] as? String
         }
+
+        self.authorChannelId = nil
     }
 }
 
@@ -76,6 +100,8 @@ struct PlaylistDetail: Identifiable {
     let description: String?
     let thumbnailURL: URL?
     let author: String?
+    /// Channel ID of the album/playlist's artist (see `Playlist.authorChannelId`).
+    let authorChannelId: String?
     let trackCount: Int?
     let tracks: [Song]
     let duration: String?
@@ -92,6 +118,7 @@ struct PlaylistDetail: Identifiable {
         self.description = playlist.description
         self.thumbnailURL = playlist.thumbnailURL
         self.author = playlist.author
+        self.authorChannelId = playlist.authorChannelId
         self.trackCount = playlist.trackCount
         self.tracks = tracks
         self.duration = duration

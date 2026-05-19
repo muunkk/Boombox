@@ -204,6 +204,9 @@ protocol YTMusicLibraryProviding: Sendable {
 
     /// Fetches all songs for an artist using the songs browse endpoint.
     func getArtistSongs(browseId: String, params: String?) async throws -> [Song]
+
+    /// Fetches all albums for an artist using the albums browse endpoint.
+    func getArtistAlbums(browseId: String, params: String?) async throws -> [Album]
 }
 
 // MARK: - YTMusicMutationProviding

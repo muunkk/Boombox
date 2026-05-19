@@ -26,18 +26,41 @@ enum SearchResponseParser {
         }
 
         for sectionData in sectionContents {
-            // Parse musicCardShelfRenderer (Top Result section)
-            if let cardShelfRenderer = sectionData["musicCardShelfRenderer"] as? [String: Any] {
-                if let item = parseCardShelfRenderer(cardShelfRenderer) {
-                    Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
-                }
-            }
+            Self.parseSearchSection(
+                sectionData,
+                songs: &songs,
+                albums: &albums,
+                artists: &artists,
+                playlists: &playlists
+            )
+        }
 
-            // Parse musicShelfRenderer (regular results)
-            if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any],
-               let shelfContents = shelfRenderer["contents"] as? [[String: Any]]
-            {
-                for itemData in shelfContents {
+        return SearchResponse(songs: songs, albums: albums, artists: artists, playlists: playlists)
+    }
+
+    /// Parses one section of the search response.
+    ///
+    /// "All" search results arrive as a mix of `musicCardShelfRenderer` (Top result),
+    /// `musicShelfRenderer` (Songs / Albums / Artists / Playlists shelves), and
+    /// occasionally `itemSectionRenderer` wrappers around either of the above.
+    /// Earlier versions only handled the first two at the top level, which dropped
+    /// any shelf YouTube nested inside an itemSectionRenderer and made the result
+    /// list look sparser than the web client.
+    private static func parseSearchSection(
+        _ sectionData: [String: Any],
+        songs: inout [Song],
+        albums: inout [Album],
+        artists: inout [Artist],
+        playlists: inout [Playlist]
+    ) {
+        if let cardShelfRenderer = sectionData["musicCardShelfRenderer"] as? [String: Any] {
+            if let topItem = parseCardShelfRenderer(cardShelfRenderer) {
+                self.appendItem(topItem, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
+            }
+            // The top-result card also carries a `contents` array of related songs
+            // underneath the headline result; without this they were dropped.
+            if let cardContents = cardShelfRenderer["contents"] as? [[String: Any]] {
+                for itemData in cardContents {
                     if let item = parseSearchResultItem(itemData) {
                         Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
                     }
@@ -45,7 +68,29 @@ enum SearchResponseParser {
             }
         }
 
-        return SearchResponse(songs: songs, albums: albums, artists: artists, playlists: playlists)
+        if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any],
+           let shelfContents = shelfRenderer["contents"] as? [[String: Any]]
+        {
+            for itemData in shelfContents {
+                if let item = parseSearchResultItem(itemData) {
+                    Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
+                }
+            }
+        }
+
+        if let itemSection = sectionData["itemSectionRenderer"] as? [String: Any],
+           let inner = itemSection["contents"] as? [[String: Any]]
+        {
+            for nested in inner {
+                Self.parseSearchSection(
+                    nested,
+                    songs: &songs,
+                    albums: &albums,
+                    artists: &artists,
+                    playlists: &playlists
+                )
+            }
+        }
     }
 
     /// Helper to append a search result item to the appropriate array.

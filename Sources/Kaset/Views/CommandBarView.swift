@@ -7,6 +7,7 @@ import SwiftUI
 @available(macOS 26.0, *)
 struct CommandBarView: View {
     @Environment(PlayerService.self) private var playerService
+    @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
     @Environment(\.navigationSelection) private var navigationSelection
     @Environment(\.searchFocusTrigger) private var searchFocusTrigger
 
@@ -263,6 +264,9 @@ struct CommandBarView: View {
     private func runSearch(query: String) {
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         self.navigationSelection.wrappedValue = .search
+        // Reset SearchView's NavigationStack so the user lands on the search root,
+        // not whatever detail page they pushed onto the stack from a previous search.
+        self.globalNavigation.popSearchToRoot()
         self.clearSuggestions()
 
         if let searchViewModel = self.searchViewModel {
@@ -354,6 +358,7 @@ private struct ActionChip: View {
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
     CommandBarView(client: client, isPresented: $isPresented)
         .environment(PlayerService())
+        .environment(GlobalNavigationCoordinator())
         .padding(40)
         .frame(width: 600, height: 300)
 }

@@ -410,9 +410,28 @@ struct ArtistDetailView: View {
 
     private func albumsSection(_ albums: [Album]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Albums")
-                .font(.title2)
-                .fontWeight(.semibold)
+            HStack {
+                Text("Albums")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Spacer()
+
+                if self.viewModel.hasMoreAlbums, let detail = viewModel.artistDetail {
+                    NavigationLink(value: AllAlbumsDestination(
+                        artistId: detail.id,
+                        artistName: detail.name,
+                        albums: detail.albums,
+                        albumsBrowseId: detail.albumsBrowseId,
+                        albumsParams: detail.albumsParams
+                    )) {
+                        Text("See all")
+                            .font(.subheadline)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(Color.accentColor)
+                }
+            }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
