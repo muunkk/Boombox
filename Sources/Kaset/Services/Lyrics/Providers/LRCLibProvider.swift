@@ -19,7 +19,9 @@ final class LRCLibProvider: LyricsProvider {
     let name = "LRCLib"
 
     func search(info: LyricsSearchInfo) async -> LyricResult {
-        var components = URLComponents(string: "https://lrclib.net/api/search")!
+        guard var components = URLComponents(string: "https://lrclib.net/api/search") else {
+            return .unavailable
+        }
 
         let items = [
             URLQueryItem(name: "track_name", value: info.title),
@@ -48,15 +50,15 @@ final class LRCLibProvider: LyricsProvider {
             }
 
             guard !validParams.isEmpty else { return .unavailable }
+            guard var bestMatch = validParams.first else { return .unavailable }
 
             // Find closest duration
-            var bestMatch = validParams.first!
             if let targetDuration = info.duration {
                 bestMatch = validParams.min(by: { a, b in
                     let diffA = abs((a.duration ?? 0) - targetDuration)
                     let diffB = abs((b.duration ?? 0) - targetDuration)
                     return diffA < diffB
-                }) ?? validParams.first!
+                }) ?? bestMatch
             }
 
             if let synced = bestMatch.syncedLyrics, let parsed = LRCParser.parse(synced) {

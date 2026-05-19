@@ -25,7 +25,8 @@ final class FavoritesManager {
 
     /// File URL for persisted data.
     private var fileURL: URL {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support", isDirectory: true)
         let appDir = appSupport.appendingPathComponent("Boombox", isDirectory: true)
         return appDir.appendingPathComponent("favorites.json")
     }

@@ -76,28 +76,7 @@ struct LibraryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .localizedNavigationTitle("Library")
-            .navigationDestination(for: Playlist.self) { playlist in
-                PlaylistDetailView(
-                    playlist: playlist,
-                    viewModel: PlaylistDetailViewModel(
-                        playlist: playlist,
-                        client: self.viewModel.client
-                    )
-                )
-            }
-            .navigationDestination(for: Artist.self) { artist in
-                ArtistDetailView(
-                    artist: artist,
-                    viewModel: ArtistDetailViewModel(
-                        artist: artist,
-                        client: self.viewModel.client,
-                        libraryViewModel: self.viewModel
-                    )
-                )
-            }
-            .navigationDestination(for: PodcastShow.self) { show in
-                PodcastShowView(show: show, client: self.viewModel.client)
-            }
+            .navigationDestinations(client: self.viewModel.client)
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.Library.container)

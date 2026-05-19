@@ -73,6 +73,7 @@ struct PlayerBar: View {
                 }
                 .keyboardShortcut(.space, modifiers: [])
                 .opacity(0)
+                .accessibilityHidden(true)
 
                 // Command + Right Arrow: Next track
                 Button("") {
@@ -80,6 +81,7 @@ struct PlayerBar: View {
                 }
                 .keyboardShortcut(.rightArrow, modifiers: .command)
                 .opacity(0)
+                .accessibilityHidden(true)
 
                 // Command + Left Arrow: Previous track
                 Button("") {
@@ -87,6 +89,7 @@ struct PlayerBar: View {
                 }
                 .keyboardShortcut(.leftArrow, modifiers: .command)
                 .opacity(0)
+                .accessibilityHidden(true)
 
                 // Command + Up Arrow: Volume up
                 Button("") {
@@ -101,6 +104,7 @@ struct PlayerBar: View {
                 }
                 .keyboardShortcut(.upArrow, modifiers: .command)
                 .opacity(0)
+                .accessibilityHidden(true)
 
                 // Command + Down Arrow: Volume down
                 Button("") {
@@ -115,6 +119,7 @@ struct PlayerBar: View {
                 }
                 .keyboardShortcut(.downArrow, modifiers: .command)
                 .opacity(0)
+                .accessibilityHidden(true)
             }
         }
         .onChange(of: self.playerService.progress) { _, newValue in

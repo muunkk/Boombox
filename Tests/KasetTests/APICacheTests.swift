@@ -157,9 +157,9 @@ struct APICacheTests {
 
     @Test("Cache shared instance is singleton")
     func cacheSharedInstance() {
-        #expect(APICache.shared != nil)
         let instance1 = APICache.shared
         let instance2 = APICache.shared
         #expect(instance1 === instance2)
+        #expect(instance1 === self.cache)
     }
 }

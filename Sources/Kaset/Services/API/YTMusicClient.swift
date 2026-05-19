@@ -38,6 +38,7 @@ enum PaginatedContentType: String, Hashable {
 final class YTMusicClient: YTMusicClientProtocol {
     private let authService: AuthService
     private let webKitManager: WebKitManager
+    private let apiKeyProvider: any YTMusicAPIKeyProviding
     private let session: URLSession
     private let logger = DiagnosticsLogger.api
 
@@ -49,18 +50,20 @@ final class YTMusicClient: YTMusicClientProtocol {
     /// YouTube Music API base URL.
     private static let baseURL = "https://music.youtube.com/youtubei/v1"
 
-    /// API key used in requests (extracted from YouTube Music web client).
-    private static let apiKey = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
-
     /// Client version for WEB_REMIX.
     private static let clientVersion = "1.20231204.01.00"
 
     /// Centralized storage for continuation tokens keyed by content type.
     private var continuationTokens: [PaginatedContentType: String] = [:]
 
-    init(authService: AuthService, webKitManager: WebKitManager = .shared) {
+    init(
+        authService: AuthService,
+        webKitManager: WebKitManager = .shared,
+        apiKeyProvider: any YTMusicAPIKeyProviding = YTMusicAPIKeyProvider.shared
+    ) {
         self.authService = authService
         self.webKitManager = webKitManager
+        self.apiKeyProvider = apiKeyProvider
 
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = [
@@ -1426,10 +1429,8 @@ final class YTMusicClient: YTMusicClientProtocol {
     private func performRequest(_ endpoint: String, fullBody: [String: Any]) async throws -> [String:
         Any]
     {
-        let urlString = "\(Self.baseURL)/\(endpoint)?key=\(Self.apiKey)&prettyPrint=false"
-        guard let url = URL(string: urlString) else {
-            throw YTMusicError.unknown(message: "Invalid URL: \(urlString)")
-        }
+        let apiKey = try await self.apiKeyProvider.apiKey()
+        let url = try Self.apiURL(endpoint: endpoint, apiKey: apiKey)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -1480,6 +1481,23 @@ final class YTMusicClient: YTMusicClientProtocol {
         case let .networkError(error):
             throw YTMusicError.networkError(underlying: error)
         }
+    }
+
+    private static func apiURL(endpoint: String, apiKey: String) throws -> URL {
+        guard var components = URLComponents(string: "\(baseURL)/\(endpoint)") else {
+            throw YTMusicError.unknown(message: "Invalid API URL for endpoint \(endpoint)")
+        }
+
+        components.queryItems = [
+            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "prettyPrint", value: "false"),
+        ]
+
+        guard let url = components.url else {
+            throw YTMusicError.unknown(message: "Invalid API URL for endpoint \(endpoint)")
+        }
+
+        return url
     }
 
     // MARK: - Nonisolated Network Helper

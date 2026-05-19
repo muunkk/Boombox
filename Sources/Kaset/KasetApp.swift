@@ -34,10 +34,10 @@ struct KasetApp: App {
     @State private var webKitManager = WebKitManager.shared
     @State private var playerService = PlayerService()
     @State private var sharedClient: any YTMusicClientProtocol
-    @State private var notificationService: NotificationService?
+    @State private var notificationService: NotificationService
     @State private var favoritesManager = FavoritesManager.shared
     @State private var likeStatusManager = SongLikeStatusManager.shared
-    @State private var accountService: AccountService?
+    @State private var accountService: AccountService
     @State private var syncedLyricsService: SyncedLyricsService
     @State private var settings = SettingsManager.shared
 
@@ -60,44 +60,21 @@ struct KasetApp: App {
     init() {
         Bundle.enableAppLocalizationOverride()
 
-        let auth = AuthService()
-        let webkit = WebKitManager.shared
-        let player = PlayerService()
+        let services = AppServices.make()
 
-        // Use mock client in UI test mode, real client otherwise
-        let realClient = YTMusicClient(authService: auth, webKitManager: webkit)
-        let client: YTMusicClientProtocol = if UITestConfig.isUITestMode {
-            MockUITestYTMusicClient()
-        } else {
-            realClient
-        }
-
-        // Wire up dependencies
-        player.setYTMusicClient(client)
-        SongLikeStatusManager.shared.setClient(client)
-
-        // Create account service
-        let account = AccountService(ytMusicClient: client, authService: auth)
-
-        // Wire up brand account provider so API requests use the correct account
-        realClient.brandIdProvider = { [weak account] in
-            account?.currentBrandId
-        }
-
-        _authService = State(initialValue: auth)
-        _webKitManager = State(initialValue: webkit)
-        _playerService = State(initialValue: player)
-        _sharedClient = State(initialValue: client)
-        _syncedLyricsService = State(initialValue: SyncedLyricsService(providers: [
-            YTMusicSyncedProvider(client: client),
-            LRCLibProvider(),
-        ]))
-        _notificationService = State(initialValue: NotificationService(playerService: player))
-        _accountService = State(initialValue: account)
+        _authService = State(initialValue: services.authService)
+        _webKitManager = State(initialValue: services.webKitManager)
+        _playerService = State(initialValue: services.playerService)
+        _sharedClient = State(initialValue: services.sharedClient)
+        _notificationService = State(initialValue: services.notificationService)
+        _favoritesManager = State(initialValue: services.favoritesManager)
+        _likeStatusManager = State(initialValue: services.likeStatusManager)
+        _accountService = State(initialValue: services.accountService)
+        _syncedLyricsService = State(initialValue: services.syncedLyricsService)
 
         // Wire up PlayerService to AppDelegate immediately (not in onAppear)
         // This ensures playerService is available for lifecycle events like queue restoration
-        self.appDelegate.playerService = player
+        self.appDelegate.playerService = services.playerService
 
         if UITestConfig.isUITestMode {
             DiagnosticsLogger.ui.info("App launched in UI Test mode")
@@ -159,7 +136,7 @@ struct KasetApp: App {
                         DiagnosticsLogger.app.info("KasetApp: Login status check complete")
 
                         // Fetch accounts after login check (for account switcher)
-                        await self.accountService?.fetchAccounts()
+                        await self.accountService.fetchAccounts()
                     }
                     .onChange(of: self.playerPresentationMode) { oldMode, newMode in
                         self.appDelegate.currentPlayerPresentationMode = newMode

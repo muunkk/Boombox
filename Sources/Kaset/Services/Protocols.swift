@@ -34,12 +34,11 @@ protocol WebKitManagerProtocol: AnyObject, Sendable {
     func logAuthCookies() async
 }
 
-// MARK: - YTMusicClientProtocol
+// MARK: - YTMusicBrowseProviding
 
-/// Protocol defining the interface for YouTube Music API operations.
-/// Enables dependency injection and mocking for tests.
+/// Home, discovery, and browse surfaces exposed by YouTube Music.
 @MainActor
-protocol YTMusicClientProtocol: Sendable {
+protocol YTMusicBrowseProviding: Sendable {
     /// Fetches the home page content (initial sections only for fast display).
     func getHome() async throws -> HomeResponse
 
@@ -93,7 +92,13 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Whether more history sections are available to load.
     var hasMoreHistorySections: Bool { get }
+}
 
+// MARK: - YTMusicPodcastProviding
+
+/// Podcast discovery and show-detail operations.
+@MainActor
+protocol YTMusicPodcastProviding: Sendable {
     /// Fetches the podcasts page content (initial sections only for fast display).
     func getPodcasts() async throws -> [PodcastSection]
 
@@ -108,7 +113,13 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Fetches more episodes for a podcast show via continuation.
     func getPodcastEpisodesContinuation(token: String) async throws -> PodcastEpisodesContinuation
+}
 
+// MARK: - YTMusicSearchProviding
+
+/// Search, autocomplete, and paginated result operations.
+@MainActor
+protocol YTMusicSearchProviding: Sendable {
     /// Searches for content.
     func search(query: String) async throws -> SearchResponse
 
@@ -151,7 +162,13 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Fetches search suggestions for autocomplete.
     func getSearchSuggestions(query: String) async throws -> [SearchSuggestion]
+}
 
+// MARK: - YTMusicLibraryProviding
+
+/// Library reads, playlist details, artist details, and liked-song pagination.
+@MainActor
+protocol YTMusicLibraryProviding: Sendable {
     /// Fetches the user's library playlists.
     func getLibraryPlaylists() async throws -> [Playlist]
 
@@ -187,7 +204,13 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Fetches all songs for an artist using the songs browse endpoint.
     func getArtistSongs(browseId: String, params: String?) async throws -> [Song]
+}
 
+// MARK: - YTMusicMutationProviding
+
+/// Rating, library, playlist, podcast, and artist mutation operations.
+@MainActor
+protocol YTMusicMutationProviding: Sendable {
     /// Rates a song (like/dislike/indifferent).
     func rateSong(videoId: String, rating: LikeStatus) async throws
 
@@ -211,14 +234,26 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Unsubscribes from an artist (removes from library).
     func unsubscribeFromArtist(channelId: String) async throws
+}
 
+// MARK: - YTMusicLyricsProviding
+
+/// Plain and timed lyrics operations.
+@MainActor
+protocol YTMusicLyricsProviding: Sendable {
     /// Fetches lyrics for a song.
     func getLyrics(videoId: String) async throws -> Lyrics
 
     /// Fetches timed (synced) lyrics for a song from YouTube Music.
     /// Returns synced lyrics if available, falls back to plain lyrics, or returns unavailable.
     func getTimedLyrics(videoId: String) async throws -> LyricResult
+}
 
+// MARK: - YTMusicPlaybackDataProviding
+
+/// Playback-adjacent metadata and queue operations.
+@MainActor
+protocol YTMusicPlaybackDataProviding: Sendable {
     /// Fetches song metadata by video ID.
     func getSong(videoId: String) async throws -> Song
 
@@ -241,11 +276,31 @@ protocol YTMusicClientProtocol: Sendable {
     /// Fetches content for a moods/genres category page.
     /// Returns sections of songs/playlists for the category.
     func getMoodCategory(browseId: String, params: String?) async throws -> HomeResponse
+}
 
+// MARK: - YTMusicAccountProviding
+
+/// Account-list and account-scoped session operations.
+@MainActor
+protocol YTMusicAccountProviding: Sendable {
     /// Fetches the list of available accounts (primary + brand accounts).
     /// Used for account switching functionality.
     func fetchAccountsList() async throws -> AccountsListResponse
 }
+
+// MARK: - YTMusicClientProtocol
+
+/// Aggregate client protocol for app-wide dependency injection.
+/// Prefer the smaller domain protocols above for new narrow dependencies.
+@MainActor
+protocol YTMusicClientProtocol: YTMusicBrowseProviding,
+    YTMusicPodcastProviding,
+    YTMusicSearchProviding,
+    YTMusicLibraryProviding,
+    YTMusicMutationProviding,
+    YTMusicLyricsProviding,
+    YTMusicPlaybackDataProviding,
+    YTMusicAccountProviding {}
 
 // MARK: - AuthServiceProtocol
 

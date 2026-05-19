@@ -337,7 +337,11 @@ enum HomeResponseParser {
         // but the actual content is a playlist. Create a unique ID using browseId + params
         // to avoid duplicate IDs when the same browseId appears in multiple sections.
         let params = browseEndpoint["params"] as? String
-        let uniqueId = params != nil ? "\(browseId)_\(params!)" : browseId
+        let uniqueId = if let params {
+            "\(browseId)_\(params)"
+        } else {
+            browseId
+        }
 
         // Try to extract thumbnail URL (some navigation buttons have iconImage)
         var thumbnailURL: URL?

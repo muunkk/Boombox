@@ -813,16 +813,18 @@ private struct PlayerPresentationSidebarOverlay: View {
     }
 }
 
-@available(macOS 26.0, *)
-#Preview("Focus Player") {
-    FocusPlayerView(client: MockUITestYTMusicClient())
-        .environment(PlayerService())
-        .environment(\.playerPresentationMode, .constant(.focus))
-}
+#if DEBUG
+    @available(macOS 26.0, *)
+    #Preview("Focus Player") {
+        FocusPlayerView(client: MockUITestYTMusicClient())
+            .environment(PlayerService())
+            .environment(\.playerPresentationMode, .constant(.focus))
+    }
 
-@available(macOS 26.0, *)
-#Preview("Compact Player") {
-    CompactPlayerView(client: MockUITestYTMusicClient())
-        .environment(PlayerService())
-        .environment(\.playerPresentationMode, .constant(.compact))
-}
+    @available(macOS 26.0, *)
+    #Preview("Compact Player") {
+        CompactPlayerView(client: MockUITestYTMusicClient())
+            .environment(PlayerService())
+            .environment(\.playerPresentationMode, .constant(.compact))
+    }
+#endif

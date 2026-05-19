@@ -43,3 +43,4 @@ What becomes easier or more difficult because of this change?
 | [0009](0009-prompt-request-workflow.md) | Prompt Request Workflow | Accepted |
 | [0010](0010-airplay-fix.md) | Fix AirPlay for WebView-Based Playback | Implemented (with known limitations) |
 | [0012](0012-synced-lyrics-architecture.md) | Synced Lyrics Provider Architecture | Accepted |
+| [0013](0013-runtime-youtube-music-api-key-resolution.md) | Runtime YouTube Music API Key Resolution | Accepted |

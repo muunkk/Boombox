@@ -6,6 +6,12 @@ final class MockURLProtocol: URLProtocol {
     /// Handler type for processing requests.
     typealias RequestHandler = @Sendable (URLRequest) throws -> (HTTPURLResponse, Data)
 
+    enum MockURLProtocolError: Error {
+        case invalidJSON
+        case invalidRequestURL
+        case invalidResponse
+    }
+
     /// The handler to use for intercepted requests.
     /// Using nonisolated(unsafe) because URLProtocol requires static mutable state.
     nonisolated(unsafe) static var requestHandler: RequestHandler?
@@ -61,15 +67,29 @@ final class MockURLProtocol: URLProtocol {
     ///   - statusCode: The HTTP status code (default 200).
     static func setMockJSONResponse(_ json: [String: Any], statusCode: Int = 200) {
         // Pre-serialize the JSON to Data to avoid capturing non-Sendable type
-        // swiftlint:disable:next force_try
-        let data = try! JSONSerialization.data(withJSONObject: json)
+        guard JSONSerialization.isValidJSONObject(json),
+              let data = try? JSONSerialization.data(withJSONObject: json)
+        else {
+            self.setMockError(MockURLProtocolError.invalidJSON)
+            return
+        }
+
         self.requestHandler = { request in
+            guard let url = request.url else {
+                throw MockURLProtocolError.invalidRequestURL
+            }
+
             let response = HTTPURLResponse(
-                url: request.url!,
+                url: url,
                 statusCode: statusCode,
                 httpVersion: nil,
                 headerFields: ["Content-Type": "application/json"]
-            )!
+            )
+
+            guard let response else {
+                throw MockURLProtocolError.invalidResponse
+            }
+
             return (response, data)
         }
     }

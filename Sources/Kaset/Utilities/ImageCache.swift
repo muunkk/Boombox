@@ -24,7 +24,12 @@ actor ImageCache {
         self.memoryCache.totalCostLimit = 50 * 1024 * 1024 // 50MB
 
         // Set up disk cache directory
-        let cacheDir = self.fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        let cacheURLs = self.fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
+        let cacheDir = if let firstCacheURL = cacheURLs.first {
+            firstCacheURL
+        } else {
+            self.fileManager.temporaryDirectory
+        }
         self.diskCacheURL = cacheDir.appendingPathComponent("com.melboonchan.boombox.imagecache", isDirectory: true)
         try? self.fileManager.createDirectory(at: self.diskCacheURL, withIntermediateDirectories: true)
 

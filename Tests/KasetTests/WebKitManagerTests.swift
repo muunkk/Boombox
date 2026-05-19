@@ -15,25 +15,26 @@ struct WebKitManagerTests {
 
     @Test("Shared instance exists")
     func sharedInstanceExists() {
-        #expect(WebKitManager.shared != nil)
+        #expect(WebKitManager.shared === self.webKitManager)
     }
 
     @Test("Data store exists")
     func dataStoreExists() {
-        #expect(self.webKitManager.dataStore != nil)
+        #expect(self.webKitManager.dataStore.isPersistent)
     }
 
     @Test("Create WebView configuration")
     func createWebViewConfiguration() {
         let configuration = self.webKitManager.createWebViewConfiguration()
-        #expect(configuration != nil)
         #expect(configuration.websiteDataStore === self.webKitManager.dataStore)
+        #expect(configuration.preferences.isElementFullscreenEnabled)
+        #expect(configuration.mediaTypesRequiringUserActionForPlayback.isEmpty)
+        #expect(configuration.allowsAirPlayForMediaPlayback)
     }
 
     @Test("Create login WebView configuration without user scripts")
     func createLoginWebViewConfiguration() {
         let configuration = self.webKitManager.createLoginWebViewConfiguration()
-        #expect(configuration != nil)
         #expect(configuration.websiteDataStore === self.webKitManager.dataStore)
         #expect(configuration.userContentController.userScripts.isEmpty)
     }
@@ -51,8 +52,7 @@ struct WebKitManagerTests {
     @Test("Get all cookies")
     func getAllCookies() async {
         let cookies = await webKitManager.getAllCookies()
-        #expect(cookies != nil)
-        // Cookies array may be empty in test environment
+        #expect(cookies.allSatisfy { !$0.name.isEmpty && !$0.domain.isEmpty })
     }
 
     @Test("Cookie header for domain")
