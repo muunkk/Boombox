@@ -341,6 +341,8 @@ enum ArtistParser {
         }
 
         for sectionData in sectionContents {
+            let countBefore = albums.count
+
             // Grid renderer (typical "all albums" layout)
             if let gridRenderer = sectionData["gridRenderer"] as? [String: Any]
                 ?? sectionData["musicGridRenderer"] as? [String: Any],
@@ -354,6 +356,11 @@ enum ArtistParser {
                     }
                 }
             }
+
+            // If the grid path already yielded items for this section, skip the
+            // shelf/carousel fallbacks to avoid double-counting in the unlikely
+            // case YouTube returns multiple shaped renderers in the same section.
+            if albums.count > countBefore { continue }
 
             // musicShelfRenderer fallback (vertical list of albums)
             if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any],
@@ -371,6 +378,8 @@ enum ArtistParser {
                     }
                 }
             }
+
+            if albums.count > countBefore { continue }
 
             // Carousel fallback (rare, but defensive)
             if let carouselRenderer = sectionData["musicCarouselShelfRenderer"] as? [String: Any],

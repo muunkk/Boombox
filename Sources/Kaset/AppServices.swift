@@ -34,6 +34,14 @@ struct AppServices {
         playerService.setYTMusicClient(sharedClient)
         SongLikeStatusManager.shared.setClient(sharedClient)
 
+        #if DEBUG
+            if UITestConfig.shouldForceEnrichQueueOnLaunch {
+                Task {
+                    await playerService.forceQueueMetadataEnrichmentForUITestLaunch()
+                }
+            }
+        #endif
+
         let accountService = AccountService(ytMusicClient: sharedClient, authService: authService)
         realClient.brandIdProvider = { [weak accountService] in
             accountService?.currentBrandId

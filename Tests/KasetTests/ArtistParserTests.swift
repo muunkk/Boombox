@@ -186,6 +186,41 @@ struct ArtistParserTests {
         #expect(result.mixPlaylistId == "RDCLAK-mix-123")
     }
 
+    // MARK: - All Albums Pagination Tests
+
+    @Test("parseArtistDetail captures albums moreContentButton browseId/params")
+    func parseArtistDetailCapturesAlbumsMoreEndpoint() {
+        let data = Self.makeArtistResponseWithAlbumsAndMoreButton(
+            ids: ["MPRE-a", "MPRE-b"],
+            moreBrowseId: "MPADUC-artist-albums",
+            moreParams: "8gECGAE%3D"
+        )
+
+        let result = ArtistParser.parseArtistDetail(data, artistId: "UC-test")
+
+        #expect(result.hasMoreAlbums)
+        #expect(result.albumsBrowseId == "MPADUC-artist-albums")
+        #expect(result.albumsParams == "8gECGAE%3D")
+    }
+
+    @Test("parseArtistAlbums parses a grid response")
+    func parseArtistAlbumsParsesGrid() {
+        let data = Self.makeAllAlbumsGridResponse(ids: ["MPRE-x", "MPRE-y", "OLAK-z"])
+        let albums = ArtistParser.parseArtistAlbums(data)
+
+        #expect(albums.count == 3)
+        #expect(albums.map(\.id) == ["MPRE-x", "MPRE-y", "OLAK-z"])
+    }
+
+    @Test("parseArtistAlbums skips non-album browse IDs")
+    func parseArtistAlbumsSkipsNonAlbumPrefixes() {
+        let data = Self.makeAllAlbumsGridResponse(ids: ["MPRE-x", "VL-playlist", "UCsomething"])
+        let albums = ArtistParser.parseArtistAlbums(data)
+
+        #expect(albums.count == 1)
+        #expect(albums.first?.id == "MPRE-x")
+    }
+
     // MARK: - Test Helpers
 
     private static func makeArtistResponse(
@@ -392,6 +427,91 @@ struct ArtistParserTests {
                                                 "musicCarouselShelfRenderer": [
                                                     "contents": albumItems,
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    }
+
+    /// Carousel response that also carries a `moreContentButton` browse endpoint
+    /// — exercises `extractCarouselMoreEndpoint` and the `hasMoreAlbums` flag.
+    private static func makeArtistResponseWithAlbumsAndMoreButton(
+        ids: [String],
+        moreBrowseId: String,
+        moreParams: String?
+    ) -> [String: Any] {
+        let albumItems = ids.map {
+            Self.makeAlbumItem(id: $0, title: $0, year: nil)
+        }
+
+        var browseEndpoint: [String: Any] = ["browseId": moreBrowseId]
+        if let moreParams {
+            browseEndpoint["params"] = moreParams
+        }
+
+        return [
+            "header": [
+                "musicImmersiveHeaderRenderer": [
+                    "title": ["runs": [["text": "Artist"]]],
+                ],
+            ],
+            "contents": [
+                "singleColumnBrowseResultsRenderer": [
+                    "tabs": [
+                        [
+                            "tabRenderer": [
+                                "content": [
+                                    "sectionListRenderer": [
+                                        "contents": [
+                                            [
+                                                "musicCarouselShelfRenderer": [
+                                                    "header": [
+                                                        "musicCarouselShelfBasicHeaderRenderer": [
+                                                            "moreContentButton": [
+                                                                "buttonRenderer": [
+                                                                    "navigationEndpoint": [
+                                                                        "browseEndpoint": browseEndpoint,
+                                                                    ],
+                                                                ],
+                                                            ],
+                                                        ],
+                                                    ],
+                                                    "contents": albumItems,
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    }
+
+    /// Shape of the `MPADUC…` "all albums" browse response: a singleColumn
+    /// `sectionListRenderer` whose contents include a `gridRenderer` with
+    /// `musicTwoRowItemRenderer` items.
+    private static func makeAllAlbumsGridResponse(ids: [String]) -> [String: Any] {
+        let items = ids.map { Self.makeAlbumItem(id: $0, title: $0, year: nil) }
+        return [
+            "contents": [
+                "singleColumnBrowseResultsRenderer": [
+                    "tabs": [
+                        [
+                            "tabRenderer": [
+                                "content": [
+                                    "sectionListRenderer": [
+                                        "contents": [
+                                            [
+                                                "gridRenderer": ["items": items],
                                             ],
                                         ],
                                     ],

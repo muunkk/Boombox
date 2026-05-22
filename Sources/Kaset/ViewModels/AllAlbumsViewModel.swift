@@ -48,11 +48,13 @@ final class AllAlbumsViewModel {
             self.logger.info("Loaded \(albumCount) artist albums")
         } catch is CancellationError {
             self.logger.debug("Artist albums load cancelled")
+            // Cancellation isn't a user-facing error; keep whatever albums we
+            // already had (from the destination's seed) and stay loaded.
             self.loadingState = .loaded
         } catch {
             let errorMessage = error.localizedDescription
             self.logger.error("Failed to load artist albums: \(errorMessage)")
-            self.loadingState = .loaded
+            self.loadingState = .error(LoadingError(from: error))
         }
     }
 }

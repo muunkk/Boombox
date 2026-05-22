@@ -83,11 +83,15 @@ extension Playlist {
            let firstAuthor = authors.first
         {
             self.author = firstAuthor["name"] as? String
+            self.authorChannelId = (firstAuthor["channelId"] as? String).flatMap { id in
+                Artist.isNavigableId(id) ? id : nil
+            }
         } else {
             self.author = data["author"] as? String
+            self.authorChannelId = (data["authorChannelId"] as? String).flatMap { id in
+                Artist.isNavigableId(id) ? id : nil
+            }
         }
-
-        self.authorChannelId = nil
     }
 }
 

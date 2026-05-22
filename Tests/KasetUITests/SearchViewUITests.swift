@@ -102,6 +102,44 @@ final class SearchViewUITests: KasetUITestCase {
         // If results exist, filters should appear
     }
 
+    func testFilterSwapPreservesSectionRenderingInAllTab() {
+        launchWithMockSearchShelves()
+
+        navigateToSearch()
+
+        let searchField = app.textFields[TestAccessibilityID.Search.searchField].firstMatch
+        let resolvedSearchField = searchField.exists ? searchField : app.textFields.firstMatch
+        XCTAssertTrue(waitForHittable(resolvedSearchField, timeout: 10))
+
+        resolvedSearchField.click()
+        resolvedSearchField.typeText("ordered shelves\n")
+
+        let allFilter = app.buttons[TestAccessibilityID.Search.filterChip("all")]
+        let songsFilter = app.buttons[TestAccessibilityID.Search.filterChip("songs")]
+        XCTAssertTrue(waitForElement(allFilter, timeout: 10), "All filter should appear after search")
+        XCTAssertEqual(allFilter.value as? String, "Selected", "All filter should be selected by default")
+        XCTAssertTrue(waitForElement(songsFilter, timeout: 5), "Songs filter should appear after search")
+
+        let songsHeader = element(matchingAccessibilityID: TestAccessibilityID.Search.sectionHeader("songs"))
+        let albumsHeader = element(matchingAccessibilityID: TestAccessibilityID.Search.sectionHeader("albums"))
+        XCTAssertTrue(waitForElement(songsHeader, timeout: 10), "Songs shelf header should render in All")
+        XCTAssertTrue(waitForElement(albumsHeader, timeout: 10), "Albums shelf header should render in All")
+
+        clickElement(songsFilter)
+
+        XCTAssertTrue(waitForElementToDisappear(songsHeader, timeout: 10), "Songs shelf header should disappear in the Songs filter")
+        XCTAssertFalse(albumsHeader.exists, "Albums shelf header should not render in the flat Songs filter")
+        let flatSongResult = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Search Song 1")).firstMatch
+        XCTAssertTrue(waitForElement(flatSongResult, timeout: 10), "Songs filter should show a flat song result list")
+        XCTAssertEqual(songsFilter.value as? String, "Selected", "Songs filter should be selected after tapping it")
+
+        clickElement(allFilter)
+
+        XCTAssertTrue(waitForElement(songsHeader, timeout: 10), "Songs shelf header should reappear after returning to All")
+        XCTAssertTrue(waitForElement(albumsHeader, timeout: 10), "Albums shelf header should reappear after returning to All")
+        XCTAssertEqual(allFilter.value as? String, "Selected", "All filter should be selected after returning to it")
+    }
+
     // MARK: - Keyboard Navigation
 
     func testSearchFieldIsFocusedOnAppear() {

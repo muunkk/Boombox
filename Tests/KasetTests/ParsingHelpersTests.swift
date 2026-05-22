@@ -336,6 +336,89 @@ struct ParsingHelpersTests {
         #expect(artists.first?.id == "UC123")
     }
 
+    @Test("Fall back to text-only artist names when no navigation endpoint is present")
+    func extractArtistsFromFlexColumnsTextOnlyFallback() {
+        let data: [String: Any] = [
+            "flexColumns": [
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": ["runs": [["text": "Title"]]],
+                    ],
+                ],
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": ["runs": [["text": "Artist Name"]]],
+                    ],
+                ],
+            ],
+        ]
+
+        let artists = ParsingHelpers.extractArtistsFromFlexColumns(data)
+
+        #expect(artists.count == 1)
+        #expect(artists.first?.name == "Artist Name")
+        #expect(artists.first?.hasNavigableId == false)
+        #expect(artists.first?.id.isEmpty == false)
+    }
+
+    @Test("Strip non-artist metadata like durations, years, and view counts")
+    func extractArtistsFromFlexColumnsStripsMetadata() {
+        let data: [String: Any] = [
+            "flexColumns": [
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": ["runs": [["text": "Title"]]],
+                    ],
+                ],
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": [
+                            "runs": [
+                                ["text": "Real Artist"],
+                                ["text": " • "],
+                                ["text": "3:45"],
+                                ["text": " • "],
+                                ["text": "2024"],
+                                ["text": " • "],
+                                ["text": "1.2M views"],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+
+        let artists = ParsingHelpers.extractArtistsFromFlexColumns(data)
+
+        #expect(artists.count == 1)
+        #expect(artists.first?.name == "Real Artist")
+    }
+
+    @Test("Keeps band names that look like words inside the views/plays patterns")
+    func extractArtistsFromFlexColumnsKeepsLookAlikeBandNames() {
+        let data: [String: Any] = [
+            "flexColumns": [
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": ["runs": [["text": "Title"]]],
+                    ],
+                ],
+                [
+                    "musicResponsiveListItemFlexColumnRenderer": [
+                        "text": ["runs": [["text": "Reviews"]]],
+                    ],
+                ],
+            ],
+        ]
+
+        let artists = ParsingHelpers.extractArtistsFromFlexColumns(data)
+
+        // "Reviews" should NOT be filtered out — only strings matching the
+        // anchored "<number>[KMB]? views/plays/streams" pattern get dropped.
+        #expect(artists.count == 1)
+        #expect(artists.first?.name == "Reviews")
+    }
+
     // MARK: - Duration from Flex Columns (Artist Page)
 
     @Test("Extract duration from combined flex column runs (artist top songs)")

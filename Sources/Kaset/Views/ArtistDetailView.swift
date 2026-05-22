@@ -299,7 +299,7 @@ struct ArtistDetailView: View {
                 // Album column (if available)
                 if let album = song.album {
                     if album.hasNavigableId {
-                        NavigationLink(value: self.playlistFromAlbum(album)) {
+                        NavigationLink(value: album.asPlaylistDestination()) {
                             Text(album.title)
                                 .font(.system(size: 14))
                                 .foregroundStyle(.secondary)
@@ -436,7 +436,7 @@ struct ArtistDetailView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 16) {
                     ForEach(albums) { album in
-                        NavigationLink(value: self.playlistFromAlbum(album)) {
+                        NavigationLink(value: album.asPlaylistDestination()) {
                             self.albumCard(album)
                         }
                         .buttonStyle(.plain)
@@ -444,17 +444,6 @@ struct ArtistDetailView: View {
                 }
             }
         }
-    }
-
-    private func playlistFromAlbum(_ album: Album) -> Playlist {
-        Playlist(
-            id: album.id,
-            title: album.title,
-            description: nil,
-            thumbnailURL: album.thumbnailURL,
-            trackCount: album.trackCount,
-            author: album.artistsDisplay
-        )
     }
 
     private func albumCard(_ album: Album) -> some View {

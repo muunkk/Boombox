@@ -7,9 +7,11 @@ import SwiftUI
 struct PlaylistDetailView: View {
     let playlist: Playlist
     @State var viewModel: PlaylistDetailViewModel
-    /// Index of the currently hovered track row, used to swap the index column
-    /// for a play icon and to render the row's background highlight.
-    @State private var hoveredRowIndex: Int?
+    /// videoId of the currently hovered track row, used to swap the index column
+    /// for a play icon and to render the row's background highlight. Keyed by id
+    /// rather than index so list mutations (pagination, removal) don't briefly
+    /// re-attach the hover to a different track.
+    @State private var hoveredTrackId: String?
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
@@ -301,15 +303,16 @@ struct PlaylistDetailView: View {
 
     private func trackRow(_ track: Song, index: Int, tracks: [Song], isAlbum: Bool, author: String?, fallbackAlbum: Album? = nil) -> some View {
         let isCurrent = self.playerService.currentTrack?.videoId == track.videoId
-        let isHovering = self.hoveredRowIndex == index
+        let isHovering = self.hoveredTrackId == track.videoId
 
         let play = {
             self.playTrackInQueue(tracks: tracks, startingAt: index, fallbackArtist: author, fallbackAlbum: fallbackAlbum)
         }
 
         return HStack(spacing: 12) {
-            // On hover, the index swaps to a play.fill that single-clicks to play,
-            // giving discoverability for the double-click-to-play row behavior below.
+            // Single click is intentionally a no-op for both albums and playlists.
+            // On hover the index swaps to a play.fill that single-clicks to play
+            // (discoverability), and a double-click anywhere on the row plays.
             self.trackLeadingIndicator(index: index, isCurrent: isCurrent, isHovering: isHovering, play: play)
                 .frame(width: 28, alignment: .trailing)
 
@@ -358,9 +361,9 @@ struct PlaylistDetailView: View {
         .animation(.easeInOut(duration: 0.12), value: isHovering)
         .onHover { hovering in
             if hovering {
-                self.hoveredRowIndex = index
-            } else if self.hoveredRowIndex == index {
-                self.hoveredRowIndex = nil
+                self.hoveredTrackId = track.videoId
+            } else if self.hoveredTrackId == track.videoId {
+                self.hoveredTrackId = nil
             }
         }
         .onTapGesture(count: 2, perform: play)

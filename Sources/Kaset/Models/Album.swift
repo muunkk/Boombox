@@ -72,4 +72,19 @@ extension Album {
             self.trackCount = nil
         }
     }
+
+    /// Albums navigate as `Playlist` destinations throughout this codebase
+    /// (album-detail and playlist-detail share the same view). Each call site
+    /// used to roll its own private `playlistFromAlbum` helper; this is the
+    /// single source of truth.
+    func asPlaylistDestination(fallbackThumbnail: URL? = nil) -> Playlist {
+        Playlist(
+            id: self.id,
+            title: self.title,
+            description: nil,
+            thumbnailURL: self.thumbnailURL ?? fallbackThumbnail,
+            trackCount: self.trackCount,
+            author: self.artistsDisplay
+        )
+    }
 }

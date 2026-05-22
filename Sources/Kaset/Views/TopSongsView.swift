@@ -110,7 +110,7 @@ struct TopSongsView: View {
                 // Album column (if available)
                 if let album = song.album {
                     if album.hasNavigableId {
-                        NavigationLink(value: self.playlistFromAlbum(album, fallbackSong: song)) {
+                        NavigationLink(value: album.asPlaylistDestination(fallbackThumbnail: song.thumbnailURL)) {
                             Text(album.title)
                                 .font(.system(size: 14))
                                 .foregroundStyle(.secondary)
@@ -228,17 +228,6 @@ struct TopSongsView: View {
         Task {
             await self.playerService.playQueue(self.viewModel.songs, startingAt: index)
         }
-    }
-
-    private func playlistFromAlbum(_ album: Album, fallbackSong: Song) -> Playlist {
-        Playlist(
-            id: album.id,
-            title: album.title,
-            description: nil,
-            thumbnailURL: album.thumbnailURL ?? fallbackSong.thumbnailURL,
-            trackCount: album.trackCount,
-            author: album.artistsDisplay
-        )
     }
 }
 

@@ -137,6 +137,7 @@ struct SearchView: View {
                     }
                     return .ignored
                 }
+                .accessibilityIdentifier(AccessibilityID.Search.searchField)
 
             if !self.viewModel.query.isEmpty {
                 Button {
@@ -220,6 +221,8 @@ struct SearchView: View {
                 .clipShape(.capsule)
         }
         .buttonStyle(.chip(isSelected: self.viewModel.selectedFilter == filter))
+        .accessibilityIdentifier(AccessibilityID.Search.filterChip(filter.accessibilityIDComponent))
+        .accessibilityValue(self.viewModel.selectedFilter == filter ? String(localized: "Selected") : String(localized: "Not selected"))
     }
 
     // MARK: - Content
@@ -361,10 +364,19 @@ struct SearchView: View {
     private var resultsView: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(self.viewModel.filteredItems) { item in
-                    self.resultRow(item)
-                    Divider()
-                        .padding(.leading, 72)
+                // On the "All" tab, render YouTube's shelf order (Top result →
+                // Songs → Albums → Community playlists → Artists → …). Filtered
+                // tabs stay on the flat list since they only show one type.
+                if self.viewModel.selectedFilter == .all, !self.viewModel.results.sections.isEmpty {
+                    ForEach(self.viewModel.results.sections) { section in
+                        self.sectionView(section)
+                    }
+                } else {
+                    ForEach(self.viewModel.filteredItems) { item in
+                        self.resultRow(item)
+                        Divider()
+                            .padding(.leading, 72)
+                    }
                 }
 
                 // Load more indicator / button
@@ -373,6 +385,35 @@ struct SearchView: View {
                 }
             }
             .padding(.vertical, 8)
+        }
+    }
+
+    @ViewBuilder
+    private func sectionView(_ section: SearchSection) -> some View {
+        if let title = section.title {
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.top, 18)
+                .padding(.bottom, 6)
+                .accessibilityIdentifier(AccessibilityID.Search.sectionHeader(section.accessibilityIDComponent))
+        } else if section.isTopResult {
+            Text("Top result", comment: "Header for the top result section in search results")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.top, 18)
+                .padding(.bottom, 6)
+                .accessibilityIdentifier(AccessibilityID.Search.sectionHeader(section.accessibilityIDComponent))
+        }
+
+        ForEach(section.items) { item in
+            self.resultRow(item)
+            Divider()
+                .padding(.leading, 72)
         }
     }
 
@@ -712,6 +753,52 @@ extension SearchResultItem {
     var isArtist: Bool {
         if case .artist = self { return true }
         return false
+    }
+}
+
+private extension SearchViewModel.SearchFilter {
+    var accessibilityIDComponent: String {
+        switch self {
+        case .all:
+            "all"
+        case .songs:
+            "songs"
+        case .albums:
+            "albums"
+        case .artists:
+            "artists"
+        case .featuredPlaylists:
+            "featuredPlaylists"
+        case .communityPlaylists:
+            "communityPlaylists"
+        case .podcasts:
+            "podcasts"
+        }
+    }
+}
+
+private extension SearchSection {
+    var accessibilityIDComponent: String {
+        if self.isTopResult {
+            return "topResult"
+        }
+
+        switch self.title {
+        case "Songs":
+            return "songs"
+        case "Albums":
+            return "albums"
+        case "Artists":
+            return "artists"
+        case "Featured playlists":
+            return "featuredPlaylists"
+        case "Community playlists":
+            return "communityPlaylists"
+        case "Podcasts":
+            return "podcasts"
+        default:
+            return self.id
+        }
     }
 }
 

@@ -54,7 +54,7 @@ struct AllAlbumsView: View {
                 GridItem(.adaptive(minimum: 140, maximum: 180), spacing: 16),
             ], spacing: 20) {
                 ForEach(self.viewModel.albums) { album in
-                    NavigationLink(value: self.playlistFromAlbum(album)) {
+                    NavigationLink(value: album.asPlaylistDestination()) {
                         self.albumCard(album)
                     }
                     .buttonStyle(.plain)
@@ -95,17 +95,6 @@ struct AllAlbumsView: View {
                     .frame(width: 140, alignment: .leading)
             }
         }
-    }
-
-    private func playlistFromAlbum(_ album: Album) -> Playlist {
-        Playlist(
-            id: album.id,
-            title: album.title,
-            description: nil,
-            thumbnailURL: album.thumbnailURL,
-            trackCount: album.trackCount,
-            author: album.artistsDisplay
-        )
     }
 }
 

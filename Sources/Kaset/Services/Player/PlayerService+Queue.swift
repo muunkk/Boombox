@@ -381,6 +381,10 @@ extension PlayerService {
 
     /// Saves the current queue to UserDefaults for restoration on next launch.
     func saveQueueForPersistence() {
+        #if DEBUG
+            guard !UITestConfig.isUITestMode else { return }
+        #endif
+
         guard !self.queue.isEmpty else {
             self.removeSavedPlaybackSession()
             self.logger.info("Cleared saved playback session (queue is empty)")
@@ -420,6 +424,10 @@ extension PlayerService {
     /// - Returns: True if queue was restored, false otherwise.
     @discardableResult
     func restoreQueueFromPersistence() -> Bool {
+        #if DEBUG
+            guard !UITestConfig.isUITestMode else { return false }
+        #endif
+
         let decoder = JSONDecoder()
 
         if let sessionData = UserDefaults.standard.data(forKey: Self.savedPlaybackSessionKey) {
@@ -593,13 +601,33 @@ extension PlayerService {
             // Check if still needed (song might have been removed)
             guard index < queue.count, queue[index].videoId == videoId else { continue }
 
+            let currentQueueSong = queue[index]
+
             do {
                 let enrichedSong = try await client.getSong(videoId: videoId)
 
-                // Update the queue in-place
+                // Update the queue in-place. Mirror the album/duration/thumbnail
+                // preservation logic from `fetchSongMetadata` in
+                // PlayerService+Library.swift — SongMetadataParser hard-codes
+                // `album: nil`, so a wholesale replace strips album info that
+                // the queue entry already carried (kills the now-playing
+                // sidebar's "Go to album" / "Go to artist" links). Keep them
+                // in sync if you change one.
                 if index < queue.count, queue[index].videoId == videoId {
-                    queue[index] = enrichedSong
-                    self.logger.debug("Enriched song \(index): '\(enrichedSong.title)' - artists: \(enrichedSong.artistsDisplay)")
+                    let merged = Song(
+                        id: enrichedSong.id,
+                        title: enrichedSong.title,
+                        artists: enrichedSong.artists,
+                        album: enrichedSong.album ?? currentQueueSong.album,
+                        duration: enrichedSong.duration ?? currentQueueSong.duration,
+                        thumbnailURL: enrichedSong.thumbnailURL ?? currentQueueSong.thumbnailURL,
+                        videoId: enrichedSong.videoId,
+                        likeStatus: enrichedSong.likeStatus,
+                        isInLibrary: enrichedSong.isInLibrary,
+                        feedbackTokens: enrichedSong.feedbackTokens
+                    )
+                    queue[index] = merged
+                    self.logger.debug("Enriched song \(index): '\(merged.title)' - artists: \(merged.artistsDisplay)")
                 }
 
                 // Small delay between requests to be API-friendly
@@ -615,4 +643,21 @@ extension PlayerService {
         self.saveQueueForPersistence()
         self.logger.info("Queue metadata enrichment complete, saved to persistence")
     }
+
+    #if DEBUG
+        /// UI test hook that forces queue enrichment without waiting for the background interval.
+        func forceQueueMetadataEnrichmentForUITestLaunch() async {
+            guard UITestConfig.isUITestMode else { return }
+
+            await self.enrichQueueMetadata()
+
+            guard let queueSong = self.queue[safe: self.currentIndex],
+                  self.currentTrack?.videoId == queueSong.videoId
+            else {
+                return
+            }
+
+            self.currentTrack = queueSong
+        }
+    #endif
 }

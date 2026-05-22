@@ -1,0 +1,2030 @@
+[0/1] Planning build
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+[2/4] Emitting module KasetTests
+[2/4] Write Objects.LinkFileList
+[3/4] Linking KasetPackageTests
+Build complete! (3.00s)
+Test Suite 'Selected tests' started at 2026-05-22 00:58:03.104.
+Test Suite 'KasetPackageTests.xctest' started at 2026-05-22 00:58:03.106.
+Test Suite 'ParserPerformanceTests' started at 2026-05-22 00:58:03.106.
+Test Case '-[KasetTests.ParserPerformanceTests testArtistDetailParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:86: Test Case '-[KasetTests.ParserPerformanceTests testArtistDetailParsingPerformance]' measured [Time, seconds] average: 0.007, relative standard deviation: 71.932%, values: [0.021954, 0.008331, 0.007048, 0.006046, 0.005548, 0.005203, 0.004641, 0.004378, 0.004153, 0.003851], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testArtistDetailParsingPerformance]' passed (0.474 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testHomeParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:20: Test Case '-[KasetTests.ParserPerformanceTests testHomeParsingPerformance]' measured [Time, seconds] average: 0.015, relative standard deviation: 58.874%, values: [0.041342, 0.020109, 0.015172, 0.012702, 0.011071, 0.010598, 0.010755, 0.010838, 0.010961, 0.010890], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testHomeParsingPerformance]' passed (0.408 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testHomeSectionParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:30: Test Case '-[KasetTests.ParserPerformanceTests testHomeSectionParsingPerformance]' measured [Time, seconds] average: 0.004, relative standard deviation: 48.092%, values: [0.008407, 0.006667, 0.004855, 0.003644, 0.003669, 0.002933, 0.002810, 0.002843, 0.002284, 0.002198], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testHomeSectionParsingPerformance]' passed (0.293 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testLibraryPlaylistsParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:74: Test Case '-[KasetTests.ParserPerformanceTests testLibraryPlaylistsParsingPerformance]' measured [Time, seconds] average: 0.002, relative standard deviation: 48.360%, values: [0.004112, 0.001404, 0.001751, 0.002008, 0.002007, 0.001046, 0.001314, 0.001397, 0.001395, 0.001102], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testLibraryPlaylistsParsingPerformance]' passed (0.275 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testPlaylistDetailParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:64: Test Case '-[KasetTests.ParserPerformanceTests testPlaylistDetailParsingPerformance]' measured [Time, seconds] average: 0.010, relative standard deviation: 62.512%, values: [0.028112, 0.013675, 0.010788, 0.009253, 0.008197, 0.007532, 0.006842, 0.006325, 0.005980, 0.005690], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testPlaylistDetailParsingPerformance]' passed (0.360 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testSearchParsingPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:42: Test Case '-[KasetTests.ParserPerformanceTests testSearchParsingPerformance]' measured [Time, seconds] average: 0.004, relative standard deviation: 59.083%, values: [0.011236, 0.005192, 0.004120, 0.003798, 0.004091, 0.003036, 0.002867, 0.002839, 0.002448, 0.002446], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testSearchParsingPerformance]' passed (0.298 seconds).
+Test Case '-[KasetTests.ParserPerformanceTests testSearchSongsOnlyPerformance]' started.
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetTests/PerformanceTests/ParserPerformanceTests.swift:52: Test Case '-[KasetTests.ParserPerformanceTests testSearchSongsOnlyPerformance]' measured [Time, seconds] average: 0.010, relative standard deviation: 59.204%, values: [0.025734, 0.014035, 0.010964, 0.009117, 0.008041, 0.007031, 0.006716, 0.006065, 0.005701, 0.005514], performanceMetricID:com.apple.XCTPerformanceMetric_WallClockTime, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.100, maxStandardDeviation: 0.100
+Test Case '-[KasetTests.ParserPerformanceTests testSearchSongsOnlyPerformance]' passed (0.355 seconds).
+Test Suite 'ParserPerformanceTests' passed at 2026-05-22 00:58:05.570.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.463 (2.464) seconds
+Test Suite 'KasetPackageTests.xctest' passed at 2026-05-22 00:58:05.570.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.463 (2.464) seconds
+Test Suite 'Selected tests' passed at 2026-05-22 00:58:05.570.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.463 (2.466) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 1743
+􀄵  Target Platform: arm64e-apple-macos14.0
+􀟈  Suite SyncedLyricLineRomanizationTests started.
+􀟈  Suite UserAccountTests started.
+􀟈  Suite PlayerServiceWebQueueSyncTests started.
+􀟈  Suite ScriptDetectorTests started.
+􀟈  Suite LikeStatusTests started.
+􀟈  Suite PlayerServiceTests started.
+􀟈  Suite PlaylistParserTests started.
+􀟈  Suite WebKitManagerTests started.
+􀟈  Suite AccountServiceTests started.
+􀟈  Suite SearchResponseTests started.
+􀟈  Suite SyncedLyricsTests started.
+􀟈  Suite MediaControlScriptTests started.
+􀟈  Suite SettingsManagerTests started.
+􀟈  Suite HapticServiceTests started.
+􀟈  Suite NewReleasesViewModelTests started.
+􀟈  Suite LyricsParserTests started.
+􀟈  Suite AppServicesTests started.
+􀟈  Suite PlaylistDetailViewModelTests started.
+􀟈  Suite PlayerControlsTests started.
+􀟈  Suite RomanizationServiceTests started.
+􀟈  Suite AccountsListParserTests started.
+􀟈  Suite ArtistDetailTests started.
+􀟈  Suite YTMusicErrorTests started.
+􀟈  Suite ModelTests started.
+􀟈  Suite JapaneseRomanizerTests started.
+􀟈  Suite YTMusicClientTests started.
+􀟈  Suite RadioQueueParserTests started.
+􀟈  Suite YTMusicAPIKeyProviderTests started.
+􀟈  Suite "Player presentation window coordinator tests" started.
+􀟈  Suite SongActionsHelperTests started.
+􀟈  Suite HistoryViewModelTests started.
+􀟈  Suite HomeResponseParserTests started.
+􀟈  Suite HomeSectionTests started.
+􀟈  Suite ParsingHelpersTests started.
+􀟈  Suite LRCParserTests started.
+􀟈  Suite SongMetadataParserTests started.
+􀟈  Suite TopSongsViewModelTests started.
+􀟈  Suite TextCanonicalizerTests started.
+􀟈  Suite ThaiRomanizerTests started.
+􀟈  Suite SongLikeStatusManagerTests started.
+􀟈  Suite PlayerServiceMixTests started.
+􀟈  Suite ArtistParserTests started.
+􀟈  Suite PodcastModelTests started.
+􀟈  Suite KoreanRomanizerTests started.
+􀟈  Suite NotificationServiceTests started.
+􀟈  Suite FavoritesManagerTests started.
+􀟈  Suite SearchSuggestionsParserTests started.
+􀟈  Suite MoodCategoryViewModelTests started.
+􀟈  Suite NetworkMonitorTests started.
+􀟈  Suite AuthServiceTests started.
+􀟈  Suite HomeViewModelTests started.
+􀟈  Suite AppLocalizationTests started.
+􀟈  Suite ShareableTests started.
+􀟈  Suite LibraryViewModelTests started.
+􀟈  Suite DockMenuTests started.
+􀟈  Suite AudioOnlyPlaybackScriptTests started.
+􀟈  Suite SyncedLyricsServiceTests started.
+􀟈  Suite ExploreViewModelTests started.
+􀟈  Suite PodcastParserTests started.
+􀟈  Suite RetryPolicyTests started.
+􀟈  Suite PlayerServiceLibraryTests started.
+􀟈  Suite LikedMusicViewModelTests started.
+􀟈  Suite APICacheTests started.
+􀟈  Suite PodcastShowDetailTests started.
+􀟈  Suite PodcastEpisodeTests started.
+􀟈  Suite PodcastSectionItemTests started.
+􀟈  Suite PodcastEpisodesContinuationTests started.
+􀟈  Suite PlayerServiceQueueTests started.
+􀟈  Suite ArtistDetailViewModelTests started.
+􀟈  Test factoryMethodCreatesPrimaryAccount() started.
+􀟈  Suite PodcastSectionTests started.
+􀟈  Suite PodcastShowTests started.
+􀟈  Suite SearchViewModelTests started.
+􀟈  Suite SongThumbnailSourceTests started.
+􀟈  Test typeLabelForBrandAccount() started.
+􀟈  Test unselectedAccountState() started.
+􀟈  Suite SearchResponseParserTests started.
+􀟈  Test typeLabelForPrimaryAccount() started.
+􀟈  Test accountEqualitySameAccounts() started.
+􀟈  Test accountEqualityDifferentSelectionState() started.
+􀟈  Test brandAccountHasBrandId() started.
+􀟈  Test primaryAccountHasNilBrandId() started.
+􀟈  Test accountEqualityDifferentAccounts() started.
+􀟈  Test primaryAccountHandle() started.
+􀟈  Test brandAccountHandle() started.
+􀟈  Test brandAccountName() started.
+􀟈  Test selectedAccountState() started.
+􀟈  Test "Hangul syllables are detected as Korean" started.
+􀟈  Test "Kanji-only Japanese text is detected as Japanese" started.
+􀟈  Test accountHashabilityDifferentAccounts() started.
+􀟈  Test "romanizedText can be set" started.
+􀟈  Test accountWithNilHandle() started.
+􀟈  Test "CJK with kana is not Chinese (it's Japanese)" started.
+􀟈  Test accountHashability() started.
+􀟈  Test "dominantScript returns .japanese for kana text" started.
+􀟈  Test "Lines with different romanizedText are not equal" started.
+􀟈  Test "Handles nil values correctly" started.
+􀟈  Test accountWithNilThumbnail() started.
+􀟈  Test "isDisliked returns true only for .dislike" started.
+􀟈  Test "Decodes from raw value strings" started.
+􀟈  Test "dominantScript returns .latin for ASCII text" started.
+􀟈  Test "FeedbackTokens is Hashable" started.
+􀟈  Test "Katakana is detected as Japanese" started.
+􀟈  Test "isLiked returns true only for .like" started.
+􀟈  Test accountWithAllNilOptionals() started.
+􀟈  Test "dominantScript returns .korean for Hangul text" started.
+􀟈  Test accountEqualityDifferentNames() started.
+􀟈  Test "Hiragana is detected as Japanese" started.
+􀟈  Test "Raw values are correct" started.
+􀟈  Test "Latin-only text is detected correctly" started.
+􀟈  Test "Japanese is not Korean" started.
+􀟈  Test primaryAccountName() started.
+􀟈  Test "Encoding and decoding preserves value" started.
+􀟈  Test "CJK without kana is detected as Chinese" started.
+􀟈  Test factoryMethodCreatesBrandAccount() started.
+􀟈  Test "romanizedText defaults to nil" started.
+􀟈  Test "Equality comparison works correctly" started.
+􀟈  Test "dominantScript returns .chinese for CJK-only text" started.
+􀟈  Test accountHashabilityInSet() started.
+􀟈  Test "Parse library playlists from grid" started.
+􀟈  Test "Encoding and decoding preserves FeedbackTokens" started.
+􀟈  Test "Non-Latin text is not Latin-only" started.
+􀟈  Test "Parse 2025 continuation format without next token" started.
+􀟈  Test "Parse playlist detail tracks" started.
+􀟈  Test "Album detection based on ID prefix" started.
+􀟈  Test "Initialization stores tokens correctly" started.
+􀟈  Test "parseLibraryContent keeps RDCLAK playlists when shaped as responsive items" started.
+􀟈  Test "Parse responsive playlist header track count and continuation" started.
+􀟈  Test "token(forAdding:) returns correct token" started.
+􀟈  Test "Artist result item title" started.
+􀟈  Test "Parse 2025 continuation format with onResponseReceivedActions" started.
+􀟈  Test "parsePlaylistDetail extracts authorChannelId from subtitle navigationEndpoint" started.
+􀟈  Test "dominantScript returns .thai for Thai text" started.
+􀟈  Test "Non-song result items have nil video ID" started.
+􀟈  Test "parsePlaylistDetail extracts authorChannelId from straplineTextOne" started.
+􀟈  Test "SearchResponse not empty with albums" started.
+􀟈  Test "Song result item subtitle joins artists" started.
+􀟈  Test "Parse dedicated library artists deduplicates equivalent artist IDs" started.
+􀟈  Test "Equality comparison works correctly for FeedbackTokens" started.
+􀟈  Test "SearchResponse allItems ordering" started.
+􀟈  Test "Song result item thumbnail URL" started.
+􀟈  Test "Parse empty library playlists response" started.
+􀟈  Test "token(forAdding:) handles nil values" started.
+􀟈  Test "Playlist result item subtitle" started.
+􀟈  Test "Playlist result item title" started.
+􀟈  Test "Album result item subtitle" started.
+􀟈  Test "Album result item thumbnail URL" started.
+􀟈  Test "Result item result type" started.
+􀟈  Test "SearchResponse not empty with playlists" started.
+􀟈  Test "SearchResponse allItems with multiple songs" started.
+􀟈  Test "SearchResponse not empty with songs" started.
+􀟈  Test "Parse empty playlist detail" started.
+􀟈  Test "Playlist result item thumbnail URL" started.
+􀟈  Test "Artist result item thumbnail URL" started.
+􀟈  Test "Song result item title" started.
+􀟈  Test "Artist result item subtitle is nil" started.
+􀟈  Test "Parse mixed library content from grid and responsive shelf" started.
+􀟈  Test "extractLyricsBrowseId extracts lyrics browse ID" started.
+􀟈  Test "SearchResponse not empty with artists" started.
+􀟈  Test "Korean is not Japanese" started.
+􀟈  Test "extractLyricsBrowseId returns nil when no lyrics tab" started.
+􀟈  Test "Previous seeks to start first when progress > 3; second Previous undoes next skip" started.
+􀟈  Test initialStateIsEmpty() started.
+􀟈  Test "Parse dedicated library artists response" started.
+􀟈  Test "Parse playlist detail with header" started.
+􀟈  Test "parse extracts lyrics with source" started.
+􀟈  Test "extractTimedLyrics finds nested timed lyrics models" started.
+􀟈  Test "Song result item has video ID" started.
+􀟈  Test "parse extracts lyrics text" started.
+􀟈  Test "Bootstrap script reflects pending media-control style changes" started.
+􀟈  Test "Toggle action uses alignment pattern" started.
+􀟈  Test "parse returns unavailable when no section contents" started.
+􀟈  Test "parse returns unavailable when lyrics text is empty" started.
+􀟈  Test "Album result item title" started.
+􀟈  Test "All feedback types are defined" started.
+􀟈  Test "Error uses generic pattern" started.
+􀟈  Test "SearchResponse isEmpty" started.
+􀟈  Test "SearchResponse empty" started.
+􀟈  Test "Success uses generic pattern" started.
+􀟈  Test "extractLyricsBrowseId returns nil for empty data" started.
+􀟈  Test "parse handles multi-run lyrics" started.
+􀟈  Test "Result item ID prefix" started.
+􀟈  Test "Line statuses computation" started.
+􀟈  Test "Result is cached on second call" started.
+􀟈  Test "Shared instance exists" started.
+􀟈  Test "Initial state is idle" started.
+􀟈  Test "Volume curve round trips representative values" started.
+􀟈  Test "Empty text returns nil" started.
+􀟈  Test "parse returns unavailable for empty data" started.
+􀟈  Test "Audio output icon resolver recognizes common devices" started.
+􀟈  Test handlesMissingHandle() started.
+􀟈  Test "Latin-only text returns nil" started.
+􀟈  Test parsesEmptyResponse() started.
+􀟈  Test "romanizeAll returns results only for non-Latin lines" started.
+􀟈  Test "Audio output picker button uses speaker icon unless AirPods are active" started.
+􀟈  Test "Korean text returns non-nil romanized string" started.
+􀟈  Test "Playback action uses generic pattern" started.
+􀟈  Test handlesMissingThumbnail() started.
+􀟈  Test parsesResponseWithEmptyActions() started.
+􀟈  Test "extractLyricsBrowseId finds lyrics tab among multiple tabs" started.
+􀟈  Test "Navigation uses alignment pattern" started.
+􀟈  Test "ArtistDetail with no description" started.
+􀟈  Test "ArtistDetail name computed property" started.
+􀟈  Test "ArtistDetail with empty songs and albums" started.
+􀟈  Test "romanizeAll returns empty dict for all-Latin lyrics" started.
+􀟈  Test identifiesPrimaryAccount() started.
+􀟈  Test "ArtistDetail id computed property" started.
+􀟈  Test "Non-network error debug description matches error description" started.
+􀟈  Test parsesSingleAccount() started.
+􀟈  Test "Slider boundary uses level change pattern" started.
+􀟈  Test parsesResponseWithMissingActions() started.
+􀟈  Test defaultsIsSelectedToFalse() started.
+􀟈  Test identifiesSelectedAccount() started.
+􀟈  Test extractsGoogleEmail() started.
+􀟈  Test identifiesBrandAccount() started.
+􀟈  Test "networkError contains 'Network error'" started.
+􀟈  Test parsesMultipleAccounts() started.
+􀟈  Test parsesSingleBrandAccount() started.
+􀟈  Test "networkError does not require reauth" started.
+􀟈  Test "apiError suggests trying again" started.
+􀟈  Test "Factory wires shared client into playback and account services" started.
+􀟈  Test "playbackError includes message" started.
+􀟈  Test "notAuthenticated has correct description" started.
+􀟈  Test "Volume curve gives low slider values finer output control" started.
+􀟈  Test "authExpired has correct description" started.
+􀟈  Test skipsAccountWithMissingName() started.
+􀟈  Test "parseError includes message" started.
+􀟈  Test "networkError suggests checking connection" started.
+􀟈  Test "apiError without code excludes code from description" started.
+􀟈  Test handlesMissingEmailInHeader() started.
+􀟈  Test "Volume curve clamps endpoints" started.
+􀟈  Test "Auth errors require reauth" started.
+􀟈  Test "playbackError suggests different track" started.
+􀟈  Test "Initial state is idle with no playlist detail" started.
+􀟈  Test "parseError does not require reauth" started.
+􀟈  Test "parseError debug description matches error description" started.
+􀟈  Test "ArtistDetail artist property" started.
+􀟈  Test "unknown does not require reauth" started.
+􀟈  Test "Parses duration from string field" started.
+􀟈  Test "notAuthenticated suggests signing in" started.
+􀟈  Test "Latin tokens are preserved inside mixed Japanese text" started.
+􀟈  Test "Parses playlist with browseId" started.
+􀟈  Test "Parses inline album reference with name only" started.
+􀟈  Test "unknown suggests trying later" started.
+􀟈  Test "playbackError does not require reauth" started.
+􀟈  Test "hasNavigableId returns true for UC channel IDs" started.
+􀟈  Test "hasNavigableId returns false for empty ID" started.
+􀟈  Test "Parses artist with id field" started.
+􀟈  Test "Formats multiple artists display" started.
+􀟈  Test "subscribeToPodcast throws for missing L-prefix" started.
+􀟈  Test "parseError suggests trying again" started.
+􀟈  Test "networkError debug description contains error type" started.
+􀟈  Test "Parses album from song data" started.
+􀟈  Test "Returns empty string for nil track count" started.
+􀟈  Test "authExpired suggests signing in" started.
+􀟈  Test "Returns nil for playlist with no ID" started.
+􀟈  Test "subscribeToPodcast throws for empty suffix" started.
+􀟈  Test "Parses year field" started.
+􀟈  Test "Returns empty string for nil artists" started.
+􀟈  Test "Formats track count display correctly" started.
+􀟈  Test "Podcast show ID conversion avoids double-L bug" started.
+􀟈  Test "PlaylistDetail inherits isAlbum from playlist" started.
+􀟈  Test "Parses author from authors array" started.
+􀟈  Test "SHA1 hash consistency" started.
+􀟈  Test "apiError does not require reauth" started.
+􀟈  Test "ArtistDetail initialization" started.
+􀟈  Test "unsubscribeFromPodcast throws for missing L-prefix" started.
+􀟈  Test "unknown error uses message as description" started.
+􀟈  Test "Parse radio queue handles missing optional fields" started.
+􀟈  Test "Parse continuation empty data returns empty result" started.
+􀟈  Test "hasNavigableId returns false for UUID IDs" started.
+􀟈  Test "apiError with code includes code in description" started.
+􀟈  Test "SAPISIDHASH format is correct" started.
+􀟈  Test "Parses multiple artists correctly" started.
+􀟈  Test "Parse empty data returns empty result" started.
+􀟈  Test "Creates PlaylistDetail from Playlist" started.
+􀟈  Test "Song model parsing" started.
+􀟈  Test "Uses name field as title" started.
+􀟈  Test "Handles missing duration" started.
+􀟈  Test "Album model parsing" started.
+􀟈  Test "Parse continuation extracts next continuation token" started.
+􀟈  Test "Parse valid radio queue extracts songs" started.
+􀟈  Test "Parse radio queue extracts artist info" started.
+􀟈  Test "Parses duration with hours" started.
+􀟈  Test "Generates UUID for inline artist" started.
+􀟈  Test "Uses default title when missing" started.
+􀟈  Test "Parse radio queue extracts continuation token" started.
+􀟈  Test "Podcast show ID conversion handles L-prefixed suffix correctly" started.
+􀟈  Test "Returns nil when no ID or name" started.
+􀟈  Test "LaunchPage has correct display names" started.
+􀟈  Test "unsubscribeFromPodcast throws for empty suffix" started.
+􀟈  Test "Parses artist with browseId" started.
+􀟈  Test "Parse radio queue handles wrapped renderer structure" started.
+􀟈  Test "Artist model parsing" started.
+􀟈  Test "Parses author from string field" started.
+􀟈  Test "Song is Hashable" started.
+􀟈  Test "Parse radio queue extracts thumbnail URL" started.
+􀟈  Test "Parse radio queue without continuation token" started.
+􀟈  Test "Podcast show ID without L-prefix should be rejected" started.
+􀟈  Test "Parses duration from seconds field" started.
+􀟈  Test "Parses artist with thumbnail" started.
+􀟈  Test "Valid podcast show IDs have L-prefixed content after MPSPP" started.
+􀟈  Test "hasNavigableId returns true for MPLAUC library artist browse IDs" started.
+􀟈  Test "Parses album with id field" started.
+􀟈  Test "Song parsing with missing videoId returns nil" started.
+􀟈  Test "Artist is Hashable" started.
+􀟈  Test "hasNavigableId returns false for SHA256 hash IDs" started.
+􀟈  Test "unsubscribeFromPodcast succeeds for valid MPSPP ID" started.
+􀟈  Test "Uses largest thumbnail from array" started.
+􀟈  Test "Parse continuation extracts songs" started.
+􀟈  Test "Parse radio queue extracts duration" started.
+􀟈  Test "Detects album prefixes correctly" started.
+􀟈  Test "Parses album with artists array" started.
+􀟈  Test "Compact frame is centered around the source frame" started.
+􀟈  Test "Uses default name when missing" started.
+􀟈  Test "Podcast show ID with only MPSPP prefix is invalid" started.
+􀟈  Test "Parse continuation without next token" started.
+􀟈  Test "Extracts API key from quoted bootstrap config" started.
+􀟈  Test "Initial state is idle" started.
+􀟈  Test "Parse carousel section with album" started.
+􀟈  Test "Parse navigation button renderer with params" started.
+􀟈  Test "Compact frame uses the target size" started.
+􀟈  Test "Parse navigation button renderer without params" started.
+􀟈  Test "Extract continuation token from initial response" started.
+􀟈  Test "Parse grid with navigation buttons" started.
+􀟈  Test "Presentation chrome applies and restores cleanly" started.
+􀟈  Test "Parse responsive browse item with library artist page type" started.
+􀟈  Test "Compact minimum size matches Small Player requirements" started.
+􀟈  Test "Parse carousel section with playlist" started.
+􀟈  Test "Extract continuation token from continuation response" started.
+􀟈  Test "Initial state is idle with empty sections" started.
+􀟈  Test "Handles song with no artists" started.
+􀟈  Test "Extract title from flex columns" started.
+􀟈  Test "Parses track count from formatted string" started.
+􀟈  Test "Parse basic LRC" started.
+􀟈  Test "Chart section detection returns true for chart titles" started.
+􀟈  Test "Extract artists from subtitle runs" started.
+􀟈  Test "addPlaylistToLibrary keeps optimistic playlist when refresh response is stale" started.
+􀟈  Test "Parse response with multiple sections" started.
+􀟈  Test "Extract thumbnails from empty data returns empty array" started.
+􀟈  Test "Normalize URL preserves full URL" started.
+􀟈  Test "Extract artists from flex columns accepts library artist browse IDs" started.
+􀟈  Test "Parse empty response returns empty sections" started.
+􀟈  Test "Extract title from standard title key" started.
+􀟈  Test "Extract video ID from overlay" started.
+􀟈  Test "Strip non-artist metadata like durations, years, and view counts" started.
+􀟈  Test "Extract duration from combined flex column runs (artist top songs)" started.
+􀟈  Test "Parse invalid duration returns nil" started.
+􀟈  Test "Extract title from empty data returns nil" started.
+􀟈  Test "Extract video ID from watchEndpoint" started.
+􀟈  Test "subscribeToPodcast succeeds for valid MPSPP ID" started.
+􀟈  Test "Extract title with custom key" started.
+􀟈  Test "Parse offset and multiple timestamps" started.
+􀟈  Test "HomeResponse is not empty with items" started.
+􀟈  Test "Extract video ID from playlistItemData" started.
+􀟈  Test "Extract browse ID from navigation endpoint" started.
+􀟈  Test "Thai romanizer safely handles clustered characters" started.
+􀟈  Test "Parse duration string to seconds" started.
+􀟈  Test "Extract thumbnails from musicThumbnailRenderer" started.
+􀟈  Test "Parse chart section with empty contents returns nil" started.
+􀟈  Test "Fall back to text-only artist names when no navigation endpoint is present" started.
+􀟈  Test "Already clean string is unchanged" started.
+􀟈  Test "Fixes spaced apostrophes in contractions" started.
+􀟈  Test "parseThumbnail extracts URL" started.
+􀟈  Test "Normalize URL adds https to protocol-relative URL" started.
+􀟈  Test "Extract artists from flex columns" started.
+􀟈  Test "Initial state includes songs from destination" started.
+􀟈  Test "Keeps band names that look like words inside the views/plays patterns" started.
+􀟈  Test "extractPanelVideoRenderer extracts direct renderer" started.
+􀟈  Test "Extract subtitle from flex columns" started.
+􀟈  Test "Album item returns album thumbnail" started.
+􀟈  Test "extractPanelVideoRenderer throws on invalid structure" started.
+􀟈  Test "Trims leading and trailing whitespace" started.
+􀟈  Test "Song item returns song title" started.
+􀟈  Test "Playlist item ID has correct prefix" started.
+􀟈  Test "Removes space before comma" started.
+􀟈  Test "parseMenuData leaves like status unknown when like button is missing" started.
+􀟈  Test "Playlist item returns playlist thumbnail" started.
+􀟈  Test "Playlist item has no videoId" started.
+􀟈  Test "parseArtists returns empty when no byline" started.
+􀟈  Test "parseMenuData extracts dislike status" started.
+􀟈  Test "parseDuration handles hour format" started.
+􀟈  Test "NBSP and thin spaces are normalized to regular space" started.
+􀟈  Test "Parses album with albumId" started.
+􀟈  Test "Playlist model parsing" started.
+􀟈  Test "Direct initializer sets all properties" started.
+􀟈  Test "parseMenuData extracts like status" started.
+􀟈  Test "Uses default title when missing" started.
+􀟈  Test "Removes space before period" started.
+􀟈  Test "parseArtists extracts single artist" started.
+􀟈  Test "parseDuration returns nil when no length text" started.
+􀟈  Test "parseMenuData extracts library add token" started.
+􀟈  Test "Collapses multiple spaces" started.
+􀟈  Test "parseThumbnail returns nil when no thumbnails" started.
+􀟈  Test "HomeResponse is empty with empty items" started.
+􀟈  Test "parseMenuData handles empty menu" started.
+􀟈  Test "Extract artists filters out separator characters" started.
+􀟈  Test "parseMenuData extracts library remove token and sets in library" started.
+􀟈  Test "parseTitle extracts title from renderer" started.
+􀟈  Test "Empty string returns empty string" started.
+􀟈  Test "Chart section detection returns false for non-chart titles" started.
+􀟈  Test "parseTitle returns Unknown when no title" started.
+􀟈  Test "Playlist item returns playlist title" started.
+􀟈  Test "HomeSection isChart flag works" started.
+􀟈  Test "parseArtists extracts multiple artists" started.
+􀟈  Test "parseArtists filters out separators" started.
+􀟈  Test "parseArtistDetail captures albums moreContentButton browseId/params" started.
+􀟈  Test "Album item returns album ID as browseId" started.
+􀟈  Test "Song item ID has correct prefix" started.
+􀟈  Test "parseDuration extracts duration" started.
+􀟈  Test "Song item returns videoId" started.
+􀟈  Test "Artist item subtitle is 'Artist'" started.
+􀟈  Test "Playlist item subtitle shows author" started.
+􀟈  Test "Artist item returns artist ID as browseId" started.
+􀟈  Test "parseArtistDetail extracts subscription status" started.
+􀟈  Test "Album item returns album title" started.
+􀟈  Test "Non-playlist item returns nil for playlist" started.
+􀟈  Test "parseArtistAlbums parses a grid response" started.
+􀟈  Test "HomeResponse is empty with no sections" started.
+􀟈  Test "parseArtistDetail does not set channel ID without UC prefix" started.
+􀟈  Test "Artist item returns artist name" started.
+􀟈  Test "parseMenuData preserves explicit indifferent status" started.
+􀟈  Test "extractPanelVideoRenderer extracts wrapped renderer" started.
+􀟈  Test "Song item returns song thumbnail" started.
+􀟈  Test "parseArtistDetail extracts mix playlist ID from startRadioButton" started.
+􀟈  Test "parseArtistDetail extracts basic info" started.
+􀟈  Test "Song item subtitle shows artists" started.
+􀟈  Test "parseArtistDetail extracts songs browse ID when available" started.
+􀟈  Test "Album item subtitle shows artists" started.
+􀟈  Test "parseArtists generates UUID for artist without ID" started.
+􀟈  Test "Album item has no videoId" started.
+􀟈  Test "HomeResponse.empty returns empty response" started.
+􀟈  Test "Artist item has no videoId" started.
+􀟈  Test "parseTitle returns Unknown when runs empty" started.
+􀟈  Test "parseArtistDetail extracts albums with MPRE prefix" started.
+􀟈  Test "parseArtistDetail extracts albums with OLAK prefix" started.
+􀟈  Test "Artist item returns artist thumbnail" started.
+􀟈  Test "parseArtistSongs handles empty response" started.
+􀟈  Test "parseArtistSongs extracts songs from shelf" started.
+􀟈  Test "Non-album item returns nil for album" started.
+􀟈  Test "parseArtistDetail handles empty response" started.
+􀟈  Test "parseThumbnail handles protocol-relative URL" started.
+􀟈  Test "parseArtistDetail extracts channel ID from UC prefix" started.
+􀟈  Test "Song item has no browseId" started.
+􀟈  Test "parseArtistDetail extracts thumbnail URL" started.
+􀟈  Test "Playlist item extracts playlist" started.
+􀟈  Test "HomeSection initializes correctly" started.
+􀟈  Test "Artist item ID has correct prefix" started.
+􀟈  Test "Album item ID has correct prefix" started.
+􀟈  Test "status for videoId returns nil when not cached" started.
+􀟈  Test "Known syllable decomposition: 한 → han" started.
+􀟈  Test "parseArtistDetail ignores non-album browse IDs" started.
+􀟈  Test "Common Korean word romanizes" started.
+􀟈  Test "parseArtistAlbums skips non-album browse IDs" started.
+􀟈  Test "Syllable with no final consonant: 가 → ga" started.
+􀟈  Test "Latin passthrough is preserved" started.
+􀟈  Test "Playlist item returns playlist ID as browseId" started.
+􀟈  Test "Parse history suggestion" started.
+􀟈  Test "Empty suggestion text is skipped" started.
+􀟈  Test "observation task is active after init" started.
+􀟈  Test "Parse suggestion with multiple runs joins text" started.
+􀟈  Test "playWithMix does nothing without client" started.
+􀟈  Test "Syllable with ng final: 방 → bang" started.
+􀟈  Test "Simple Korean syllable romanizes correctly" started.
+􀟈  Test "Parse single suggestion" started.
+􀟈  Test "Album item extracts album" started.
+􀟈  Test "Parse empty contents returns empty array" started.
+􀟈  Test "Interface type has description" started.
+􀟈  Test "Initial state is idle" started.
+􀟈  Test "Initial state defaults to connected" started.
+􀟈  Test "Parse empty response returns empty array" started.
+􀟈  Test "Status description when disconnected shows no internet" started.
+􀟈  Test "Suggestion with explicit ID" started.
+􀟈  Test "Expensive connection flag is available" started.
+􀟈  Test "Initial state is idle with empty sections" started.
+􀟈  Test "Initial state is initializing" started.
+􀟈  Test "Artist shareSubtitle is nil" started.
+􀟈  Test "Status description when connected shows interface type" started.
+􀟈  Test "Album with MPRE prefix has shareURL" started.
+􀟈  Test "parseArtistSongs extracts artist info" started.
+􀟈  Test "Shared instance exists" started.
+􀟈  Test "Constrained connection flag is available" started.
+􀟈  Test "Playlist shareURL has correct format" started.
+􀟈  Test "Parse multiple suggestions" started.
+􀟈  Test "Empty string returns nil" started.
+􀟈  Test "Album without artists shows only title" started.
+􀟈  Test "Suggestions have unique IDs" started.
+􀟈  Test "Album with OLAK prefix has shareURL" started.
+􀟈  Test "Playlist without author shows only title" started.
+􀟈  Test "Artist without navigable artist prefix has nil shareURL" started.
+􀟈  Test "Arabic bundle localizes artist strings" started.
+􀟈  Test "Song shareText includes title and artist" started.
+􀟈  Test "Album with UUID ID has nil shareURL" started.
+􀟈  Test "Artist with UUID ID has nil shareURL" started.
+􀟈  Test "Suggestion is hashable" started.
+􀟈  Test "Artist with UC prefix has shareURL" started.
+􀟈  Test "Song shareURL has correct format" started.
+􀟈  Test "Parse episodes continuation without more pages" started.
+􀟈  Test "Parse episodes continuation with episodes" started.
+􀟈  Test "Song with multiple artists displays comma-separated" started.
+􀟈  Test "Parse empty continuation returns empty sections" started.
+􀟈  Test "Audio-only script hides video toggle and activates song" started.
+􀟈  Test "Initial state is idle with empty sections" started.
+􀟈  Test "Parse discovery response with carousel section" started.
+􀟈  Test "Parse show detail with continuation token" started.
+􀟈  Test "Parse discovery response with music shelf section" started.
+􀟈  Test "Unknown renderer is skipped" started.
+􀟈  Test "Parse show detail with header" started.
+􀟈  Test "isPodcastShow returns true for MPSPP prefix" started.
+􀟈  Test "fetchLyrics prefers synced results over plain results" started.
+􀟈  Test "Parse empty episodes continuation" started.
+􀟈  Test "isPodcastShow returns false for non-MPSPP prefix" started.
+􀟈  Test "Dock menu renders now playing state and player actions" started.
+􀟈  Test "Parse show detail with subscription status" started.
+􀟈  Test "Parse empty show detail returns placeholder show" started.
+􀟈  Test "Parse empty response returns empty sections" started.
+􀟈  Test "Interface type is Sendable" started.
+􀟈  Test "Initial state is idle with empty library content" started.
+􀟈  Test "Artist with MPLAUC prefix shares the public channel URL" started.
+􀟈  Test "Parse continuation response with sections" started.
+􀟈  Test "Parse discovery response with multiple sections" started.
+􀟈  Test "Playlist shareText includes title and author" started.
+􀟈  Test "Initial state is empty" started.
+􀟈  Test "Missing suggestion key is skipped" started.
+􀟈  Test case passing 2 arguments jsonString → ""INDIFFERENT"", expected → .indifferent to "Decodes from raw value strings" started.
+􀟈  Test case passing 2 arguments jsonString → ""LIKE"", expected → .like to "Decodes from raw value strings" started.
+􀟈  Test case passing 2 arguments jsonString → ""DISLIKE"", expected → .dislike to "Decodes from raw value strings" started.
+􀟈  Test case passing 1 argument status → .like to "Encoding and decoding preserves value" started.
+􀟈  Test case passing 1 argument status → .dislike to "Encoding and decoding preserves value" started.
+􀟈  Test case passing 1 argument status → .indifferent to "Encoding and decoding preserves value" started.
+􀟈  Test "Default policy has expected values" started.
+􀟈  Test case passing 2 arguments playlistId → "MPRE12345", expectedIsAlbum → true to "Album detection based on ID prefix" started.
+􀟈  Test case passing 2 arguments playlistId → "VL12345", expectedIsAlbum → false to "Album detection based on ID prefix" started.
+􀟈  Test case passing 2 arguments playlistId → "RDCLAK", expectedIsAlbum → false to "Album detection based on ID prefix" started.
+􀟈  Test case passing 2 arguments playlistId → "OLAK12345", expectedIsAlbum → true to "Album detection based on ID prefix" started.
+􀟈  Test "Cache set and get" started.
+􀟈  Test "Initial state is idle with empty songs" started.
+􀟈  Test case passing 1 argument feedbackType → .playbackAction to "All feedback types are defined" started.
+􀟈  Test case passing 1 argument feedbackType → .toggle to "All feedback types are defined" started.
+􀟈  Test case passing 1 argument feedbackType → .sliderBoundary to "All feedback types are defined" started.
+􀟈  Test case passing 1 argument feedbackType → .navigation to "All feedback types are defined" started.
+􀟈  Test case passing 1 argument feedbackType → .success to "All feedback types are defined" started.
+􀟈  Test case passing 1 argument feedbackType → .error to "All feedback types are defined" started.
+􀟈  Test case passing 3 arguments type → "song", id → "s1", expectedId → "song-s1" to "Result item ID prefix" started.
+􀟈  Test case passing 3 arguments type → "album", id → "a1", expectedId → "album-a1" to "Result item ID prefix" started.
+􀟈  Test case passing 3 arguments type → "artist", id → "ar1", expectedId → "artist-ar1" to "Result item ID prefix" started.
+􀟈  Test case passing 3 arguments type → "playlist", id → "p1", expectedId → "playlist-p1" to "Result item ID prefix" started.
+􀟈  Test "likeCurrentTrack does nothing when no current track" started.
+􀟈  Test case passing 1 argument error → Your session has expired. Please sign in again. to "Auth errors require reauth" started.
+􀟈  Test case passing 1 argument error → You're not signed in. Please sign in to continue. to "Auth errors require reauth" started.
+􀟈  Test case passing 2 arguments count → 1, expected → "1 song" to "Formats track count display correctly" started.
+􀟈  Test case passing 2 arguments count → 25, expected → "25 songs" to "Formats track count display correctly" started.
+􀟈  Test case passing 2 arguments id → "MPREb_xyz123", expectedIsAlbum → true to "Detects album prefixes correctly" started.
+􀟈  Test case passing 2 arguments id → "OLAK5uy_abc", expectedIsAlbum → true to "Detects album prefixes correctly" started.
+􀟈  Test case passing 2 arguments id → "PLtest123", expectedIsAlbum → false to "Detects album prefixes correctly" started.
+􀟈  Test case passing 1 argument title → "Top Charts" to "Chart section detection returns true for chart titles" started.
+􀟈  Test case passing 1 argument title → "Weekly Top 50" to "Chart section detection returns true for chart titles" started.
+􀟈  Test case passing 1 argument title → "Trending Now" to "Chart section detection returns true for chart titles" started.
+􀟈  Test case passing 1 argument title → "Daily Top 100" to "Chart section detection returns true for chart titles" started.
+􀟈  Test case passing 2 arguments input → "1:30:00", expectedSeconds → 5400.0 to "Parse duration string to seconds" started.
+􀟈  Test case passing 2 arguments input → "3:45", expectedSeconds → 225.0 to "Parse duration string to seconds" started.
+􀟈  Test case passing 1 argument title → "Quick picks" to "Chart section detection returns false for non-chart titles" started.
+􀟈  Test case passing 1 argument title → "New releases" to "Chart section detection returns false for non-chart titles" started.
+􀟈  Test case passing 1 argument title → "Recommended" to "Chart section detection returns false for non-chart titles" started.
+􀟈  Test "hasMore returns false when continuationToken is nil" started.
+􀟈  Test "formattedDuration returns nil when durationSeconds is nil and no fallback" started.
+􀟈  Test "formattedDuration handles exactly one hour" started.
+􀟈  Test "formattedDuration returns HH:MM:SS for long duration" started.
+􀟈  Test "hasMore returns true when continuationToken exists" started.
+􀟈  Test "formattedDuration returns fallback string when durationSeconds is nil" started.
+􀟈  Test "formattedDuration handles 59 minutes 59 seconds" started.
+􀟈  Test "PodcastSectionItem is Hashable based on id" started.
+􀟈  Test "show case returns show id" started.
+􀟈  Test "episode case returns episode id" started.
+􀟈  Test "formattedDuration handles zero duration" started.
+􀟈  Test "formattedDuration returns MM:SS for short duration" started.
+􀟈  Test "PodcastEpisode is Identifiable with id" started.
+􀟈  Test "hasMore returns true when continuationToken exists" started.
+􀟈  Test "hasMore returns false when continuationToken is nil" started.
+􀟈  Test "PodcastSection is Identifiable with id" started.
+􀟈  Test "Reorder queue moves song from source to destination" started.
+􀟈  Test "Initial state is idle with no artist detail" started.
+􀟈  Test "hasNavigableId returns false for non-MPSPP prefix" started.
+􀟈  Test "PodcastShow is Hashable" started.
+􀟈  Test "PodcastShow is Identifiable with id" started.
+􀟈  Test "hasNavigableId returns true for MPSPP prefix" started.
+􀟈  Test "same song retries primary when the primary URL changes" started.
+􀟈  Test "uses primary URL until that exact primary source fails" started.
+􀟈  Test "fallback only activates when there is a distinct fallback URL" started.
+􀟈  Test "parse unwraps itemSectionRenderer wrappers and preserves order" started.
+􀟈  Test "parse falls back to shelf-index id for shelves with no title" started.
+􀟈  Test "Song has correct video ID" started.
+􀟈  Test "Parse response with only albums" started.
+􀟈  Test "Parse library artist result using library artist page type" started.
+􀟈  Test "Parse empty response returns empty results" started.
+􀟈  Test "Parse response with only playlists" started.
+􀟈  Test "parse preserves YT shelf order in `sections`" started.
+􀟈  Test "Initial state is idle with empty query" started.
+􀟈  Test "Parse response with only artists" started.
+􀟈  Test "Parse response with mixed results" started.
+􀟈  Test "parse produces stable section ids across re-queries with reordered items" started.
+􁁛  Test brandAccountName() passed after 0.014 seconds.
+􁁛  Test accountEqualityDifferentAccounts() passed after 0.014 seconds.
+􁁛  Test brandAccountHandle() passed after 0.014 seconds.
+􁁛  Test accountEqualitySameAccounts() passed after 0.014 seconds.
+􁁛  Test primaryAccountHandle() passed after 0.014 seconds.
+􁁛  Test unselectedAccountState() passed after 0.014 seconds.
+􁁛  Test typeLabelForPrimaryAccount() passed after 0.014 seconds.
+􁁛  Test brandAccountHasBrandId() passed after 0.014 seconds.
+􁁛  Test accountEqualityDifferentSelectionState() passed after 0.014 seconds.
+􀟈  Test "Parse response with only songs" started.
+􁁛  Test primaryAccountHasNilBrandId() passed after 0.014 seconds.
+􁁛  Test selectedAccountState() passed after 0.014 seconds.
+􁁛  Test accountHashabilityDifferentAccounts() passed after 0.014 seconds.
+􁁛  Test "Hangul syllables are detected as Korean" passed after 0.014 seconds.
+􁁛  Test typeLabelForBrandAccount() passed after 0.014 seconds.
+􁁛  Test "dominantScript returns .japanese for kana text" passed after 0.014 seconds.
+􁁛  Test accountHashability() passed after 0.014 seconds.
+􁁛  Test factoryMethodCreatesPrimaryAccount() passed after 0.014 seconds.
+􁁛  Test "Lines with different romanizedText are not equal" passed after 0.014 seconds.
+􁁛  Test accountWithAllNilOptionals() passed after 0.014 seconds.
+􁁛  Test "Handles nil values correctly" passed after 0.014 seconds.
+􁁛  Test "Decodes from raw value strings" with 3 test cases passed after 0.014 seconds.
+􁁛  Test "dominantScript returns .latin for ASCII text" passed after 0.014 seconds.
+􁁛  Test "isLiked returns true only for .like" passed after 0.014 seconds.
+􁁛  Test "isDisliked returns true only for .dislike" passed after 0.014 seconds.
+􁁛  Test "Katakana is detected as Japanese" passed after 0.014 seconds.
+􁁛  Test "Japanese is not Korean" passed after 0.014 seconds.
+􁁛  Test accountWithNilThumbnail() passed after 0.014 seconds.
+􁁛  Test "Raw values are correct" passed after 0.014 seconds.
+􁁛  Test "Latin-only text is detected correctly" passed after 0.014 seconds.
+􁁛  Test "romanizedText defaults to nil" passed after 0.014 seconds.
+􁁛  Test "romanizedText can be set" passed after 0.014 seconds.
+􁁛  Test factoryMethodCreatesBrandAccount() passed after 0.014 seconds.
+􁁛  Test accountEqualityDifferentNames() passed after 0.014 seconds.
+􁁛  Test "Encoding and decoding preserves value" with 3 test cases passed after 0.014 seconds.
+􁁛  Test primaryAccountName() passed after 0.014 seconds.
+􁁛  Test "Non-Latin text is not Latin-only" passed after 0.014 seconds.
+􁁛  Test "Initialization stores tokens correctly" passed after 0.013 seconds.
+􁁛  Test "FeedbackTokens is Hashable" passed after 0.014 seconds.
+􁁛  Test "dominantScript returns .korean for Hangul text" passed after 0.014 seconds.
+􁁛  Test "Equality comparison works correctly" passed after 0.014 seconds.
+􁁛  Test "Encoding and decoding preserves FeedbackTokens" passed after 0.014 seconds.
+􁁛  Test "Hiragana is detected as Japanese" passed after 0.014 seconds.
+􁁛  Test accountHashabilityInSet() passed after 0.014 seconds.
+􁁛  Test "CJK with kana is not Chinese (it's Japanese)" passed after 0.014 seconds.
+􁁛  Test accountWithNilHandle() passed after 0.014 seconds.
+􁁛  Test "Parse library playlists from grid" passed after 0.014 seconds.
+􁁛  Test "Parse 2025 continuation format without next token" passed after 0.014 seconds.
+􁁛  Test "token(forAdding:) returns correct token" passed after 0.014 seconds.
+􁁛  Test "dominantScript returns .thai for Thai text" passed after 0.013 seconds.
+􁁛  Test "Artist result item title" passed after 0.014 seconds.
+􁁛  Test "SearchResponse not empty with albums" passed after 0.013 seconds.
+􁁛  Test "Parse 2025 continuation format with onResponseReceivedActions" passed after 0.014 seconds.
+􁁛  Test "Song result item subtitle joins artists" passed after 0.013 seconds.
+􁁛  Test "parseLibraryContent keeps RDCLAK playlists when shaped as responsive items" passed after 0.014 seconds.
+􁁛  Test "Non-song result items have nil video ID" passed after 0.013 seconds.
+􁁛  Test "parsePlaylistDetail extracts authorChannelId from straplineTextOne" passed after 0.014 seconds.
+􁁛  Test "Equality comparison works correctly for FeedbackTokens" passed after 0.014 seconds.
+􁁛  Test "Parse empty library playlists response" passed after 0.014 seconds.
+􁁛  Test "SearchResponse allItems ordering" passed after 0.013 seconds.
+􁁛  Test "Song result item thumbnail URL" passed after 0.013 seconds.
+􁁛  Test "token(forAdding:) handles nil values" passed after 0.014 seconds.
+􁁛  Test "Playlist result item title" passed after 0.013 seconds.
+􁁛  Test "Album result item subtitle" passed after 0.013 seconds.
+􁁛  Test "Playlist result item subtitle" passed after 0.014 seconds.
+􁁛  Test "Album result item thumbnail URL" passed after 0.013 seconds.
+􁁛  Test "Parse dedicated library artists deduplicates equivalent artist IDs" passed after 0.014 seconds.
+􁁛  Test "SearchResponse not empty with playlists" passed after 0.013 seconds.
+􁁛  Test "Result item result type" passed after 0.013 seconds.
+􁁛  Test "SearchResponse allItems with multiple songs" passed after 0.014 seconds.
+􁁛  Test "Parse empty playlist detail" passed after 0.014 seconds.
+􁁛  Test "Artist result item thumbnail URL" passed after 0.013 seconds.
+􁁛  Test "SearchResponse not empty with songs" passed after 0.013 seconds.
+􁁛  Test "Song result item title" passed after 0.013 seconds.
+􁁛  Test "Korean is not Japanese" passed after 0.014 seconds.
+􁁛  Test "extractLyricsBrowseId returns nil when no lyrics tab" passed after 0.013 seconds.
+􁁛  Test "Playlist result item thumbnail URL" passed after 0.013 seconds.
+􁁛  Test "extractLyricsBrowseId extracts lyrics browse ID" passed after 0.013 seconds.
+􁁛  Test "Parse dedicated library artists response" passed after 0.014 seconds.
+􁁛  Test "Parse mixed library content from grid and responsive shelf" passed after 0.014 seconds.
+􁁛  Test "SearchResponse not empty with artists" passed after 0.013 seconds.
+􁁛  Test "parse extracts lyrics with source" passed after 0.013 seconds.
+􁁛  Test "Song result item has video ID" passed after 0.013 seconds.
+􁁛  Test "parse extracts lyrics text" passed after 0.013 seconds.
+􁁛  Test "extractTimedLyrics finds nested timed lyrics models" passed after 0.013 seconds.
+􁁛  Test "Toggle action uses alignment pattern" passed after 0.013 seconds.
+􁁛  Test "Album result item title" passed after 0.013 seconds.
+􁁛  Test "parse returns unavailable when lyrics text is empty" passed after 0.013 seconds.
+􁁛  Test "Error uses generic pattern" passed after 0.013 seconds.
+􁁛  Test "SearchResponse isEmpty" passed after 0.014 seconds.
+􁁛  Test "SearchResponse empty" passed after 0.014 seconds.
+􁁛  Test "parse returns unavailable when no section contents" passed after 0.013 seconds.
+􁁛  Test "All feedback types are defined" with 6 test cases passed after 0.013 seconds.
+􁁛  Test "Success uses generic pattern" passed after 0.013 seconds.
+􁁛  Test "parsePlaylistDetail extracts authorChannelId from subtitle navigationEndpoint" passed after 0.014 seconds.
+􁁛  Test "Artist result item subtitle is nil" passed after 0.013 seconds.
+􁁛  Test "parse handles multi-run lyrics" passed after 0.013 seconds.
+􁁛  Test "Line statuses computation" passed after 0.013 seconds.
+􁁛  Test "Result item ID prefix" with 4 test cases passed after 0.014 seconds.
+􁁛  Test "extractLyricsBrowseId returns nil for empty data" passed after 0.013 seconds.
+􁁛  Test parsesEmptyResponse() passed after 0.013 seconds.
+􁁛  Test "Volume curve round trips representative values" passed after 0.013 seconds.
+􁁛  Test "Album detection based on ID prefix" with 4 test cases passed after 0.014 seconds.
+􁁛  Test "Playback action uses generic pattern" passed after 0.013 seconds.
+􁁛  Test handlesMissingThumbnail() passed after 0.013 seconds.
+􁁛  Test "parse returns unavailable for empty data" passed after 0.013 seconds.
+􁁛  Test parsesResponseWithEmptyActions() passed after 0.013 seconds.
+􁁛  Test "ArtistDetail with empty songs and albums" passed after 0.013 seconds.
+􁁛  Test handlesMissingHandle() passed after 0.013 seconds.
+􁁛  Test "ArtistDetail name computed property" passed after 0.013 seconds.
+􁁛  Test "extractLyricsBrowseId finds lyrics tab among multiple tabs" passed after 0.013 seconds.
+􁁛  Test "Parse playlist detail tracks" passed after 0.014 seconds.
+􁁛  Test "Non-network error debug description matches error description" passed after 0.013 seconds.
+􁁛  Test "Slider boundary uses level change pattern" passed after 0.013 seconds.
+􁁛  Test "ArtistDetail with no description" passed after 0.013 seconds.
+􁁛  Test "Navigation uses alignment pattern" passed after 0.013 seconds.
+􁁛  Test identifiesPrimaryAccount() passed after 0.013 seconds.
+􁁛  Test parsesSingleAccount() passed after 0.013 seconds.
+􁁛  Test "Parse playlist detail with header" passed after 0.014 seconds.
+􁁛  Test defaultsIsSelectedToFalse() passed after 0.013 seconds.
+􁁛  Test "ArtistDetail id computed property" passed after 0.013 seconds.
+􁁛  Test identifiesBrandAccount() passed after 0.013 seconds.
+􁁛  Test "networkError does not require reauth" passed after 0.013 seconds.
+􁁛  Test "apiError suggests trying again" passed after 0.013 seconds.
+􁁛  Test identifiesSelectedAccount() passed after 0.013 seconds.
+􁁛  Test parsesSingleBrandAccount() passed after 0.013 seconds.
+􁁛  Test parsesResponseWithMissingActions() passed after 0.013 seconds.
+􁁛  Test extractsGoogleEmail() passed after 0.013 seconds.
+􁁛  Test "parseError includes message" passed after 0.013 seconds.
+􁁛  Test "playbackError includes message" passed after 0.013 seconds.
+􁁛  Test "Volume curve gives low slider values finer output control" passed after 0.013 seconds.
+􁁛  Test "authExpired has correct description" passed after 0.013 seconds.
+􁁛  Test "Volume curve clamps endpoints" passed after 0.013 seconds.
+􁁛  Test parsesMultipleAccounts() passed after 0.013 seconds.
+􁁛  Test "parseError does not require reauth" passed after 0.013 seconds.
+􁁛  Test "ArtistDetail artist property" passed after 0.013 seconds.
+􁁛  Test skipsAccountWithMissingName() passed after 0.013 seconds.
+􁁛  Test handlesMissingEmailInHeader() passed after 0.013 seconds.
+􁁛  Test "notAuthenticated has correct description" passed after 0.013 seconds.
+􁁛  Test "networkError suggests checking connection" passed after 0.013 seconds.
+􁁛  Test "playbackError suggests different track" passed after 0.013 seconds.
+􁁛  Test "notAuthenticated suggests signing in" passed after 0.013 seconds.
+􁁛  Test "apiError without code excludes code from description" passed after 0.013 seconds.
+􁁛  Test "parseError debug description matches error description" passed after 0.013 seconds.
+􁁛  Test "Auth errors require reauth" with 2 test cases passed after 0.013 seconds.
+􁁛  Test "unknown suggests trying later" passed after 0.013 seconds.
+􁁛  Test "Parses playlist with browseId" passed after 0.013 seconds.
+􁁛  Test "Parses duration from string field" passed after 0.013 seconds.
+􁁛  Test "hasNavigableId returns true for UC channel IDs" passed after 0.013 seconds.
+􁁛  Test "parseError suggests trying again" passed after 0.013 seconds.
+􁁛  Test "playbackError does not require reauth" passed after 0.013 seconds.
+􁁛  Test "unknown does not require reauth" passed after 0.013 seconds.
+􁁛  Test "Parses artist with id field" passed after 0.013 seconds.
+􁁛  Test "Parses inline album reference with name only" passed after 0.013 seconds.
+􁁛  Test "hasNavigableId returns false for empty ID" passed after 0.013 seconds.
+􁁛  Test "Formats multiple artists display" passed after 0.013 seconds.
+􁁛  Test "Returns empty string for nil track count" passed after 0.013 seconds.
+􁁛  Test "networkError debug description contains error type" passed after 0.013 seconds.
+􁁛  Test "Returns nil for playlist with no ID" passed after 0.013 seconds.
+􁁛  Test "authExpired suggests signing in" passed after 0.013 seconds.
+􁁛  Test "Parses album from song data" passed after 0.013 seconds.
+􁁛  Test "Returns empty string for nil artists" passed after 0.013 seconds.
+􁁛  Test "Formats track count display correctly" with 2 test cases passed after 0.013 seconds.
+􁁛  Test "Parses year field" passed after 0.013 seconds.
+􁁛  Test "ArtistDetail initialization" passed after 0.013 seconds.
+􁁛  Test "Podcast show ID conversion avoids double-L bug" passed after 0.013 seconds.
+􁁛  Test "PlaylistDetail inherits isAlbum from playlist" passed after 0.013 seconds.
+􁁛  Test "SHA1 hash consistency" passed after 0.013 seconds.
+􁁛  Test "apiError does not require reauth" passed after 0.013 seconds.
+􁁛  Test "unknown error uses message as description" passed after 0.013 seconds.
+􁁛  Test "Parse continuation empty data returns empty result" passed after 0.013 seconds.
+􁁛  Test "Parses author from authors array" passed after 0.013 seconds.
+􁁛  Test "Audio output picker button uses speaker icon unless AirPods are active" passed after 0.014 seconds.
+􁁛  Test "Parse radio queue handles missing optional fields" passed after 0.013 seconds.
+􁁛  Test "Audio output icon resolver recognizes common devices" passed after 0.014 seconds.
+􁁛  Test "apiError with code includes code in description" passed after 0.013 seconds.
+􁁛  Test "Parse empty data returns empty result" passed after 0.013 seconds.
+􁁛  Test "networkError contains 'Network error'" passed after 0.013 seconds.
+􁁛  Test "Song model parsing" passed after 0.013 seconds.
+􁁛  Test "Creates PlaylistDetail from Playlist" passed after 0.013 seconds.
+􁁛  Test "Parses multiple artists correctly" passed after 0.013 seconds.
+􁁛  Test "hasNavigableId returns false for UUID IDs" passed after 0.013 seconds.
+􁁛  Test "Uses name field as title" passed after 0.013 seconds.
+􁁛  Test "Handles missing duration" passed after 0.013 seconds.
+􁁛  Test "Album model parsing" passed after 0.013 seconds.
+􁁛  Test "Returns nil when no ID or name" passed after 0.013 seconds.
+􁁛  Test "Parses duration with hours" passed after 0.013 seconds.
+􁁛  Test "Uses default title when missing" passed after 0.013 seconds.
+􁁛  Test "Parse continuation extracts next continuation token" passed after 0.013 seconds.
+􁁛  Test "Parses artist with browseId" passed after 0.013 seconds.
+􁁛  Test "Parse radio queue handles wrapped renderer structure" passed after 0.013 seconds.
+􁁛  Test "Generates UUID for inline artist" passed after 0.013 seconds.
+􁁛  Test "SAPISIDHASH format is correct" passed after 0.013 seconds.
+􁁛  Test "Artist model parsing" passed after 0.013 seconds.
+􁁛  Test "Podcast show ID conversion handles L-prefixed suffix correctly" passed after 0.013 seconds.
+􁁛  Test "Parses author from string field" passed after 0.013 seconds.
+􁁛  Test "Parses duration from seconds field" passed after 0.013 seconds.
+􁁛  Test "Valid podcast show IDs have L-prefixed content after MPSPP" passed after 0.013 seconds.
+􁁛  Test "Parses artist with thumbnail" passed after 0.013 seconds.
+􁁛  Test "Parse radio queue extracts continuation token" passed after 0.013 seconds.
+􁁛  Test "Parse radio queue extracts thumbnail URL" passed after 0.013 seconds.
+􁁛  Test "Uses largest thumbnail from array" passed after 0.013 seconds.
+􁁛  Test "Podcast show ID without L-prefix should be rejected" passed after 0.013 seconds.
+􁁛  Test "Song is Hashable" passed after 0.013 seconds.
+􁁛  Test "Parse valid radio queue extracts songs" passed after 0.013 seconds.
+􁁛  Test "Parses album with artists array" passed after 0.013 seconds.
+􁁛  Test "Parses album with id field" passed after 0.013 seconds.
+􁁛  Test "hasNavigableId returns true for MPLAUC library artist browse IDs" passed after 0.013 seconds.
+􁁛  Test "Parse radio queue extracts duration" passed after 0.013 seconds.
+􁁛  Test "hasNavigableId returns false for SHA256 hash IDs" passed after 0.013 seconds.
+􁁛  Test "Parse radio queue without continuation token" passed after 0.013 seconds.
+􁁛  Test "Uses default name when missing" passed after 0.013 seconds.
+􁁛  Test "Detects album prefixes correctly" with 3 test cases passed after 0.013 seconds.
+􁁛  Test "Podcast show ID with only MPSPP prefix is invalid" passed after 0.013 seconds.
+􁁛  Test "Artist is Hashable" passed after 0.013 seconds.
+􁁛  Test "Song parsing with missing videoId returns nil" passed after 0.013 seconds.
+􁁛  Test "Parse navigation button renderer without params" passed after 0.012 seconds.
+􁁛  Test "Parse radio queue extracts artist info" passed after 0.013 seconds.
+􁁛  Test "Parse continuation extracts songs" passed after 0.013 seconds.
+􁁛  Test "Parse carousel section with album" passed after 0.012 seconds.
+􁁛  Test "Parse grid with navigation buttons" passed after 0.012 seconds.
+􁁛  Test "Extract continuation token from initial response" passed after 0.013 seconds.
+􁁛  Test "Parse continuation without next token" passed after 0.013 seconds.
+􁁛  Test "Extract continuation token from continuation response" passed after 0.012 seconds.
+􁁛  Test "Parse navigation button renderer with params" passed after 0.012 seconds.
+􁁛  Test "Extracts API key from quoted bootstrap config" passed after 0.013 seconds.
+􁁛  Test "Extract artists from subtitle runs" passed after 0.012 seconds.
+􁁛  Test "Chart section detection returns true for chart titles" with 4 test cases passed after 0.012 seconds.
+􁁛  Test "Parse responsive browse item with library artist page type" passed after 0.013 seconds.
+􁁛  Test "Parse carousel section with playlist" passed after 0.012 seconds.
+􁁛  Test "Extract title from flex columns" passed after 0.012 seconds.
+􁁛  Test "Parse basic LRC" passed after 0.012 seconds.
+􁁛  Test "Normalize URL preserves full URL" passed after 0.012 seconds.
+􁁛  Test "Parses track count from formatted string" passed after 0.012 seconds.
+􁁛  Test "Extract title from standard title key" passed after 0.012 seconds.
+􁁛  Test "Extract duration from combined flex column runs (artist top songs)" passed after 0.012 seconds.
+􁁛  Test "Extract title from empty data returns nil" passed after 0.012 seconds.
+􁁛  Test "Parse invalid duration returns nil" passed after 0.012 seconds.
+􁁛  Test "Extract artists from flex columns accepts library artist browse IDs" passed after 0.012 seconds.
+􁁛  Test "Parse empty response returns empty sections" passed after 0.012 seconds.
+􁁛  Test "HomeResponse is not empty with items" passed after 0.012 seconds.
+􁁛  Test "Extract thumbnails from empty data returns empty array" passed after 0.012 seconds.
+􁁛  Test "Extract video ID from overlay" passed after 0.012 seconds.
+􁁛  Test "Strip non-artist metadata like durations, years, and view counts" passed after 0.012 seconds.
+􁁛  Test "Extract video ID from playlistItemData" passed after 0.012 seconds.
+􁁛  Test "Extract title with custom key" passed after 0.012 seconds.
+􁁛  Test "Extract browse ID from navigation endpoint" passed after 0.012 seconds.
+􁁛  Test "Extract video ID from watchEndpoint" passed after 0.012 seconds.
+􁁛  Test "Parse duration string to seconds" with 2 test cases passed after 0.013 seconds.
+􁁛  Test "Handles song with no artists" passed after 0.013 seconds.
+􁁛  Test "Parse chart section with empty contents returns nil" passed after 0.012 seconds.
+􁁛  Test "Already clean string is unchanged" passed after 0.012 seconds.
+􁁛  Test "Fixes spaced apostrophes in contractions" passed after 0.012 seconds.
+􁁛  Test "parseThumbnail extracts URL" passed after 0.012 seconds.
+􁁛  Test "Extract thumbnails from musicThumbnailRenderer" passed after 0.012 seconds.
+􁁛  Test "Fall back to text-only artist names when no navigation endpoint is present" passed after 0.012 seconds.
+􁁛  Test "Parse response with multiple sections" passed after 0.013 seconds.
+􁁛  Test "Parse offset and multiple timestamps" passed after 0.013 seconds.
+􁁛  Test "extractPanelVideoRenderer extracts direct renderer" passed after 0.012 seconds.
+􁁛  Test "Extract subtitle from flex columns" passed after 0.012 seconds.
+􁁛  Test "Extract artists from flex columns" passed after 0.012 seconds.
+􁁛  Test "Trims leading and trailing whitespace" passed after 0.012 seconds.
+􁁛  Test "Playlist item returns playlist thumbnail" passed after 0.012 seconds.
+􁁛  Test "Normalize URL adds https to protocol-relative URL" passed after 0.012 seconds.
+􁁛  Test "Song item returns song title" passed after 0.012 seconds.
+􁁛  Test "parseMenuData extracts dislike status" passed after 0.012 seconds.
+􁁛  Test "parseArtists returns empty when no byline" passed after 0.012 seconds.
+􁁛  Test "parseMenuData leaves like status unknown when like button is missing" passed after 0.012 seconds.
+􁁛  Test "parseDuration handles hour format" passed after 0.012 seconds.
+􁁛  Test "Direct initializer sets all properties" passed after 0.013 seconds.
+􁁛  Test "Playlist item has no videoId" passed after 0.012 seconds.
+􁁛  Test "Album item returns album thumbnail" passed after 0.012 seconds.
+􁁛  Test "Removes space before comma" passed after 0.012 seconds.
+􁁛  Test "Playlist item ID has correct prefix" passed after 0.012 seconds.
+􁁛  Test "extractPanelVideoRenderer throws on invalid structure" passed after 0.012 seconds.
+􁁛  Test "parseMenuData extracts like status" passed after 0.012 seconds.
+􁁛  Test "Playlist model parsing" passed after 0.013 seconds.
+􁁛  Test "Parses album with albumId" passed after 0.013 seconds.
+􁁛  Test "parseArtists extracts single artist" passed after 0.012 seconds.
+􁁛  Test "HomeResponse is empty with empty items" passed after 0.012 seconds.
+􁁛  Test "parseMenuData extracts library add token" passed after 0.012 seconds.
+􁁛  Test "NBSP and thin spaces are normalized to regular space" passed after 0.012 seconds.
+􁁛  Test "parseMenuData extracts library remove token and sets in library" passed after 0.012 seconds.
+􁁛  Test "Keeps band names that look like words inside the views/plays patterns" passed after 0.012 seconds.
+􁁛  Test "Uses default title when missing" passed after 0.013 seconds.
+􁁛  Test "parseDuration returns nil when no length text" passed after 0.012 seconds.
+􁁛  Test "parseTitle extracts title from renderer" passed after 0.012 seconds.
+􁁛  Test "Removes space before period" passed after 0.012 seconds.
+􁁛  Test "Empty string returns empty string" passed after 0.012 seconds.
+􁁛  Test "Collapses multiple spaces" passed after 0.012 seconds.
+􁁛  Test "Chart section detection returns false for non-chart titles" with 3 test cases passed after 0.013 seconds.
+􁁛  Test "Playlist item returns playlist title" passed after 0.012 seconds.
+􁁛  Test "parseThumbnail returns nil when no thumbnails" passed after 0.012 seconds.
+􁁛  Test "HomeSection isChart flag works" passed after 0.012 seconds.
+􁁛  Test "parseTitle returns Unknown when no title" passed after 0.012 seconds.
+􁁛  Test "Album item returns album ID as browseId" passed after 0.012 seconds.
+􁁛  Test "parseMenuData handles empty menu" passed after 0.012 seconds.
+􁁛  Test "parseDuration extracts duration" passed after 0.012 seconds.
+􁁛  Test "Song item returns videoId" passed after 0.012 seconds.
+􁁛  Test "parseArtists extracts multiple artists" passed after 0.012 seconds.
+􁁛  Test "Extract artists filters out separator characters" passed after 0.012 seconds.
+􁁛  Test "Playlist item subtitle shows author" passed after 0.012 seconds.
+􁁛  Test "Artist item subtitle is 'Artist'" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts subscription status" passed after 0.012 seconds.
+􁁛  Test "HomeResponse is empty with no sections" passed after 0.012 seconds.
+􁁛  Test "Song item ID has correct prefix" passed after 0.012 seconds.
+􁁛  Test "Artist item returns artist name" passed after 0.012 seconds.
+􁁛  Test "parseMenuData preserves explicit indifferent status" passed after 0.012 seconds.
+􁁛  Test "parseArtistAlbums parses a grid response" passed after 0.012 seconds.
+􁁛  Test "parseArtists filters out separators" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail captures albums moreContentButton browseId/params" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts mix playlist ID from startRadioButton" passed after 0.012 seconds.
+􁁛  Test "extractPanelVideoRenderer extracts wrapped renderer" passed after 0.012 seconds.
+􁁛  Test "Album item returns album title" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail does not set channel ID without UC prefix" passed after 0.012 seconds.
+􁁛  Test "Album item subtitle shows artists" passed after 0.012 seconds.
+􁁛  Test "HomeResponse.empty returns empty response" passed after 0.012 seconds.
+􁁛  Test "Song item subtitle shows artists" passed after 0.012 seconds.
+􁁛  Test "Artist item has no videoId" passed after 0.012 seconds.
+􁁛  Test "Album item has no videoId" passed after 0.012 seconds.
+􁁛  Test "parseArtists generates UUID for artist without ID" passed after 0.012 seconds.
+􁁛  Test "Non-playlist item returns nil for playlist" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts albums with MPRE prefix" passed after 0.012 seconds.
+􁁛  Test "Song item returns song thumbnail" passed after 0.012 seconds.
+􁁛  Test "parseTitle returns Unknown when runs empty" passed after 0.012 seconds.
+􁁛  Test "parseThumbnail handles protocol-relative URL" passed after 0.012 seconds.
+􁁛  Test "Artist item returns artist ID as browseId" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail handles empty response" passed after 0.012 seconds.
+􁁛  Test "Artist item returns artist thumbnail" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts thumbnail URL" passed after 0.012 seconds.
+􁁛  Test "parseArtistSongs handles empty response" passed after 0.012 seconds.
+􁁛  Test "Playlist item extracts playlist" passed after 0.012 seconds.
+􁁛  Test "HomeSection initializes correctly" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts channel ID from UC prefix" passed after 0.012 seconds.
+􁁛  Test "Non-album item returns nil for album" passed after 0.012 seconds.
+􁁛  Test "Song item has no browseId" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts albums with OLAK prefix" passed after 0.012 seconds.
+􁁛  Test "Album item ID has correct prefix" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts basic info" passed after 0.012 seconds.
+􁁛  Test "Known syllable decomposition: 한 → han" passed after 0.012 seconds.
+􁁛  Test "parseArtistAlbums skips non-album browse IDs" passed after 0.012 seconds.
+􁁛  Test "Common Korean word romanizes" passed after 0.012 seconds.
+􁁛  Test "Artist item ID has correct prefix" passed after 0.012 seconds.
+􁁛  Test "Empty suggestion text is skipped" passed after 0.012 seconds.
+􁁛  Test "Playlist item returns playlist ID as browseId" passed after 0.012 seconds.
+􁁛  Test "Syllable with no final consonant: 가 → ga" passed after 0.012 seconds.
+􁁛  Test "Simple Korean syllable romanizes correctly" passed after 0.012 seconds.
+􁁛  Test "Latin passthrough is preserved" passed after 0.012 seconds.
+􁁛  Test "Parse single suggestion" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail extracts songs browse ID when available" passed after 0.012 seconds.
+􁁛  Test "Syllable with ng final: 방 → bang" passed after 0.012 seconds.
+􁁛  Test "Suggestion with explicit ID" passed after 0.012 seconds.
+􁁛  Test "parseArtistSongs extracts songs from shelf" passed after 0.012 seconds.
+􁁛  Test "Parse empty contents returns empty array" passed after 0.012 seconds.
+􁁛  Test "Album item extracts album" passed after 0.012 seconds.
+􁁛  Test "Parse empty response returns empty array" passed after 0.012 seconds.
+􁁛  Test "Empty string returns nil" passed after 0.012 seconds.
+􁁛  Test "Album without artists shows only title" passed after 0.012 seconds.
+􁁛  Test "Album with MPRE prefix has shareURL" passed after 0.012 seconds.
+􁁛  Test "Parse history suggestion" passed after 0.012 seconds.
+􁁛  Test "Artist shareSubtitle is nil" passed after 0.012 seconds.
+􁁛  Test "parseArtistSongs extracts artist info" passed after 0.012 seconds.
+􁁛  Test "Parse multiple suggestions" passed after 0.012 seconds.
+􁁛  Test "Parse suggestion with multiple runs joins text" passed after 0.012 seconds.
+􁁛  Test "Playlist without author shows only title" passed after 0.012 seconds.
+􁁛  Test "Album with OLAK prefix has shareURL" passed after 0.012 seconds.
+􁁛  Test "Song shareURL has correct format" passed after 0.012 seconds.
+􁁛  Test "parseArtistDetail ignores non-album browse IDs" passed after 0.012 seconds.
+􁁛  Test "Playlist shareURL has correct format" passed after 0.012 seconds.
+􁁛  Test "Suggestion is hashable" passed after 0.012 seconds.
+􁁛  Test "Artist without navigable artist prefix has nil shareURL" passed after 0.012 seconds.
+􁁛  Test "Suggestions have unique IDs" passed after 0.012 seconds.
+􁁛  Test "Song shareText includes title and artist" passed after 0.012 seconds.
+􁁛  Test "Album with UUID ID has nil shareURL" passed after 0.012 seconds.
+􁁛  Test "Artist with UUID ID has nil shareURL" passed after 0.012 seconds.
+􁁛  Test "Parse empty continuation returns empty sections" passed after 0.012 seconds.
+􁁛  Test "Parse episodes continuation without more pages" passed after 0.012 seconds.
+􁁛  Test "Song with multiple artists displays comma-separated" passed after 0.012 seconds.
+􁁛  Test "Parse episodes continuation with episodes" passed after 0.012 seconds.
+􁁛  Test "Artist with UC prefix has shareURL" passed after 0.012 seconds.
+􁁛  Test "Thai romanizer safely handles clustered characters" passed after 0.013 seconds.
+􁁛  Test "Unknown renderer is skipped" passed after 0.012 seconds.
+􁁛  Test "isPodcastShow returns true for MPSPP prefix" passed after 0.012 seconds.
+􁁛  Test "Parse discovery response with carousel section" passed after 0.012 seconds.
+􁁛  Test "Parse discovery response with music shelf section" passed after 0.012 seconds.
+􁁛  Test "Parse show detail with header" passed after 0.012 seconds.
+􁁛  Test "Parse empty episodes continuation" passed after 0.012 seconds.
+􁁛  Test "isPodcastShow returns false for non-MPSPP prefix" passed after 0.012 seconds.
+􁁛  Test "Parse show detail with continuation token" passed after 0.012 seconds.
+􁁛  Test "Parse empty response returns empty sections" passed after 0.012 seconds.
+􁁛  Test "Parse show detail with subscription status" passed after 0.012 seconds.
+􁁛  Test "Playlist shareText includes title and author" passed after 0.012 seconds.
+􁁛  Test "Parse discovery response with multiple sections" passed after 0.011 seconds.
+􁁛  Test "Missing suggestion key is skipped" passed after 0.012 seconds.
+􁁛  Test "Artist with MPLAUC prefix shares the public channel URL" passed after 0.012 seconds.
+􁁛  Test "Parse continuation response with sections" passed after 0.012 seconds.
+􁁛  Test "Default policy has expected values" passed after 0.011 seconds.
+􁁛  Test "Parse empty show detail returns placeholder show" passed after 0.012 seconds.
+􁁛  Test "CJK without kana is detected as Chinese" passed after 0.017 seconds.
+􁁛  Test "Kanji-only Japanese text is detected as Japanese" passed after 0.017 seconds.
+􁁛  Test "dominantScript returns .chinese for CJK-only text" passed after 0.017 seconds.
+􁁛  Test "Parse responsive playlist header track count and continuation" passed after 0.017 seconds.
+􁁛  Test "Previous seeks to start first when progress > 3; second Previous undoes next skip" passed after 0.016 seconds.
+􁁛  Test "formattedDuration handles exactly one hour" passed after 0.005 seconds.
+􁁛  Test "episode case returns episode id" passed after 0.004 seconds.
+􁁛  Test "formattedDuration returns HH:MM:SS for long duration" passed after 0.005 seconds.
+􁁛  Test "hasMore returns false when continuationToken is nil" passed after 0.005 seconds.
+􁁛  Test "PodcastEpisode is Identifiable with id" passed after 0.004 seconds.
+􁁛  Test "PodcastSectionItem is Hashable based on id" passed after 0.005 seconds.
+􁁛  Test "show case returns show id" passed after 0.005 seconds.
+􁁛  Test "formattedDuration returns MM:SS for short duration" passed after 0.005 seconds.
+􁁛  Test "formattedDuration handles zero duration" passed after 0.005 seconds.
+􁁛  Test "hasMore returns true when continuationToken exists" passed after 0.005 seconds.
+􁁛  Test "hasMore returns false when continuationToken is nil" passed after 0.004 seconds.
+􁁛  Test "hasMore returns true when continuationToken exists" passed after 0.004 seconds.
+􁁛  Test "formattedDuration handles 59 minutes 59 seconds" passed after 0.005 seconds.
+􁁛  Test "PodcastSection is Identifiable with id" passed after 0.004 seconds.
+􁁛  Test "PodcastShow is Hashable" passed after 0.004 seconds.
+􁁛  Test "PodcastShow is Identifiable with id" passed after 0.004 seconds.
+􁁛  Test "formattedDuration returns nil when durationSeconds is nil and no fallback" passed after 0.005 seconds.
+􁁛  Test "hasNavigableId returns true for MPSPP prefix" passed after 0.004 seconds.
+􁁛  Test "formattedDuration returns fallback string when durationSeconds is nil" passed after 0.005 seconds.
+􁁛  Test "uses primary URL until that exact primary source fails" passed after 0.003 seconds.
+􁁛  Test "fallback only activates when there is a distinct fallback URL" passed after 0.003 seconds.
+􁁛  Test "Song has correct video ID" passed after 0.003 seconds.
+􁁛  Test "same song retries primary when the primary URL changes" passed after 0.003 seconds.
+􁁛  Test "Parse empty response returns empty results" passed after 0.003 seconds.
+􁁛  Test "parse falls back to shelf-index id for shelves with no title" passed after 0.003 seconds.
+􁁛  Test "hasNavigableId returns false for non-MPSPP prefix" passed after 0.004 seconds.
+􁁛  Test "Parse response with only playlists" passed after 0.003 seconds.
+􁁛  Test "Parse response with only artists" passed after 0.003 seconds.
+􁁛  Test "parse unwraps itemSectionRenderer wrappers and preserves order" passed after 0.003 seconds.
+􁁛  Test "Parse library artist result using library artist page type" passed after 0.003 seconds.
+􁁛  Test "Parse response with only albums" passed after 0.003 seconds.
+􁁛  Suite SyncedLyricLineRomanizationTests passed after 0.019 seconds.
+􁁛  Suite SyncedLyricsTests passed after 0.019 seconds.
+􁁛  Suite LikeStatusTests passed after 0.019 seconds.
+􁁛  Test "parse preserves YT shelf order in `sections`" passed after 0.003 seconds.
+􁁛  Suite ArtistDetailTests passed after 0.019 seconds.
+􁁛  Suite HapticServiceTests passed after 0.019 seconds.
+􁁛  Suite LyricsParserTests passed after 0.019 seconds.
+􁁛  Suite PlayerControlsTests passed after 0.019 seconds.
+􁁛  Test "Parse response with mixed results" passed after 0.003 seconds.
+􁁛  Suite UserAccountTests passed after 0.019 seconds.
+􁁛  Suite SearchResponseTests passed after 0.019 seconds.
+􁁛  Suite AccountsListParserTests passed after 0.019 seconds.
+􁁛  Test "Parse response with only songs" passed after 0.003 seconds.
+􁁛  Suite YTMusicErrorTests passed after 0.019 seconds.
+􁁛  Suite HomeResponseParserTests passed after 0.019 seconds.
+􁁛  Suite LRCParserTests passed after 0.019 seconds.
+􁁛  Suite KoreanRomanizerTests passed after 0.019 seconds.
+􁁛  Suite TextCanonicalizerTests passed after 0.019 seconds.
+􁁛  Suite ThaiRomanizerTests passed after 0.019 seconds.
+􁁛  Suite ModelTests passed after 0.019 seconds.
+􁁛  Suite ArtistParserTests passed after 0.019 seconds.
+􁁛  Test "parse produces stable section ids across re-queries with reordered items" passed after 0.003 seconds.
+􁁛  Suite PodcastSectionItemTests passed after 0.018 seconds.
+􁁛  Suite ShareableTests passed after 0.019 seconds.
+􁁛  Suite PodcastParserTests passed after 0.019 seconds.
+􁁛  Suite ScriptDetectorTests passed after 0.019 seconds.
+􁁛  Suite PodcastEpisodesContinuationTests passed after 0.018 seconds.
+􁁛  Suite PodcastSectionTests passed after 0.018 seconds.
+􁁛  Suite PodcastEpisodeTests passed after 0.018 seconds.
+􁁛  Suite PlaylistParserTests passed after 0.019 seconds.
+􁁛  Suite RadioQueueParserTests passed after 0.019 seconds.
+􁁛  Suite SearchSuggestionsParserTests passed after 0.019 seconds.
+􁁛  Suite SongThumbnailSourceTests passed after 0.018 seconds.
+􁁛  Suite PodcastShowDetailTests passed after 0.018 seconds.
+􀟈  Test "Delay uses exponential backoff" started.
+􁁛  Suite PodcastShowTests passed after 0.018 seconds.
+􁁛  Suite SongMetadataParserTests passed after 0.019 seconds.
+􀟈  Test "Two next presses then two previous presses restore original index" started.
+􁁛  Suite HomeSectionTests passed after 0.019 seconds.
+􁁛  Suite SearchResponseParserTests passed after 0.019 seconds.
+􀟈  Test "Extracts API key from assignment-style bootstrap config" started.
+􁁛  Suite ParsingHelpersTests passed after 0.019 seconds.
+􀟈  Test case passing 2 arguments attempt → 0, expectedDelay → 1.0 to "Delay uses exponential backoff" started.
+􀟈  Test case passing 2 arguments attempt → 1, expectedDelay → 2.0 to "Delay uses exponential backoff" started.
+􁁛  Suite PodcastModelTests passed after 0.019 seconds.
+􁁛  Test "Extracts API key from assignment-style bootstrap config" passed after 0.001 seconds.
+􀟈  Test "Rejects bootstrap config without API key" started.
+􀟈  Test case passing 2 arguments attempt → 2, expectedDelay → 4.0 to "Delay uses exponential backoff" started.
+􀟈  Test case passing 2 arguments attempt → 3, expectedDelay → 8.0 to "Delay uses exponential backoff" started.
+􀟈  Test case passing 2 arguments attempt → 4, expectedDelay → 16.0 to "Delay uses exponential backoff" started.
+􁁛  Test "Rejects bootstrap config without API key" passed after 0.001 seconds.
+􁁛  Test "Delay uses exponential backoff" with 5 test cases passed after 0.001 seconds.
+􀟈  Test "Caches concurrent bootstrap key lookups" started.
+􀟈  Test "Delay is capped at maxDelay" started.
+􀟈  Test case passing 2 arguments attempt → 5, expectedDelay → 8.0 to "Delay is capped at maxDelay" started.
+􀟈  Test case passing 2 arguments attempt → 10, expectedDelay → 8.0 to "Delay is capped at maxDelay" started.
+􁁛  Test "Delay is capped at maxDelay" with 2 test cases passed after 0.001 seconds.
+􀟈  Test "Delay respects custom baseDelay" started.
+􀟈  Test case passing 2 arguments attempt → 0, expectedDelay → 0.5 to "Delay respects custom baseDelay" started.
+􀟈  Test case passing 2 arguments attempt → 1, expectedDelay → 1.0 to "Delay respects custom baseDelay" started.
+􀟈  Test case passing 2 arguments attempt → 2, expectedDelay → 2.0 to "Delay respects custom baseDelay" started.
+􁁛  Test "Delay respects custom baseDelay" with 3 test cases passed after 0.001 seconds.
+􀟈  Test "Custom policy stores values correctly" started.
+􁁛  Test "Custom policy stores values correctly" passed after 0.001 seconds.
+􀟈  Test "Execute succeeds on first attempt" started.
+􁁛  Test initialStateIsEmpty() passed after 0.023 seconds.
+􀟈  Test hasBrandAccountsReturnsFalseForSingleAccount() started.
+􁁛  Test "unsubscribeFromPodcast succeeds for valid MPSPP ID" passed after 0.021 seconds.
+􁁛  Test "subscribeToPodcast succeeds for valid MPSPP ID" passed after 0.021 seconds.
+􁁛  Test "playWithMix does nothing without client" passed after 0.020 seconds.
+􀟈  Test "playWithMix handles empty mix queue" started.
+􁁛  Test "Reorder queue moves song from source to destination" passed after 0.016 seconds.
+􀟈  Test "Reorder queue with invalid indices does nothing" started.
+􁁛  Test "Two next presses then two previous presses restore original index" passed after 0.012 seconds.
+􀟈  Test "Next with repeat one advances to the following queue song" started.
+􁁛  Test "Execute succeeds on first attempt" passed after 0.012 seconds.
+􀟈  Test "Execute retries and eventually succeeds" started.
+􁁛  Test hasBrandAccountsReturnsFalseForSingleAccount() passed after 0.010 seconds.
+􁁛  Test "unsubscribeFromPodcast throws for missing L-prefix" passed after 0.032 seconds.
+􁁛  Test "subscribeToPodcast throws for empty suffix" passed after 0.032 seconds.
+􁁛  Test "subscribeToPodcast throws for missing L-prefix" passed after 0.032 seconds.
+􀟈  Test hasBrandAccountsReturnsTrueForMultipleAccounts() started.
+􁁛  Test "Latin tokens are preserved inside mixed Japanese text" passed after 0.038 seconds.
+􁁛  Suite JapaneseRomanizerTests passed after 0.041 seconds.
+􁁛  Test "unsubscribeFromPodcast throws for empty suffix" passed after 0.348 seconds.
+􁁛  Suite YTMusicClientTests passed after 0.352 seconds.
+􁁛  Test "Arabic bundle localizes artist strings" passed after 0.346 seconds.
+􀟈  Test "Arabic bundle localizes formatted subscribe strings" started.
+􁁛  Test "Arabic bundle localizes formatted subscribe strings" passed after 0.001 seconds.
+􀟈  Test "Turkish bundle localizes artist strings" started.
+􁁛  Test "Turkish bundle localizes artist strings" passed after 0.001 seconds.
+􀟈  Test "Turkish bundle localizes formatted subscribe strings" started.
+􁁛  Test "Turkish bundle localizes formatted subscribe strings" passed after 0.001 seconds.
+􀟈  Test "Korean bundle localizes artist and subscribe strings" started.
+􁁛  Test "Korean bundle localizes artist and subscribe strings" passed after 0.001 seconds.
+􀟈  Test "Indonesian bundle localizes artist and subscribe strings" started.
+􁁛  Test "Indonesian bundle localizes artist and subscribe strings" passed after 0.001 seconds.
+􀟈  Test "French bundle localizes artist and subscribe strings" started.
+􁁛  Test "French bundle localizes artist and subscribe strings" passed after 0.001 seconds.
+􀟈  Test "Override bundle lookup is scoped to Kaset-owned bundles" started.
+􁁛  Test "Override bundle lookup is scoped to Kaset-owned bundles" passed after 0.001 seconds.
+􀟈  Test "Navigation title keys resolve correctly from lproj sub-bundles" started.
+􁁛  Test "Navigation title keys resolve correctly from lproj sub-bundles" passed after 0.001 seconds.
+􀟈  Test "Language override applies to navigation title lookups via AppLocalization.bundle" started.
+􁁛  Test "Language override applies to navigation title lookups via AppLocalization.bundle" passed after 0.001 seconds.
+􀟈  Test "Clearing language override reverts to base bundle" started.
+􁁛  Test "Clearing language override reverts to base bundle" passed after 0.001 seconds.
+􁁛  Suite AppLocalizationTests passed after 0.356 seconds.
+􁁛  Test "playWithMix handles empty mix queue" passed after 0.386 seconds.
+􀟈  Test "fetchMoreMixSongsIfNeeded does nothing without continuation token" started.
+􁁛  Test "Reorder queue with invalid indices does nothing" passed after 0.383 seconds.
+􀟈  Test "Reorder queue updates current index correctly when moving before current" started.
+􁁛  Test "Next with repeat one advances to the following queue song" passed after 0.383 seconds.
+􀟈  Test "Next with shuffle and repeat one still picks random tracks (shuffle wins over repeat one for Next)" started.
+􁁛  Test "Empty text returns nil" passed after 0.412 seconds.
+􁁛  Test "Bootstrap script reflects pending media-control style changes" passed after 0.412 seconds.
+􁁛  Test "romanizeAll returns results only for non-Latin lines" passed after 0.412 seconds.
+􁁛  Test "Latin-only text returns nil" passed after 0.412 seconds.
+􁁛  Test "Korean text returns non-nil romanized string" passed after 0.412 seconds.
+􁁛  Test "romanizeAll returns empty dict for all-Latin lyrics" passed after 0.412 seconds.
+􁁛  Test "Factory wires shared client into playback and account services" passed after 0.412 seconds.
+􁁛  Test "Result is cached on second call" passed after 0.412 seconds.
+􀟈  Test "Override script keeps a single animation-frame loop active" started.
+􁁛  Test "LaunchPage has correct display names" passed after 0.411 seconds.
+􁁛  Test "likeCurrentTrack does nothing when no current track" passed after 0.405 seconds.
+􁁛  Test "Compact frame uses the target size" passed after 0.411 seconds.
+􁁛  Suite AppServicesTests passed after 0.415 seconds.
+􁁛  Test "Compact minimum size matches Small Player requirements" passed after 0.411 seconds.
+􁁛  Test "Presentation chrome applies and restores cleanly" passed after 0.411 seconds.
+􁁛  Test "Compact frame is centered around the source frame" passed after 0.411 seconds.
+􁁛  Suite RomanizationServiceTests passed after 0.415 seconds.
+􁁛  Test hasBrandAccountsReturnsTrueForMultipleAccounts() passed after 0.379 seconds.
+􁁛  Suite "Player presentation window coordinator tests" passed after 0.415 seconds.
+􀟈  Test "likeCurrentTrack sets status to like when indifferent" started.
+􀟈  Test fetchAccountsUpdatesLikeStatusCacheScope() started.
+􀟈  Test "LaunchPage rawValues are valid" started.
+􁁛  Test "Status description when disconnected shows no internet" passed after 0.410 seconds.
+􁁛  Test "Expensive connection flag is available" passed after 0.410 seconds.
+􁁛  Test "Status description when connected shows interface type" passed after 0.410 seconds.
+􁁛  Test "Shared instance exists" passed after 0.410 seconds.
+􁁛  Test "Constrained connection flag is available" passed after 0.410 seconds.
+􁁛  Test "Initial state defaults to connected" passed after 0.410 seconds.
+􁁛  Test "Audio-only script hides video toggle and activates song" passed after 0.410 seconds.
+􁁛  Test "Interface type has description" passed after 0.410 seconds.
+􀟈  Test "Audio-only script does not hide the media element" started.
+􁁛  Test "fetchMoreMixSongsIfNeeded does nothing without continuation token" passed after 0.005 seconds.
+􁁛  Test "Dock menu renders now playing state and player actions" passed after 0.410 seconds.
+􁁛  Test "Interface type is Sendable" passed after 0.410 seconds.
+􀟈  Test "fetchMoreMixSongsIfNeeded does nothing when not near end" started.
+􀟈  Test "Dock menu disables track-only actions when nothing is playing" started.
+􁁛  Suite NetworkMonitorTests passed after 0.416 seconds.
+􁁛  Test "fetchLyrics prefers synced results over plain results" passed after 0.410 seconds.
+􀟈  Test "fetchLyrics prefers YTMusic plain lyrics over other plain lyrics" started.
+􁁛  Test "Initial state includes songs from destination" passed after 0.412 seconds.
+􀟈  Test "Load without browse ID immediately sets loaded state" started.
+􁁛  Test "Reorder queue updates current index correctly when moving before current" passed after 0.003 seconds.
+􀟈  Test "Reorder queue updates current index correctly when moving after current" started.
+􁁛  Test "Next with shuffle and repeat one still picks random tracks (shuffle wins over repeat one for Next)" passed after 0.004 seconds.
+􁁛  Test "Shared instance exists" passed after 0.416 seconds.
+􁁛  Test "Initial state is idle" passed after 0.415 seconds.
+􀟈  Test "Near-end autoplay while repeat one does not advance queue index" started.
+􀟈  Test "Data store exists" started.
+􀟈  Test "isPlaying property" started.
+􁁛  Test fetchAccountsUpdatesLikeStatusCacheScope() passed after 0.003 seconds.
+􁁛  Test "observation task is active after init" passed after 0.413 seconds.
+􀟈  Test switchAccountUpdatesCurrentAccount() started.
+􁁛  Test "Cache set and get" passed after 0.410 seconds.
+􁁛  Test "Initial state is initializing" passed after 0.413 seconds.
+􁁛  Test "status for videoId returns nil when not cached" passed after 0.413 seconds.
+􀟈  Test "stopObserving cancels observation task" started.
+􁁛  Test "Initial state is idle" passed after 0.416 seconds.
+􀟈  Test "Cache get nonexistent returns nil" started.
+􀟈  Test "status for videoId returns cached value" started.
+􀟈  Test "State isInitializing property" started.
+􀟈  Test "Load success sets sections and loaded state" started.
+􁁛  Test "fetchMoreMixSongsIfNeeded does nothing when not near end" passed after 0.002 seconds.
+􀟈  Test "clearQueue clears mixContinuationToken" started.
+􁁛  Test "Initial state is idle" passed after 0.414 seconds.
+􁁛  Test "Initial state is idle with no artist detail" passed after 0.405 seconds.
+􁁛  Test "Initial state is idle with empty sections" passed after 0.415 seconds.
+􁁛  Test "Initial state is idle with empty songs" passed after 0.411 seconds.
+􁁛  Test "Initial state is idle with empty sections" passed after 0.413 seconds.
+􁁛  Test "Initial state is idle with empty library content" passed after 0.413 seconds.
+􀟈  Test "Category is set from initializer" started.
+􀟈  Test "Load success sets sections" started.
+􁁛  Test "Initial state is idle with no playlist detail" passed after 0.416 seconds.
+􀟈  Test "Load success sets sections" started.
+􁁛  Test "Initial state is empty" passed after 0.413 seconds.
+􁁛  Test "Load without browse ID immediately sets loaded state" passed after 0.002 seconds.
+􁁛  Test "Initial state is idle with empty query" passed after 0.404 seconds.
+􀟈  Test "Load success sets songs" started.
+􁁛  Test "Initial state is idle with empty sections" passed after 0.413 seconds.
+􀟈  Test "Add song succeeds" started.
+􀟈  Test "Load success sets library content and ID sets" started.
+􀟈  Test "Load with browse ID fetches all songs" started.
+􀟈  Test "Load success sets artist detail" started.
+􀟈  Test "Load success filters out Charts section" started.
+􀟈  Test "Load success sets playlist detail" started.
+􀟈  Test "Query change clears results when empty" started.
+􁁛  Test "Reorder queue updates current index correctly when moving after current" passed after 0.002 seconds.
+􀟈  Test "Undo restores previous queue state" started.
+􁁛  Test switchAccountUpdatesCurrentAccount() passed after 0.003 seconds.
+􀟈  Test switchAccountToSameAccountIsNoOp() started.
+􁁛  Test "Load success sets sections and loaded state" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "clearQueue clears mixContinuationToken" passed after 0.003 seconds.
+􀟈  Test "playQueue clears mixContinuationToken" started.
+􁁛  Test "Load success sets sections" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Load success sets sections" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Load success sets songs" passed after 0.003 seconds.
+􀟈  Test "Load success marks all songs as liked" started.
+􁁛  Test "Load success sets library content and ID sets" passed after 0.003 seconds.
+􁁛  Test "Load with browse ID fetches all songs" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􀟈  Test "Load with browse ID keeps initial songs on error" started.
+􁁛  Test "Load success sets artist detail" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Load success filters out Charts section" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Load success sets playlist detail" passed after 0.003 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Undo restores previous queue state" passed after 0.003 seconds.
+􁁛  Test "Override script keeps a single animation-frame loop active" passed after 0.009 seconds.
+􀟈  Test "Redo restores undone queue state" started.
+􁁛  Suite MediaControlScriptTests passed after 0.424 seconds.
+􁁛  Test "LaunchPage rawValues are valid" passed after 0.008 seconds.
+􀟈  Test "LaunchPage identifiers are unique" started.
+􁁛  Test "Audio-only script does not hide the media element" passed after 0.008 seconds.
+􁁛  Suite AudioOnlyPlaybackScriptTests passed after 0.424 seconds.
+􁁛  Test switchAccountToSameAccountIsNoOp() passed after 0.002 seconds.
+􀟈  Test switchAccountUpdatesBrandId() started.
+􁁛  Test "Dock menu disables track-only actions when nothing is playing" passed after 0.008 seconds.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􁁛  Test "fetchLyrics prefers YTMusic plain lyrics over other plain lyrics" passed after 0.008 seconds.
+􁁛  Suite DockMenuTests passed after 0.425 seconds.
+􀟈  Test "Load does not run concurrently when already loading" started.
+􀟈  Test "fetchLyrics prefers synced lyrics over earlier YTMusic plain lyrics" started.
+􁁛  Test "playQueue clears mixContinuationToken" passed after 0.002 seconds.
+􀟈  Test "playWithRadio clears mixContinuationToken" started.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􀟈  Test "Refresh clears sections and reloads" started.
+􀟈  Test "Load does not duplicate when already loading" started.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􀟈  Test "Load playlist success" started.
+􁁛  Test "Load with browse ID keeps initial songs on error" passed after 0.002 seconds.
+􁁛  Test "Load success marks all songs as liked" passed after 0.002 seconds.
+􀟈  Test "Load with browse ID keeps initial songs when API returns empty" started.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􀟈  Test "Load error sets error state" started.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􁁛  Test "Load error sets error state" passed after 0.002 seconds.
+􀟈  Test "Load does not duplicate when already loading" started.
+􀟈  Test "Load does not duplicate when already loading" started.
+􀟈  Test "Load does not duplicate when already loading" started.
+􁁛  Test "Redo restores undone queue state" passed after 0.002 seconds.
+􀟈  Test "Can undo returns correct state" started.
+􁁛  Test switchAccountUpdatesBrandId() passed after 0.001 seconds.
+􀟈  Test switchAccountPersistsSelection() started.
+􁁛  Test "playWithRadio clears mixContinuationToken" passed after 0.001 seconds.
+􀟈  Test "playWithRadio sets initial queue with seed song" started.
+􁁛  Test "Refresh clears sections and reloads" passed after 0.001 seconds.
+􁁛  Test "Load does not duplicate when already loading" passed after 0.001 seconds.
+􀟈  Test "Refresh preserves already loaded paginated sections when first page is unchanged" started.
+􀟈  Test "Refresh clears sections and reloads" started.
+􁁛  Test "Load playlist success" passed after 0.001 seconds.
+􁁛  Test "Data store exists" passed after 0.008 seconds.
+􀟈  Test "Clear selected playlist" started.
+􀟈  Test "Create WebView configuration" started.
+􁁛  Test "Load error sets error state" passed after 0.001 seconds.
+􁁛  Test "Load with browse ID keeps initial songs when API returns empty" passed after 0.001 seconds.
+􁁛  Test "Load does not duplicate when already loading" passed after 0.001 seconds.
+􀟈  Test "Load does not duplicate when already loading" started.
+􀟈  Test "Load does not run concurrently when already loading" started.
+􁁛  Test "Load does not duplicate when already loading" passed after 0.001 seconds.
+􁁛  Test "isPlaying property" passed after 0.008 seconds.
+􀟈  Test "Refresh clears sections and reloads" started.
+􀟈  Test "Load more appends tracks" started.
+􁁛  Test "stopObserving cancels observation task" passed after 0.008 seconds.
+􁁛  Test "status for videoId returns cached value" passed after 0.008 seconds.
+􁁛  Test "Cache get nonexistent returns nil" passed after 0.008 seconds.
+􀟈  Test "PlaybackState equality" started.
+􀟈  Test "detects track change and updates lastNotifiedTrackId when playback is active" started.
+􁁛  Test "Load does not duplicate when already loading" passed after 0.001 seconds.
+􀟈  Test "status for song uses cache over song property" started.
+􀟈  Test "Load uses original artist info for unknown name" started.
+􀟈  Test "Cache invalidate all" started.
+􁁛  Test "Can undo returns correct state" passed after 0.001 seconds.
+􁁛  Test "State isInitializing property" passed after 0.008 seconds.
+􁁛  Test "Category is set from initializer" passed after 0.008 seconds.
+􀟈  Test "Start login transitions to loggingIn state" started.
+􀟈  Test "Can redo returns correct state" started.
+􀟈  Test "Load success sets sections and loaded state" started.
+􁁛  Test switchAccountPersistsSelection() passed after 0.001 seconds.
+􁁛  Test "Add song succeeds" passed after 0.008 seconds.
+􀟈  Test switchToPrimaryAccountPersistsPrimaryId() started.
+􀟈  Test "Add album succeeds" started.
+􁁛  Test "playWithRadio sets initial queue with seed song" passed after 0.001 seconds.
+􀟈  Test "insertNextInQueue inserts songs after current track" started.
+􁁛  Test "Query change clears results when empty" passed after 0.008 seconds.
+􀟈  Test "Search with empty query does not call API" started.
+􁁛  Test "Refresh clears sections and reloads" passed after 0.001 seconds.
+􁁛  Test "LaunchPage identifiers are unique" passed after 0.004 seconds.
+􁁛  Suite HomeViewModelTests passed after 0.429 seconds.
+􁁛  Test "Clear selected playlist" passed after 0.001 seconds.
+􀟈  Test "LaunchPage converts to NavigationItem" started.
+􁁛  Test "Load does not duplicate when already loading" passed after 0.001 seconds.
+􀟈  Test "Load more appends songs" started.
+􀟈  Test "Refresh clears and reloads" started.
+􁁛  Test "Refresh clears sections and reloads" passed after 0.001 seconds.
+􁁛  Test "Load more appends tracks" passed after 0.001 seconds.
+􁁛  Suite ExploreViewModelTests passed after 0.429 seconds.
+􀟈  Test "Load more preserves reported total track count" started.
+􁁛  Test "Load uses original artist info for unknown name" passed after 0.001 seconds.
+􀟈  Test "Refresh clears detail and reloads" started.
+􁁛  Test "Can redo returns correct state" passed after 0.001 seconds.
+􀟈  Test "Multiple undo operations work correctly" started.
+􁁛  Test "Load success sets sections and loaded state" passed after 0.001 seconds.
+􀟈  Test "Load sets loading state during fetch" started.
+􁁛  Test switchToPrimaryAccountPersistsPrimaryId() passed after 0.001 seconds.
+􀟈  Test clearAccountsResetsState() started.
+􁁛  Test "insertNextInQueue inserts songs after current track" passed after 0.002 seconds.
+􀟈  Test "insertNextInQueue with empty array does nothing" started.
+􁁛  Test "Load more appends songs" passed after 0.002 seconds.
+􀟈  Test "Load more deduplicates songs" started.
+􁁛  Test "Refresh clears and reloads" passed after 0.002 seconds.
+􀟈  Test "Refresh keeps existing library content visible while background load runs" started.
+􁁛  Test "Load more preserves reported total track count" passed after 0.002 seconds.
+􀟈  Test "Load more deduplicates tracks" started.
+􁁛  Test "Refresh clears detail and reloads" passed after 0.002 seconds.
+􀟈  Test "displayedSongs returns preview count by default" started.
+􁁛  Test "Multiple undo operations work correctly" passed after 0.002 seconds.
+􀟈  Test "Undo history limit is enforced (10 states)" started.
+􁁛  Test clearAccountsResetsState() passed after 0.002 seconds.
+􀟈  Test clearErrorResetsLastError() started.
+􁁛  Test "insertNextInQueue with empty array does nothing" passed after 0.010 seconds.
+􀟈  Test "appendToQueue adds songs to end" started.
+􁁛  Test "Load more deduplicates songs" passed after 0.010 seconds.
+􀟈  Test "Load more stops when all duplicates" started.
+􁁛  Test "Load more deduplicates tracks" passed after 0.010 seconds.
+􀟈  Test "Load more stops on all duplicates" started.
+􁁛  Test "displayedSongs returns preview count by default" passed after 0.010 seconds.
+􀟈  Test "displayedSongs returns all songs when showAllSongs is true" started.
+􁁛  Test "Undo history limit is enforced (10 states)" passed after 0.013 seconds.
+􀟈  Test "Save and restore queue persists data correctly" started.
+􁁛  Test clearErrorResetsLastError() passed after 0.013 seconds.
+􁁛  Test "LaunchPage converts to NavigationItem" passed after 0.017 seconds.
+􁁛  Test "Create WebView configuration" passed after 0.019 seconds.
+􁁛  Test "PlaybackState equality" passed after 0.019 seconds.
+􁁛  Test "status for song uses cache over song property" passed after 0.019 seconds.
+􁁛  Test "Cache invalidate all" passed after 0.019 seconds.
+􀟈  Test currentBrandIdReturnsNilForPrimaryAccount() started.
+􀟈  Test "Create login WebView configuration without user scripts" started.
+􀟈  Test "Cache invalidate matching prefix" started.
+􀟈  Test "Default showNowPlayingNotifications is true" started.
+􀟈  Test "PlaybackState isPlaying returns correct value" started.
+􀟈  Test "status for song falls back to song property" started.
+􀟈  Test case passing 2 arguments state → .playing, expected → true to "PlaybackState isPlaying returns correct value" started.
+􁁛  Test "appendToQueue adds songs to end" passed after 0.005 seconds.
+􁁛  Test "Start login transitions to loggingIn state" passed after 0.018 seconds.
+􀟈  Test "appendToQueue with empty array does nothing" started.
+􁁛  Test "Load more stops when all duplicates" passed after 0.005 seconds.
+􀟈  Test "Complete login transitions to loggedIn state" started.
+􁁛  Test "Add album succeeds" passed after 0.018 seconds.
+􁁛  Test "Load more stops on all duplicates" passed after 0.005 seconds.
+􀟈  Test "Load more does nothing when not loaded" started.
+􀟈  Test "Add playlist succeeds" started.
+􀟈  Test "Load more does nothing when not loaded" started.
+􁁛  Test "Load sets loading state during fetch" passed after 0.017 seconds.
+􁁛  Test "displayedSongs returns all songs when showAllSongs is true" passed after 0.005 seconds.
+􀟈  Test "Load error sets error state" started.
+􀟈  Test "displayedSongs returns empty when no detail" started.
+􁁛  Test "Execute retries and eventually succeeds" passed after 0.415 seconds.
+􁁛  Test "Search with empty query does not call API" passed after 0.019 seconds.
+􀟈  Test "Immediate search calls API without debounce" started.
+􀟈  Test "Execute fails after max attempts" started.
+􁁛  Test "Save and restore queue persists data correctly" passed after 0.001 seconds.
+􀟈  Test "Save and restore playback session preserves paused resume state" started.
+􁁛  Test currentBrandIdReturnsNilForPrimaryAccount() passed after 0.001 seconds.
+􀟈  Test currentBrandIdReturnsBrandIdForBrandAccount() started.
+􁁛  Test "appendToQueue with empty array does nothing" passed after 0.001 seconds.
+􁁛  Test "Load more does nothing when not loaded" passed after 0.001 seconds.
+􀟈  Test "removeFromQueue removes songs by video ID" started.
+􁁛  Test "Load more does nothing when not loaded" passed after 0.001 seconds.
+􀟈  Test "Load more does nothing when no more songs" started.
+􁁛  Test "Load error sets error state" passed after 0.001 seconds.
+􀟈  Test "Load does not run concurrently when already loading" started.
+􀟈  Test "Load more does nothing when no more tracks" started.
+􁁛  Test "Immediate search calls API without debounce" passed after 0.001 seconds.
+􀟈  Test "Immediate search with empty query does not call API" started.
+􁁛  Test "Save and restore playback session preserves paused resume state" passed after 0.001 seconds.
+􀟈  Test "Resume on a restored session starts hidden playback load" started.
+􁁛  Test currentBrandIdReturnsBrandIdForBrandAccount() passed after 0.001 seconds.
+􁁛  Suite AccountServiceTests passed after 0.450 seconds.
+􁁛  Test "removeFromQueue removes songs by video ID" passed after 0.001 seconds.
+􁁛  Test "Load more does nothing when no more songs" passed after 0.001 seconds.
+􀟈  Test "removeFromQueue adjusts currentIndex when needed" started.
+􁁛  Test "Load more does nothing when no more tracks" passed after 0.001 seconds.
+􀟈  Test "Refresh clears songs and reloads" started.
+􀟈  Test "Refresh clears detail and reloads" started.
+􁁛  Test "Default showNowPlayingNotifications is true" passed after 0.003 seconds.
+􁁛  Test "Immediate search with empty query does not call API" passed after 0.001 seconds.
+􀟈  Test "Default hapticFeedbackEnabled is true" started.
+􀟈  Test "Clear resets state" started.
+􁁛  Test "Resume on a restored session starts hidden playback load" passed after 0.001 seconds.
+􁁛  Test "Load does not run concurrently when already loading" passed after 0.025 seconds.
+􀟈  Test "Clear saved queue removes persistence data" started.
+􀟈  Test "Load sets hasMore based on continuation availability" started.
+􁁛  Test "removeFromQueue adjusts currentIndex when needed" passed after 0.001 seconds.
+􀟈  Test "reorderQueue changes order based on video IDs" started.
+􁁛  Test "Refresh clears songs and reloads" passed after 0.001 seconds.
+􀟈  Test "Live sync fetches real metadata before inserting placeholder current track" started.
+􁁛  Test "Create login WebView configuration without user scripts" passed after 0.004 seconds.
+􁁛  Test "status for song falls back to song property" passed after 0.004 seconds.
+􁁛  Test "Complete login transitions to loggedIn state" passed after 0.004 seconds.
+􀟈  Test case passing 2 arguments state → .paused, expected → false to "PlaybackState isPlaying returns correct value" started.
+􁁛  Test "Cache invalidate matching prefix" passed after 0.004 seconds.
+􁁛  Test "Add playlist succeeds" passed after 0.004 seconds.
+􁁛  Test "Refresh clears detail and reloads" passed after 0.001 seconds.
+􀟈  Test "isLiked returns true when liked" started.
+􀟈  Test "Session expired transitions to loggedOut and sets needsReauth" started.
+􀟈  Test "Cache entry expiration" started.
+􀟈  Test "Origin constant" started.
+􀟈  Test "Add artist succeeds" started.
+􀟈  Test "Load uses original playlist info for unknown title" started.
+􁁛  Test "displayedSongs returns empty when no detail" passed after 0.004 seconds.
+􀟈  Test "hasMoreSongs returns false when no detail" started.
+􁁛  Test "Clear saved queue removes persistence data" passed after 0.001 seconds.
+􀟈  Test "Restore queue with invalid data returns false" started.
+􁁛  Test "Load sets hasMore based on continuation availability" passed after 0.001 seconds.
+􀟈  Test "No continuations means no more sections after load" started.
+􁁛  Test "reorderQueue changes order based on video IDs" passed after 0.001 seconds.
+􁁛  Test "Load does not run concurrently when already loading" passed after 0.025 seconds.
+􀟈  Test "reorderQueue updates currentIndex to match current track" started.
+􀟈  Test "Client is exposed for playback" started.
+􁁛  Test "Load uses original playlist info for unknown title" passed after 0.001 seconds.
+􁁛  Test "Default hapticFeedbackEnabled is true" passed after 0.002 seconds.
+􁁛  Test "No continuations means no more sections after load" passed after 0.001 seconds.
+􁁛  Suite PlaylistDetailViewModelTests passed after 0.453 seconds.
+􀟈  Test "Default rememberPlaybackSettings is false" started.
+􀟈  Test "Refresh clears sections and reloads" started.
+􁁛  Test "reorderQueue updates currentIndex to match current track" passed after 0.001 seconds.
+􀟈  Test "reorderQueue(from:to:) moves item and maintains current track" started.
+􁁛  Test "Clear resets state" passed after 0.003 seconds.
+􀟈  Test "Filtered items returns all when all selected" started.
+􁁛  Test "Refresh clears sections and reloads" passed after 0.001 seconds.
+􀟈  Test "Refresh resets hasMoreSections flag" started.
+􁁛  Test "reorderQueue(from:to:) moves item and maintains current track" passed after 0.001 seconds.
+􀟈  Test "reorderQueue(from:to:) from current index fails gracefully" started.
+􁁛  Test "Origin constant" passed after 0.003 seconds.
+􀟈  Test case passing 2 arguments state → .idle, expected → false to "PlaybackState isPlaying returns correct value" started.
+􁁛  Test "Client is exposed for playback" passed after 0.002 seconds.
+􁁛  Test "Session expired transitions to loggedOut and sets needsReauth" passed after 0.003 seconds.
+􀟈  Test "Auth cookie name" started.
+􁁛  Test "isLiked returns true when liked" passed after 0.003 seconds.
+􁁛  Test "Refresh resets hasMoreSections flag" passed after 0.001 seconds.
+􁁛  Suite TopSongsViewModelTests passed after 0.455 seconds.
+􀟈  Test "State isLoggedIn property" started.
+􁁛  Test "Add artist succeeds" passed after 0.003 seconds.
+􀟈  Test "isDisliked returns true when disliked" started.
+􀟈  Test "Add podcast show succeeds" started.
+􀟈  Test "Client is exposed for navigation" started.
+􁁛  Test "hasMoreSongs returns false when no detail" passed after 0.003 seconds.
+􀟈  Test "hasMoreSongs returns true when songs exceed preview count" started.
+􁁛  Test "Restore queue with invalid data returns false" passed after 0.003 seconds.
+􁁛  Test "reorderQueue(from:to:) from current index fails gracefully" passed after 0.001 seconds.
+􁁛  Test "Default rememberPlaybackSettings is false" passed after 0.002 seconds.
+􀟈  Test "Restore queue falls back to legacy queue payload when playback session is missing" started.
+􀟈  Test "shuffleQueue keeps current track at front" started.
+􀟈  Test "Default showSidebarNowPlayingPanel is false" started.
+􁁛  Test "hasMoreSongs returns true when songs exceed preview count" passed after 0.001 seconds.
+􀟈  Test "hasMoreSongs returns false when songs within preview count" started.
+􁁛  Test "Filtered items returns all when all selected" passed after 0.001 seconds.
+􀟈  Test "Filtered items returns songs only when songs selected" started.
+􁁛  Test "shuffleQueue keeps current track at front" passed after 0.001 seconds.
+􀟈  Test "shuffleQueue does nothing with single song" started.
+􁁛  Test "hasMoreSongs returns false when songs within preview count" passed after 0.001 seconds.
+􀟈  Test "toggleSubscription does nothing without channel ID" started.
+􁁛  Test "Auth cookie name" passed after 0.001 seconds.
+􁁛  Test "isDisliked returns true when disliked" passed after 0.001 seconds.
+􁁛  Test "Default showSidebarNowPlayingPanel is false" passed after 0.001 seconds.
+􁁛  Test "State isLoggedIn property" passed after 0.001 seconds.
+􀟈  Test case passing 2 arguments state → .loading, expected → false to "PlaybackState isPlaying returns correct value" started.
+􁁛  Test "Add podcast show succeeds" passed after 0.001 seconds.
+􀟈  Test "Get all cookies" started.
+􁁛  Test "Client is exposed for navigation" passed after 0.001 seconds.
+􀟈  Test "Sign out clears state and calls mock" started.
+􀟈  Test "Add duplicate is ignored" started.
+􁁛  Suite NewReleasesViewModelTests passed after 0.457 seconds.
+􀟈  Test "showSidebarNowPlayingPanel persists to UserDefaults" started.
+􀟈  Test "like updates cache and calls API" started.
+􁁛  Test "shuffleQueue does nothing with single song" passed after 0.001 seconds.
+􁁛  Test "toggleSubscription does nothing without channel ID" passed after 0.001 seconds.
+􀟈  Test "toggleSubscription subscribes and refreshes the library" started.
+􁁛  Suite PlayerServiceMixTests passed after 0.457 seconds.
+􁁛  Test "Sign out clears state and calls mock" passed after 0.001 seconds.
+􀟈  Test "Check login status waits for restore and logs in from SAPISID" started.
+􁁛  Test "like updates cache and calls API" passed after 0.001 seconds.
+􀟈  Test "unlike updates cache to indifferent" started.
+􁁛  Test "Restore queue falls back to legacy queue payload when playback session is missing" passed after 0.002 seconds.
+􁁛  Test "Filtered items returns songs only when songs selected" passed after 0.001 seconds.
+􀟈  Test "Identify songs needing enrichment detects missing metadata" started.
+􀟈  Test "Podcast filter is available" started.
+􁁛  Test "Check login status waits for restore and logs in from SAPISID" passed after 0.001 seconds.
+􁁛  Test "unlike updates cache to indifferent" passed after 0.001 seconds.
+􀟈  Test "Check login status waits for restore and logs out when SAPISID is missing" started.
+􀟈  Test "dislike updates cache and calls API" started.
+􁁛  Test "Identify songs needing enrichment detects missing metadata" passed after 0.001 seconds.
+􁁛  Test "showSidebarNowPlayingPanel persists to UserDefaults" passed after 0.001 seconds.
+􁁛  Test "Get all cookies" passed after 0.001 seconds.
+􀟈  Test case passing 2 arguments state → .buffering, expected → false to "PlaybackState isPlaying returns correct value" started.
+􀟈  Test "Enrich queue metadata fetches and updates incomplete songs" started.
+􀟈  Test "Cookie header for domain" started.
+􀟈  Test "Disabling rememberPlaybackSettings clears persisted values" started.
+􁁛  Test "Add duplicate is ignored" passed after 0.001 seconds.
+􀟈  Test "New items added to front" started.
+􁁛  Test "Check login status waits for restore and logs out when SAPISID is missing" passed after 0.001 seconds.
+􁁛  Test "dislike updates cache and calls API" passed after 0.001 seconds.
+􀟈  Test "State equality" started.
+􀟈  Test "undislike updates cache to indifferent" started.
+􁁛  Test "Enrich queue metadata fetches and updates incomplete songs" passed after 0.001 seconds.
+􀟈  Test "enrichQueueMetadata preserves album / duration / thumbnail when songData lacks them" started.
+􁁛  Test "undislike updates cache to indifferent" passed after 0.001 seconds.
+􀟈  Test "like reverts cache on API failure" started.
+􁁛  Test "Podcast filter is available" passed after 0.002 seconds.
+􀟈  Test "Podcast filter has correct raw value" started.
+􁁛  Test "enrichQueueMetadata preserves album / duration / thumbnail when songData lacks them" passed after 0.001 seconds.
+􀟈  Test "Metadata enrichment updates queue during playback" started.
+􁁛  Test "Cookie header for domain" passed after 0.002 seconds.
+􀟈  Test "Has auth cookies" started.
+􁁛  Test "Disabling rememberPlaybackSettings clears persisted values" passed after 0.002 seconds.
+􁁛  Test "like reverts cache on API failure" passed after 0.001 seconds.
+􀟈  Test case passing 2 arguments state → .ended, expected → false to "PlaybackState isPlaying returns correct value" started.
+􀟈  Test "Explicit content languages expose stable API language codes" started.
+􀟈  Test "like removes cache entry on failure when no previous" started.
+􁁛  Test "New items added to front" passed after 0.002 seconds.
+􁁛  Test "State equality" passed after 0.002 seconds.
+􀟈  Test "Remove by contentId succeeds" started.
+􁁛  Test "like removes cache entry on failure when no previous" passed after 0.001 seconds.
+􀟈  Test "dislike reverts cache on API failure" started.
+􁁛  Suite AuthServiceTests passed after 0.462 seconds.
+􁁛  Test "Podcast filter has correct raw value" passed after 0.001 seconds.
+􁁛  Test "dislike reverts cache on API failure" passed after 0.001 seconds.
+􁁛  Test "Explicit content languages expose stable API language codes" passed after 0.001 seconds.
+􀟈  Test "Selected filter defaults to all" started.
+􀟈  Test case passing 2 arguments state → .error("test"), expected → false to "PlaybackState isPlaying returns correct value" started.
+􀟈  Test "setStatus updates cache" started.
+􀟈  Test "System content language uses the current locale language code fallback" started.
+􁁛  Test "Remove by contentId succeeds" passed after 0.001 seconds.
+􀟈  Test "Remove non-existent item is no-op" started.
+􁁛  Test "Selected filter defaults to all" passed after 0.001 seconds.
+􁁛  Test "Has auth cookies" passed after 0.001 seconds.
+􁁛  Test "PlaybackState isPlaying returns correct value" with 7 test cases passed after 0.015 seconds.
+􀟈  Test "Can set filter to podcasts" started.
+􀟈  Test "Cookie archive write coordinator skips duplicate pending saves and retries after failure" started.
+􁁛  Test "System content language uses the current locale language code fallback" passed after 0.001 seconds.
+􁁛  Test "setStatus updates cache" passed after 0.001 seconds.
+􀟈  Test "Changing content language invalidates API cache and updates localization bundle" started.
+􁁛  Test "Remove non-existent item is no-op" passed after 0.001 seconds.
+􀟈  Test "cache is isolated by active account" started.
+􀟈  Test "Queue initially empty" started.
+􁁛  Test "Cookie archive write coordinator skips duplicate pending saves and retries after failure" passed after 0.001 seconds.
+􀟈  Test "Toggle adds then removes" started.
+􁁛  Test "Can set filter to podcasts" passed after 0.001 seconds.
+􀟈  Test "Cookie archive write coordinator skips archives already persisted" started.
+􁁛  Suite SearchViewModelTests passed after 0.461 seconds.
+􁁛  Test "Changing content language invalidates API cache and updates localization bundle" passed after 0.001 seconds.
+􀟈  Test "launchPage returns defaultLaunchPage for non-lastUsed" started.
+􁁛  Test "cache is isolated by active account" passed after 0.001 seconds.
+􀟈  Test "clearCache removes all entries" started.
+􁁛  Test "Queue initially empty" passed after 0.001 seconds.
+􁁛  Test "launchPage returns defaultLaunchPage for non-lastUsed" passed after 0.001 seconds.
+􁁛  Test "Cookie archive write coordinator skips archives already persisted" passed after 0.001 seconds.
+􁁛  Test "Toggle adds then removes" passed after 0.001 seconds.
+􀟈  Test "Update playback state to playing" started.
+􀟈  Test "launchPage returns lastUsedPage when set to lastUsed" started.
+􀟈  Test "Toggle podcast show adds then removes" started.
+􀟈  Test "Auth cookie validation requires allowlisted name and domain" started.
+􁁛  Test "clearCache removes all entries" passed after 0.001 seconds.
+􁁛  Suite SongLikeStatusManagerTests passed after 0.462 seconds.
+􁁛  Test "launchPage returns lastUsedPage when set to lastUsed" passed after 0.001 seconds.
+􀟈  Test "launchNavigationItem returns correct item" started.
+􁁛  Test "Update playback state to playing" passed after 0.001 seconds.
+􁁛  Test "Auth cookie validation requires allowlisted name and domain" passed after 0.001 seconds.
+􁁛  Test "launchNavigationItem returns correct item" passed after 0.001 seconds.
+􁁛  Test "Toggle podcast show adds then removes" passed after 0.001 seconds.
+􀟈  Test "Update playback state to paused" started.
+􀟈  Test "Manual auth cookie parser accepts cookie headers" started.
+􀟈  Test "MediaControlStyle has correct display names" started.
+􀟈  Test "Move item changes position" started.
+􁁛  Test "Manual auth cookie parser accepts cookie headers" passed after 0.001 seconds.
+􁁛  Suite WebKitManagerTests passed after 0.464 seconds.
+􁁛  Test "MediaControlStyle has correct display names" passed after 0.001 seconds.
+􀟈  Test "MediaControlStyle rawValues roundtrip correctly" started.
+􁁛  Test "Update playback state to paused" passed after 0.001 seconds.
+􁁛  Test "Move item changes position" passed after 0.001 seconds.
+􀟈  Test "Update track metadata" started.
+􀟈  Test "Move to top succeeds" started.
+􁁛  Test "MediaControlStyle rawValues roundtrip correctly" passed after 0.001 seconds.
+􀟈  Test "MediaControlStyle identifiers are unique" started.
+􁁛  Test "Update track metadata" passed after 0.001 seconds.
+􀟈  Test "Update track metadata with empty thumbnail" started.
+􁁛  Test "MediaControlStyle identifiers are unique" passed after 0.001 seconds.
+􁁛  Test "Move to top succeeds" passed after 0.001 seconds.
+􀟈  Test "Default mediaControlStyle is nextPreviousTrack" started.
+􀟈  Test "Move to end succeeds" started.
+􁁛  Test "Update track metadata with empty thumbnail" passed after 0.001 seconds.
+􁁛  Test "Default mediaControlStyle is nextPreviousTrack" passed after 0.001 seconds.
+􀟈  Test "Confirm playback started" started.
+􁁛  Test "Move to end succeeds" passed after 0.001 seconds.
+􀟈  Test "All LaunchPage cases are covered" started.
+􀟈  Test "isPinned returns correct state" started.
+􁁛  Test "Confirm playback started" passed after 0.001 seconds.
+􁁛  Test "All LaunchPage cases are covered" passed after 0.001 seconds.
+􁁛  Test "isPinned returns correct state" passed after 0.001 seconds.
+􀟈  Test "Mini player dismissed" started.
+􀟈  Test "Clear all removes all items" started.
+􁁛  Suite SettingsManagerTests passed after 0.464 seconds.
+􁁛  Test "Mini player dismissed" passed after 0.001 seconds.
+􀟈  Test "Toggle shuffle" started.
+􁁛  Test "Clear all removes all items" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem contentId returns correct value" started.
+􁁛  Test "Toggle shuffle" passed after 0.001 seconds.
+􀟈  Test "Cycle repeat mode" started.
+􁁛  Test "FavoriteItem contentId returns correct value" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem title returns correct value" started.
+􁁛  Test "Cycle repeat mode" passed after 0.001 seconds.
+􀟈  Test "Is muted initially false" started.
+􁁛  Test "FavoriteItem title returns correct value" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem subtitle returns correct value" started.
+􁁛  Test "Is muted initially false" passed after 0.001 seconds.
+􀟈  Test "Initial volume is 1.0" started.
+􁁛  Test "FavoriteItem subtitle returns correct value" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem typeLabel returns correct value" started.
+􁁛  Test "Initial volume is 1.0" passed after 0.001 seconds.
+􀟈  Test "Play queue sets queue" started.
+􁁛  Test "FavoriteItem typeLabel returns correct value" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem equality based on contentId" started.
+􁁛  Test "Play queue sets queue" passed after 0.001 seconds.
+􀟈  Test "Play queue starting at index" started.
+􁁛  Test "FavoriteItem equality based on contentId" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem asHomeSectionItem conversion" started.
+􁁛  Test "Play queue starting at index" passed after 0.001 seconds.
+􀟈  Test "Play queue with invalid index clamps to valid range" started.
+􁁛  Test "FavoriteItem asHomeSectionItem conversion" passed after 0.001 seconds.
+􀟈  Test "FavoriteItem asHomeSectionItem returns nil for podcast show" started.
+􁁛  Test "Play queue with invalid index clamps to valid range" passed after 0.001 seconds.
+􀟈  Test "Play empty queue does nothing" started.
+􁁛  Test "FavoriteItem asHomeSectionItem returns nil for podcast show" passed after 0.001 seconds.
+􁁛  Suite FavoritesManagerTests passed after 0.466 seconds.
+􁁛  Test "Play empty queue does nothing" passed after 0.001 seconds.
+􀟈  Test "hasUserInteractedThisSession initially false" started.
+􁁛  Test "hasUserInteractedThisSession initially false" passed after 0.001 seconds.
+􀟈  Test "confirmPlaybackStarted sets userInteracted" started.
+􁁛  Test "confirmPlaybackStarted sets userInteracted" passed after 0.001 seconds.
+􀟈  Test "pendingPlayVideoId initially nil" started.
+􁁛  Test "pendingPlayVideoId initially nil" passed after 0.001 seconds.
+􀟈  Test "Mini player initially hidden" started.
+􁁛  Test "Mini player initially hidden" passed after 0.001 seconds.
+􀟈  Test "showQueue initially false" started.
+􁁛  Test "showQueue initially false" passed after 0.001 seconds.
+􀟈  Test "showLyrics initially false" started.
+􁁛  Test "showLyrics initially false" passed after 0.001 seconds.
+􀟈  Test "Show queue closes lyrics" started.
+􁁛  Test "Show queue closes lyrics" passed after 0.001 seconds.
+􀟈  Test "Show lyrics closes queue" started.
+􁁛  Test "Show lyrics closes queue" passed after 0.001 seconds.
+􀟈  Test "Both sidebars can be closed" started.
+􁁛  Test "Both sidebars can be closed" passed after 0.001 seconds.
+􀟈  Test "Clear queue with no current track" started.
+􁁛  Test "Clear queue with no current track" passed after 0.001 seconds.
+􀟈  Test "Clear queue keeps current track" started.
+􁁛  Test "Clear queue keeps current track" passed after 0.001 seconds.
+􁁛  Suite PlayerServiceTests passed after 0.468 seconds.
+􁁛  Test "toggleSubscription subscribes and refreshes the library" passed after 0.012 seconds.
+􀟈  Test "toggleSubscription keeps optimistic artist when refresh response is stale" started.
+􁁛  Test "Load does not run concurrently when already loading" passed after 0.023 seconds.
+􀟈  Test "Refresh clears sections and reloads" started.
+􁁛  Test "Refresh clears sections and reloads" passed after 0.001 seconds.
+􀟈  Test "Client is exposed for navigation" started.
+􁁛  Test "Client is exposed for navigation" passed after 0.001 seconds.
+􁁛  Suite MoodCategoryViewModelTests passed after 0.471 seconds.
+􁁛  Test "Caches concurrent bootstrap key lookups" passed after 0.454 seconds.
+􁁛  Suite YTMusicAPIKeyProviderTests passed after 0.474 seconds.
+􁁛  Test "Execute fails after max attempts" passed after 0.032 seconds.
+􁁛  Test "toggleSubscription keeps optimistic artist when refresh response is stale" passed after 0.011 seconds.
+􀟈  Test "Execute does not retry authExpired" started.
+􁁛  Test "fetchLyrics prefers synced lyrics over earlier YTMusic plain lyrics" passed after 0.054 seconds.
+􀟈  Test "toggleSubscription unsubscribes and refreshes the library" started.
+􀟈  Test "fetchLyrics caches results and derives activeProvider from cached source" started.
+􁁛  Test "Execute does not retry authExpired" passed after 0.001 seconds.
+􀟈  Test "Execute does not retry notAuthenticated" started.
+􁁛  Test "Execute does not retry notAuthenticated" passed after 0.001 seconds.
+􁁛  Suite RetryPolicyTests passed after 0.480 seconds.
+􁁛  Test "fetchLyrics caches results and derives activeProvider from cached source" passed after 0.001 seconds.
+􀟈  Test "fetchLyrics retries after a cached unavailable result" started.
+􁁛  Test "fetchLyrics retries after a cached unavailable result" passed after 0.001 seconds.
+􀟈  Test "fetchLyrics updates loading state while a search is in flight" started.
+􁁛  Test "fetchLyrics updates loading state while a search is in flight" passed after 0.001 seconds.
+􀟈  Test "fetchLyrics can upgrade cached plain lyrics to synced results" started.
+􁁛  Test "fetchLyrics can upgrade cached plain lyrics to synced results" passed after 0.001 seconds.
+􀟈  Test "fetchLyrics keeps cached plain lyrics when no synced result is found" started.
+􁁛  Test "fetchLyrics keeps cached plain lyrics when no synced result is found" passed after 0.001 seconds.
+􀟈  Test "stale in-flight fetches do not overwrite a newer result" started.
+􁁛  Test "stale in-flight fetches do not overwrite a newer result" passed after 0.001 seconds.
+􀟈  Test "fallbackToPlainLyrics does not overwrite synced lyrics" started.
+􁁛  Test "fallbackToPlainLyrics does not overwrite synced lyrics" passed after 0.001 seconds.
+􀟈  Test "toggling romanization updates current lyrics without refetching" started.
+􁁛  Test "toggleSubscription unsubscribes and refreshes the library" passed after 0.010 seconds.
+􀟈  Test "toggleSubscription sets error on failure" started.
+􁁛  Test "toggleSubscription sets error on failure" passed after 0.001 seconds.
+􀟈  Test "getAllSongs returns artist detail songs when no browse ID" started.
+􁁛  Test "getAllSongs returns artist detail songs when no browse ID" passed after 0.001 seconds.
+􀟈  Test "getAllSongs fetches from API when browse ID available" started.
+􁁛  Test "getAllSongs fetches from API when browse ID available" passed after 0.001 seconds.
+􀟈  Test "getAllSongs returns cached songs on subsequent calls" started.
+􁁛  Test "getAllSongs returns cached songs on subsequent calls" passed after 0.001 seconds.
+􁁛  Suite ArtistDetailViewModelTests passed after 0.491 seconds.
+􁁛  Test "addPlaylistToLibrary keeps optimistic playlist when refresh response is stale" passed after 0.530 seconds.
+􀟈  Test "removePlaylistFromLibrary keeps optimistic removal when refresh response is stale" started.
+􁁛  Test "Live sync fetches real metadata before inserting placeholder current track" passed after 0.106 seconds.
+􀟈  Test "Live sync insert survives external like-cache reset during metadata fetch" started.
+􁁛  Test "Metadata enrichment updates queue during playback" passed after 0.107 seconds.
+􀟈  Test "Enrichment does not overwrite good data with worse data" started.
+􁁛  Test "toggling romanization updates current lyrics without refetching" passed after 0.102 seconds.
+􁁛  Suite SyncedLyricsServiceTests passed after 0.583 seconds.
+􁁛  Test "Cache entry expiration" passed after 0.154 seconds.
+􀟈  Test "Cache overwrite" started.
+􁁛  Test "Cache overwrite" passed after 0.001 seconds.
+􀟈  Test "Cache TTL constants are correct" started.
+􁁛  Test "Cache TTL constants are correct" passed after 0.001 seconds.
+􀟈  Test "Cache keys change when API request language changes" started.
+􁁛  Test "Cache keys change when API request language changes" passed after 0.001 seconds.
+􀟈  Test "Lyrics cache not invalidated by mutations" started.
+􁁛  Test "Lyrics cache not invalidated by mutations" passed after 0.001 seconds.
+􀟈  Test "Song metadata cache invalidated by mutations" started.
+􁁛  Test "Song metadata cache invalidated by mutations" passed after 0.001 seconds.
+􀟈  Test "Cache entry isExpired property" started.
+􁁛  Test "Cache entry isExpired property" passed after 0.001 seconds.
+􀟈  Test "Cache shared instance is singleton" started.
+􁁛  Test "Cache shared instance is singleton" passed after 0.001 seconds.
+􁁛  Suite APICacheTests passed after 0.606 seconds.
+􁁛  Test "likeCurrentTrack sets status to like when indifferent" passed after 0.213 seconds.
+􁁛  Test "Near-end autoplay while repeat one does not advance queue index" passed after 0.209 seconds.
+􀟈  Test "likeCurrentTrack toggles to indifferent when already liked" started.
+􀟈  Test "Repeat one does not realign queue when YouTube loads another in-queue video" started.
+􁁛  Test "Refresh keeps existing library content visible while background load runs" passed after 0.226 seconds.
+􀟈  Test "Refresh failure keeps existing library content visible" started.
+􁁛  Test "Refresh failure keeps existing library content visible" passed after 0.001 seconds.
+􀟈  Test "isInLibrary normalizes MPLAUC artist IDs to channel IDs" started.
+􁁛  Test "isInLibrary normalizes MPLAUC artist IDs to channel IDs" passed after 0.001 seconds.
+􀟈  Test "addToLibrary inserts artist at beginning and stores normalized ID" started.
+􁁛  Test "addToLibrary inserts artist at beginning and stores normalized ID" passed after 0.001 seconds.
+􀟈  Test "addToLibrary does not duplicate equivalent artist IDs" started.
+􁁛  Test "addToLibrary does not duplicate equivalent artist IDs" passed after 0.001 seconds.
+􀟈  Test "removeFromLibrary removes normalized artist ID from set and array" started.
+􁁛  Test "removeFromLibrary removes normalized artist ID from set and array" passed after 0.001 seconds.
+􀟈  Test "refresh keeps locally removed artist suppressed until backend catches up" started.
+􁁛  Test "refresh keeps locally removed artist suppressed until backend catches up" passed after 0.001 seconds.
+􀟈  Test "refresh keeps locally removed artist suppressed through oscillating backend responses" started.
+􁁛  Test "refresh keeps locally removed artist suppressed through oscillating backend responses" passed after 0.001 seconds.
+􀟈  Test "refresh keeps locally added artist visible until backend catches up" started.
+􁁛  Test "refresh keeps locally added artist visible until backend catches up" passed after 0.001 seconds.
+􀟈  Test "refresh keeps locally added artist visible through oscillating backend responses" started.
+􁁛  Test "refresh keeps locally added artist visible through oscillating backend responses" passed after 0.001 seconds.
+􀟈  Test "refresh preserves existing artists when refresh falls back to landing preview" started.
+􁁛  Test "refresh preserves existing artists when refresh falls back to landing preview" passed after 0.001 seconds.
+􀟈  Test "load deduplicates equivalent library artist IDs" started.
+􁁛  Test "load deduplicates equivalent library artist IDs" passed after 0.001 seconds.
+􀟈  Test "addToLibrary inserts playlist at beginning and updates ID set" started.
+􁁛  Test "addToLibrary inserts playlist at beginning and updates ID set" passed after 0.001 seconds.
+􀟈  Test "removeFromLibrary removes playlist from both set and array" started.
+􁁛  Test "removeFromLibrary removes playlist from both set and array" passed after 0.001 seconds.
+􀟈  Test "addToLibrary inserts podcast at beginning and updates ID set" started.
+􁁛  Test "addToLibrary inserts podcast at beginning and updates ID set" passed after 0.001 seconds.
+􀟈  Test "addToLibrary does not duplicate existing podcast" started.
+􁁛  Test "addToLibrary does not duplicate existing podcast" passed after 0.001 seconds.
+􀟈  Test "addToLibrary inserts new podcast at position 0" started.
+􁁛  Test "addToLibrary inserts new podcast at position 0" passed after 0.001 seconds.
+􀟈  Test "removeFromLibrary removes podcast from both set and array" started.
+􁁛  Test "removeFromLibrary removes podcast from both set and array" passed after 0.001 seconds.
+􀟈  Test "removeFromLibrary handles non-existent podcast gracefully" started.
+􁁛  Test "removeFromLibrary handles non-existent podcast gracefully" passed after 0.001 seconds.
+􀟈  Test "isInLibrary returns true for added podcast" started.
+􁁛  Test "isInLibrary returns true for added podcast" passed after 0.001 seconds.
+􀟈  Test "isInLibrary returns false for non-added podcast" started.
+􁁛  Test "isInLibrary returns false for non-added podcast" passed after 0.001 seconds.
+􁁛  Suite LibraryViewModelTests passed after 0.661 seconds.
+􁁛  Test "Enrichment does not overwrite good data with worse data" passed after 0.103 seconds.
+􀟈  Test "Metadata enrichment handles API errors gracefully" started.
+􁁛  Test "Metadata enrichment handles API errors gracefully" passed after 0.001 seconds.
+􀟈  Test "Toggle queue display mode switches between popup and side panel" started.
+􁁛  Test "Toggle queue display mode switches between popup and side panel" passed after 0.001 seconds.
+􀟈  Test "Queue display mode persists to UserDefaults" started.
+􁁛  Test "Queue display mode persists to UserDefaults" passed after 0.001 seconds.
+􁁛  Suite PlayerServiceQueueTests passed after 0.675 seconds.
+􁁛  Test "Refresh preserves already loaded paginated sections when first page is unchanged" passed after 0.322 seconds.
+􀟈  Test "Refresh restarts background pagination after history cursor rewind" started.
+􁁛  Test "Live sync insert survives external like-cache reset during metadata fetch" passed after 0.210 seconds.
+􀟈  Test "Live sync cancels pending metadata insert after unlike event" started.
+􁁛  Test "Repeat one does not realign queue when YouTube loads another in-queue video" passed after 0.155 seconds.
+􀟈  Test "Track ended with repeat one advances via same song reload" started.
+􁁛  Test "Track ended with repeat one advances via same song reload" passed after 0.003 seconds.
+􀟈  Test "Repeat one recovers when title drifts before videoId is sent" started.
+􁁛  Test "likeCurrentTrack toggles to indifferent when already liked" passed after 0.204 seconds.
+􀟈  Test "likeCurrentTrack changes dislike to like" started.
+􁁛  Test "Repeat one recovers when title drifts before videoId is sent" passed after 0.156 seconds.
+􀟈  Test "Track ended with repeat one still runs when WebView reports autoplay video id" started.
+􁁛  Test "Track ended with repeat one still runs when WebView reports autoplay video id" passed after 0.002 seconds.
+􀟈  Test "Track ended with repeat one replays even without an active queue" started.
+􁁛  Test "Track ended with repeat one replays even without an active queue" passed after 0.001 seconds.
+􀟈  Test "Next with shuffle picks random song from queue" started.
+􁁛  Test "Next with shuffle picks random song from queue" passed after 0.007 seconds.
+􀟈  Test "UpdateTrackMetadata corrects YouTube autoplay with Kaset-initiated playback" started.
+􁁛  Test "Live sync cancels pending metadata insert after unlike event" passed after 0.209 seconds.
+􁁛  Suite LikedMusicViewModelTests passed after 0.978 seconds.
+􁁛  Test "likeCurrentTrack changes dislike to like" passed after 0.212 seconds.
+􀟈  Test "likeCurrentTrack reverts on API failure" started.
+􁁛  Test "removePlaylistFromLibrary keeps optimistic removal when refresh response is stale" passed after 0.510 seconds.
+􀟈  Test "subscribeToPodcast keeps optimistic show when refresh response is stale" started.
+􁁛  Test "UpdateTrackMetadata corrects YouTube autoplay with Kaset-initiated playback" passed after 0.105 seconds.
+􀟈  Test "UpdateTrackMetadata keeps queue song when Web metadata is stale" started.
+􁁛  Test "UpdateTrackMetadata keeps queue song when Web metadata is stale" passed after 0.001 seconds.
+􀟈  Test "Near-end videoId-only transition keeps expected queue song visible" started.
+􁁛  Test "Near-end videoId-only transition keeps expected queue song visible" passed after 0.001 seconds.
+􀟈  Test "Unexpected autoplay at end of queue is stopped" started.
+􁁛  Test "Unexpected autoplay at end of queue is stopped" passed after 0.001 seconds.
+􀟈  Test "Autoplay after native queue end is suppressed" started.
+􁁛  Test "Autoplay after native queue end is suppressed" passed after 0.001 seconds.
+􀟈  Test "Unexpected mid-track autoplay is corrected after playback confirmation" started.
+􁁛  Test "detects track change and updates lastNotifiedTrackId when playback is active" passed after 0.709 seconds.
+􀟈  Test "detects multiple track changes while playing" started.
+􁁛  Test "Unexpected mid-track autoplay is corrected after playback confirmation" passed after 0.102 seconds.
+􀟈  Test "Observed in-queue track realigns current index" started.
+􁁛  Test "Observed in-queue track realigns current index" passed after 0.004 seconds.
+􀟈  Test "Track end wraps to the first queue song when repeat all is enabled" started.
+􁁛  Test "Track end wraps to the first queue song when repeat all is enabled" passed after 0.003 seconds.
+􀟈  Test "Track end still wraps when repeat all already reports the first queue song" started.
+􁁛  Test "Track end still wraps when repeat all already reports the first queue song" passed after 0.002 seconds.
+􀟈  Test "Track end advances native queue before Web autoplay can take over" started.
+􁁛  Test "Track end advances native queue before Web autoplay can take over" passed after 0.001 seconds.
+􀟈  Test "Stale track-ended events do not double-advance the queue" started.
+􁁛  Test "Stale track-ended events do not double-advance the queue" passed after 0.001 seconds.
+􀟈  Test "Stale repeat-all track-ended events do not skip queue items" started.
+􁁛  Test "Stale repeat-all track-ended events do not skip queue items" passed after 0.001 seconds.
+􀟈  Test "Play from queue valid index" started.
+􁁛  Test "Play from queue valid index" passed after 0.001 seconds.
+􀟈  Test "Play from queue invalid index does nothing" started.
+􁁛  Test "Play from queue invalid index does nothing" passed after 0.001 seconds.
+􀟈  Test "Play from queue negative index does nothing" started.
+􁁛  Test "Play from queue negative index does nothing" passed after 0.001 seconds.
+􀟈  Test "Play with radio starts playback immediately" started.
+􁁛  Test "Play with radio starts playback immediately" passed after 0.001 seconds.
+􀟈  Test "Play with radio sets queue with seed song" started.
+􁁛  Test "Play with radio sets queue with seed song" passed after 0.001 seconds.
+􀟈  Test "Play with radio fetches radio queue" started.
+􁁛  Test "Play with radio fetches radio queue" passed after 0.001 seconds.
+􀟈  Test "Play with radio keeps seed song at front when not in radio" started.
+􁁛  Test "Play with radio keeps seed song at front when not in radio" passed after 0.001 seconds.
+􀟈  Test "Play with radio reorders seed song to front" started.
+􁁛  Test "Play with radio reorders seed song to front" passed after 0.001 seconds.
+􀟈  Test "Play with radio handles empty radio queue" started.
+􁁛  Test "Play with radio handles empty radio queue" passed after 0.001 seconds.
+􁁛  Suite PlayerServiceWebQueueSyncTests passed after 1.189 seconds.
+􁁛  Test "likeCurrentTrack reverts on API failure" passed after 0.313 seconds.
+􀟈  Test "likeCurrentTrack ignores stale completion after current track changes" started.
+􁁛  Test "Refresh restarts background pagination after history cursor rewind" passed after 0.614 seconds.
+􀟈  Test "Empty history retry leaves loading state loaded" started.
+􁁛  Test "Empty history retry leaves loading state loaded" passed after 0.001 seconds.
+􀟈  Test "Playback-triggered refresh updates history once per new video ID" started.
+􁁛  Test "Playback-triggered refresh updates history once per new video ID" passed after 0.027 seconds.
+􀟈  Test "Playback-triggered refresh retries when the first page is unchanged" started.
+􁁛  Test "Playback-triggered refresh retries when the first page is unchanged" passed after 0.027 seconds.
+􁁛  Suite HistoryViewModelTests passed after 1.420 seconds.
+􁁛  Test "subscribeToPodcast keeps optimistic show when refresh response is stale" passed after 0.524 seconds.
+􀟈  Test "unsubscribeFromPodcast keeps optimistic removal when refresh response is stale" started.
+􁁛  Test "likeCurrentTrack ignores stale completion after current track changes" passed after 0.309 seconds.
+􀟈  Test "likeCurrentTrack uses captured client even if singleton client changes before task runs" started.
+􁁛  Test "likeCurrentTrack uses captured client even if singleton client changes before task runs" passed after 0.210 seconds.
+􀟈  Test "dislikeCurrentTrack does nothing when no current track" started.
+􁁛  Test "dislikeCurrentTrack does nothing when no current track" passed after 0.210 seconds.
+􁁛  Test "unsubscribeFromPodcast keeps optimistic removal when refresh response is stale" passed after 0.520 seconds.
+􀟈  Test "dislikeCurrentTrack sets status to dislike when indifferent" started.
+􀟈  Test "unsubscribeFromArtist keeps optimistic removal when refresh response is stale" started.
+􁁛  Test "unsubscribeFromArtist keeps optimistic removal when refresh response is stale" passed after 0.012 seconds.
+􀟈  Test "unsubscribeFromArtist clears stale browse cache after stale refresh" started.
+􁁛  Test "unsubscribeFromArtist clears stale browse cache after stale refresh" passed after 0.011 seconds.
+􀟈  Test "unsubscribeFromArtist clears URL cache before refreshing library" started.
+􁁛  Test "unsubscribeFromArtist clears URL cache before refreshing library" passed after 0.013 seconds.
+􀟈  Test "unsubscribeFromArtist discards an older in-flight library load" started.
+􁁛  Test "dislikeCurrentTrack sets status to dislike when indifferent" passed after 0.211 seconds.
+􀟈  Test "dislikeCurrentTrack toggles to indifferent when already disliked" started.
+􁁛  Test "dislikeCurrentTrack toggles to indifferent when already disliked" passed after 0.210 seconds.
+􀟈  Test "dislikeCurrentTrack changes like to dislike" started.
+􁁛  Test "detects multiple track changes while playing" passed after 1.486 seconds.
+􀟈  Test "does not notify for paused restored track" started.
+􁁛  Test "dislikeCurrentTrack changes like to dislike" passed after 0.209 seconds.
+􀟈  Test "dislikeCurrentTrack reverts on API failure" started.
+􁁛  Test "unsubscribeFromArtist discards an older in-flight library load" passed after 0.847 seconds.
+􀟈  Test "unsubscribeFromArtist removes artist from library immediately while request is in flight" started.
+􁁛  Test "dislikeCurrentTrack reverts on API failure" passed after 0.319 seconds.
+􀟈  Test "dislikeCurrentTrack ignores stale completion after current track changes" started.
+􁁛  Test "does not notify for paused restored track" passed after 0.735 seconds.
+􁁛  Test "dislikeCurrentTrack ignores stale completion after current track changes" passed after 0.316 seconds.
+􀟈  Test "notifies when paused current track starts playing" started.
+􀟈  Test "toggleLibraryStatus does nothing when no current track" started.
+􁁛  Test "toggleLibraryStatus does nothing when no current track" passed after 0.213 seconds.
+􀟈  Test "toggleLibraryStatus does nothing when no feedback token" started.
+􁁛  Test "unsubscribeFromArtist removes artist from library immediately while request is in flight" passed after 0.716 seconds.
+􀟈  Test "unsubscribeFromArtist suppresses stale artist when library browse ID differs from channel ID" started.
+􁁛  Test "unsubscribeFromArtist suppresses stale artist when library browse ID differs from channel ID" passed after 0.001 seconds.
+􀟈  Test "Real-world mismatched artist IDs remove the library artist on unsubscribe" started.
+􀟈  Test case passing 3 arguments artistName → "EBEN", libraryBrowseId → "UCOml1XnMezHWWe0qy8vdFRA", subscriptionChannelId → "UCvIhrQ9BRWUxBNsDJQi8V5A" to "Real-world mismatched artist IDs remove the library artist on unsubscribe" started.
+􁁛  Test "Real-world mismatched artist IDs remove the library artist on unsubscribe" with 1 test case passed after 0.001 seconds.
+􀟈  Test "subscribeToArtist adds artist to library immediately while request is in flight" started.
+􁁛  Test "toggleLibraryStatus does nothing when no feedback token" passed after 0.214 seconds.
+􀟈  Test "toggleLibraryStatus adds to library when not in library" started.
+􁁛  Test "toggleLibraryStatus adds to library when not in library" passed after 0.105 seconds.
+􀟈  Test "toggleLibraryStatus removes from library when in library" started.
+􁁛  Test "toggleLibraryStatus removes from library when in library" passed after 0.105 seconds.
+􀟈  Test "toggleLibraryStatus reverts on API failure" started.
+􁁛  Test "toggleLibraryStatus reverts on API failure" passed after 0.103 seconds.
+􀟈  Test "toggleLibraryStatus preserves optimistic add when metadata refresh is stale" started.
+􁁛  Test "subscribeToArtist adds artist to library immediately while request is in flight" passed after 0.741 seconds.
+􀟈  Test "subscribeToArtist does not duplicate artist when library browse ID differs from subscription channel ID" started.
+􁁛  Test "subscribeToArtist does not duplicate artist when library browse ID differs from subscription channel ID" passed after 0.011 seconds.
+􀟈  Test "Real-world mismatched artist IDs do not duplicate on subscribe" started.
+􀟈  Test case passing 3 arguments artistName → "EBEN", libraryBrowseId → "UCOml1XnMezHWWe0qy8vdFRA", subscriptionChannelId → "UCvIhrQ9BRWUxBNsDJQi8V5A" to "Real-world mismatched artist IDs do not duplicate on subscribe" started.
+􁁛  Test "Real-world mismatched artist IDs do not duplicate on subscribe" with 1 test case passed after 0.012 seconds.
+􁁛  Suite SongActionsHelperTests passed after 4.460 seconds.
+􁁛  Test "notifies when paused current track starts playing" passed after 1.435 seconds.
+􁁛  Test "toggleLibraryStatus preserves optimistic add when metadata refresh is stale" passed after 0.691 seconds.
+􀟈  Test "toggleLibraryStatus preserves optimistic removal when metadata refresh is stale" started.
+􀟈  Test "does not notify for same track twice" started.
+􁁛  Test "toggleLibraryStatus preserves optimistic removal when metadata refresh is stale" passed after 0.691 seconds.
+􀟈  Test "updateLikeStatus updates status" started.
+􁁛  Test "updateLikeStatus updates status" passed after 0.001 seconds.
+􀟈  Test "fetchSongMetadata preserves cached like status when API like status is unknown" started.
+􁁛  Test "fetchSongMetadata preserves cached like status when API like status is unknown" passed after 0.001 seconds.
+􀟈  Test "resetTrackStatus resets all status properties" started.
+􁁛  Test "resetTrackStatus resets all status properties" passed after 0.001 seconds.
+􁁛  Suite PlayerServiceLibraryTests passed after 5.490 seconds.
+􁁛  Test "does not notify for same track twice" passed after 1.451 seconds.
+􀟈  Test "skips tracks with Loading... title" started.
+􁁛  Test "skips tracks with Loading... title" passed after 0.707 seconds.
+􀟈  Test "notifies when loading track resolves and playback starts" started.
+􁁛  Test "notifies when loading track resolves and playback starts" passed after 1.424 seconds.
+􀟈  Test "no notification when track is nil" started.
+􁁛  Test "no notification when track is nil" passed after 0.717 seconds.
+􀟈  Test "service remains active after multiple polling cycles" started.
+􁁛  Test "service remains active after multiple polling cycles" passed after 2.722 seconds.
+􁁛  Suite NotificationServiceTests passed after 11.819 seconds.
+􁁛  Test run with 893 tests in 74 suites passed after 11.820 seconds.

@@ -253,8 +253,24 @@ extension PlayerService {
                         currentQueueSong.thumbnailURL == nil
 
                     if needsUpdate {
-                        var enrichedQueueSong = songData
-                        enrichedQueueSong.likeStatus = resolvedLikeStatus
+                        // SongMetadataParser comes from the `next` endpoint and
+                        // never carries album info (hard-coded album: nil) and
+                        // sometimes lacks a thumbnail. Preserve those from the
+                        // existing queue entry — otherwise queue advance strips
+                        // the album, and the now-playing sidebar's "Go to album"
+                        // / "Go to artist" links disappear from the next song on.
+                        let enrichedQueueSong = Song(
+                            id: songData.id,
+                            title: songData.title,
+                            artists: songData.artists,
+                            album: songData.album ?? currentQueueSong.album,
+                            duration: songData.duration ?? currentQueueSong.duration,
+                            thumbnailURL: songData.thumbnailURL ?? currentQueueSong.thumbnailURL,
+                            videoId: songData.videoId,
+                            likeStatus: resolvedLikeStatus,
+                            isInLibrary: songData.isInLibrary,
+                            feedbackTokens: songData.feedbackTokens
+                        )
                         self.queue[queueIndex] = enrichedQueueSong
                         self.logger.debug("Enriched queue entry at index \(queueIndex): '\(enrichedQueueSong.title)' with artists: \(enrichedQueueSong.artistsDisplay)")
                         // Save the enriched queue to persistence

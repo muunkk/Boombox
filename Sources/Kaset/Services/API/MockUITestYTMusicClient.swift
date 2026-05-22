@@ -512,7 +512,33 @@ import Foundation
                 return nil
             }
 
-            let songs = (dict["songs"] as? [[String: Any]])?.compactMap { songDict -> Song? in
+            let songs = Self.parseSearchSongs(from: dict["songs"])
+            let albums = Self.parseSearchAlbums(from: dict["albums"])
+            let artists = Self.parseSearchArtists(from: dict["artists"])
+            let playlists = Self.parseSearchPlaylists(from: dict["playlists"])
+            let sections = Self.parseSearchSections(
+                from: dict["sections"],
+                songs: songs,
+                albums: albums,
+                artists: artists,
+                playlists: playlists
+            )
+
+            return SearchResponse(
+                songs: songs,
+                albums: albums,
+                artists: artists,
+                playlists: playlists,
+                podcastShows: [],
+                sections: sections,
+                continuationToken: nil
+            )
+        }
+
+        private static func parseSearchSongs(from payload: Any?) -> [Song] {
+            guard let songs = payload as? [[String: Any]] else { return [] }
+
+            return songs.compactMap { songDict -> Song? in
                 guard let id = songDict["id"] as? String,
                       let title = songDict["title"] as? String,
                       let videoId = songDict["videoId"] as? String
@@ -520,15 +546,158 @@ import Foundation
                     return nil
                 }
                 let artist = songDict["artist"] as? String ?? "Unknown"
+                let artistId = songDict["artistId"] as? String ?? "UCmocksearchartist"
+                let thumbnailURL = Self.url(from: songDict["thumbnailURL"])
                 return Song(
                     id: id,
                     title: title,
-                    artists: [Artist(id: "mock", name: artist)],
+                    artists: [Artist(id: artistId, name: artist)],
+                    album: nil,
+                    duration: Self.timeInterval(from: songDict["duration"]),
+                    thumbnailURL: thumbnailURL,
                     videoId: videoId
                 )
-            } ?? []
+            }
+        }
 
-            return SearchResponse(songs: songs, albums: [], artists: [], playlists: [])
+        private static func parseSearchAlbums(from payload: Any?) -> [Album] {
+            guard let albums = payload as? [[String: Any]] else { return [] }
+
+            return albums.compactMap { albumDict -> Album? in
+                guard let id = albumDict["id"] as? String,
+                      let title = albumDict["title"] as? String
+                else {
+                    return nil
+                }
+
+                let artist = albumDict["artist"] as? String
+                let artistId = albumDict["artistId"] as? String ?? "UCmockalbumartist"
+                return Album(
+                    id: id,
+                    title: title,
+                    artists: artist.map { [Artist(id: artistId, name: $0)] },
+                    thumbnailURL: Self.url(from: albumDict["thumbnailURL"]),
+                    year: albumDict["year"] as? String,
+                    trackCount: albumDict["trackCount"] as? Int
+                )
+            }
+        }
+
+        private static func parseSearchArtists(from payload: Any?) -> [Artist] {
+            guard let artists = payload as? [[String: Any]] else { return [] }
+
+            return artists.compactMap { artistDict -> Artist? in
+                guard let id = artistDict["id"] as? String,
+                      let name = artistDict["name"] as? String
+                else {
+                    return nil
+                }
+
+                return Artist(id: id, name: name, thumbnailURL: Self.url(from: artistDict["thumbnailURL"]))
+            }
+        }
+
+        private static func parseSearchPlaylists(from payload: Any?) -> [Playlist] {
+            guard let playlists = payload as? [[String: Any]] else { return [] }
+
+            return playlists.compactMap { playlistDict -> Playlist? in
+                guard let id = playlistDict["id"] as? String,
+                      let title = playlistDict["title"] as? String
+                else {
+                    return nil
+                }
+
+                return Playlist(
+                    id: id,
+                    title: title,
+                    description: playlistDict["description"] as? String,
+                    thumbnailURL: Self.url(from: playlistDict["thumbnailURL"]),
+                    trackCount: playlistDict["trackCount"] as? Int,
+                    author: playlistDict["author"] as? String
+                )
+            }
+        }
+
+        private static func parseSearchSections(
+            from payload: Any?,
+            songs: [Song],
+            albums: [Album],
+            artists: [Artist],
+            playlists: [Playlist]
+        ) -> [SearchSection] {
+            guard let sections = payload as? [[String: Any]] else { return [] }
+
+            let lookup = Self.searchResultLookup(
+                songs: songs,
+                albums: albums,
+                artists: artists,
+                playlists: playlists
+            )
+
+            return sections.enumerated().compactMap { index, sectionDict -> SearchSection? in
+                let itemRefs = sectionDict["items"] as? [[String: Any]] ?? []
+                let items = itemRefs.compactMap { itemRef -> SearchResultItem? in
+                    guard let type = itemRef["type"] as? String,
+                          let id = itemRef["id"] as? String
+                    else {
+                        return nil
+                    }
+                    return lookup[Self.searchResultLookupKey(type: type, id: id)]
+                }
+
+                guard !items.isEmpty else { return nil }
+
+                return SearchSection(
+                    id: sectionDict["id"] as? String ?? "mock-search-section-\(index)",
+                    title: sectionDict["title"] as? String,
+                    isTopResult: sectionDict["isTopResult"] as? Bool ?? false,
+                    items: items
+                )
+            }
+        }
+
+        private static func searchResultLookup(
+            songs: [Song],
+            albums: [Album],
+            artists: [Artist],
+            playlists: [Playlist]
+        ) -> [String: SearchResultItem] {
+            var lookup: [String: SearchResultItem] = [:]
+
+            for song in songs {
+                lookup[Self.searchResultLookupKey(type: "song", id: song.id)] = .song(song)
+                lookup[Self.searchResultLookupKey(type: "song", id: song.videoId)] = .song(song)
+            }
+            for album in albums {
+                lookup[Self.searchResultLookupKey(type: "album", id: album.id)] = .album(album)
+            }
+            for artist in artists {
+                lookup[Self.searchResultLookupKey(type: "artist", id: artist.id)] = .artist(artist)
+            }
+            for playlist in playlists {
+                lookup[Self.searchResultLookupKey(type: "playlist", id: playlist.id)] = .playlist(playlist)
+            }
+
+            return lookup
+        }
+
+        private static func searchResultLookupKey(type: String, id: String) -> String {
+            "\(type.lowercased()):\(id)"
+        }
+
+        private static func url(from payload: Any?) -> URL? {
+            guard let string = payload as? String else { return nil }
+            return URL(string: string)
+        }
+
+        private static func timeInterval(from payload: Any?) -> TimeInterval? {
+            if let value = payload as? TimeInterval {
+                return value
+            }
+            if let value = payload as? Int {
+                return TimeInterval(value)
+            }
+            return nil
         }
 
         private static func parsePlaylists() -> [Playlist]? {

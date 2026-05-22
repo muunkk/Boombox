@@ -452,20 +452,36 @@ enum ParsingHelpers {
             return navigableArtists
         }
 
-        return textOnlyNames.map { Artist(id: "", name: $0) }
+        // Stable hash-derived IDs preserve `Identifiable` uniqueness across multiple
+        // text-only artists in the same row without colliding (an empty-string id
+        // would). They still fail `hasNavigableId` (no UC/MPLAUC prefix), so any
+        // "Go to artist" path correctly stays disabled.
+        return textOnlyNames.map {
+            Artist(id: Self.stableId(title: "artist", components: $0), name: $0)
+        }
     }
 
     /// Heuristic guard for things that appear in flex columns but are not artists:
     /// durations like "3:45", years like "2024", view counts like "1.2M views".
     /// Used to keep stray subtitle bits from being treated as artist names when
     /// we fall back to text-only runs.
+    ///
+    /// Anchored on the full trimmed string rather than substring matches — band
+    /// names like "Reviews" or "Displays" would otherwise be silently dropped
+    /// by a naive `.contains("views")` / `.contains("plays")` check.
     private static func looksLikeNonArtistMetadata(_ text: String) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespaces)
         if self.parseDuration(trimmed) != nil { return true }
         // Plain 4-digit year.
         if trimmed.count == 4, Int(trimmed) != nil { return true }
-        // "1.2M views", "234K plays", etc.
-        if trimmed.lowercased().contains("views") || trimmed.lowercased().contains("plays") {
+        // Stat strings like "1.2M views", "234K plays", "12,345 views" —
+        // anchored at the end so band names containing "views" don't trip.
+        if let regex = try? NSRegularExpression(
+            pattern: #"^[\d,.]+\s*[KMB]?\s+(views?|plays?|streams?)$"#,
+            options: .caseInsensitive
+        ),
+            regex.firstMatch(in: trimmed, range: NSRange(trimmed.startIndex..., in: trimmed)) != nil
+        {
             return true
         }
         return false

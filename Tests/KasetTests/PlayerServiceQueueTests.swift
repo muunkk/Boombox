@@ -396,6 +396,63 @@ struct PlayerServiceQueueTests {
         #expect(self.playerService.queue[0].artists[0].name == "Enriched Artist")
     }
 
+    @Test("enrichQueueMetadata preserves album / duration / thumbnail when songData lacks them")
+    func enrichQueueMetadataPreservesAlbumWhenSongDataLacksIt() async {
+        // SongMetadataParser (from the `next` endpoint) hard-codes album: nil
+        // and frequently lacks duration/thumbnailURL. If enrichQueueMetadata
+        // wholesale-replaces the queue entry, those fields get wiped from
+        // queue songs that originated with full metadata (e.g. from an album
+        // detail page), killing the now-playing sidebar's "Go to album" link.
+        let originalAlbum = Album(
+            id: "MPREabc",
+            title: "Original Album",
+            artists: nil,
+            thumbnailURL: URL(string: "https://example.com/album.jpg"),
+            year: "2024",
+            trackCount: 10
+        )
+        let originalThumbnail = URL(string: "https://example.com/thumb.jpg")
+        let originalDuration: TimeInterval = 240
+
+        // Triggers needsUpdate via `title == "Loading..."`, but otherwise has
+        // complete metadata that should survive enrichment.
+        let queueSong = Song(
+            id: "preserve-test",
+            title: "Loading...",
+            artists: [Artist(id: "UCabc", name: "Original Artist")],
+            album: originalAlbum,
+            duration: originalDuration,
+            thumbnailURL: originalThumbnail,
+            videoId: "preserve-test"
+        )
+
+        // Matches the real SongMetadataParser output shape: album/duration/
+        // thumbnail are nil even though title/artists are set.
+        let metadataResponse = Song(
+            id: "preserve-test",
+            title: "Real Title",
+            artists: [Artist(id: "UCabc", name: "Real Artist")],
+            album: nil,
+            duration: nil,
+            thumbnailURL: nil,
+            videoId: "preserve-test"
+        )
+
+        self.mockClient.songResponses["preserve-test"] = metadataResponse
+        await self.playerService.playQueue([queueSong], startingAt: 0)
+
+        await self.playerService.enrichQueueMetadata()
+
+        // Title/artists update with fresh data...
+        #expect(self.playerService.queue[0].title == "Real Title")
+        #expect(self.playerService.queue[0].artists.first?.name == "Real Artist")
+        // ...but album/duration/thumbnail are preserved from the queue entry.
+        #expect(self.playerService.queue[0].album?.id == "MPREabc")
+        #expect(self.playerService.queue[0].album?.hasNavigableId == true)
+        #expect(self.playerService.queue[0].duration == originalDuration)
+        #expect(self.playerService.queue[0].thumbnailURL == originalThumbnail)
+    }
+
     @Test("Metadata enrichment updates queue during playback")
     func metadataEnrichmentDuringPlayback() async {
         // Arrange

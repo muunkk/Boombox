@@ -1,0 +1,547 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project KasetUITests.xcodeproj -scheme KasetUITests -destination platform=macOS "-only-testing:KasetUITests/SearchViewUITests/testFilterSwapPreservesSectionRenderingInAllTab"
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-001030AA1A80801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-001030AA1A80801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'KasetUITests' in project 'KasetUITests' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: b78852eb8d709187e5a9a317dc2ce67e
+Build description path: /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/XCBuildData/b78852eb8d709187e5a9a317dc2ce67e.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+    cd /Users/melboonchan/Master/Projects/YTM/kaset/KasetUITests.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+
+SwiftDriver KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ KasetUITests (in target 'KasetUITests' from project 'KasetUITests')
+
+EmitSwiftModule normal arm64 (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+
+SwiftCompile normal arm64 Compiling\ SearchViewUITests.swift /Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/SearchViewUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+SwiftCompile normal arm64 /Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/SearchViewUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/SearchViewUITests.swift:101:13: warning: initialization of immutable value 'allFilterButton' was never used; consider replacing with assignment to '_' or removing it
+        let allFilterButton = app.buttons["All"]
+        ~~~~^~~~~~~~~~~~~~~
+        _
+
+SwiftDriverJobDiscovery normal arm64 Compiling SearchViewUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+
+SwiftDriver\ Compilation KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for KasetUITests (in target 'KasetUITests' from project 'KasetUITests')
+
+SwiftDriver\ Compilation\ Requirements KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/arm64-apple-macos.abi.json /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.abi.json (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.abi.json /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftsourceinfo (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftsourceinfo /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Ld /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests normal (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.0 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -O0 -L/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.LinkFileList -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -object_path_lto -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests
+
+ExtractAppIntentsMetadata (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name KasetUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk --xcode-version 17E202 --platform-family macOS --deployment-target 26.0 --bundle-identifier com.sertacozercan.KasetUITests --output /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Resources --target-triple arm64-apple-macos26.0 --binary-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests --dependency-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_dependency_info.dat --stringsdata-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList --metadata-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.DependencyMetadataFileList --static-metadata-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-05-22 00:51:09.182 appintentsmetadataprocessor[68909:4372456] Starting appintentsmetadataprocessor export
+2026-05-22 00:51:09.183 appintentsmetadataprocessor[68909:4372456] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+ProcessInfoPlistFile /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Info.plist /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/empty-KasetUITests.plist (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-infoPlistUtility /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/empty-KasetUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -platform macosx -additionalcontentfile /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/ProductTypeInfoPlistAdditions.plist -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Info.plist
+
+CopySwiftLibs /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Frameworks --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/PlugIns --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Library/SystemExtensions --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest
+
+CodeSign /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app
+/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app: replacing existing signature
+
+2026-05-22 00:51:09.681149-0400 KasetUITests-Runner[68913:4372509] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-05-22 00:51:09.751.
+Test Suite 'KasetUITests.xctest' started at 2026-05-22 00:51:09.751.
+Test Suite 'SearchViewUITests' started at 2026-05-22 00:51:09.751.
+Test Case '-[KasetUITests.SearchViewUITests testFilterSwapPreservesSectionRenderingInAllTab]' started.
+    t =     0.00s Start Test at 2026-05-22 00:51:09.751
+    t =     0.10s Set Up
+    t =     0.11s Open com.melboonchan.boombox
+    t =     0.11s     Launch com.melboonchan.boombox
+    t =     0.11s         Terminate com.melboonchan.boombox:68658
+    t =     1.38s         Wait for accessibility to load
+    t =     2.10s         Setting up automation session
+    t =     2.11s         Wait for com.melboonchan.boombox to idle
+    t =     2.12s Checking existence of `"sidebar.search" Button`
+    t =     3.25s Checking `Expect predicate `exists == 1` for object "sidebar.search" Button`
+    t =     3.25s     Checking existence of `"sidebar.search" Button`
+    t =     4.36s Checking `Expect predicate `exists == 1` for object "sidebar.search" Button`
+    t =     4.36s     Checking existence of `"sidebar.search" Button`
+    t =     4.43s Find the "sidebar.search" Button
+    t =     4.50s Click "sidebar.search" Button
+    t =     4.50s     Wait for com.melboonchan.boombox to idle
+    t =     4.50s     Find the "sidebar.search" Button
+    t =     4.54s     Check for interrupting elements affecting "sidebar.search" Button
+    t =     4.56s     Synthesize event
+    t =     4.92s     Wait for com.melboonchan.boombox to idle
+    t =     4.92s Checking existence of `"searchView.searchField" TextField`
+    t =     6.10s Checking `Expect predicate `isHittable == 1` for object "searchView.searchField" TextField`
+    t =     6.10s     Find the "searchView.searchField" TextField
+    t =     6.18s Click "searchView.searchField" TextField
+    t =     6.18s     Wait for com.melboonchan.boombox to idle
+    t =     6.19s     Find the "searchView.searchField" TextField
+    t =     6.22s     Check for interrupting elements affecting "searchView.searchField" TextField
+    t =     6.23s     Synthesize event
+    t =     6.58s     Wait for com.melboonchan.boombox to idle
+    t =     6.59s Type 'ordered shelves
+' into "searchView.searchField" TextField
+    t =     6.59s     Wait for com.melboonchan.boombox to idle
+    t =     6.60s     Find the "searchView.searchField" TextField
+    t =     6.63s     Check for interrupting elements affecting "searchView.searchField" TextField
+    t =     6.66s     Synthesize event
+    t =     7.10s     Wait for com.melboonchan.boombox to idle
+    t =     8.14s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.all" Button`
+    t =     8.14s     Checking existence of `"searchView.filterChip.all" Button`
+    t =     8.33s Find the "searchView.filterChip.all" Button
+    t =     9.43s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.songs" Button`
+    t =     9.43s     Checking existence of `"searchView.filterChip.songs" Button`
+    t =     9.52s Requesting snapshot of accessibility hierarchy for app with pid 69014
+    t =     9.61s Requesting snapshot of accessibility hierarchy for app with pid 69014
+SEARCH DEBUG START
+Optional(Attributes: Application, 0xacce4cf00, pid: 69014, title: 'Boombox', Disabled
+Element subtree:
+ →Application, 0xacce4cf00, pid: 69014, title: 'Boombox', Disabled
+    Window (Main), 0xacce4f700, {{1095.0, 243.0}, {1180.0, 836.0}}, identifier: 'main', title: 'Search', Disabled
+      Group, 0xacce4f840, {{1095.0, 243.0}, {1180.0, 836.0}}, Disabled
+        SplitGroup, 0xacce4f980, {{1095.0, 243.0}, {1180.0, 836.0}}, identifier: 'main, SidebarNavigationSplitView', Disabled
+          Group, 0xacce4fac0, {{1103.0, 251.0}, {204.0, 820.0}}, Disabled
+            ScrollView, 0xacce4fc00, {{1103.0, 295.0}, {204.0, 727.0}}, Disabled
+              Outline, 0xacce4fd40, {{1102.0, 294.0}, {206.0, 729.0}}, identifier: 'sidebar', label: 'Sidebar'
+                OutlineRow, 0xacce4fe80, {{1103.0, 295.0}, {204.0, 0.0}}, Disabled
+                  Cell, 0xacc458000, {{1113.0, 295.0}, {184.0, 0.0}}, Keyboard Focused
+                    Group, 0xacc458140, {{1117.0, 295.0}, {188.0, 0.0}}, Disabled
+                OutlineRow, 0xacc458280, {{1103.0, 295.0}, {204.0, 32.0}}, Selected, Disabled
+                  Cell, 0xacc4583c0, {{1113.0, 295.0}, {184.0, 32.0}}, Keyboard Focused, Selected
+                    Button, 0xacc458500, {{1126.0, 303.0}, {65.5, 16.0}}, identifier: 'sidebar.search', label: 'Search'
+                OutlineRow, 0xacc458640, {{1103.0, 327.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc458780, {{1113.0, 327.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc4588c0, {{1124.5, 335.0}, {60.5, 16.0}}, identifier: 'sidebar.home', label: 'Home'
+                OutlineRow, 0xacc458a00, {{1103.0, 372.0}, {204.0, 19.0}}, Disabled
+                  Cell, 0xacc458b40, {{1113.0, 372.0}, {184.0, 19.0}}, Keyboard Focused
+                    Group, 0xacc458c80, {{1117.0, 372.0}, {188.0, 19.0}}, Disabled
+                      StaticText, 0xacc458dc0, {{1117.0, 374.5}, {39.0, 14.0}}, label: 'Library'
+                OutlineRow, 0xacc458f00, {{1103.0, 391.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc459040, {{1113.0, 391.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc459180, {{1125.5, 398.1}, {66.0, 16.9}}, identifier: 'sidebar.library', label: 'Library'
+                OutlineRow, 0xacc4592c0, {{1103.0, 423.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc459400, {{1113.0, 423.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc459540, {{1125.5, 431.0}, {95.5, 16.0}}, identifier: 'sidebar.likedMusic', label: 'Liked Music'
+                OutlineRow, 0xacc459680, {{1103.0, 468.0}, {204.0, 19.0}}, Disabled
+                  Cell, 0xacc4597c0, {{1113.0, 468.0}, {184.0, 19.0}}, Keyboard Focused
+                    Group, 0xacc459900, {{1117.0, 468.0}, {188.0, 19.0}}, Disabled
+                      StaticText, 0xacc459a40, {{1117.0, 470.5}, {48.0, 14.0}}, label: 'Discover'
+                OutlineRow, 0xacc459b80, {{1103.0, 487.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc459cc0, {{1113.0, 487.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc459e00, {{1125.5, 495.0}, {69.0, 16.0}}, identifier: 'sidebar.explore', label: 'Explore'
+                OutlineRow, 0xacc459f40, {{1103.0, 519.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc45a080, {{1113.0, 519.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc45a1c0, {{1126.0, 527.3}, {108.0, 16.0}}, identifier: 'sidebar.newReleases', label: 'New Releases'
+                OutlineRow, 0xacc45a300, {{1103.0, 564.0}, {204.0, 19.0}}, Disabled
+                  Cell, 0xacc45a440, {{1113.0, 564.0}, {184.0, 19.0}}, Keyboard Focused
+                    Group, 0xacc45a580, {{1117.0, 564.0}, {188.0, 19.0}}, Disabled
+                      StaticText, 0xacc45a6c0, {{1117.0, 566.5}, {42.0, 14.0}}, label: 'Activity'
+                OutlineRow, 0xacc45a800, {{1103.0, 583.0}, {204.0, 32.0}}, Disabled
+                  Cell, 0xacc45a940, {{1113.0, 583.0}, {184.0, 32.0}}, Keyboard Focused
+                    Button, 0xacc45aa80, {{1124.5, 591.0}, {68.0, 16.0}}, identifier: 'sidebar.history', label: 'History'
+                TableColumn, 0xacc45abc0, {{1113.0, 295.0}, {184.0, 727.0}}, identifier: 'ListColumn', Disabled
+            Button, 0xacc45ad00, {{1115.0, 1031.0}, {180.0, 32.0}}, identifier: 'sidebarProfile.profileButton', label: 'Profile: Mel Boonchan, @melboonchan8888. Multiple accounts available.'
+          Splitter, 0xacc45ae40, {{1307.0, 295.0}, {0.0, 784.0}}, value: 212, Disabled
+          Group, 0xacc45af80, {{1095.0, 243.0}, {1180.0, 836.0}}, Disabled
+            Button, 0xacc45b0c0, {{1347.0, 1034.5}, {8.0, 13.5}}, identifier: 'playerBar.nowPlayingPanelToggle', label: 'Now Playing Panel', value: Hidden
+            Button, 0xacc45b200, {{1379.0, 1034.0}, {17.5, 14.0}}, identifier: 'playerBar.shuffle', label: 'Shuffle', value: Off
+            Button, 0xacc45b340, {{1415.0, 1034.5}, {23.5, 13.5}}, identifier: 'playerBar.previous', label: 'Previous track'
+            Button, 0xacc45b480, {{1459.0, 1031.5}, {17.0, 19.0}}, identifier: 'playerBar.playPause', label: 'Play'
+            Button, 0xacc45b5c0, {{1494.5, 1034.5}, {23.5, 13.5}}, identifier: 'playerBar.next', label: 'Next track'
+            Button, 0xacc45b700, {{1536.5, 1034.0}, {16.5, 14.0}}, identifier: 'playerBar.repeat', label: 'Repeat', value: Off
+            Button, 0xacc45b840, {{1572.5, 1033.0}, {15.5, 16.5}}, identifier: 'playerBar.like', label: 'Like', value: Not liked
+            Image, 0xacc45b980, {{1688.0, 1023.0}, {36.0, 36.0}}, identifier: 'playerBar.thumbnail', label: 'Now playing: ติดหนี้ต้องใช้ (feat. DJ G2) by GUNNER'
+            StaticText, 0xacc45bac0, {{1733.8, 1026.5}, {142.5, 15.0}}, identifier: 'playerBar.trackTitle', value: Now playing: ติดหน...
+            StaticText, 0xacc45bc00, {{1733.8, 1042.5}, {43.0, 13.0}}, identifier: 'playerBar.trackArtist', value: Now playing: ติดหน...
+            Button, 0xacc45bd40, {{2034.0, 1035.5}, {15.5, 11.5}}, identifier: 'playerBar.queue', label: 'Queue', value: Hidden
+            Button, 0xacc45be80, {{2065.5, 1033.5}, {16.5, 15.5}}, identifier: 'playerBar.lyrics', label: 'Lyrics', value: Hidden
+            Button, 0xacc45c000, {{2094.0, 1033.5}, {12.0, 15.5}}, identifier: 'playerBar.airplayButton', label: 'Audio Output: MacBook Pro Speakers'
+            Image, 0xacc45c140, {{2135.5, 1034.5}, {13.5, 13.5}}, identifier: 'speaker.wave.1.fill', label: 'Volume Low'
+            Slider, 0xacc45c280, {{2158.0, 1033.0}, {82.0, 16.0}}, value: 0.5462607432007476
+              ValueIndicator, 0xacc45c3c0, {{2193.0, 1034.0}, {18.0, 14.0}}, value: 0.5462607432007476, Disabled
+            Group, 0xacc45c500, {{1307.0, 321.0}, {968.0, 758.0}}, identifier: 'searchView', Keyboard Focused
+              Image, 0xacc45c640, {{1342.5, 322.5}, {12.5, 13.0}}, identifier: 'magnifyingglass', label: 'Search'
+              TextField, 0xacc45c780, {{1363.5, 320.0}, {855.5, 18.0}}, identifier: 'searchView.searchField', placeholderValue: 'Search songs, albums, artists...', value: ordered shelves, Keyboard Focused
+              Button, 0xacc45c8c0, {{2227.0, 322.5}, {13.0, 13.0}}, identifier: 'xmark.circle.fill', label: 'Clear search'
+              ScrollView, 0xacc45ca00, {{1331.0, 359.0}, {920.0, 27.0}}, Disabled
+                Button, 0xacc45cb40, {{1331.0, 359.0}, {39.0, 27.0}}, identifier: 'searchView.filterChip.all', label: 'All', value: Selected
+                Button, 0xacc45cc80, {{1378.0, 359.0}, {60.5, 27.0}}, identifier: 'searchView.filterChip.songs', label: 'Songs', value: Not selected
+                Button, 0xacc45cdc0, {{1446.5, 359.0}, {67.5, 27.0}}, identifier: 'searchView.filterChip.albums', label: 'Albums', value: Not selected
+                Button, 0xacc45cf00, {{1522.0, 359.0}, {62.5, 27.0}}, identifier: 'searchView.filterChip.artists', label: 'Artists', value: Not selected
+                Button, 0xacc45d040, {{1592.5, 359.0}, {127.0, 27.0}}, identifier: 'searchView.filterChip.featuredPlaylists', label: 'Featured playlists', value: Not selected
+                Button, 0xacc45d180, {{1727.5, 359.0}, {141.5, 27.0}}, identifier: 'searchView.filterChip.communityPlaylists', label: 'Community playlists', value: Not selected
+                Button, 0xacc45d2c0, {{1877.0, 359.0}, {77.5, 27.0}}, identifier: 'searchView.filterChip.podcasts', label: 'Podcasts', value: Not selected
+              ScrollView, 0xacc45d400, {{1307.0, 403.0}, {968.0, 612.0}}, Disabled
+                Other, 0xacc45d540, {{1307.0, 411.0}, {968.0, 1299.0}}
+                  Button, 0xacc45d680, {{1307.0, 411.0}, {968.0, 64.0}}, label: 'SHELF, Song, •, 1 800 PAIN'
+                  Button, 0xacc45d7c0, {{1307.0, 476.0}, {968.0, 64.0}}, label: 'Home Library DIY: domed ceiling, shelves, secret door, rolling ladder, Song, •, Simon Pockley'
+                  Button, 0xacc45d900, {{1307.0, 541.0}, {968.0, 64.0}}, label: 'Sorted! The Best Of, Album'
+                  Button, 0xacc45da40, {{1307.0, 606.0}, {968.0, 64.0}}, label: 'The Sky Is My Wings, Album'
+                  Button, 0xacc45db80, {{1307.0, 671.0}, {968.0, 64.0}}, label: 'Stranger In Town, Album'
+                  Button, 0xacc45dcc0, {{1307.0, 736.0}, {968.0, 64.0}}, label: 'Shelves, Song, •, -XLO</3'
+                  Button, 0xacc45de00, {{1307.0, 801.0}, {968.0, 64.0}}, label: 'Aleksandr P., Artist'
+                  Button, 0xacc45df40, {{1307.0, 866.0}, {968.0, 64.0}}, label: 'Klaxus, Artist'
+                  Button, 0xacc45e080, {{1307.0, 931.0}, {968.0, 64.0}}, label: 'Amaripink23, Artist'
+                  Button, 0xacc45e1c0, {{1307.0, 996.0}, {968.0, 64.0}}, label: 'Doctors Orders, Song, •, Eric Peter Goldman, Zedrick Eugene Kelley, & Terrance Shelton'
+                  Button, 0xacc45e300, {{1307.0, 1061.0}, {968.0, 64.0}}, label: 'Holy Orders (Be Just or Be Dead) (Guilty Gear) - GaMetal Remix, Song, •, GaMetal'
+                  Button, 0xacc45e440, {{1307.0, 1126.0}, {968.0, 64.0}}, label: 'bedidofna - If We Had Been Told, We Wouldn’t Have Come, Song, •, bedidofna'
+                  Button, 0xacc45e580, {{1307.0, 1191.0}, {968.0, 64.0}}, label: 'put me on a shelf, Song, •, shower curtain'
+                  Button, 0xacc45e6c0, {{1307.0, 1256.0}, {968.0, 64.0}}, label: 'Shelves, Song, •, Tyler Cassidy'
+                  Button, 0xacc45e800, {{1307.0, 1321.0}, {968.0, 64.0}}, label: 'You're Organizing Your Kitchen Wrong!, Song, •, Nov 23, 2024, MTKD's Kitchen Party Podcast'
+                  Button, 0xacc45e940, {{1307.0, 1386.0}, {968.0, 64.0}}, label: 'What I Learned Stocking Shelves at ALDI | The History & Takeover of the ALDI Grocery Empire, Song, •, Feb 6, SOCIAL CURRENCY'
+                  Button, 0xacc45ea80, {{1307.0, 1451.0}, {968.0, 64.0}}, label: 'Star Trek Retro Review: "Assignment: Earth" (TOS) | Time Loops and Paradoxes, Song, •, 7h ago, Star Trek Retro Reviews'
+                  Button, 0xacc45ebc0, {{1307.0, 1516.0}, {968.0, 64.0}}, label: '2024 Recap, Playlist, •, Made for Berry Daniels • 29 songs'
+                  Button, 0xacc45ed00, {{1307.0, 1581.0}, {968.0, 64.0}}, label: 'Rockitworks dork, Playlist, •, Jason JBo • 11 views'
+                  Button, 0xacc45ee40, {{1307.0, 1646.0}, {968.0, 64.0}}, label: 'Somber Jams, Playlist, •, ItsGojira3 • 132 views'
+      Toolbar, 0xacc45ef80, {{1095.0, 243.0}, {1180.0, 52.0}}, Disabled
+        Button, 0xacc45f0c0, {{1260.0, 243.0}, {47.0, 52.0}}, label: 'Hide Sidebar'
+        Button, 0xacc45f200, {{1311.0, 243.0}, {44.0, 52.0}}, identifier: 'arrow.clockwise', label: 'Refresh', Disabled
+      Button, 0xacc45f340, {{1113.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:CloseWindow'
+      Button, 0xacc45f480, {{1159.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:FullScreenWindow'
+        Group, 0xacc45f5c0, {{1160.0, 262.0}, {14.0, 14.0}}, Disabled
+          Group, 0xacc45f700, {{1160.0, 262.0}, {14.0, 14.0}}, Disabled
+      Button, 0xacc45f840, {{1136.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:MinimizeWindow'
+    MenuBar, 0xacc45f980, {{0.0, 0.0}, {2560.0, 30.0}}
+      MenuBarItem, 0xacc45fac0, {{10.0, 0.0}, {34.0, 30.0}}, title: 'Apple'
+        Menu, 0xacc45fc00, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc45fd40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_aboutThisMacRequested:', title: 'About This Mac'
+          MenuItem, 0xacc45fe80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_systemInformationRequested:', title: 'System Information'
+          MenuItem, 0xacc464000, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc464140, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_systemSettingsRequested:', title: 'System Settings…, 1 update'
+          MenuItem, 0xacc464280, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_appStoreRequested:', title: 'App Store…, 6 updates'
+          MenuItem, 0xacc4643c0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc464500, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentsRequested:', title: 'Recent Items'
+            Menu, 0xacc464640, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc464780, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Applications', Disabled
+              MenuItem, 0xacc4648c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Books.app'
+              MenuItem, 0xacc464a00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Books.app” in Finder'
+              MenuItem, 0xacc464b40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Boombox.app'
+              MenuItem, 0xacc464c80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Boombox.app” in Finder'
+              MenuItem, 0xacc464dc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'ChatGPT.app'
+              MenuItem, 0xacc464f00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “ChatGPT.app” in Finder'
+              MenuItem, 0xacc465040, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Codex.app'
+              MenuItem, 0xacc465180, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Codex.app” in Finder'
+              MenuItem, 0xacc4652c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Finder.app'
+              MenuItem, 0xacc465400, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Finder.app” in Finder'
+              MenuItem, 0xacc465540, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Ghostty.app'
+              MenuItem, 0xacc465680, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Ghostty.app” in Finder'
+              MenuItem, 0xacc4657c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Messages.app'
+              MenuItem, 0xacc465900, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Messages.app” in Finder'
+              MenuItem, 0xacc465a40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Phone.app'
+              MenuItem, 0xacc465b80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Phone.app” in Finder'
+              MenuItem, 0xacc465cc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Stremio.app'
+              MenuItem, 0xacc465e00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Stremio.app” in Finder'
+              MenuItem, 0xacc465f40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Zen.app'
+              MenuItem, 0xacc466080, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Zen.app” in Finder'
+              MenuItem, 0xacc4661c0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc466300, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Documents', Disabled
+              MenuItem, 0xacc466440, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'apple-icon.psd'
+              MenuItem, 0xacc466580, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “apple-icon.psd” in Finder'
+              MenuItem, 0xacc4666c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Claude Code App'
+              MenuItem, 0xacc466800, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Claude Code App” in Finder'
+              MenuItem, 0xacc466940, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Jost-VariableFont_wght.ttf'
+              MenuItem, 0xacc466a80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Jost-VariableFont_wght.ttf” in Finder'
+              MenuItem, 0xacc466bc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'pages'
+              MenuItem, 0xacc466d00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “pages” in Finder'
+              MenuItem, 0xacc466e40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Test JS'
+              MenuItem, 0xacc466f80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Test JS” in Finder'
+              MenuItem, 0xacc4670c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Tutornet Horizontal Logo.ai'
+              MenuItem, 0xacc467200, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Tutornet Horizontal Logo.ai” in Finder'
+              MenuItem, 0xacc467340, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Tutornet Horizontal Logo.ai'
+              MenuItem, 0xacc467480, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Tutornet Horizontal Logo.ai” in Finder'
+              MenuItem, 0xacc4675c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Tutornet-Horizontal-Logo.png'
+              MenuItem, 0xacc467700, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “Tutornet-Horizontal-Logo.png” in Finder'
+              MenuItem, 0xacc467840, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'TutorNet-Landing'
+              MenuItem, 0xacc467980, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “TutorNet-Landing” in Finder'
+              MenuItem, 0xacc467ac0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'waitlist-server.test.ts'
+              MenuItem, 0xacc467c00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Show “waitlist-server.test.ts” in Finder'
+              MenuItem, 0xacc467d40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc467e80, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Servers', Disabled
+              MenuItem, 0xacc468000, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'Macintosh HD'
+              MenuItem, 0xacc468140, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'poopoo'
+              MenuItem, 0xacc468280, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'serverDrive1'
+              MenuItem, 0xacc4683c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'serverDrive2'
+              MenuItem, 0xacc468500, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'serverDrive3'
+              MenuItem, 0xacc468640, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_recentItemRequested:', title: 'serverDrive4'
+              MenuItem, 0xacc468780, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc4688c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_clearRecentItemsRequested:', title: 'Clear Menu'
+          MenuItem, 0xacc468a00, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc468b40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_forceQuitPanelRequested:', title: 'Force Quit…'
+          MenuItem, 0xacc468c80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_forceQuitRequested:', title: 'Force Quit Boombox'
+          MenuItem, 0xacc468dc0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc468f00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_sleepRequested:', title: 'Sleep'
+          MenuItem, 0xacc469040, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_restartRequested:', title: 'Restart…'
+          MenuItem, 0xacc469180, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_restartNowRequested:', title: 'Restart'
+          MenuItem, 0xacc4692c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_shutDownRequested:', title: 'Shut Down…'
+          MenuItem, 0xacc469400, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_shutDownNowRequested:', title: 'Shut Down'
+          MenuItem, 0xacc469540, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc469680, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_lockScreenRequested:', title: 'Lock Screen'
+          MenuItem, 0xacc4697c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_logOutRequested:', title: 'Log Out Mel Boonchan…'
+          MenuItem, 0xacc469900, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_logOutNowRequested:', title: 'Log Out Mel Boonchan'
+          MenuItem, 0xacc469a40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+      MenuBarItem, 0xacc469b80, {{44.0, 0.0}, {81.0, 30.0}}, title: 'Boombox'
+        Menu, 0xacc469cc0, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc469e00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'orderFrontStandardAboutPanel:', title: 'About Boombox'
+          MenuItem, 0xacc469f40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46a080, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Settings…'
+          MenuItem, 0xacc46a1c0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46a300, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Services'
+            Menu, 0xacc46a440, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc46a580, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Blip…'
+              MenuItem, 0xacc46a6c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Activity Monitor'
+              MenuItem, 0xacc46a800, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Allocations & Leaks'
+              MenuItem, 0xacc46a940, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'File Activity'
+              MenuItem, 0xacc46aa80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'System Trace'
+              MenuItem, 0xacc46abc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Time Profile Active Application'
+              MenuItem, 0xacc46ad00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Time Profile App Under Mouse'
+              MenuItem, 0xacc46ae40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Time Profile Entire System'
+              MenuItem, 0xacc46af80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_processRequest:', title: 'Toggle Instruments Recording'
+              MenuItem, 0xacc46b0c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_configureServicesMenu:', title: 'Services Settings…'
+          MenuItem, 0xacc46b200, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46b340, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'hide:', title: 'Hide Boombox'
+          MenuItem, 0xacc46b480, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'hideOtherApplications:', title: 'Hide Others'
+          MenuItem, 0xacc46b5c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'unhideAllApplications:', title: 'Show All'
+          MenuItem, 0xacc46b700, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46b840, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'terminate:', title: 'Quit Boombox'
+      MenuBarItem, 0xacc46b980, {{125.0, 0.0}, {44.0, 30.0}}, title: 'Edit'
+        Menu, 0xacc46bac0, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc46bc00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'undo:', title: 'Undo', Disabled
+          MenuItem, 0xacc46bd40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'redo:', title: 'Redo', Disabled
+          MenuItem, 0xacc46be80, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46c000, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'cut:', title: 'Cut'
+          MenuItem, 0xacc46c140, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'copy:', title: 'Copy'
+          MenuItem, 0xacc46c280, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'paste:', title: 'Paste'
+          MenuItem, 0xacc46c3c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'delete:', title: 'Delete'
+          MenuItem, 0xacc46c500, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'selectAll:', title: 'Select All'
+          MenuItem, 0xacc46c640, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46c780, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '__NSTextViewContextSubmenuIdentifierWritingTools', title: 'Writing Tools'
+            Menu, 0xacc46c8c0, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc46ca00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Show Writing Tools'
+              MenuItem, 0xacc46cb40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc46cc80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Proofread'
+              MenuItem, 0xacc46cdc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Rewrite'
+              MenuItem, 0xacc46cf00, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc46d040, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Make Friendly'
+              MenuItem, 0xacc46d180, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Make Professional'
+              MenuItem, 0xacc46d2c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Make Concise'
+              MenuItem, 0xacc46d400, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc46d540, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Summarize'
+              MenuItem, 0xacc46d680, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Create Key Points'
+              MenuItem, 0xacc46d7c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Make List'
+              MenuItem, 0xacc46d900, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Make Table'
+              MenuItem, 0xacc46da40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc46db80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showWritingTools:', title: 'Compose…'
+          MenuItem, 0xacc46dcc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_NSMenuItemAutoFillIdentifier', title: 'AutoFill'
+            Menu, 0xacc46de00, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc46df40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_handleInsertFromContactsCommand:', title: 'Contact…'
+              MenuItem, 0xacc46e080, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_handleInsertFromPasswordsCommand:', title: 'Passwords…'
+              MenuItem, 0xacc46e1c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_handleInsertFromCreditCardsCommand:', title: 'Credit Card…'
+          MenuItem, 0xacc46e300, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'startDictation:', title: 'Start Dictation…'
+          MenuItem, 0xacc46e440, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'orderFrontCharacterPalette:', title: 'Emoji & Symbols'
+      MenuBarItem, 0xacc46e580, {{169.0, 0.0}, {50.0, 30.0}}, title: 'View'
+        Menu, 0xacc46e6c0, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc46e800, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Search'
+          MenuItem, 0xacc46e940, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Home'
+          MenuItem, 0xacc46ea80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Library'
+          MenuItem, 0xacc46ebc0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Liked Music'
+          MenuItem, 0xacc46ed00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Explore'
+          MenuItem, 0xacc46ee40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'New Releases'
+          MenuItem, 0xacc46ef80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'History'
+          MenuItem, 0xacc46f0c0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46f200, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Find'
+          MenuItem, 0xacc46f340, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Command Bar'
+          MenuItem, 0xacc46f480, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'toggleFullScreen:', title: 'Enter Full Screen'
+      MenuBarItem, 0xacc46f5c0, {{219.0, 0.0}, {75.0, 30.0}}, title: 'Playback'
+        Menu, 0xacc46f700, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc46f840, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Play'
+          MenuItem, 0xacc46f980, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46fac0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Next'
+          MenuItem, 0xacc46fc00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Previous'
+          MenuItem, 0xacc46fd40, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc46fe80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Volume Up'
+          MenuItem, 0xacc470000, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Volume Down'
+          MenuItem, 0xacc470140, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Mute'
+          MenuItem, 0xacc470280, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc4703c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Shuffle On'
+          MenuItem, 0xacc470500, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Repeat All'
+          MenuItem, 0xacc470640, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc470780, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Show Lyrics'
+          MenuItem, 0xacc4708c0, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc470a00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Focus Player'
+          MenuItem, 0xacc470b40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Small Player'
+      MenuBarItem, 0xacc470c80, {{294.0, 0.0}, {69.0, 30.0}}, title: 'Window'
+        Menu, 0xacc470dc0, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xacc470f00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'performClose:', title: 'Close'
+          MenuItem, 0xacc471040, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'closeAll:', title: 'Close All'
+          MenuItem, 0xacc471180, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'performMiniaturize:', title: 'Minimize'
+          MenuItem, 0xacc4712c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'miniaturizeAll:', title: 'Minimize All'
+          MenuItem, 0xacc471400, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'performZoom:', title: 'Zoom'
+          MenuItem, 0xacc471540, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'zoomAll:', title: 'Zoom All'
+          MenuItem, 0xacc471680, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomFill:', title: 'Fill'
+          MenuItem, 0xacc4717c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomCenter:', title: 'Center'
+          MenuItem, 0xacc471900, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xacc471a40, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Move & Resize'
+            Menu, 0xacc471b80, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc471cc0, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Halves', Disabled
+              MenuItem, 0xacc471e00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomLeft:', title: 'Left'
+              MenuItem, 0xacc471f40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomRight:', title: 'Right'
+              MenuItem, 0xacc472080, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomTop:', title: 'Top'
+              MenuItem, 0xacc4721c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomBottom:', title: 'Bottom'
+              MenuItem, 0xacc472300, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc472440, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Quarters', Disabled
+              MenuItem, 0xacc472580, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomTopLeft:', title: 'Top Left'
+              MenuItem, 0xacc4726c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomTopRight:', title: 'Top Right'
+              MenuItem, 0xacc472800, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomBottomLeft:', title: 'Bottom Left'
+              MenuItem, 0xacc472940, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomBottomRight:', title: 'Bottom Right'
+              MenuItem, 0xacc472a80, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc472bc0, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Arrange', Disabled
+              MenuItem, 0xacc472d00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomLeftAndRight:', title: 'Left & Right'
+              MenuItem, 0xacc472e40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomLeftThreeUp:', title: 'Left & Quarters'
+              MenuItem, 0xacc472f80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomRightAndLeft:', title: 'Right & Left'
+              MenuItem, 0xacc4730c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomRightThreeUp:', title: 'Right & Quarters'
+              MenuItem, 0xacc473200, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomTopAndBottom:', title: 'Top & Bottom'
+              MenuItem, 0xacc473340, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomTopThreeUp:', title: 'Top & Quarters'
+              MenuItem, 0xacc473480, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomBottomAndTop:', title: 'Bottom & Top'
+              MenuItem, 0xacc4735c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomBottomThreeUp:', title: 'Bottom & Quarters'
+              MenuItem, 0xacc473700, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomQuarters:', title: 'Quarters'
+              MenuItem, 0xacc473840, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+              MenuItem, 0xacc473980, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_zoomUntile:', title: 'Return to Previous Size', Disabled
+          MenuItem, 0xacc473ac0, {{0.0, 1440.0}, {0.0, 0.0}}, title: 'Full Screen Tile'
+            Menu, 0xacc473c00, {{0.0, 1440.0}, {0.0, 0.0}}
+              MenuItem, 0xacc473d40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_tileLeft:', title: 'Left of Screen'
+              MenuItem, 0xacc473e80, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_tileRight:', title: 'Right of Screen'
+          MenuItem, 0xaccfc8000, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xaccfc8140, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_removeWindowFromStageManagerSet:', title: 'Remove Window from Set', Disabled
+          MenuItem, 0xaccfc8280, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xaccfc83c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: '_toggleIPad:', title: 'Move to Mel11M1'
+          MenuItem, 0xaccfc8500, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xaccfc8640, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xaccfc8780, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'arrangeInFront:', title: 'Bring All to Front'
+          MenuItem, 0xaccfc88c0, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'alternateArrangeInFront:', title: 'Arrange in Front'
+          MenuItem, 0xaccfc8a00, {{0.0, 1440.0}, {0.0, 0.0}}, Disabled
+          MenuItem, 0xaccfc8b40, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'menuAction:', title: 'Boombox'
+      MenuBarItem, 0xaccfc8c80, {{363.0, 0.0}, {48.0, 30.0}}, title: 'Help'
+        Menu, 0xaccfc8dc0, {{0.0, 1440.0}, {0.0, 0.0}}
+          MenuItem, 0xaccfc8f00, {{0.0, 1440.0}, {0.0, 0.0}}, identifier: 'showHelp:', title: 'Boombox Help'
+    TouchBar, 0xaccfc9040, {{80.0, 0.0}, {685.0, 30.0}}, Disabled
+      PopUpButton, 0xaccfc9180, {{79.0, -1.0}, {74.0, 32.0}}, label: 'emoji & symbols'
+Path to element:
+ →Application, 0xacce4cf00, pid: 69014, title: 'Boombox', Disabled
+Query chain:
+ →Find: Application 'com.melboonchan.boombox'
+  Output: {
+    Application, 0xaccfc92c0, pid: 69014, title: 'Boombox', Disabled
+  }
+)
+SEARCH DEBUG END
+    t =    10.74s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    10.74s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    10.84s     Capturing element debug description
+    t =    11.78s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    11.78s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    11.88s     Capturing element debug description
+    t =    12.71s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    12.71s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    12.80s     Capturing element debug description
+    t =    13.73s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    13.74s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    13.83s     Capturing element debug description
+    t =    14.77s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    14.77s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    14.87s     Capturing element debug description
+    t =    15.80s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    15.80s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    15.90s     Capturing element debug description
+    t =    16.73s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    16.73s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    16.82s     Capturing element debug description
+    t =    17.75s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    17.75s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    17.85s     Capturing element debug description
+    t =    18.78s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    18.79s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    18.88s     Capturing element debug description
+    t =    19.70s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    19.71s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    19.77s     Capturing element debug description
+/Users/melboonchan/Library/Containers/com.sertacozercan.KasetUITests.xctrunner/Data/KasetUITests/SearchViewUITests.swift:126: error: -[KasetUITests.SearchViewUITests testFilterSwapPreservesSectionRenderingInAllTab] : failed - Timed out waiting for element: "searchView.sectionHeader.songs" Any
+    t =    19.82s Tear Down
+Test Case '-[KasetUITests.SearchViewUITests testFilterSwapPreservesSectionRenderingInAllTab]' failed (20.191 seconds).
+Test Suite 'SearchViewUITests' failed at 2026-05-22 00:51:29.944.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.191 (20.193) seconds
+Test Suite 'KasetUITests.xctest' failed at 2026-05-22 00:51:29.944.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.191 (20.193) seconds
+Test Suite 'Selected tests' failed at 2026-05-22 00:51:29.945.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.191 (20.194) seconds
+2026-05-22 00:51:34.423 xcodebuild[68828:4372146] [MT] IDETestOperationsObserverDebug: 25.185 elapsed -- Testing started completed.
+2026-05-22 00:51:34.423 xcodebuild[68828:4372146] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-05-22 00:51:34.423 xcodebuild[68828:4372146] [MT] IDETestOperationsObserverDebug: 25.185 sec, +25.185 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Logs/Test/Test-KasetUITests-2026.05.22_00-51-08--0400.xcresult
+
+** TEST FAILED **
+
+Testing started

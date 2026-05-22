@@ -1,0 +1,126 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project KasetUITests.xcodeproj -scheme KasetUITests -destination platform=macOS "-only-testing:KasetUITests/SearchViewUITests/testFilterSwapPreservesSectionRenderingInAllTab"
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-001030AA1A80801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-001030AA1A80801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'KasetUITests' in project 'KasetUITests' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+    cd /Users/melboonchan/Master/Projects/YTM/kaset/KasetUITests.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+
+2026-05-22 00:57:01.661066-0400 KasetUITests-Runner[71256:4435020] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-05-22 00:57:01.678.
+Test Suite 'KasetUITests.xctest' started at 2026-05-22 00:57:01.679.
+Test Suite 'SearchViewUITests' started at 2026-05-22 00:57:01.679.
+Test Case '-[KasetUITests.SearchViewUITests testFilterSwapPreservesSectionRenderingInAllTab]' started.
+    t =     0.00s Start Test at 2026-05-22 00:57:01.679
+    t =     0.11s Set Up
+    t =     0.11s Open com.melboonchan.boombox
+    t =     0.12s     Launch com.melboonchan.boombox
+    t =     0.12s         Terminate com.melboonchan.boombox:71191
+    t =     1.34s         Wait for accessibility to load
+    t =     2.01s         Setting up automation session
+    t =     2.02s         Wait for com.melboonchan.boombox to idle
+    t =     2.03s Checking existence of `"sidebar.search" Button`
+    t =     3.15s Checking `Expect predicate `exists == 1` for object "sidebar.search" Button`
+    t =     3.15s     Checking existence of `"sidebar.search" Button`
+    t =     4.27s Checking `Expect predicate `exists == 1` for object "sidebar.search" Button`
+    t =     4.28s     Checking existence of `"sidebar.search" Button`
+    t =     4.35s Find the "sidebar.search" Button
+    t =     4.41s Click "sidebar.search" Button
+    t =     4.41s     Wait for com.melboonchan.boombox to idle
+    t =     4.41s     Find the "sidebar.search" Button
+    t =     4.45s     Check for interrupting elements affecting "sidebar.search" Button
+    t =     4.47s     Synthesize event
+    t =     4.81s     Wait for com.melboonchan.boombox to idle
+    t =     4.97s Checking existence of `"searchView.searchField" TextField`
+    t =     6.03s Checking `Expect predicate `isHittable == 1` for object "searchView.searchField" TextField`
+    t =     6.04s     Find the "searchView.searchField" TextField
+    t =     6.10s Click "searchView.searchField" TextField
+    t =     6.10s     Wait for com.melboonchan.boombox to idle
+    t =     6.11s     Find the "searchView.searchField" TextField
+    t =     6.13s     Check for interrupting elements affecting "searchView.searchField" TextField
+    t =     6.15s     Synthesize event
+    t =     6.51s     Wait for com.melboonchan.boombox to idle
+    t =     6.51s Type 'ordered shelves
+' into "searchView.searchField" TextField
+    t =     6.51s     Wait for com.melboonchan.boombox to idle
+    t =     6.52s     Find the "searchView.searchField" TextField
+    t =     6.56s     Check for interrupting elements affecting "searchView.searchField" TextField
+    t =     6.58s     Synthesize event
+    t =     6.90s     Wait for com.melboonchan.boombox to idle
+    t =     7.91s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.all" Button`
+    t =     7.91s     Checking existence of `"searchView.filterChip.all" Button`
+    t =     8.01s Find the "searchView.filterChip.all" Button
+    t =     9.09s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.songs" Button`
+    t =     9.09s     Checking existence of `"searchView.filterChip.songs" Button`
+    t =    10.19s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    10.19s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    11.29s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.albums" Any`
+    t =    11.30s     Checking existence of `"searchView.sectionHeader.albums" Any`
+    t =    12.42s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.songs" Button`
+    t =    12.42s     Checking existence of `"searchView.filterChip.songs" Button`
+    t =    12.51s Find the "searchView.filterChip.songs" Button
+    t =    12.58s Click "searchView.filterChip.songs" Button
+    t =    12.58s     Wait for com.melboonchan.boombox to idle
+    t =    12.58s     Find the "searchView.filterChip.songs" Button
+    t =    12.63s     Check for interrupting elements affecting "searchView.filterChip.songs" Button
+    t =    12.64s     Synthesize event
+    t =    13.01s     Wait for com.melboonchan.boombox to idle
+    t =    14.05s Checking `Expect predicate `exists == 0` for object "searchView.sectionHeader.songs" Any`
+    t =    14.05s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    14.15s Checking existence of `"searchView.sectionHeader.albums" Any`
+    t =    15.23s Checking `Expect predicate `exists == 1` for object Button (First Match)`
+    t =    15.23s     Checking existence of `Button (First Match)`
+    t =    15.29s Find the "searchView.filterChip.songs" Button
+    t =    16.35s Checking `Expect predicate `exists == 1` for object "searchView.filterChip.all" Button`
+    t =    16.35s     Checking existence of `"searchView.filterChip.all" Button`
+    t =    16.44s Find the "searchView.filterChip.all" Button
+    t =    16.51s Click "searchView.filterChip.all" Button
+    t =    16.51s     Wait for com.melboonchan.boombox to idle
+    t =    16.51s     Find the "searchView.filterChip.all" Button
+    t =    16.56s     Check for interrupting elements affecting "searchView.filterChip.all" Button
+    t =    16.57s     Synthesize event
+    t =    16.94s     Wait for com.melboonchan.boombox to idle
+    t =    17.98s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.songs" Any`
+    t =    17.98s     Checking existence of `"searchView.sectionHeader.songs" Any`
+    t =    19.11s Checking `Expect predicate `exists == 1` for object "searchView.sectionHeader.albums" Any`
+    t =    19.11s     Checking existence of `"searchView.sectionHeader.albums" Any`
+    t =    19.21s Find the "searchView.filterChip.all" Button
+    t =    19.26s Tear Down
+Test Case '-[KasetUITests.SearchViewUITests testFilterSwapPreservesSectionRenderingInAllTab]' passed (19.546 seconds).
+Test Suite 'SearchViewUITests' passed at 2026-05-22 00:57:21.227.
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.546 (19.548) seconds
+Test Suite 'KasetUITests.xctest' passed at 2026-05-22 00:57:21.228.
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.546 (19.549) seconds
+Test Suite 'Selected tests' passed at 2026-05-22 00:57:21.230.
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.546 (19.551) seconds
+2026-05-22 00:57:21.538 xcodebuild[71246:4434776] [MT] IDETestOperationsObserverDebug: 20.234 elapsed -- Testing started completed.
+2026-05-22 00:57:21.538 xcodebuild[71246:4434776] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-05-22 00:57:21.538 xcodebuild[71246:4434776] [MT] IDETestOperationsObserverDebug: 20.234 sec, +20.234 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Logs/Test/Test-KasetUITests-2026.05.22_00-57-00--0400.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
