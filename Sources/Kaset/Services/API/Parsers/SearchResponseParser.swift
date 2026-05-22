@@ -5,13 +5,12 @@ enum SearchResponseParser {
     private static let logger = DiagnosticsLogger.api
 
     /// Parses a search response.
+    ///
+    /// Builds an ordered list of `SearchSection`s in the order YouTube returned
+    /// them (Top result → Songs → Albums → Community playlists → Artists → …).
+    /// The flat `songs/albums/artists/playlists/podcastShows` arrays are then
+    /// derived from those sections so filtered tabs continue to work unchanged.
     static func parse(_ data: [String: Any]) -> SearchResponse {
-        var songs: [Song] = []
-        var albums: [Album] = []
-        var artists: [Artist] = []
-        var playlists: [Playlist] = []
-
-        // Navigate to contents
         guard let contents = data["contents"] as? [String: Any],
               let tabbedSearchResults = contents["tabbedSearchResultsRenderer"] as? [String: Any],
               let tabs = tabbedSearchResults["tabs"] as? [[String: Any]],
@@ -21,54 +20,133 @@ enum SearchResponseParser {
               let sectionListRenderer = tabContent["sectionListRenderer"] as? [String: Any],
               let sectionContents = sectionListRenderer["contents"] as? [[String: Any]]
         else {
-            Self.logger.debug("SearchResponseParser: Failed to parse response structure. Top keys: \(data.keys.sorted())")
+            self.logger.debug("SearchResponseParser: Failed to parse response structure. Top keys: \(data.keys.sorted())")
             return SearchResponse.empty
         }
 
+        var draftSections: [DraftSection] = []
         for sectionData in sectionContents {
-            // Parse musicCardShelfRenderer (Top Result section)
-            if let cardShelfRenderer = sectionData["musicCardShelfRenderer"] as? [String: Any] {
-                if let item = parseCardShelfRenderer(cardShelfRenderer) {
-                    Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
-                }
-            }
+            draftSections.append(contentsOf: Self.parseSearchSections(sectionData))
+        }
 
-            // Parse musicShelfRenderer (regular results)
-            if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any],
-               let shelfContents = shelfRenderer["contents"] as? [[String: Any]]
-            {
-                for itemData in shelfContents {
+        // Stamp ids after the full ordered list is known so they don't depend
+        // on the first item's id (which YT may reshuffle across personalized
+        // re-queries, causing SwiftUI to tear down sections instead of diff).
+        // Shelf titles ("Songs", "Albums", "Community playlists", …) are
+        // unique per response, so we use them directly. The "Top result" card
+        // is at most one per response, so a fixed `"top"` is stable. The
+        // index fallback only kicks in for the unexpected untitled-shelf case.
+        let sections: [SearchSection] = draftSections.enumerated().map { index, draft in
+            let id: String = if draft.isTopResult {
+                "top"
+            } else if let title = draft.title, !title.isEmpty {
+                title
+            } else {
+                "shelf-\(index)"
+            }
+            return SearchSection(id: id, title: draft.title, isTopResult: draft.isTopResult, items: draft.items)
+        }
+
+        var buckets = SearchResultBuckets()
+        for section in sections {
+            for item in section.items {
+                buckets.append(item)
+            }
+        }
+
+        return SearchResponse(
+            songs: buckets.songs,
+            albums: buckets.albums,
+            artists: buckets.artists,
+            playlists: buckets.playlists,
+            podcastShows: buckets.podcastShows,
+            sections: sections,
+            continuationToken: nil
+        )
+    }
+
+    /// Intermediate shape between parsing and final `SearchSection`. Lets the
+    /// outer `parse(...)` assign ids once the full ordered list is known,
+    /// keeping ids decoupled from item content for stability across re-queries.
+    private struct DraftSection {
+        let title: String?
+        let isTopResult: Bool
+        let items: [SearchResultItem]
+    }
+
+    /// Collected results by type. Lifts the previously six-arg `appendItem` into
+    /// a single value, which keeps the parameter count down and makes adding new
+    /// result types in the future a one-line change.
+    private struct SearchResultBuckets {
+        var songs: [Song] = []
+        var albums: [Album] = []
+        var artists: [Artist] = []
+        var playlists: [Playlist] = []
+        var podcastShows: [PodcastShow] = []
+
+        mutating func append(_ item: SearchResultItem) {
+            switch item {
+            case let .song(song): self.songs.append(song)
+            case let .album(album): self.albums.append(album)
+            case let .artist(artist): self.artists.append(artist)
+            case let .playlist(playlist): self.playlists.append(playlist)
+            case let .podcastShow(show): self.podcastShows.append(show)
+            }
+        }
+    }
+
+    /// Parses one section of the search response into zero or more `SearchSection`s.
+    ///
+    /// "All" search results arrive as a mix of `musicCardShelfRenderer` (Top result),
+    /// `musicShelfRenderer` (Songs / Albums / Artists / Playlists shelves), and
+    /// occasionally `itemSectionRenderer` wrappers around either. An itemSectionRenderer
+    /// returns the recursively-parsed inner sections so order is preserved through wrappers.
+    private static func parseSearchSections(_ sectionData: [String: Any]) -> [DraftSection] {
+        var sections: [DraftSection] = []
+
+        if let cardShelfRenderer = sectionData["musicCardShelfRenderer"] as? [String: Any] {
+            var items: [SearchResultItem] = []
+            if let topItem = parseCardShelfRenderer(cardShelfRenderer) {
+                items.append(topItem)
+            }
+            // The top-result card also carries a `contents` array of related songs
+            // underneath the headline result; without this they were dropped.
+            if let cardContents = cardShelfRenderer["contents"] as? [[String: Any]] {
+                for itemData in cardContents {
                     if let item = parseSearchResultItem(itemData) {
-                        Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
+                        items.append(item)
                     }
                 }
             }
+            if !items.isEmpty {
+                sections.append(DraftSection(title: nil, isTopResult: true, items: items))
+            }
         }
 
-        return SearchResponse(songs: songs, albums: albums, artists: artists, playlists: playlists)
-    }
-
-    /// Helper to append a search result item to the appropriate array.
-    private static func appendItem(
-        _ item: SearchResultItem,
-        songs: inout [Song],
-        albums: inout [Album],
-        artists: inout [Artist],
-        playlists: inout [Playlist]
-    ) {
-        switch item {
-        case let .song(song):
-            songs.append(song)
-        case let .album(album):
-            albums.append(album)
-        case let .artist(artist):
-            artists.append(artist)
-        case let .playlist(playlist):
-            playlists.append(playlist)
-        case .podcastShow:
-            // Podcast shows not parsed in general search
-            break
+        if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any] {
+            let shelfTitle = ParsingHelpers.extractTitle(from: shelfRenderer)
+            var items: [SearchResultItem] = []
+            if let shelfContents = shelfRenderer["contents"] as? [[String: Any]] {
+                for itemData in shelfContents {
+                    if let item = parseSearchResultItem(itemData) {
+                        items.append(item)
+                    }
+                }
+            }
+            if !items.isEmpty {
+                sections.append(DraftSection(title: shelfTitle, isTopResult: false, items: items))
+            }
         }
+
+        if let itemSection = sectionData["itemSectionRenderer"] as? [String: Any],
+           let inner = itemSection["contents"] as? [[String: Any]]
+        {
+            for nested in inner {
+                sections.append(contentsOf: Self.parseSearchSections(nested))
+            }
+        }
+
+        return sections
     }
 
     /// Parses a filtered songs-only search response.
@@ -450,11 +528,7 @@ enum SearchResponseParser {
     /// Parses a search continuation response.
     /// Returns a SearchResponse with all item types and optional continuation token.
     static func parseContinuation(_ data: [String: Any]) -> SearchResponse {
-        var songs: [Song] = []
-        var albums: [Album] = []
-        var artists: [Artist] = []
-        var playlists: [Playlist] = []
-        var podcastShows: [PodcastShow] = []
+        var buckets = SearchResultBuckets()
         var continuationToken: String?
 
         // Continuation responses have a different structure
@@ -466,9 +540,9 @@ enum SearchResponseParser {
                 for itemData in contents {
                     // Try to parse as podcast show first (for podcast search continuation)
                     if let show = Self.parsePodcastShowFromSearchResult(itemData) {
-                        podcastShows.append(show)
+                        buckets.podcastShows.append(show)
                     } else if let item = parseSearchResultItem(itemData) {
-                        Self.appendItem(item, songs: &songs, albums: &albums, artists: &artists, playlists: &playlists)
+                        buckets.append(item)
                     }
                 }
             }
@@ -484,11 +558,11 @@ enum SearchResponseParser {
         }
 
         return SearchResponse(
-            songs: songs,
-            albums: albums,
-            artists: artists,
-            playlists: playlists,
-            podcastShows: podcastShows,
+            songs: buckets.songs,
+            albums: buckets.albums,
+            artists: buckets.artists,
+            playlists: buckets.playlists,
+            podcastShows: buckets.podcastShows,
             continuationToken: continuationToken
         )
     }

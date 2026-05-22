@@ -71,6 +71,12 @@ struct NavigationDestinationsModifier: ViewModifier {
                     client: self.client
                 ))
             }
+            .navigationDestination(for: AllAlbumsDestination.self) { destination in
+                AllAlbumsView(viewModel: AllAlbumsViewModel(
+                    destination: destination,
+                    client: self.client
+                ))
+            }
             .navigationDestination(for: PodcastShow.self) { [libraryViewModel] show in
                 PodcastShowView(show: show, client: self.client)
                     .environment(libraryViewModel)

@@ -16,6 +16,7 @@ enum AccessibilityID {
         static let historyItem = "sidebar.history"
         static let nowPlayingPanel = "sidebar.nowPlayingPanel"
         static let nowPlayingArtwork = "sidebar.nowPlayingArtwork"
+        static let nowPlayingTitleButton = "sidebar.nowPlayingTitleButton"
         static let nowPlayingFocusButton = "sidebar.nowPlayingFocusButton"
         static let nowPlayingHideButton = "sidebar.nowPlayingHideButton"
     }
@@ -95,7 +96,11 @@ enum AccessibilityID {
         }
 
         static func filterChip(_ filter: String) -> String {
-            "searchView.filter.\(filter)"
+            "searchView.filterChip.\(filter)"
+        }
+
+        static func sectionHeader(_ section: String) -> String {
+            "searchView.sectionHeader.\(section)"
         }
 
         static func resultRow(index: Int) -> String {

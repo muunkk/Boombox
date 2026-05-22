@@ -9,11 +9,21 @@ struct SearchResponse {
     let artists: [Artist]
     let playlists: [Playlist]
     let podcastShows: [PodcastShow]
+    /// Shelves in the order YouTube returned them. Used by the "All" filter to
+    /// preserve YT Music's authoritative result ordering (Top result → Songs →
+    /// Albums → Community playlists → Artists → …). Empty when constructed from
+    /// a filtered-tab response (those keep the flat arrays as their source).
+    let sections: [SearchSection]
     /// Continuation token for loading more results (only present for filtered searches).
     let continuationToken: String?
 
     /// All results as a flat array of items.
+    /// When `sections` is populated, the order follows YT Music's shelf order.
+    /// Otherwise items are concatenated by type as a fallback.
     var allItems: [SearchResultItem] {
+        if !self.sections.isEmpty {
+            return self.sections.flatMap(\.items)
+        }
         var items: [SearchResultItem] = []
         items.append(contentsOf: self.songs.map { .song($0) })
         items.append(contentsOf: self.albums.map { .album($0) })
@@ -33,7 +43,15 @@ struct SearchResponse {
         self.continuationToken != nil
     }
 
-    static let empty = SearchResponse(songs: [], albums: [], artists: [], playlists: [], podcastShows: [], continuationToken: nil)
+    static let empty = SearchResponse(
+        songs: [],
+        albums: [],
+        artists: [],
+        playlists: [],
+        podcastShows: [],
+        sections: [],
+        continuationToken: nil
+    )
 
     /// Creates a SearchResponse without continuation token (backward compatibility).
     init(songs: [Song], albums: [Album], artists: [Artist], playlists: [Playlist]) {
@@ -42,6 +60,7 @@ struct SearchResponse {
         self.artists = artists
         self.playlists = playlists
         self.podcastShows = []
+        self.sections = []
         self.continuationToken = nil
     }
 
@@ -52,6 +71,7 @@ struct SearchResponse {
         self.artists = artists
         self.playlists = playlists
         self.podcastShows = []
+        self.sections = []
         self.continuationToken = continuationToken
     }
 
@@ -69,8 +89,43 @@ struct SearchResponse {
         self.artists = artists
         self.playlists = playlists
         self.podcastShows = podcastShows
+        self.sections = []
         self.continuationToken = continuationToken
     }
+
+    /// Creates a SearchResponse with shelf sections, used for ordered "All" search results.
+    init(
+        songs: [Song],
+        albums: [Album],
+        artists: [Artist],
+        playlists: [Playlist],
+        podcastShows: [PodcastShow],
+        sections: [SearchSection],
+        continuationToken: String?
+    ) {
+        self.songs = songs
+        self.albums = albums
+        self.artists = artists
+        self.playlists = playlists
+        self.podcastShows = podcastShows
+        self.sections = sections
+        self.continuationToken = continuationToken
+    }
+}
+
+// MARK: - SearchSection
+
+/// One shelf inside a YouTube Music "All" search response (e.g. "Songs",
+/// "Albums", or the unlabeled top-result card). Preserves YouTube's own
+/// ordering so the UI can mirror it instead of grouping by type.
+struct SearchSection: Identifiable {
+    let id: String
+    /// Shelf title from YouTube ("Songs", "Albums", "Community playlists"…).
+    /// `nil` for the top-result card, which renders prominently.
+    let title: String?
+    /// True for `musicCardShelfRenderer` — the prominent top-result hero.
+    let isTopResult: Bool
+    let items: [SearchResultItem]
 }
 
 // MARK: - SearchResultItem

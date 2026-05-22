@@ -131,6 +131,41 @@ final class PlayerBarUITests: KasetUITestCase {
         XCTAssertTrue(waitForElementToDisappear(panel), "Sidebar now-playing panel should hide")
     }
 
+    func testNowPlayingSidebarSurvivesQueueEnrichment() {
+        launchWithMockPlayerRequiringQueueEnrichment()
+
+        navigateToHome()
+
+        let toggle = app.buttons[TestAccessibilityID.PlayerBar.nowPlayingPanelToggle]
+        XCTAssertTrue(waitForElement(toggle, timeout: 10), "Now Playing Panel toggle should exist")
+
+        let panel = element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingPanel)
+        if !panel.exists {
+            clickElement(toggle)
+        }
+
+        XCTAssertTrue(waitForElement(panel, timeout: 10), "Sidebar now-playing panel should appear")
+        XCTAssertTrue(
+            waitForElement(
+                element(matchingAccessibilityID: TestAccessibilityID.Sidebar.nowPlayingArtwork),
+                timeout: 10
+            ),
+            "Sidebar artwork should remain visible after queue enrichment"
+        )
+
+        let titleButton = app.buttons[TestAccessibilityID.Sidebar.nowPlayingTitleButton]
+        let enrichedTitleIsClickable = NSPredicate(
+            format: "exists == true AND isHittable == true AND label == %@",
+            "Mock Song"
+        )
+        let expectation = XCTNSPredicateExpectation(predicate: enrichedTitleIsClickable, object: titleButton)
+        XCTAssertEqual(
+            XCTWaiter().wait(for: [expectation], timeout: 10),
+            .completed,
+            "Enriched now-playing title should remain a hittable album-navigation button"
+        )
+    }
+
     // MARK: - Lyrics Button
 
     func testLyricsButtonExists() {

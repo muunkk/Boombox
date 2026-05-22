@@ -21,6 +21,12 @@ struct ArtistDetail {
     let songsBrowseId: String?
     /// Params for loading all songs.
     let songsParams: String?
+    /// Whether there are more albums available beyond what's loaded.
+    let hasMoreAlbums: Bool
+    /// Browse ID for loading all albums (e.g., from "Show all" on albums carousel).
+    let albumsBrowseId: String?
+    /// Params for loading all albums.
+    let albumsParams: String?
     /// Playlist ID for Mix (personalized radio), e.g., "RDEM...".
     let mixPlaylistId: String?
     /// Starting video ID for Mix.
@@ -46,6 +52,9 @@ struct ArtistDetail {
         hasMoreSongs: Bool = false,
         songsBrowseId: String? = nil,
         songsParams: String? = nil,
+        hasMoreAlbums: Bool = false,
+        albumsBrowseId: String? = nil,
+        albumsParams: String? = nil,
         mixPlaylistId: String? = nil,
         mixVideoId: String? = nil
     ) {
@@ -60,6 +69,9 @@ struct ArtistDetail {
         self.hasMoreSongs = hasMoreSongs
         self.songsBrowseId = songsBrowseId
         self.songsParams = songsParams
+        self.hasMoreAlbums = hasMoreAlbums
+        self.albumsBrowseId = albumsBrowseId
+        self.albumsParams = albumsParams
         self.mixPlaylistId = mixPlaylistId
         self.mixVideoId = mixVideoId
     }

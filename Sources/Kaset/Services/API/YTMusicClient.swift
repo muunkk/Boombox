@@ -586,9 +586,12 @@ final class YTMusicClient: YTMusicClientProtocol {
         )
 
         let landingContent = PlaylistParser.parseLibraryContent(landingData)
-        let (artists, artistsSource) = try await self.fetchLibraryArtists(fallback: landingContent.artists)
+        async let dedicatedPlaylists = self.fetchLibraryPlaylists(fallback: landingContent.playlists)
+        async let artistResult = self.fetchLibraryArtists(fallback: landingContent.artists)
+        let playlists = await dedicatedPlaylists
+        let (artists, artistsSource) = try await artistResult
         let content = PlaylistParser.LibraryContent(
-            playlists: landingContent.playlists,
+            playlists: playlists,
             artists: artists,
             podcastShows: landingContent.podcastShows,
             artistsSource: artistsSource
@@ -598,6 +601,29 @@ final class YTMusicClient: YTMusicClientProtocol {
             "Parsed \(content.playlists.count) library playlists, \(content.artists.count) artists, and \(content.podcastShows.count) podcasts"
         )
         return content
+    }
+
+    /// Fetches the full saved-playlist list from the dedicated endpoint, falling
+    /// back to whatever the library landing page returned if the dedicated call
+    /// fails or returns nothing. `FEmusic_library_landing` is a curated home that
+    /// only surfaces a handful of recent playlists; the user expects to see all
+    /// of them, so we hit `FEmusic_liked_playlists` explicitly.
+    private func fetchLibraryPlaylists(fallback fallbackPlaylists: [Playlist]) async -> [Playlist] {
+        do {
+            let data = try await self.request(
+                "browse",
+                body: ["browseId": "FEmusic_liked_playlists"],
+                ttl: APICache.TTL.library
+            )
+            let playlists = PlaylistParser.parseLibraryPlaylists(data)
+            if !playlists.isEmpty {
+                return playlists
+            }
+            self.logger.warning("FEmusic_liked_playlists returned no playlists, falling back to landing preview")
+        } catch {
+            self.logger.warning("FEmusic_liked_playlists failed, falling back to landing preview: \(error.localizedDescription)")
+        }
+        return fallbackPlaylists
     }
 
     /// Fetches followed artists with graceful fallback to the library landing preview.
@@ -914,6 +940,25 @@ final class YTMusicClient: YTMusicClientProtocol {
         let songs = ArtistParser.parseArtistSongs(data)
         self.logger.info("Parsed \(songs.count) artist songs")
         return songs
+    }
+
+    /// Fetches all albums for an artist using the albums browse endpoint.
+    func getArtistAlbums(browseId: String, params: String?) async throws -> [Album] {
+        self.logger.info("Fetching artist albums: \(browseId)")
+
+        var body: [String: Any] = [
+            "browseId": browseId,
+        ]
+
+        if let params {
+            body["params"] = params
+        }
+
+        let data = try await request("browse", body: body, ttl: APICache.TTL.artist)
+
+        let albums = ArtistParser.parseArtistAlbums(data)
+        self.logger.info("Parsed \(albums.count) artist albums")
+        return albums
     }
 
     // MARK: - Lyrics

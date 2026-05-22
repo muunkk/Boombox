@@ -406,38 +406,85 @@ enum ParsingHelpers {
     ]
 
     /// Extracts artists from flex columns.
+    ///
+    /// Album track rows on YT Music frequently render the artist as text-only
+    /// (no `navigationEndpoint`), because the listing is already scoped to the
+    /// album. Returning an empty array in that case made the now-playing card
+    /// read "Unknown Artist" even though the artist name was right there. So
+    /// when we don't find any navigable artist run, we fall back to the
+    /// surviving text-only runs.
     static func extractArtistsFromFlexColumns(_ data: [String: Any]) -> [Artist] {
-        var artists: [Artist] = []
+        guard let flexColumns = data["flexColumns"] as? [[String: Any]],
+              flexColumns.count > 1,
+              let secondColumn = flexColumns[safe: 1],
+              let renderer = secondColumn["musicResponsiveListItemFlexColumnRenderer"] as? [String: Any],
+              let text = renderer["text"] as? [String: Any],
+              let runs = text["runs"] as? [[String: Any]]
+        else {
+            return []
+        }
 
-        if let flexColumns = data["flexColumns"] as? [[String: Any]],
-           flexColumns.count > 1,
-           let secondColumn = flexColumns[safe: 1],
-           let renderer = secondColumn["musicResponsiveListItemFlexColumnRenderer"] as? [String: Any],
-           let text = renderer["text"] as? [String: Any],
-           let runs = text["runs"] as? [[String: Any]]
-        {
-            for run in runs {
-                if let artistName = run["text"] as? String,
-                   artistName != " • ", artistName != " & ", artistName != ", ",
-                   !artistName.isEmpty,
-                   // Skip content type keywords (Song, Video, etc.)
-                   !Self.contentTypeKeywords.contains(artistName)
-                {
-                    // Only include items that have an artist browse endpoint.
-                    // This filters out metadata like view counts and years while
-                    // allowing both channel artists ("UC...") and library artists ("MPLAUC...").
-                    if let endpoint = run["navigationEndpoint"] as? [String: Any],
-                       let browseEndpoint = endpoint["browseEndpoint"] as? [String: Any],
-                       let browseId = browseEndpoint["browseId"] as? String,
-                       Artist.isNavigableId(browseId)
-                    {
-                        artists.append(Artist(id: browseId, name: artistName))
-                    }
-                }
+        var navigableArtists: [Artist] = []
+        var textOnlyNames: [String] = []
+
+        for run in runs {
+            guard let artistName = run["text"] as? String,
+                  !artistName.isEmpty,
+                  artistName != " • ", artistName != " & ", artistName != ", ",
+                  !Self.contentTypeKeywords.contains(artistName),
+                  !Self.looksLikeNonArtistMetadata(artistName)
+            else {
+                continue
+            }
+
+            if let endpoint = run["navigationEndpoint"] as? [String: Any],
+               let browseEndpoint = endpoint["browseEndpoint"] as? [String: Any],
+               let browseId = browseEndpoint["browseId"] as? String,
+               Artist.isNavigableId(browseId)
+            {
+                navigableArtists.append(Artist(id: browseId, name: artistName))
+            } else {
+                textOnlyNames.append(artistName)
             }
         }
 
-        return artists
+        if !navigableArtists.isEmpty {
+            return navigableArtists
+        }
+
+        // Stable hash-derived IDs preserve `Identifiable` uniqueness across multiple
+        // text-only artists in the same row without colliding (an empty-string id
+        // would). They still fail `hasNavigableId` (no UC/MPLAUC prefix), so any
+        // "Go to artist" path correctly stays disabled.
+        return textOnlyNames.map {
+            Artist(id: Self.stableId(title: "artist", components: $0), name: $0)
+        }
+    }
+
+    /// Heuristic guard for things that appear in flex columns but are not artists:
+    /// durations like "3:45", years like "2024", view counts like "1.2M views".
+    /// Used to keep stray subtitle bits from being treated as artist names when
+    /// we fall back to text-only runs.
+    ///
+    /// Anchored on the full trimmed string rather than substring matches — band
+    /// names like "Reviews" or "Displays" would otherwise be silently dropped
+    /// by a naive `.contains("views")` / `.contains("plays")` check.
+    private static func looksLikeNonArtistMetadata(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespaces)
+        if self.parseDuration(trimmed) != nil { return true }
+        // Plain 4-digit year.
+        if trimmed.count == 4, Int(trimmed) != nil { return true }
+        // Stat strings like "1.2M views", "234K plays", "12,345 views" —
+        // anchored at the end so band names containing "views" don't trip.
+        if let regex = try? NSRegularExpression(
+            pattern: #"^[\d,.]+\s*[KMB]?\s+(views?|plays?|streams?)$"#,
+            options: .caseInsensitive
+        ),
+            regex.firstMatch(in: trimmed, range: NSRange(trimmed.startIndex..., in: trimmed)) != nil
+        {
+            return true
+        }
+        return false
     }
 
     /// Extracts album from flex columns.

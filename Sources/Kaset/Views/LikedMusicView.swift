@@ -37,32 +37,7 @@ struct LikedMusicView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .localizedNavigationTitle("Liked Music")
-            .navigationDestination(for: Artist.self) { artist in
-                ArtistDetailView(
-                    artist: artist,
-                    viewModel: ArtistDetailViewModel(
-                        artist: artist,
-                        client: self.viewModel.client
-                    )
-                )
-            }
-            .navigationDestination(for: TopSongsDestination.self) { destination in
-                TopSongsView(
-                    viewModel: TopSongsViewModel(
-                        destination: destination,
-                        client: self.viewModel.client
-                    )
-                )
-            }
-            .navigationDestination(for: Playlist.self) { playlist in
-                PlaylistDetailView(
-                    playlist: playlist,
-                    viewModel: PlaylistDetailViewModel(
-                        playlist: playlist,
-                        client: self.viewModel.client
-                    )
-                )
-            }
+            .navigationDestinations(client: self.viewModel.client)
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.LikedMusic.container)

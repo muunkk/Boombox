@@ -320,16 +320,19 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
            let videoId = dict["videoId"] as? String
         {
             let artist = dict["artist"] as? String ?? "Unknown Artist"
-            let duration: TimeInterval? = (dict["duration"] as? Int).map { TimeInterval($0) }
-            self.currentTrack = Song(
+            let artistId = dict["artistId"] as? String ?? "mock-artist"
+            let track = Song(
                 id: id,
                 title: title,
-                artists: [Artist(id: "mock-artist", name: artist)],
-                album: nil,
-                duration: duration,
-                thumbnailURL: nil,
+                artists: [Artist(id: artistId, name: artist)],
+                album: Self.mockAlbum(from: dict["album"] as? [String: Any]),
+                duration: Self.timeInterval(from: dict["duration"]),
+                thumbnailURL: Self.url(from: dict["thumbnailURL"]),
                 videoId: videoId
             )
+            self.currentTrack = track
+            self.queue = [track]
+            self.currentIndex = 0
             self.logger.debug("Loaded mock current track: \(title)")
         }
 
@@ -339,6 +342,41 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
             self.state = isPlaying ? .playing : .paused
             self.logger.debug("Loaded mock playing state: \(isPlaying)")
         }
+    }
+
+    private static func mockAlbum(from dict: [String: Any]?) -> Album? {
+        guard let dict,
+              let id = dict["id"] as? String,
+              let title = dict["title"] as? String
+        else {
+            return nil
+        }
+
+        let artist = dict["artist"] as? String
+        let artistId = dict["artistId"] as? String ?? "UCmockalbumartist"
+        return Album(
+            id: id,
+            title: title,
+            artists: artist.map { [Artist(id: artistId, name: $0)] },
+            thumbnailURL: Self.url(from: dict["thumbnailURL"]),
+            year: dict["year"] as? String,
+            trackCount: dict["trackCount"] as? Int
+        )
+    }
+
+    private static func url(from payload: Any?) -> URL? {
+        guard let string = payload as? String else { return nil }
+        return URL(string: string)
+    }
+
+    private static func timeInterval(from payload: Any?) -> TimeInterval? {
+        if let value = payload as? TimeInterval {
+            return value
+        }
+        if let value = payload as? Int {
+            return TimeInterval(value)
+        }
+        return nil
     }
 
     /// Sets the YTMusicClient for API calls (dependency injection).

@@ -68,7 +68,12 @@ final class ArtistDetailViewModel {
                     subscriberCount: detail.subscriberCount,
                     hasMoreSongs: detail.hasMoreSongs,
                     songsBrowseId: detail.songsBrowseId,
-                    songsParams: detail.songsParams
+                    songsParams: detail.songsParams,
+                    hasMoreAlbums: detail.hasMoreAlbums,
+                    albumsBrowseId: detail.albumsBrowseId,
+                    albumsParams: detail.albumsParams,
+                    mixPlaylistId: detail.mixPlaylistId,
+                    mixVideoId: detail.mixVideoId
                 )
             }
 
@@ -147,8 +152,17 @@ final class ArtistDetailViewModel {
         return detail.songs.count > Self.previewSongCount || detail.hasMoreSongs
     }
 
+    /// Whether there are more albums than the carousel preview can show.
+    var hasMoreAlbums: Bool {
+        guard let detail = artistDetail else { return false }
+        return detail.hasMoreAlbums
+    }
+
     /// All songs for the artist (fetched on demand).
     private(set) var allSongs: [Song]?
+
+    /// All albums for the artist (fetched on demand).
+    private(set) var allAlbums: [Album]?
 
     /// Fetches all songs for the artist if not already loaded.
     /// Returns all songs for queue playback.
@@ -183,5 +197,37 @@ final class ArtistDetailViewModel {
 
         // Fallback to existing songs
         return self.artistDetail?.songs ?? []
+    }
+
+    /// Fetches all albums for the artist if not already loaded.
+    /// Returns the full album list, falling back to the carousel preview on error.
+    func getAllAlbums() async -> [Album] {
+        if let allAlbums {
+            return allAlbums
+        }
+
+        guard let detail = artistDetail,
+              let browseId = detail.albumsBrowseId
+        else {
+            return self.artistDetail?.albums ?? []
+        }
+
+        self.logger.info("Fetching all artist albums: \(browseId)")
+
+        do {
+            let albums = try await client.getArtistAlbums(
+                browseId: browseId,
+                params: detail.albumsParams
+            )
+
+            if !albums.isEmpty {
+                self.allAlbums = albums
+                return albums
+            }
+        } catch {
+            self.logger.warning("Failed to fetch all albums: \(error.localizedDescription)")
+        }
+
+        return self.artistDetail?.albums ?? []
     }
 }

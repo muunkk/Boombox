@@ -153,6 +153,7 @@ struct NowPlayingSidebarPanel: View {
                 .buttonStyle(.plain)
                 .pointingHandCursor()
                 .help(String(localized: "Go to Album"))
+                .accessibilityIdentifier(AccessibilityID.Sidebar.nowPlayingTitleButton)
             } else {
                 Text(self.title)
                     .font(.system(size: 13, weight: .semibold))

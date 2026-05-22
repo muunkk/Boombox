@@ -43,6 +43,9 @@ enum UITestConfig {
     /// When true, force logged-out state in UI tests.
     static let mockLoggedOutKey = "MOCK_LOGGED_OUT"
 
+    /// When true, force queue metadata enrichment once after launch in UI tests.
+    static let forceEnrichQueueOnLaunchKey = "FORCE_ENRICH_QUEUE_ON_LAUNCH"
+
     // MARK: - Detection
 
     /// Returns true if the app was launched in UI test mode.
@@ -67,6 +70,12 @@ enum UITestConfig {
     static var shouldSkipAuth: Bool {
         CommandLine.arguments.contains(skipAuthArgument)
             || ProcessInfo.processInfo.environment["SKIP_AUTH"] == "1"
+    }
+
+    /// Returns true if UI tests should force queue metadata enrichment after launch.
+    static var shouldForceEnrichQueueOnLaunch: Bool {
+        isUITestMode
+            && environmentValue(for: forceEnrichQueueOnLaunchKey) == "true"
     }
 
     /// Returns environment value for given key.

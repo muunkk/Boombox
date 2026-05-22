@@ -326,6 +326,10 @@ struct KasetApp: App {
                 // Search field focus
                 Button("Find") {
                     self.navigationSelection = .search
+                    // Same reasoning as the command bar: if the user is deep inside
+                    // a pushed detail page on the Search tab, focusing the search
+                    // field is meaningless until we pop back to the search root.
+                    self.globalNavigation.popSearchToRoot()
                     // Trigger focus after a brief delay to allow view to appear
                     Task { @MainActor in
                         try? await Task.sleep(for: .milliseconds(100))

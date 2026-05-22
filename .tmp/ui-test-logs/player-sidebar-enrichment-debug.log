@@ -1,0 +1,366 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project KasetUITests.xcodeproj -scheme KasetUITests -destination platform=macOS "-only-testing:KasetUITests/PlayerBarUITests/testNowPlayingSidebarSurvivesQueueEnrichment"
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-001030AA1A80801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-001030AA1A80801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'KasetUITests' in project 'KasetUITests' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+    cd /Users/melboonchan/Master/Projects/YTM/kaset/KasetUITests.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+
+SwiftDriver KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ KasetUITests (in target 'KasetUITests' from project 'KasetUITests')
+
+EmitSwiftModule normal arm64 (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+
+SwiftCompile normal arm64 Compiling\ PlayerBarUITests.swift /Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/PlayerBarUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+SwiftCompile normal arm64 /Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/PlayerBarUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling PlayerBarUITests.swift (in target 'KasetUITests' from project 'KasetUITests')
+
+SwiftDriver\ Compilation KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for KasetUITests (in target 'KasetUITests' from project 'KasetUITests')
+
+SwiftDriver\ Compilation\ Requirements KasetUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KasetUITests -Onone @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -target arm64-apple-macos26.0 -g -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache -output-file-map /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-generated-files.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-own-target-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests-project-headers.hmap -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/include -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources/arm64 -Xcc -I/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-Swift.h -working-directory /Users/melboonchan/Master/Projects/YTM/kaset -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/arm64-apple-macos.abi.json /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.abi.json (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.abi.json /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftsourceinfo (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftsourceinfo /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Ld /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests normal (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.0 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -O0 -L/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.LinkFileList -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -object_path_lto -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.swiftmodule @/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests
+
+ExtractAppIntentsMetadata (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name KasetUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk --xcode-version 17E202 --platform-family macOS --deployment-target 26.0 --bundle-identifier com.sertacozercan.KasetUITests --output /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Resources --target-triple arm64-apple-macos26.0 --binary-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests --dependency-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests_dependency_info.dat --stringsdata-file /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftFileList --metadata-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.DependencyMetadataFileList --static-metadata-file-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/Objects-normal/arm64/KasetUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-05-22 00:54:55.185 appintentsmetadataprocessor[70414:4417767] Starting appintentsmetadataprocessor export
+2026-05-22 00:54:55.186 appintentsmetadataprocessor[70414:4417767] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CopySwiftLibs /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/MacOS/KasetUITests --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Frameworks --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/PlugIns --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Library/SystemExtensions --scan-folder /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app/Contents/PlugIns/KasetUITests.xctest
+
+CodeSign /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app (in target 'KasetUITests' from project 'KasetUITests')
+    cd /Users/melboonchan/Master/Projects/YTM/kaset
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Intermediates.noindex/KasetUITests.build/Debug/KasetUITests.build/KasetUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app
+/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Build/Products/Debug/KasetUITests-Runner.app: replacing existing signature
+
+2026-05-22 00:54:55.812960-0400 KasetUITests-Runner[70417:4417815] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-05-22 00:54:55.879.
+Test Suite 'KasetUITests.xctest' started at 2026-05-22 00:54:55.880.
+Test Suite 'PlayerBarUITests' started at 2026-05-22 00:54:55.880.
+Test Case '-[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment]' started.
+    t =     0.00s Start Test at 2026-05-22 00:54:55.880
+    t =     0.15s Set Up
+    t =     0.15s Open com.melboonchan.boombox
+    t =     0.15s     Launch com.melboonchan.boombox
+    t =     0.15s         Terminate com.melboonchan.boombox:70293
+    t =     1.36s         Wait for accessibility to load
+    t =     2.15s         Setting up automation session
+    t =     2.15s         Wait for com.melboonchan.boombox to idle
+    t =     2.19s Checking existence of `"sidebar.home" Button`
+    t =     3.33s Checking `Expect predicate `exists == 1` for object "sidebar.home" Button`
+    t =     3.33s     Checking existence of `"sidebar.home" Button`
+    t =     4.44s Checking `Expect predicate `exists == 1` for object "sidebar.home" Button`
+    t =     4.45s     Checking existence of `"sidebar.home" Button`
+    t =     4.51s Find the "sidebar.home" Button
+    t =     4.57s Click "sidebar.home" Button
+    t =     4.58s     Wait for com.melboonchan.boombox to idle
+    t =     4.58s     Find the "sidebar.home" Button
+    t =     4.62s     Check for interrupting elements affecting "sidebar.home" Button
+    t =     4.63s     Synthesize event
+    t =     5.00s     Wait for com.melboonchan.boombox to idle
+    t =     6.04s Checking `Expect predicate `exists == 1` for object "playerBar.nowPlayingPanelToggle" Button`
+    t =     6.04s     Checking existence of `"playerBar.nowPlayingPanelToggle" Button`
+    t =     6.12s Checking existence of `"sidebar.nowPlayingPanel" Any`
+    t =     7.21s Checking `Expect predicate `exists == 1` for object "playerBar.nowPlayingPanelToggle" Button`
+    t =     7.21s     Checking existence of `"playerBar.nowPlayingPanelToggle" Button`
+    t =     7.29s Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.56s Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.64s Click "playerBar.nowPlayingPanelToggle" Button[0.50, 0.50]
+    t =     7.64s     Wait for com.melboonchan.boombox to idle
+    t =     7.65s     Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.71s     Check for interrupting elements affecting "playerBar.nowPlayingPanelToggle" Button
+    t =     7.72s     Synthesize event
+    t =     7.72s         Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.77s         Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     8.20s     Wait for com.melboonchan.boombox to idle
+    t =     9.24s Checking `Expect predicate `exists == 1` for object "sidebar.nowPlayingPanel" Any`
+    t =     9.24s     Checking existence of `"sidebar.nowPlayingPanel" Any`
+    t =    10.34s Checking `Expect predicate `exists == 1` for object "sidebar.nowPlayingArtwork" Any`
+    t =    10.34s     Checking existence of `"sidebar.nowPlayingArtwork" Any`
+    t =    10.40s Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    10.50s Find: Descendants matching type Button
+    t =    10.50s Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    10.52s Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    10.58s Find: Descendants matching type Button
+    t =    10.58s Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    10.59s Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    10.59s Using snapshot previously cached by application
+    t =    10.59s Find: Descendants matching type Button
+    t =    10.59s Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    10.60s Using snapshot previously cached by application
+NOW PLAYING TITLE DEBUG
+Attributes: Button, 0xb95df2bc0, {{1127.0, 968.0}, {156.0, 16.0}}, identifier: 'sidebar.nowPlayingTitleButton', label: 'ติดหนี้ต้องใช้ (feat. DJ G2)'
+Element subtree:
+ →Button, 0xb95df2bc0, {{1127.0, 968.0}, {156.0, 16.0}}, identifier: 'sidebar.nowPlayingTitleButton', label: 'ติดหนี้ต้องใช้ (feat. DJ G2)'
+Path to element:
+ →Application, 0xb95207340, pid: 70513, title: 'Boombox', Disabled
+  ↳Window (Main), 0xb95205180, {{1095.0, 243.0}, {1180.0, 836.0}}, identifier: 'main', title: 'Home', Disabled
+   ↳Group, 0xb95207ac0, {{1095.0, 243.0}, {1180.0, 836.0}}, Disabled
+    ↳SplitGroup, 0xb95207c00, {{1095.0, 243.0}, {1180.0, 836.0}}, identifier: 'main, SidebarNavigationSplitView', Disabled
+     ↳Group, 0xb95207e80, {{1103.0, 251.0}, {204.0, 820.0}}, Disabled
+      ↳Group, 0xb95df2940, {{1127.0, 802.0}, {156.0, 198.0}}, identifier: 'sidebar.nowPlayingPanel'
+       ↳Button, 0xb95df2bc0, {{1127.0, 968.0}, {156.0, 16.0}}, identifier: 'sidebar.nowPlayingTitleButton', label: 'ติดหนี้ต้องใช้ (feat. DJ G2)'
+Query chain:
+ →Find: Application 'com.melboonchan.boombox'
+  Output: {
+    Application, 0xb95829a40, pid: 70513, title: 'Boombox', Disabled
+  }
+  ↪︎Find: Descendants matching type Button
+    Output: {
+      Button, 0xb95926580, {{1113.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:CloseWindow'
+      Button, 0xb959266c0, {{1159.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:FullScreenWindow'
+      Button, 0xb95926a80, {{1136.0, 261.0}, {16.0, 16.0}}, identifier: '_XCUI:MinimizeWindow'
+      Button, 0xb95925900, {{1260.0, 243.0}, {47.0, 52.0}}, label: 'Hide Sidebar'
+      Button, 0xb95925a40, {{1475.0, 243.0}, {44.0, 52.0}}, identifier: 'arrow.clockwise', label: 'Refresh'
+      Button, 0xb9591d680, {{1115.0, 1031.0}, {180.0, 32.0}}, identifier: 'sidebarProfile.profileButton', label: 'Profile: Test User, @testuser'
+      Button, 0xb95924280, {{1349.0, 1034.5}, {8.0, 13.5}}, identifier: 'playerBar.nowPlayingPanelToggle', label: 'Now Playing Panel', value: Shown
+      Button, 0xb959243c0, {{1379.0, 1034.0}, {17.5, 14.0}}, identifier: 'playerBar.shuffle', label: 'Shuffle', value: Off
+      Button, 0xb95924500, {{1415.0, 1034.5}, {23.5, 13.5}}, identifier: 'playerBar.previous', label: 'Previous track'
+      Button, 0xb95924640, {{1459.0, 1031.5}, {17.0, 19.0}}, identifier: 'playerBar.playPause', label: 'Play'
+      Button, 0xb95924780, {{1494.5, 1034.5}, {23.5, 13.5}}, identifier: 'playerBar.next', label: 'Next track'
+      Button, 0xb959248c0, {{1536.5, 1034.0}, {16.5, 14.0}}, identifier: 'playerBar.repeat', label: 'Repeat', value: Off
+      Button, 0xb95924a00, {{1572.5, 1033.0}, {15.5, 16.5}}, identifier: 'playerBar.like', label: 'Like', value: Not liked
+      Button, 0xb95925040, {{2034.0, 1035.5}, {15.5, 11.5}}, identifier: 'playerBar.queue', label: 'Queue', value: Hidden
+      Button, 0xb95925180, {{2065.5, 1033.5}, {16.5, 15.5}}, identifier: 'playerBar.lyrics', label: 'Lyrics', value: Hidden
+      Button, 0xb959252c0, {{2094.0, 1033.5}, {12.0, 15.5}}, identifier: 'playerBar.airplayButton', label: 'Audio Output: MacBook Pro Speakers'
+      Button, 0xb9591d400, {{1127.0, 968.0}, {156.0, 16.0}}, identifier: 'sidebar.nowPlayingTitleButton', label: 'ติดหนี้ต้องใช้ (feat. DJ G2)'
+      Button, 0xb9591d540, {{1127.0, 987.0}, {156.0, 13.0}}, label: 'GUNNER'
+      Button, 0xb9591df40, {{1331.0, 343.5}, {302.5, 44.0}}, label: 'Test Song 1, Artist 1'
+      Button, 0xb9591e080, {{1639.5, 343.5}, {303.0, 44.0}}, label: 'Test Song 2, Artist 2'
+      Button, 0xb9591e1c0, {{1948.5, 343.5}, {302.5, 44.0}}, label: 'Test Song 3, Artist 3'
+      Button, 0xb9591e300, {{1331.0, 391.5}, {302.5, 44.0}}, label: 'Test Song 4, Artist 1'
+      Button, 0xb9591e440, {{1639.5, 391.5}, {303.0, 44.0}}, label: 'Test Song 5, Artist 2'
+      Button, 0xb9591e580, {{1948.5, 391.5}, {302.5, 44.0}}, label: 'Test Song 6, Artist 3'
+      Button, 0xb9591e6c0, {{1331.0, 439.5}, {302.5, 44.0}}, label: 'Test Song 7, Artist 1'
+      Button, 0xb9591e800, {{1639.5, 439.5}, {303.0, 44.0}}, label: 'Test Song 8, Artist 2'
+      Button, 0xb9591ebc0, {{1331.0, 544.0}, {302.5, 44.0}}, label: 'Test Song 1, Artist 1'
+      Button, 0xb9591ed00, {{1639.5, 544.0}, {303.0, 44.0}}, label: 'Test Song 2, Artist 2'
+      Button, 0xb9591ee40, {{1948.5, 544.0}, {302.5, 44.0}}, label: 'Test Song 3, Artist 3'
+      Button, 0xb9591ef80, {{1331.0, 592.0}, {302.5, 44.0}}, label: 'Test Song 4, Artist 1'
+      Button, 0xb9591f0c0, {{1639.5, 592.0}, {303.0, 44.0}}, label: 'Test Song 5, Artist 2'
+      Button, 0xb9591f200, {{1948.5, 592.0}, {302.5, 44.0}}, label: 'Test Song 6, Artist 3'
+      Button, 0xb9591f5c0, {{1331.0, 696.5}, {302.5, 44.0}}, label: 'Test Song 1, Artist 1'
+      Button, 0xb9591f700, {{1639.5, 696.5}, {303.0, 44.0}}, label: 'Test Song 2, Artist 2'
+      Button, 0xb9591f840, {{1948.5, 696.5}, {302.5, 44.0}}, label: 'Test Song 3, Artist 3'
+      Button, 0xb9591f980, {{1331.0, 744.5}, {302.5, 44.0}}, label: 'Test Song 4, Artist 1'
+      Button, 0xb9591fac0, {{1639.5, 744.5}, {303.0, 44.0}}, label: 'Test Song 5, Artist 2'
+      Button, 0xb9591fc00, {{1948.5, 744.5}, {302.5, 44.0}}, label: 'Test Song 6, Artist 3'
+      Button, 0xb9591fd40, {{1331.0, 792.5}, {302.5, 44.0}}, label: 'Test Song 7, Artist 1'
+      Button, 0xb9591fe80, {{1639.5, 792.5}, {303.0, 44.0}}, label: 'Test Song 8, Artist 2'
+      Button, 0xb95924000, {{1948.5, 792.5}, {302.5, 44.0}}, label: 'Test Song 9, Artist 3'
+      Button, 0xb95924140, {{1331.0, 840.5}, {302.5, 44.0}}, label: 'Test Song 10, Artist 1'
+      Button, 0xb9582a940, {{1126.0, 303.0}, {65.5, 16.0}}, identifier: 'sidebar.search', label: 'Search'
+      Button, 0xb9582ad00, {{1124.5, 335.0}, {60.5, 16.0}}, identifier: 'sidebar.home', label: 'Home'
+      Button, 0xb9582b5c0, {{1125.5, 398.1}, {66.0, 16.9}}, identifier: 'sidebar.library', label: 'Library'
+      Button, 0xb9582b980, {{1125.5, 431.0}, {95.5, 16.0}}, identifier: 'sidebar.likedMusic', label: 'Liked Music'
+      Button, 0xb9591c280, {{1125.5, 495.0}, {69.0, 16.0}}, identifier: 'sidebar.explore', label: 'Explore'
+      Button, 0xb9591c640, {{1126.0, 527.3}, {108.0, 16.0}}, identifier: 'sidebar.newReleases', label: 'New Releases'
+      Button, 0xb9591cf00, {{1124.5, 591.0}, {68.0, 16.0}}, identifier: 'sidebar.history', label: 'History'
+    }
+    ↪︎Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+      Output: {
+        Button, 0xb9591d400, {{1127.0, 968.0}, {156.0, 16.0}}, identifier: 'sidebar.nowPlayingTitleButton', label: 'ติดหนี้ต้องใช้ (feat. DJ G2)'
+      }
+
+    t =    11.64s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    11.65s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    11.73s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    11.80s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    11.86s     Capturing element debug description
+    t =    11.88s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    11.95s         Find: Descendants matching type Button
+    t =    11.95s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    11.96s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    11.96s Using snapshot previously cached by application
+    t =    11.96s         Find: Descendants matching type Button
+    t =    11.97s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    11.97s Using snapshot previously cached by application
+    t =    12.70s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    12.70s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    12.80s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    12.87s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    12.93s     Capturing element debug description
+    t =    12.95s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.02s         Find: Descendants matching type Button
+    t =    13.02s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    13.03s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.03s Using snapshot previously cached by application
+    t =    13.03s         Find: Descendants matching type Button
+    t =    13.04s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.04s Using snapshot previously cached by application
+    t =    13.64s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    13.65s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    13.73s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    13.81s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    13.87s     Capturing element debug description
+    t =    13.89s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.96s         Find: Descendants matching type Button
+    t =    13.97s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    13.97s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.97s Using snapshot previously cached by application
+    t =    13.97s         Find: Descendants matching type Button
+    t =    13.98s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    13.98s Using snapshot previously cached by application
+    t =    14.62s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    14.63s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    14.71s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    14.88s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    14.96s     Capturing element debug description
+    t =    14.98s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    15.06s         Find: Descendants matching type Button
+    t =    15.06s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    15.07s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    15.07s Using snapshot previously cached by application
+    t =    15.07s         Find: Descendants matching type Button
+    t =    15.08s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    15.08s Using snapshot previously cached by application
+    t =    15.72s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    15.72s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    15.81s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    15.88s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    15.94s     Capturing element debug description
+    t =    15.96s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    16.03s         Find: Descendants matching type Button
+    t =    16.04s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    16.04s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    16.04s Using snapshot previously cached by application
+    t =    16.04s         Find: Descendants matching type Button
+    t =    16.05s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    16.05s Using snapshot previously cached by application
+    t =    16.69s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    16.69s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    16.77s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    16.85s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    16.91s     Capturing element debug description
+    t =    16.93s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.01s         Find: Descendants matching type Button
+    t =    17.01s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    17.02s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.02s Using snapshot previously cached by application
+    t =    17.02s         Find: Descendants matching type Button
+    t =    17.03s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.03s Using snapshot previously cached by application
+    t =    17.67s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    17.67s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    17.76s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    17.83s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    17.89s     Capturing element debug description
+    t =    17.91s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.98s         Find: Descendants matching type Button
+    t =    17.98s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    17.99s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.99s Using snapshot previously cached by application
+    t =    17.99s         Find: Descendants matching type Button
+    t =    17.99s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    17.99s Using snapshot previously cached by application
+    t =    18.63s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    18.63s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    18.72s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    18.79s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    18.85s     Capturing element debug description
+    t =    18.87s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    18.94s         Find: Descendants matching type Button
+    t =    18.94s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    18.95s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    18.95s Using snapshot previously cached by application
+    t =    18.95s         Find: Descendants matching type Button
+    t =    18.95s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    18.95s Using snapshot previously cached by application
+    t =    19.66s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    19.66s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    19.85s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    19.94s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    20.00s     Capturing element debug description
+    t =    20.02s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    20.10s         Find: Descendants matching type Button
+    t =    20.10s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    20.11s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    20.11s Using snapshot previously cached by application
+    t =    20.11s         Find: Descendants matching type Button
+    t =    20.11s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    20.11s Using snapshot previously cached by application
+    t =    20.62s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    20.62s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    20.71s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    20.78s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    20.84s     Capturing element debug description
+    t =    20.87s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+    t =    20.87s         Requesting snapshot of accessibility hierarchy for app with pid 70513
+2026-05-22 00:55:16.752486-0400 KasetUITests-Runner[70417:4417815] [general] *** Assertion failure in -[XCUIApplication commonInitWithApplicationSpecifier:device:], XCUIApplication.m:225
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/PlayerBarUITests.swift:163: error: -[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment] : XCTAssertEqual failed: ("XCTWaiterResult(rawValue: 2)") is not equal to ("XCTWaiterResult(rawValue: 1)") - Enriched now-playing title should remain a hittable album-navigation button
+    t =    20.90s Tear Down
+Test Case '-[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment]' failed (21.228 seconds).
+Test Suite 'PlayerBarUITests' failed at 2026-05-22 00:55:17.109.
+	 Executed 1 test, with 1 failure (0 unexpected) in 21.228 (21.229) seconds
+Test Suite 'KasetUITests.xctest' failed at 2026-05-22 00:55:17.111.
+	 Executed 1 test, with 1 failure (0 unexpected) in 21.228 (21.231) seconds
+Test Suite 'Selected tests' failed at 2026-05-22 00:55:17.112.
+	 Executed 1 test, with 1 failure (0 unexpected) in 21.228 (21.233) seconds
+2026-05-22 00:55:21.815 xcodebuild[70397:4417477] [MT] IDETestOperationsObserverDebug: 26.586 elapsed -- Testing started completed.
+2026-05-22 00:55:21.815 xcodebuild[70397:4417477] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-05-22 00:55:21.815 xcodebuild[70397:4417477] [MT] IDETestOperationsObserverDebug: 26.586 sec, +26.586 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Logs/Test/Test-KasetUITests-2026.05.22_00-54-54--0400.xcresult
+
+** TEST FAILED **
+
+Testing started

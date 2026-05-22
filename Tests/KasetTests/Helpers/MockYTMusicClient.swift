@@ -55,6 +55,8 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
     var artistDetails: [String: ArtistDetail] = [:]
     var artistSongs: [String: [Song]] = [:]
     var artistSongsResponse: [Song] = []
+    var artistAlbums: [String: [Album]] = [:]
+    var artistAlbumsResponse: [Album] = []
     var moodCategoryResponse: HomeResponse = .init(sections: [])
     var lyricsResponses: [String: Lyrics] = [:]
     var radioQueueSongs: [String: [Song]] = [:]
@@ -153,6 +155,8 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
     private(set) var getArtistIds: [String] = []
     private(set) var getArtistSongsCalled = false
     private(set) var getArtistSongsBrowseIds: [String] = []
+    private(set) var getArtistAlbumsCalled = false
+    private(set) var getArtistAlbumsBrowseIds: [String] = []
     private(set) var rateSongCalled = false
     private(set) var rateSongVideoIds: [String] = []
     private(set) var rateSongRatings: [LikeStatus] = []
@@ -587,6 +591,16 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         return self.artistSongs[browseId] ?? []
     }
 
+    func getArtistAlbums(browseId: String, params _: String?) async throws -> [Album] {
+        self.getArtistAlbumsCalled = true
+        self.getArtistAlbumsBrowseIds.append(browseId)
+        if let error = shouldThrowError { throw error }
+        if !self.artistAlbumsResponse.isEmpty {
+            return self.artistAlbumsResponse
+        }
+        return self.artistAlbums[browseId] ?? []
+    }
+
     func rateSong(videoId: String, rating: LikeStatus) async throws {
         self.rateSongCalled = true
         self.rateSongVideoIds.append(videoId)
@@ -797,6 +811,8 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         self.getArtistIds = []
         self.getArtistSongsCalled = false
         self.getArtistSongsBrowseIds = []
+        self.getArtistAlbumsCalled = false
+        self.getArtistAlbumsBrowseIds = []
         self.rateSongCalled = false
         self.rateSongVideoIds = []
         self.rateSongRatings = []

@@ -14,6 +14,7 @@ enum TestAccessibilityID {
         static let libraryItem = "sidebar.library"
         static let nowPlayingPanel = "sidebar.nowPlayingPanel"
         static let nowPlayingArtwork = "sidebar.nowPlayingArtwork"
+        static let nowPlayingTitleButton = "sidebar.nowPlayingTitleButton"
         static let nowPlayingFocusButton = "sidebar.nowPlayingFocusButton"
         static let nowPlayingHideButton = "sidebar.nowPlayingHideButton"
     }
@@ -41,6 +42,15 @@ enum TestAccessibilityID {
 
     enum Search {
         static let container = "searchView"
+        static let searchField = "searchView.searchField"
+
+        static func filterChip(_ filter: String) -> String {
+            "searchView.filterChip.\(filter)"
+        }
+
+        static func sectionHeader(_ section: String) -> String {
+            "searchView.sectionHeader.\(section)"
+        }
     }
 
     enum Library {
@@ -139,10 +149,12 @@ class KasetUITestCase: XCTestCase {
         // Stop immediately when a failure occurs
         continueAfterFailure = false
 
-        // Create new app instance pointing to installed Boombox.app
-        let appURL = URL(fileURLWithPath: "/Applications/Boombox.app")
-        if FileManager.default.fileExists(atPath: appURL.path) {
+        // Prefer the repo-packaged app so UI tests do not accidentally launch a stale
+        // LaunchServices-registered bundle with the same identifier.
+        if let appURL = Self.packagedAppURL {
             self.app = XCUIApplication(url: appURL)
+        } else if FileManager.default.fileExists(atPath: Self.installedAppURL.path) {
+            self.app = XCUIApplication(url: Self.installedAppURL)
         } else {
             self.app = XCUIApplication(bundleIdentifier: "com.melboonchan.boombox")
         }
@@ -162,6 +174,22 @@ class KasetUITestCase: XCTestCase {
     override func tearDownWithError() throws {
         self.app = nil
         try super.tearDownWithError()
+    }
+
+    private static let installedAppURL = URL(fileURLWithPath: "/Applications/Boombox.app")
+
+    private static var packagedAppURL: URL? {
+        let testFileURL = URL(fileURLWithPath: #filePath)
+        let repositoryRoot = testFileURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let appURL = repositoryRoot.appendingPathComponent(".build/app/Boombox.app")
+
+        guard FileManager.default.fileExists(atPath: appURL.path) else {
+            return nil
+        }
+        return appURL
     }
 
     // MARK: - Launch Helpers
@@ -213,6 +241,114 @@ class KasetUITestCase: XCTestCase {
         self.app.launch()
     }
 
+    /// Launches the app with ordered mock search shelves for the "All" filter.
+    func launchWithMockSearchShelves() {
+        let songs: [[String: Any]] = [
+            [
+                "id": "top-song",
+                "title": "Top Result Song",
+                "artist": "Top Artist",
+                "artistId": "UCmocktopartist",
+                "videoId": "top-video",
+            ],
+            [
+                "id": "search-song-1",
+                "title": "Search Song 1",
+                "artist": "Search Artist 1",
+                "artistId": "UCmocksearchartist1",
+                "videoId": "search-video-1",
+            ],
+            [
+                "id": "search-song-2",
+                "title": "Search Song 2",
+                "artist": "Search Artist 2",
+                "artistId": "UCmocksearchartist2",
+                "videoId": "search-video-2",
+            ],
+        ]
+
+        let albums: [[String: Any]] = [
+            [
+                "id": "MPREbMockSearchAlbum",
+                "title": "Search Album 1",
+                "artist": "Album Artist 1",
+                "artistId": "UCmockalbumartist1",
+                "trackCount": 12,
+            ],
+        ]
+
+        let playlists: [[String: Any]] = [
+            [
+                "id": "PLmockcommunityplaylist",
+                "title": "Search Community Playlist 1",
+                "author": "Community Curator",
+                "trackCount": 24,
+            ],
+        ]
+
+        let artists: [[String: Any]] = [
+            [
+                "id": "UCmockartistresult",
+                "name": "Search Artist Result",
+            ],
+        ]
+
+        let sections: [[String: Any]] = [
+            [
+                "id": "top-result",
+                "isTopResult": true,
+                "items": [
+                    ["type": "song", "id": "top-song"],
+                ],
+            ],
+            [
+                "id": "songs",
+                "title": "Songs",
+                "items": [
+                    ["type": "song", "id": "search-song-1"],
+                    ["type": "song", "id": "search-song-2"],
+                ],
+            ],
+            [
+                "id": "albums",
+                "title": "Albums",
+                "items": [
+                    ["type": "album", "id": "MPREbMockSearchAlbum"],
+                ],
+            ],
+            [
+                "id": "community-playlists",
+                "title": "Community playlists",
+                "items": [
+                    ["type": "playlist", "id": "PLmockcommunityplaylist"],
+                ],
+            ],
+            [
+                "id": "artists",
+                "title": "Artists",
+                "items": [
+                    ["type": "artist", "id": "UCmockartistresult"],
+                ],
+            ],
+        ]
+
+        let payload: [String: Any] = [
+            "songs": songs,
+            "albums": albums,
+            "playlists": playlists,
+            "artists": artists,
+            "sections": sections,
+        ]
+
+        if let jsonData = try? JSONSerialization.data(withJSONObject: payload),
+           let jsonString = String(data: jsonData, encoding: .utf8)
+        {
+            self.app.launchEnvironment["MOCK_SEARCH_RESULTS"] = jsonString
+        }
+
+        self.app.launch()
+    }
+
     /// Launches the app with mock library playlists.
     func launchWithMockLibrary(playlistCount: Int = 3) {
         let playlists = (0 ..< playlistCount).map { index in
@@ -248,6 +384,36 @@ class KasetUITestCase: XCTestCase {
             self.app.launchEnvironment["MOCK_CURRENT_TRACK"] = jsonString
         }
         self.app.launchEnvironment["MOCK_IS_PLAYING"] = isPlaying ? "true" : "false"
+
+        self.app.launch()
+    }
+
+    /// Launches the app with a mock current track that needs queue metadata enrichment.
+    func launchWithMockPlayerRequiringQueueEnrichment() {
+        let track: [String: Any] = [
+            "id": "current-track",
+            "title": "Now Playing Song",
+            "artist": "Unknown Artist",
+            "artistId": "UCmockunknownartist",
+            "videoId": "current-video",
+            "duration": 180,
+            "thumbnailURL": "https://example.com/mock-thumbnail.jpg",
+            "album": [
+                "id": "MPREbMockEnrichmentAlbum",
+                "title": "Enrichment Album",
+                "artist": "Enrichment Album Artist",
+                "artistId": "UCmockalbumartist",
+                "trackCount": 10,
+            ],
+        ]
+
+        if let jsonData = try? JSONSerialization.data(withJSONObject: track),
+           let jsonString = String(data: jsonData, encoding: .utf8)
+        {
+            self.app.launchEnvironment["MOCK_CURRENT_TRACK"] = jsonString
+        }
+        self.app.launchEnvironment["MOCK_IS_PLAYING"] = "true"
+        self.app.launchEnvironment["FORCE_ENRICH_QUEUE_ON_LAUNCH"] = "true"
 
         self.app.launch()
     }

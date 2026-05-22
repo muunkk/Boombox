@@ -2,6 +2,8 @@ import Foundation
 import Testing
 @testable import Kaset
 
+// MARK: - PlaylistParserTests
+
 /// Tests for the PlaylistParser.
 @Suite(.tags(.parser))
 struct PlaylistParserTests {
@@ -139,6 +141,54 @@ struct PlaylistParserTests {
         let data = self.makePlaylistDetailData(title: "Test", description: nil, author: nil, trackCount: 1)
         let detail = PlaylistParser.parsePlaylistDetail(data, playlistId: playlistId)
         #expect(detail.isAlbum == expectedIsAlbum)
+    }
+
+    // MARK: - Author Channel ID Extraction
+
+    @Test("parsePlaylistDetail extracts authorChannelId from straplineTextOne")
+    func parsePlaylistDetailExtractsAuthorChannelIdFromStrapline() {
+        let data = self.makeAlbumDetailWithStrapline(
+            title: "Album",
+            artistName: "Artist Name",
+            artistChannelId: "UCxxxxxxxxxxxxxxxxxxxxxx"
+        )
+
+        let detail = PlaylistParser.parsePlaylistDetail(data, playlistId: "MPREabc")
+
+        #expect(detail.author == "Artist Name")
+        #expect(detail.authorChannelId == "UCxxxxxxxxxxxxxxxxxxxxxx")
+    }
+
+    @Test("parsePlaylistDetail extracts authorChannelId from subtitle navigationEndpoint")
+    func parsePlaylistDetailExtractsAuthorChannelIdFromSubtitle() {
+        let data = self.makeAlbumDetailWithSubtitleArtistEndpoint(
+            title: "Album",
+            artistName: "Artist Name",
+            artistChannelId: "UCyyyyyyyyyyyyyyyyyyyyyy"
+        )
+
+        let detail = PlaylistParser.parsePlaylistDetail(data, playlistId: "MPREabc")
+
+        #expect(detail.authorChannelId == "UCyyyyyyyyyyyyyyyyyyyyyy")
+    }
+
+    // MARK: - Library Path
+
+    @Test("parseLibraryContent keeps RDCLAK playlists when shaped as responsive items")
+    func parseLibraryContentKeepsRDCLAKResponsive() {
+        let data = self.makeLibraryResponsiveListContent(browseIds: [
+            "VLpl-one",
+            "RDCLAK-mix-one",
+            "PL-mix-two",
+        ])
+
+        let content = PlaylistParser.parseLibraryContent(data)
+        let ids = content.playlists.map(\.id)
+
+        #expect(ids.contains("VLpl-one"))
+        #expect(ids.contains("RDCLAK-mix-one"))
+        #expect(ids.contains("PL-mix-two"))
+        #expect(ids.count == 3)
     }
 
     // MARK: - Continuation Parsing
@@ -626,6 +676,133 @@ struct PlaylistParserTests {
                             ]],
                         ],
                     ],
+                ],
+            ],
+        ]
+    }
+}
+
+/// Helpers added for the channel-id and library-responsive coverage live in an
+/// extension so the main struct body stays under the type_body_length lint cap.
+private extension PlaylistParserTests {
+    /// Library response where playlists are inside `itemSectionRenderer →
+    /// musicShelfRenderer → musicResponsiveListItemRenderer`. Used to exercise
+    /// `parseLibraryItemFromResponsive`, which previously dropped RDCLAK ids.
+    func makeLibraryResponsiveListContent(browseIds: [String]) -> [String: Any] {
+        let items: [[String: Any]] = browseIds.map { browseId in
+            [
+                "musicResponsiveListItemRenderer": [
+                    "navigationEndpoint": [
+                        "browseEndpoint": ["browseId": browseId],
+                    ],
+                    "flexColumns": [
+                        [
+                            "musicResponsiveListItemFlexColumnRenderer": [
+                                "text": ["runs": [["text": browseId]]],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        }
+        return [
+            "contents": [
+                "singleColumnBrowseResultsRenderer": [
+                    "tabs": [[
+                        "tabRenderer": [
+                            "content": [
+                                "sectionListRenderer": [
+                                    "contents": [[
+                                        "itemSectionRenderer": [
+                                            "contents": [[
+                                                "musicShelfRenderer": [
+                                                    "contents": items,
+                                                ],
+                                            ]],
+                                        ],
+                                    ]],
+                                ],
+                            ],
+                        ],
+                    ]],
+                ],
+            ],
+        ]
+    }
+
+    /// Album detail response shaped like the modern `musicResponsiveHeaderRenderer`
+    /// where the primary artist is in `straplineTextOne.runs[0]` with a browse
+    /// navigation endpoint to the artist channel.
+    func makeAlbumDetailWithStrapline(
+        title: String,
+        artistName: String,
+        artistChannelId: String
+    ) -> [String: Any] {
+        [
+            "contents": [
+                "twoColumnBrowseResultsRenderer": [
+                    "tabs": [[
+                        "tabRenderer": [
+                            "content": [
+                                "sectionListRenderer": [
+                                    "contents": [[
+                                        "musicResponsiveHeaderRenderer": [
+                                            "title": ["runs": [["text": title]]],
+                                            "straplineTextOne": [
+                                                "runs": [[
+                                                    "text": artistName,
+                                                    "navigationEndpoint": [
+                                                        "browseEndpoint": [
+                                                            "browseId": artistChannelId,
+                                                        ],
+                                                    ],
+                                                ]],
+                                            ],
+                                        ],
+                                    ]],
+                                ],
+                            ],
+                        ],
+                    ]],
+                ],
+            ],
+        ]
+    }
+
+    /// Album detail response shaped like the older `musicDetailHeaderRenderer`
+    /// where the primary artist sits in `subtitle.runs[0]` with a browse endpoint.
+    func makeAlbumDetailWithSubtitleArtistEndpoint(
+        title: String,
+        artistName: String,
+        artistChannelId: String
+    ) -> [String: Any] {
+        [
+            "header": [
+                "musicDetailHeaderRenderer": [
+                    "title": ["runs": [["text": title]]],
+                    "subtitle": [
+                        "runs": [[
+                            "text": artistName,
+                            "navigationEndpoint": [
+                                "browseEndpoint": [
+                                    "browseId": artistChannelId,
+                                ],
+                            ],
+                        ]],
+                    ],
+                ],
+            ],
+            "contents": [
+                "singleColumnBrowseResultsRenderer": [
+                    "tabs": [[
+                        "tabRenderer": [
+                            "content": [
+                                "sectionListRenderer": [
+                                    "contents": [] as [[String: Any]],
+                                ],
+                            ],
+                        ],
+                    ]],
                 ],
             ],
         ]

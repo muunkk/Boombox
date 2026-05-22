@@ -12,6 +12,9 @@ enum ArtistParser {
         var hasMoreSongs = false
         var songsBrowseId: String?
         var songsParams: String?
+        var hasMoreAlbums = false
+        var albumsBrowseId: String?
+        var albumsParams: String?
 
         // Parse header
         let headerResult = self.parseArtistHeader(data, artistId: artistId)
@@ -50,11 +53,25 @@ enum ArtistParser {
                 if let carouselRenderer = sectionData["musicCarouselShelfRenderer"] as? [String: Any],
                    let carouselContents = carouselRenderer["contents"] as? [[String: Any]]
                 {
+                    var parsedAlbumsInCarousel: [Album] = []
                     for itemData in carouselContents {
                         if let twoRowRenderer = itemData["musicTwoRowItemRenderer"] as? [String: Any],
                            let album = parseAlbumFromTwoRowRenderer(twoRowRenderer)
                         {
-                            albums.append(album)
+                            parsedAlbumsInCarousel.append(album)
+                        }
+                    }
+
+                    if !parsedAlbumsInCarousel.isEmpty {
+                        albums.append(contentsOf: parsedAlbumsInCarousel)
+
+                        if albumsBrowseId == nil,
+                           let endpoint = Self.extractCarouselMoreEndpoint(from: carouselRenderer),
+                           let browseId = endpoint["browseId"] as? String
+                        {
+                            hasMoreAlbums = true
+                            albumsBrowseId = browseId
+                            albumsParams = endpoint["params"] as? String
                         }
                     }
                 }
@@ -75,9 +92,38 @@ enum ArtistParser {
             hasMoreSongs: hasMoreSongs,
             songsBrowseId: songsBrowseId,
             songsParams: songsParams,
+            hasMoreAlbums: hasMoreAlbums,
+            albumsBrowseId: albumsBrowseId,
+            albumsParams: albumsParams,
             mixPlaylistId: headerResult.mixPlaylistId,
             mixVideoId: headerResult.mixVideoId
         )
+    }
+
+    /// Extracts the "more"/"View all" browseEndpoint dictionary from a `musicCarouselShelfRenderer`.
+    /// Returns the inner `browseEndpoint` dictionary (with `browseId`/`params`), or nil if absent.
+    private static func extractCarouselMoreEndpoint(from carouselRenderer: [String: Any]) -> [String: Any]? {
+        guard let header = carouselRenderer["header"] as? [String: Any],
+              let basicHeader = header["musicCarouselShelfBasicHeaderRenderer"] as? [String: Any]
+        else {
+            return nil
+        }
+
+        if let moreContentButton = basicHeader["moreContentButton"] as? [String: Any],
+           let buttonRenderer = moreContentButton["buttonRenderer"] as? [String: Any],
+           let navigationEndpoint = buttonRenderer["navigationEndpoint"] as? [String: Any],
+           let browseEndpoint = navigationEndpoint["browseEndpoint"] as? [String: Any]
+        {
+            return browseEndpoint
+        }
+
+        if let trailingNavigationEndpoint = basicHeader["trailingNavigationEndpoint"] as? [String: Any],
+           let browseEndpoint = trailingNavigationEndpoint["browseEndpoint"] as? [String: Any]
+        {
+            return browseEndpoint
+        }
+
+        return nil
     }
 
     // MARK: - Header Parsing
@@ -272,6 +318,115 @@ enum ArtistParser {
         }
 
         return songs
+    }
+
+    /// Parses albums from the artist's "all albums" browse response.
+    /// The MPADUC endpoint can return albums in different shapes depending on
+    /// the artist (`gridRenderer`/`musicGridRenderer` for a true grid,
+    /// `musicShelfRenderer` for a vertical shelf, or even another
+    /// `musicCarouselShelfRenderer`). Try each in turn and merge results.
+    static func parseArtistAlbums(_ data: [String: Any]) -> [Album] {
+        var albums: [Album] = []
+
+        guard let contents = data["contents"] as? [String: Any],
+              let singleColumnBrowseResults = contents["singleColumnBrowseResultsRenderer"] as? [String: Any],
+              let tabs = singleColumnBrowseResults["tabs"] as? [[String: Any]],
+              let firstTab = tabs.first,
+              let tabRenderer = firstTab["tabRenderer"] as? [String: Any],
+              let tabContent = tabRenderer["content"] as? [String: Any],
+              let sectionListRenderer = tabContent["sectionListRenderer"] as? [String: Any],
+              let sectionContents = sectionListRenderer["contents"] as? [[String: Any]]
+        else {
+            return albums
+        }
+
+        for sectionData in sectionContents {
+            let countBefore = albums.count
+
+            // Grid renderer (typical "all albums" layout)
+            if let gridRenderer = sectionData["gridRenderer"] as? [String: Any]
+                ?? sectionData["musicGridRenderer"] as? [String: Any],
+                let items = gridRenderer["items"] as? [[String: Any]]
+            {
+                for itemData in items {
+                    if let twoRowRenderer = itemData["musicTwoRowItemRenderer"] as? [String: Any],
+                       let album = Self.parseAlbumFromTwoRowRenderer(twoRowRenderer)
+                    {
+                        albums.append(album)
+                    }
+                }
+            }
+
+            // If the grid path already yielded items for this section, skip the
+            // shelf/carousel fallbacks to avoid double-counting in the unlikely
+            // case YouTube returns multiple shaped renderers in the same section.
+            if albums.count > countBefore { continue }
+
+            // musicShelfRenderer fallback (vertical list of albums)
+            if let shelfRenderer = sectionData["musicShelfRenderer"] as? [String: Any],
+               let shelfContents = shelfRenderer["contents"] as? [[String: Any]]
+            {
+                for itemData in shelfContents {
+                    if let twoRowRenderer = itemData["musicTwoRowItemRenderer"] as? [String: Any],
+                       let album = Self.parseAlbumFromTwoRowRenderer(twoRowRenderer)
+                    {
+                        albums.append(album)
+                    } else if let responsiveRenderer = itemData["musicResponsiveListItemRenderer"] as? [String: Any],
+                              let album = Self.parseAlbumFromResponsiveListItem(responsiveRenderer)
+                    {
+                        albums.append(album)
+                    }
+                }
+            }
+
+            if albums.count > countBefore { continue }
+
+            // Carousel fallback (rare, but defensive)
+            if let carouselRenderer = sectionData["musicCarouselShelfRenderer"] as? [String: Any],
+               let carouselContents = carouselRenderer["contents"] as? [[String: Any]]
+            {
+                for itemData in carouselContents {
+                    if let twoRowRenderer = itemData["musicTwoRowItemRenderer"] as? [String: Any],
+                       let album = Self.parseAlbumFromTwoRowRenderer(twoRowRenderer)
+                    {
+                        albums.append(album)
+                    }
+                }
+            }
+        }
+
+        return albums
+    }
+
+    /// Parses an album from a `musicResponsiveListItemRenderer` (list-style row).
+    /// Used as a fallback when the all-albums response uses a shelf layout.
+    private static func parseAlbumFromResponsiveListItem(_ data: [String: Any]) -> Album? {
+        var browseId: String?
+        if let navigationEndpoint = data["navigationEndpoint"] as? [String: Any],
+           let browseEndpoint = navigationEndpoint["browseEndpoint"] as? [String: Any],
+           let id = browseEndpoint["browseId"] as? String
+        {
+            browseId = id
+        }
+
+        guard let resolvedBrowseId = browseId,
+              resolvedBrowseId.hasPrefix("MPRE") || resolvedBrowseId.hasPrefix("OLAK")
+        else {
+            return nil
+        }
+
+        let title = ParsingHelpers.extractTitleFromFlexColumns(data) ?? "Unknown Album"
+        let thumbnails = ParsingHelpers.extractThumbnails(from: data)
+        let thumbnailURL = thumbnails.last.flatMap { URL(string: $0) }
+
+        return Album(
+            id: resolvedBrowseId,
+            title: title,
+            artists: nil,
+            thumbnailURL: thumbnailURL,
+            year: nil,
+            trackCount: nil
+        )
     }
 
     private static func parseTracksFromItems(_ items: [[String: Any]], fallbackThumbnailURL: URL? = nil) -> [Song] {

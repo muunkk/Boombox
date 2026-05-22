@@ -1,0 +1,222 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project KasetUITests.xcodeproj -scheme KasetUITests -destination platform=macOS "-only-testing:KasetUITests/PlayerBarUITests/testNowPlayingSidebarSurvivesQueueEnrichment"
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00006041-001030AA1A80801C, name:My Mac }
+{ platform:macOS, arch:x86_64, id:00006041-001030AA1A80801C, name:My Mac }
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'KasetUITests' in project 'KasetUITests' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+    cd /Users/melboonchan/Master/Projects/YTM/kaset/KasetUITests.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk -o /Users/melboonchan/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx26.4-25E251-30f9ca8789b706f8bd3fc906a70d770f.sdkstatcache
+
+2026-05-22 00:54:15.155748-0400 KasetUITests-Runner[70263:4404418] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-05-22 00:54:15.172.
+Test Suite 'KasetUITests.xctest' started at 2026-05-22 00:54:15.172.
+Test Suite 'PlayerBarUITests' started at 2026-05-22 00:54:15.172.
+Test Case '-[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment]' started.
+    t =     0.00s Start Test at 2026-05-22 00:54:15.173
+    t =     0.10s Set Up
+    t =     0.10s Open com.melboonchan.boombox
+    t =     0.10s     Launch com.melboonchan.boombox
+    t =     0.10s         Terminate com.melboonchan.boombox:70022
+    t =     1.32s         Wait for accessibility to load
+    t =     2.04s         Setting up automation session
+    t =     2.05s         Wait for com.melboonchan.boombox to idle
+    t =     2.06s Checking existence of `"sidebar.home" Button`
+    t =     3.18s Checking `Expect predicate `exists == 1` for object "sidebar.home" Button`
+    t =     3.18s     Checking existence of `"sidebar.home" Button`
+    t =     4.29s Checking `Expect predicate `exists == 1` for object "sidebar.home" Button`
+    t =     4.29s     Checking existence of `"sidebar.home" Button`
+    t =     4.36s Find the "sidebar.home" Button
+    t =     4.42s Click "sidebar.home" Button
+    t =     4.42s     Wait for com.melboonchan.boombox to idle
+    t =     4.43s     Find the "sidebar.home" Button
+    t =     4.46s     Check for interrupting elements affecting "sidebar.home" Button
+    t =     4.48s     Synthesize event
+    t =     4.81s     Wait for com.melboonchan.boombox to idle
+    t =     5.83s Checking `Expect predicate `exists == 1` for object "playerBar.nowPlayingPanelToggle" Button`
+    t =     5.83s     Checking existence of `"playerBar.nowPlayingPanelToggle" Button`
+    t =     5.92s Checking existence of `"sidebar.nowPlayingPanel" Any`
+    t =     7.01s Checking `Expect predicate `exists == 1` for object "playerBar.nowPlayingPanelToggle" Button`
+    t =     7.01s     Checking existence of `"playerBar.nowPlayingPanelToggle" Button`
+    t =     7.09s Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.22s Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.28s Click "playerBar.nowPlayingPanelToggle" Button[0.50, 0.50]
+    t =     7.28s     Wait for com.melboonchan.boombox to idle
+    t =     7.28s     Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.33s     Check for interrupting elements affecting "playerBar.nowPlayingPanelToggle" Button
+    t =     7.34s     Synthesize event
+    t =     7.34s         Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.39s         Find the "playerBar.nowPlayingPanelToggle" Button
+    t =     7.81s     Wait for com.melboonchan.boombox to idle
+    t =     8.84s Checking `Expect predicate `exists == 1` for object "sidebar.nowPlayingPanel" Any`
+    t =     8.84s     Checking existence of `"sidebar.nowPlayingPanel" Any`
+    t =     9.93s Checking `Expect predicate `exists == 1` for object "sidebar.nowPlayingArtwork" Any`
+    t =     9.94s     Checking existence of `"sidebar.nowPlayingArtwork" Any`
+    t =    11.04s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    11.04s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    11.13s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    11.20s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    11.25s     Capturing element debug description
+    t =    11.27s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    11.34s         Find: Descendants matching type Button
+    t =    11.35s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    11.35s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    11.35s Using snapshot previously cached by application
+    t =    11.35s         Find: Descendants matching type Button
+    t =    11.36s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    11.36s Using snapshot previously cached by application
+    t =    12.00s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    12.00s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    12.09s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    12.16s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    12.21s     Capturing element debug description
+    t =    12.24s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    12.31s         Find: Descendants matching type Button
+    t =    12.31s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    12.32s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    12.32s Using snapshot previously cached by application
+    t =    12.32s         Find: Descendants matching type Button
+    t =    12.32s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    12.32s Using snapshot previously cached by application
+    t =    13.07s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    13.07s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    13.16s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    13.23s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    13.29s     Capturing element debug description
+    t =    13.31s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    13.38s         Find: Descendants matching type Button
+    t =    13.38s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    13.39s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    13.39s Using snapshot previously cached by application
+    t =    13.39s         Find: Descendants matching type Button
+    t =    13.40s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    13.40s Using snapshot previously cached by application
+    t =    14.03s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    14.04s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    14.11s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    14.19s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    14.24s     Capturing element debug description
+    t =    14.26s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    14.33s         Find: Descendants matching type Button
+    t =    14.34s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    14.34s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    14.34s Using snapshot previously cached by application
+    t =    14.34s         Find: Descendants matching type Button
+    t =    14.35s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    14.35s Using snapshot previously cached by application
+    t =    15.08s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    15.08s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    15.16s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    15.23s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    15.29s     Capturing element debug description
+    t =    15.31s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    15.38s         Find: Descendants matching type Button
+    t =    15.38s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    15.38s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    15.38s Using snapshot previously cached by application
+    t =    15.39s         Find: Descendants matching type Button
+    t =    15.39s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    15.39s Using snapshot previously cached by application
+    t =    16.03s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    16.03s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    16.11s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    16.18s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    16.24s     Capturing element debug description
+    t =    16.26s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    16.33s         Find: Descendants matching type Button
+    t =    16.33s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    16.34s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    16.34s Using snapshot previously cached by application
+    t =    16.34s         Find: Descendants matching type Button
+    t =    16.34s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    16.34s Using snapshot previously cached by application
+    t =    17.07s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    17.07s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    17.15s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    17.23s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    17.29s     Capturing element debug description
+    t =    17.31s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    17.38s         Find: Descendants matching type Button
+    t =    17.38s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    17.39s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    17.39s Using snapshot previously cached by application
+    t =    17.39s         Find: Descendants matching type Button
+    t =    17.40s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    17.40s Using snapshot previously cached by application
+    t =    18.00s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    18.00s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    18.09s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    18.16s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    18.21s     Capturing element debug description
+    t =    18.23s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    18.30s         Find: Descendants matching type Button
+    t =    18.31s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    18.31s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    18.31s Using snapshot previously cached by application
+    t =    18.31s         Find: Descendants matching type Button
+    t =    18.32s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    18.32s Using snapshot previously cached by application
+    t =    19.06s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    19.06s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    19.14s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    19.21s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    19.27s     Capturing element debug description
+    t =    19.29s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    19.36s         Find: Descendants matching type Button
+    t =    19.37s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    19.37s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    19.37s Using snapshot previously cached by application
+    t =    19.37s         Find: Descendants matching type Button
+    t =    19.38s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    19.38s Using snapshot previously cached by application
+    t =    20.00s Checking `Expect predicate `exists == 1 AND isHittable == 1 AND label == "Mock Song"` for object "sidebar.nowPlayingTitleButton" Button`
+    t =    20.00s     Checking existence of `"sidebar.nowPlayingTitleButton" Button`
+    t =    20.08s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    20.16s     Find the "sidebar.nowPlayingTitleButton" Button
+    t =    20.22s     Capturing element debug description
+    t =    20.24s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    20.32s         Find: Descendants matching type Button
+    t =    20.32s         Find: Elements matching predicate '"sidebar.nowPlayingTitleButton" IN identifiers'
+    t =    20.32s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    20.32s Using snapshot previously cached by application
+    t =    20.32s         Find: Descendants matching type Button
+    t =    20.33s         Requesting snapshot of accessibility hierarchy for app with pid 70293
+    t =    20.33s Using snapshot previously cached by application
+/Users/melboonchan/Master/Projects/YTM/kaset/Tests/KasetUITests/PlayerBarUITests.swift:162: error: -[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment] : XCTAssertEqual failed: ("XCTWaiterResult(rawValue: 2)") is not equal to ("XCTWaiterResult(rawValue: 1)") - Enriched now-playing title should remain a hittable album-navigation button
+    t =    20.39s Tear Down
+Test Case '-[KasetUITests.PlayerBarUITests testNowPlayingSidebarSurvivesQueueEnrichment]' failed (20.679 seconds).
+Test Suite 'PlayerBarUITests' failed at 2026-05-22 00:54:35.853.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.679 (20.681) seconds
+Test Suite 'KasetUITests.xctest' failed at 2026-05-22 00:54:35.854.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.679 (20.682) seconds
+Test Suite 'Selected tests' failed at 2026-05-22 00:54:35.856.
+	 Executed 1 test, with 1 failure (0 unexpected) in 20.679 (20.684) seconds
+2026-05-22 00:54:40.206 xcodebuild[70255:4404276] [MT] IDETestOperationsObserverDebug: 25.430 elapsed -- Testing started completed.
+2026-05-22 00:54:40.206 xcodebuild[70255:4404276] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-05-22 00:54:40.206 xcodebuild[70255:4404276] [MT] IDETestOperationsObserverDebug: 25.430 sec, +25.430 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/melboonchan/Library/Developer/Xcode/DerivedData/KasetUITests-eluguykgxjkbyhbsfxrdwhwcurqo/Logs/Test/Test-KasetUITests-2026.05.22_00-54-14--0400.xcresult
+
+** TEST FAILED **
+
+Testing started
