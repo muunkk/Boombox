@@ -97,6 +97,7 @@ final class AuthService: AuthServiceProtocol {
     /// Called when a session expires (e.g., 401/403 from API).
     func sessionExpired() {
         self.logger.warning("Session expired, requiring re-authentication")
+        Self.clearAccountScopedCaches()
         self.state = .loggedOut
         self.needsReauth = true
     }
@@ -106,11 +107,21 @@ final class AuthService: AuthServiceProtocol {
         self.logger.info("Signing out user")
 
         await self.webKitManager.clearAllData()
+        Self.clearAccountScopedCaches()
 
         self.state = .loggedOut
         self.needsReauth = false
 
         self.logger.info("User signed out successfully")
+    }
+
+    /// Clears account-scoped API/URL caches so one account's data can never be
+    /// served after sign-out or session expiry. This is part of the auth
+    /// lifecycle rather than relying solely on a View observing account-id
+    /// transitions, which never fires if account resolution fails.
+    private static func clearAccountScopedCaches() {
+        APICache.shared.invalidateAll()
+        URLCache.shared.removeAllCachedResponses()
     }
 
     /// Called when login completes successfully (from LoginSheet observation).

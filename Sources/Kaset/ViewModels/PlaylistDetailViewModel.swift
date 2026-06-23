@@ -15,6 +15,11 @@ final class PlaylistDetailViewModel {
     /// Whether more tracks are available to load.
     private(set) var hasMore: Bool = false
 
+    /// Continuation cursor for the next page of tracks. Owned by this view model
+    /// (not the shared client) so navigating between playlist detail views never
+    /// crosses pagination state.
+    private var continuationToken: String?
+
     private let playlist: Playlist
     /// The API client (exposed for add to library action).
     let client: any YTMusicClientProtocol
@@ -60,6 +65,7 @@ final class PlaylistDetailViewModel {
             let response = try await client.getPlaylist(id: self.playlist.id)
             var detail = response.detail
             self.hasMore = response.hasMore
+            self.continuationToken = response.continuationToken
 
             // If it's a radio playlist, always fetch all tracks via queue API
             // The browse API often returns hasMore=false even when there are more tracks
@@ -84,6 +90,7 @@ final class PlaylistDetailViewModel {
                             duration: detail.duration
                         )
                         self.hasMore = false
+                        self.continuationToken = nil
                     }
                 } catch {
                     // If queue API fails, fall back to browse results
@@ -143,13 +150,17 @@ final class PlaylistDetailViewModel {
 
     /// Loads more tracks via continuation.
     func loadMore() async {
-        guard self.loadingState == .loaded, self.hasMore, let currentDetail = playlistDetail else { return }
+        guard self.loadingState == .loaded,
+              self.hasMore,
+              let token = continuationToken,
+              let currentDetail = playlistDetail else { return }
 
         self.loadingState = .loadingMore
         self.logger.info("Loading more playlist tracks")
 
         do {
-            guard let response = try await client.getPlaylistContinuation() else {
+            guard let response = try await client.getPlaylistContinuation(token: token) else {
+                self.continuationToken = nil
                 self.hasMore = false
                 self.loadingState = .loaded
                 return
@@ -164,6 +175,7 @@ final class PlaylistDetailViewModel {
             // If no new unique tracks were added, stop pagination
             // This handles radio playlists that return overlapping data
             if newTracks.isEmpty {
+                self.continuationToken = nil
                 self.hasMore = false
                 self.loadingState = .loaded
                 self.logger.info("No new unique tracks in continuation, stopping pagination")
@@ -186,6 +198,7 @@ final class PlaylistDetailViewModel {
                 tracks: allTracks,
                 duration: currentDetail.duration
             )
+            self.continuationToken = response.continuationToken
             self.hasMore = response.hasMore
 
             self.loadingState = .loaded
@@ -204,6 +217,7 @@ final class PlaylistDetailViewModel {
     func refresh() async {
         self.playlistDetail = nil
         self.hasMore = false
+        self.continuationToken = nil
         await self.load()
     }
 }

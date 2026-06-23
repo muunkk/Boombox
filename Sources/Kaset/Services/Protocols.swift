@@ -192,12 +192,12 @@ protocol YTMusicLibraryProviding: Sendable {
     /// This returns all tracks in a single request, which is more reliable for radio playlists.
     func getPlaylistAllTracks(playlistId: String) async throws -> [Song]
 
-    /// Fetches the next batch of playlist tracks via continuation.
+    /// Fetches the next batch of playlist tracks via continuation using a
+    /// caller-held token. Scoping the token per request keeps pagination state
+    /// out of shared client state, so two playlist detail views on the
+    /// navigation stack never contaminate each other's pages.
     /// Returns nil if no more tracks are available.
-    func getPlaylistContinuation() async throws -> PlaylistContinuationResponse?
-
-    /// Whether more playlist tracks are available to load.
-    var hasMorePlaylistTracks: Bool { get }
+    func getPlaylistContinuation(token: String) async throws -> PlaylistContinuationResponse?
 
     /// Fetches artist details including their songs and albums.
     func getArtist(id: String) async throws -> ArtistDetail

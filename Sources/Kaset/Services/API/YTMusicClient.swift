@@ -106,7 +106,7 @@ final class YTMusicClient: YTMusicClientProtocol {
 
     /// Fetches the next batch of sections for the given content type via continuation.
     /// Returns nil if no more sections are available.
-    private func fetchContinuation(type: PaginatedContentType) async throws -> [HomeSection]? {
+    private func fetchContinuation(type: PaginatedContentType, ttl: TimeInterval? = APICache.TTL.home) async throws -> [HomeSection]? {
         guard let token = continuationTokens[type] else {
             self.logger.debug("No \(type.displayName) continuation token available")
             return nil
@@ -115,7 +115,7 @@ final class YTMusicClient: YTMusicClientProtocol {
         self.logger.info("Fetching \(type.displayName) continuation")
 
         do {
-            let continuationData = try await requestContinuation(token)
+            let continuationData = try await requestContinuation(token, ttl: ttl)
             let additionalSections = HomeResponseParser.parseContinuation(continuationData)
             self.continuationTokens[type] = HomeResponseParser.extractContinuationTokenFromContinuation(continuationData)
             let hasMore = self.continuationTokens[type] != nil
@@ -220,8 +220,9 @@ final class YTMusicClient: YTMusicClientProtocol {
     }
 
     /// Fetches the next batch of history sections via continuation.
+    /// No cache — history changes with every song played, matching `getHistory()`.
     func getHistoryContinuation() async throws -> [HomeSection]? {
-        try await self.fetchContinuation(type: .history)
+        try await self.fetchContinuation(type: .history, ttl: nil)
     }
 
     /// Whether more history sections are available to load.
@@ -324,6 +325,10 @@ final class YTMusicClient: YTMusicClientProtocol {
     func search(query: String) async throws -> SearchResponse {
         self.logger.info("Searching for: \(query)")
 
+        // Combined search does not paginate; clear any token left over from a
+        // prior filtered search so `hasMoreSearchResults` cannot linger as true.
+        self.searchContinuationToken = nil
+
         let body: [String: Any] = [
             "query": query,
         ]
@@ -337,6 +342,10 @@ final class YTMusicClient: YTMusicClientProtocol {
     /// Searches for songs only (filtered search).
     func searchSongs(query: String) async throws -> [Song] {
         self.logger.info("Searching songs only for: \(query)")
+
+        // This variant returns a plain array with no pagination, so clear any
+        // stale token from a prior paginated/filtered search.
+        self.searchContinuationToken = nil
 
         // YouTube Music API params for songs filter
         // Derived from: EgWKAQ (filtered) + II (songs) + AWoMEA4QChADEAQQCRAF (no spelling correction)
@@ -539,7 +548,6 @@ final class YTMusicClient: YTMusicClientProtocol {
         self.continuationTokens.removeAll()
         self.searchContinuationToken = nil
         self.likedSongsContinuationToken = nil
-        self.playlistContinuationToken = nil
     }
 
     /// Fetches search suggestions for autocomplete.
@@ -726,14 +734,6 @@ final class YTMusicClient: YTMusicClientProtocol {
 
     // MARK: - Playlist with Pagination
 
-    /// Continuation token for playlist tracks pagination.
-    private var playlistContinuationToken: String?
-
-    /// Whether more playlist tracks are available to load.
-    var hasMorePlaylistTracks: Bool {
-        self.playlistContinuationToken != nil
-    }
-
     /// Fetches playlist details including tracks with pagination support.
     func getPlaylist(id: String) async throws -> PlaylistTracksResponse {
         self.logger.info("Fetching playlist: \(id)")
@@ -760,8 +760,8 @@ final class YTMusicClient: YTMusicClientProtocol {
 
         let response = PlaylistParser.parsePlaylistWithContinuation(data, playlistId: id)
 
-        // Store continuation token for pagination
-        self.playlistContinuationToken = response.continuationToken
+        // The continuation token travels back to the caller via `response`, which
+        // owns its own pagination cursor — no shared client state to contaminate.
         let hasMore = response.hasMore
 
         self.logger.info("Parsed playlist '\(response.detail.title)' with \(response.detail.tracks.count) tracks, hasMore: \(hasMore)")
@@ -795,28 +795,17 @@ final class YTMusicClient: YTMusicClientProtocol {
     }
 
     /// Fetches the next batch of playlist tracks via continuation.
+    /// The caller supplies the continuation token returned by the previous page,
+    /// so pagination state is scoped per request rather than shared on the client.
     /// Returns nil if no more tracks are available.
-    func getPlaylistContinuation() async throws -> PlaylistContinuationResponse? {
-        guard let token = playlistContinuationToken else {
-            self.logger.debug("No playlist continuation token available")
-            return nil
-        }
-
+    func getPlaylistContinuation(token: String) async throws -> PlaylistContinuationResponse? {
         self.logger.info("Fetching playlist continuation")
 
-        do {
-            let continuationData = try await requestContinuation(token)
-            let response = PlaylistParser.parsePlaylistContinuation(continuationData)
-            self.playlistContinuationToken = response.continuationToken
-            let hasMore = response.hasMore
+        let continuationData = try await requestContinuation(token)
+        let response = PlaylistParser.parsePlaylistContinuation(continuationData)
 
-            self.logger.info("Playlist continuation loaded: \(response.tracks.count) tracks, hasMore: \(hasMore)")
-            return response
-        } catch {
-            self.logger.warning("Failed to fetch playlist continuation: \(error.localizedDescription)")
-            self.playlistContinuationToken = nil
-            throw error
-        }
+        self.logger.info("Playlist continuation loaded: \(response.tracks.count) tracks, hasMore: \(response.hasMore)")
+        return response
     }
 
     /// Fetches artist details including their songs and albums.
@@ -1515,10 +1504,18 @@ final class YTMusicClient: YTMusicClientProtocol {
             return json
         case let .authError(statusCode):
             self.logger.error("Auth error: HTTP \(statusCode)")
+            // A rotated/invalid bootstrap key can surface as 403; drop it so the
+            // next request re-bootstraps rather than reusing a dead key forever.
+            self.apiKeyProvider.invalidate()
             self.authService.sessionExpired()
             throw YTMusicError.authExpired
         case let .httpError(statusCode):
             self.logger.error("API error: HTTP \(statusCode)")
+            // 400/403 are the failure modes a stale/rotated API key produces; clear
+            // the cached key so a process-lifetime-cached bad key can self-heal.
+            if statusCode == 400 || statusCode == 403 {
+                self.apiKeyProvider.invalidate()
+            }
             throw YTMusicError.apiError(
                 message: "HTTP \(statusCode)",
                 code: statusCode
@@ -1581,6 +1578,12 @@ final class YTMusicClient: YTMusicClientProtocol {
             }
 
             return .success(data)
+        } catch is CancellationError {
+            // Surface task cancellation as cancellation, not a network failure, so
+            // callers that special-case `catch is CancellationError` handle it cleanly.
+            throw CancellationError()
+        } catch let urlError as URLError where urlError.code == .cancelled {
+            throw CancellationError()
         } catch {
             return .networkError(error)
         }

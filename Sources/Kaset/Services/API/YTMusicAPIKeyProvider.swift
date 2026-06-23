@@ -6,6 +6,11 @@ import Foundation
 @MainActor
 protocol YTMusicAPIKeyProviding: AnyObject {
     func apiKey() async throws -> String
+
+    /// Clears any cached key (and in-flight fetch) so the next `apiKey()` call
+    /// re-bootstraps a fresh key. Call this when a request fails in a way that a
+    /// rotated/invalid key would cause (e.g. HTTP 400/403).
+    func invalidate()
 }
 
 // MARK: - YTMusicAPIKeyProvider
@@ -51,6 +56,14 @@ final class YTMusicAPIKeyProvider: YTMusicAPIKeyProviding {
             self.apiKeyTask = nil
             throw error
         }
+    }
+
+    func invalidate() {
+        guard self.cachedAPIKey != nil || self.apiKeyTask != nil else { return }
+        self.cachedAPIKey = nil
+        self.apiKeyTask?.cancel()
+        self.apiKeyTask = nil
+        self.logger.debug("Invalidated cached API key; next request will re-bootstrap")
     }
 
     private func fetchAPIKey() async throws -> String {
