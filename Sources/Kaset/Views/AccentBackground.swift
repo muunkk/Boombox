@@ -76,20 +76,59 @@ struct AccentBackground: View {
             return
         }
 
-        // Fetch image data
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let extracted = await ColorExtractor.extractPalette(from: data)
-            self.palette = extracted
+        // Reuse a previously extracted palette for this URL (revisiting a track
+        // shouldn't recompute the palette).
+        if let cached = await AccentPaletteCache.shared.palette(for: url) {
+            guard !Task.isCancelled else { return }
+            self.palette = cached
             self.isLoaded = true
-        } catch is CancellationError {
-            // Task was cancelled (e.g., imageURL changed) - expected behavior, no logging needed
             return
-        } catch {
-            DiagnosticsLogger.ui.debug("Failed to extract accent colors: \(error.localizedDescription)")
+        }
+
+        // Reuse the shared image cache (memory/disk) instead of downloading the
+        // artwork a second time just for color extraction.
+        guard let image = await ImageCache.shared.image(for: url) else {
+            guard !Task.isCancelled else { return }
             self.palette = .default
             self.isLoaded = true
+            return
         }
+
+        let extracted = ColorExtractor.extractPalette(from: image)
+        await AccentPaletteCache.shared.store(extracted, for: url)
+        guard !Task.isCancelled else { return }
+        self.palette = extracted
+        self.isLoaded = true
+    }
+}
+
+// MARK: - AccentPaletteCache
+
+/// Small URL-keyed cache of extracted color palettes so revisiting a track
+/// doesn't recompute its accent palette. Backed by `NSCache` for automatic
+/// eviction under memory pressure.
+private actor AccentPaletteCache {
+    static let shared = AccentPaletteCache()
+
+    private final class Box {
+        let palette: ColorExtractor.ColorPalette
+        init(_ palette: ColorExtractor.ColorPalette) {
+            self.palette = palette
+        }
+    }
+
+    private let cache: NSCache<NSURL, Box> = {
+        let cache = NSCache<NSURL, Box>()
+        cache.countLimit = 256
+        return cache
+    }()
+
+    func palette(for url: URL) -> ColorExtractor.ColorPalette? {
+        self.cache.object(forKey: url as NSURL)?.palette
+    }
+
+    func store(_ palette: ColorExtractor.ColorPalette, for url: URL) {
+        self.cache.setObject(Box(palette), forKey: url as NSURL)
     }
 }
 

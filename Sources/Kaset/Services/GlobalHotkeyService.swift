@@ -15,8 +15,14 @@ final class GlobalHotkeyService {
     /// Invoked on the main actor when the hotkey fires.
     var onTrigger: (() -> Void)?
 
-    private var hotKeyRef: EventHotKeyRef?
-    private var eventHandler: EventHandlerRef?
+    // swiftformat:disable modifierOrder
+    /// Carbon refs: accessed on the main actor during normal operation and from
+    /// the `nonisolated` deinit at teardown (which has exclusive access). Marked
+    /// `nonisolated(unsafe)` so strict concurrency permits the deinit to read
+    /// these non-Sendable `OpaquePointer`s; there is no real concurrent access.
+    nonisolated(unsafe) private var hotKeyRef: EventHotKeyRef?
+    nonisolated(unsafe) private var eventHandler: EventHandlerRef?
+    // swiftformat:enable modifierOrder
     private var currentShortcut: HotkeyShortcut?
     private let instanceId: UInt32
 
@@ -62,13 +68,33 @@ final class GlobalHotkeyService {
         return true
     }
 
-    /// Unregisters the current shortcut, if any.
+    /// Unregisters the current shortcut, if any, and tears down the installed
+    /// Carbon event handler so this instance never outlives its handler (which
+    /// would leave a dangling `Unmanaged` pointer for the next hot-key press).
     func unregister() {
         if let hotKeyRef {
             UnregisterEventHotKey(hotKeyRef)
             self.hotKeyRef = nil
             self.currentShortcut = nil
             DiagnosticsLogger.app.info("GlobalHotkeyService[\(self.instanceId)]: unregistered")
+        }
+        if let eventHandler {
+            RemoveEventHandler(eventHandler)
+            self.eventHandler = nil
+        }
+    }
+
+    /// Removes the Carbon hot-key and event handler when the service is
+    /// deallocated. `deinit` on a `@MainActor` class is `nonisolated` in
+    /// Swift 6; reading the instance's own stored Carbon refs and passing them
+    /// to these plain C calls is permitted here and needs no actor hop. We do
+    /// NOT call the MainActor-isolated `unregister()` from `deinit`.
+    deinit {
+        if let hotKeyRef {
+            UnregisterEventHotKey(hotKeyRef)
+        }
+        if let eventHandler {
+            RemoveEventHandler(eventHandler)
         }
     }
 

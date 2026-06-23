@@ -4,6 +4,7 @@ import Foundation
 enum ChineseRomanizer {
     static func romanize(_ text: String) -> String? {
         let cfText = text as CFString
+        let nsText = text as NSString
         let range = CFRangeMake(0, CFStringGetLength(cfText))
         let locale = Locale(identifier: "zh") as CFLocale
 
@@ -31,9 +32,10 @@ enum ChineseRomanizer {
                 result += latin
             } else {
                 let tokenRange = CFStringTokenizerGetCurrentTokenRange(tokenizer)
-                let start = text.index(text.startIndex, offsetBy: tokenRange.location)
-                let end = text.index(start, offsetBy: tokenRange.length)
-                let token = String(text[start ..< end])
+                let token = nsText.substring(with: NSRange(
+                    location: tokenRange.location,
+                    length: tokenRange.length
+                ))
                 result += token
             }
             tokenType = CFStringTokenizerAdvanceToNextToken(tokenizer)
