@@ -11,6 +11,21 @@ enum ParsingHelpers {
         "MUSIC_PAGE_TYPE_LIBRARY_ARTIST",
     ]
 
+    /// Constant patterns compiled once at type-load time and reused, rather than
+    /// recompiling per call inside parsers that process N items on the MainActor.
+    private static let minuteDurationRegex = try? NSRegularExpression(
+        pattern: #"(\d+)\s*minutes?"#,
+        options: .caseInsensitive
+    )
+    private static let secondDurationRegex = try? NSRegularExpression(
+        pattern: #"(\d+)\s*seconds?"#,
+        options: .caseInsensitive
+    )
+    private static let songCountRegex = try? NSRegularExpression(
+        pattern: #"([\d,]+)\s+(?:songs?|tracks?)"#,
+        options: .caseInsensitive
+    )
+
     // MARK: - Stable ID Generation
 
     /// Generates a stable, deterministic ID from content components.
@@ -294,21 +309,18 @@ enum ParsingHelpers {
     /// Extracts duration from accessibility label text.
     /// Handles formats like "4 minutes, 55 seconds" or "4:55"
     private static func extractDurationFromAccessibilityLabel(_ label: String) -> TimeInterval? {
-        // Try "X minutes, Y seconds" format
-        let minutePattern = #"(\d+)\s*minutes?"#
-        let secondPattern = #"(\d+)\s*seconds?"#
-
+        // Try "X minutes, Y seconds" format using the hoisted regexes.
         var minutes = 0
         var seconds = 0
 
-        if let minuteRegex = try? NSRegularExpression(pattern: minutePattern, options: .caseInsensitive),
+        if let minuteRegex = Self.minuteDurationRegex,
            let minuteMatch = minuteRegex.firstMatch(in: label, range: NSRange(label.startIndex..., in: label)),
            let minuteRange = Range(minuteMatch.range(at: 1), in: label)
         {
             minutes = Int(label[minuteRange]) ?? 0
         }
 
-        if let secondRegex = try? NSRegularExpression(pattern: secondPattern, options: .caseInsensitive),
+        if let secondRegex = Self.secondDurationRegex,
            let secondMatch = secondRegex.firstMatch(in: label, range: NSRange(label.startIndex..., in: label)),
            let secondRange = Range(secondMatch.range(at: 1), in: label)
         {
@@ -316,21 +328,31 @@ enum ParsingHelpers {
         }
 
         if minutes > 0 || seconds > 0 {
-            return TimeInterval(minutes * 60 + seconds)
+            // Compute in Double so adversarial label values (e.g. an absurd
+            // minute count) never trap on integer overflow.
+            return TimeInterval(minutes) * 60 + TimeInterval(seconds)
         }
 
         return nil
     }
 
     /// Parses a duration string (e.g., "3:45") into seconds.
+    ///
+    /// Uses overflow-checked base-60 folding so adversarial duration text (e.g.
+    /// "200000000000000000:00") degrades to nil instead of trapping the process.
     static func parseDuration(_ text: String) -> TimeInterval? {
         let components = text.split(separator: ":").compactMap { Int($0) }
-        if components.count == 2 {
-            return TimeInterval(components[0] * 60 + components[1])
-        } else if components.count == 3 {
-            return TimeInterval(components[0] * 3600 + components[1] * 60 + components[2])
+        guard components.count == 2 || components.count == 3 else { return nil }
+        var total = 0
+        for component in components {
+            guard component >= 0 else { return nil }
+            let (scaled, mulOverflow) = total.multipliedReportingOverflow(by: 60)
+            if mulOverflow { return nil }
+            let (sum, addOverflow) = scaled.addingReportingOverflow(component)
+            if addOverflow { return nil }
+            total = sum
         }
-        return nil
+        return TimeInterval(total)
     }
 
     /// Extracts subtitle from flex columns.
@@ -374,13 +396,11 @@ enum ParsingHelpers {
 
     /// Extracts song count from subtitle text (e.g., "Playlist • YouTube Music • 145 songs" → 145).
     static func extractSongCount(from text: String) -> Int? {
-        // Match patterns like "145 songs", "1 song", or "2,429 tracks"
-        guard let regex = try? NSRegularExpression(
-            pattern: #"([\d,]+)\s+(?:songs?|tracks?)"#,
-            options: .caseInsensitive
-        ),
-            let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
-            let countRange = Range(match.range(at: 1), in: text)
+        // Match patterns like "145 songs", "1 song", or "2,429 tracks" using
+        // the hoisted regex compiled once at type-load time.
+        guard let regex = songCountRegex,
+              let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+              let countRange = Range(match.range(at: 1), in: text)
         else {
             return nil
         }

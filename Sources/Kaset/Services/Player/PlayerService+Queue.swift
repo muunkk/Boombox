@@ -386,17 +386,62 @@ extension PlayerService {
 
     /// Serialized playback session persisted across launches.
     private struct PersistedPlaybackSession: Codable {
+        /// Current on-disk schema version. Bump when a non-backward-compatible change is made so
+        /// `restoreQueueFromPersistence` can migrate instead of silently discarding the session.
+        static let currentSchemaVersion = 1
+
         let queue: [Song]
         let currentIndex: Int
         let currentVideoId: String?
         let progress: TimeInterval
         let duration: TimeInterval
+        /// Schema version of the persisted blob. Optional-with-default so already-saved sessions
+        /// written before this field existed still decode (they are treated as version 0).
+        var schemaVersion: Int = 0
+
+        init(
+            queue: [Song],
+            currentIndex: Int,
+            currentVideoId: String?,
+            progress: TimeInterval,
+            duration: TimeInterval,
+            schemaVersion: Int = PersistedPlaybackSession.currentSchemaVersion
+        ) {
+            self.queue = queue
+            self.currentIndex = currentIndex
+            self.currentVideoId = currentVideoId
+            self.progress = progress
+            self.duration = duration
+            self.schemaVersion = schemaVersion
+        }
+
+        init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.queue = try container.decode([Song].self, forKey: .queue)
+            self.currentIndex = try container.decode(Int.self, forKey: .currentIndex)
+            self.currentVideoId = try container.decodeIfPresent(String.self, forKey: .currentVideoId)
+            self.progress = try container.decode(TimeInterval.self, forKey: .progress)
+            self.duration = try container.decode(TimeInterval.self, forKey: .duration)
+            // Sessions written before schemaVersion existed decode as version 0.
+            self.schemaVersion = try container.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? 0
+        }
     }
 
     /// UserDefaults keys for queue persistence (no expiry; saved queue is kept until overwritten or cleared).
-    private static let savedQueueKey = "boombox.saved.queue"
-    private static let savedQueueIndexKey = "boombox.saved.queueIndex"
-    private static let savedPlaybackSessionKey = "boombox.saved.playbackSession"
+    /// Instance-scoped via `queuePersistenceKeyPrefix` (empty in production) so tests isolate
+    /// persistence from sibling suites sharing `UserDefaults.standard`. `nonisolated` (reads only the
+    /// immutable prefix) so the detached background save Task can build them.
+    nonisolated var savedQueueKey: String {
+        "\(self.queuePersistenceKeyPrefix)boombox.saved.queue"
+    }
+
+    nonisolated var savedQueueIndexKey: String {
+        "\(self.queuePersistenceKeyPrefix)boombox.saved.queueIndex"
+    }
+
+    nonisolated var savedPlaybackSessionKey: String {
+        "\(self.queuePersistenceKeyPrefix)boombox.saved.playbackSession"
+    }
 
     /// Saves the current queue to UserDefaults for restoration on next launch.
     func saveQueueForPersistence() {
@@ -410,30 +455,41 @@ extension PlayerService {
             return
         }
 
+        // Snapshot the playback state on the MainActor, then perform the JSON encoding and the
+        // UserDefaults writes off the main thread. With infinite mix the queue grows unbounded, so
+        // encoding it synchronously on every track advance produced an escalating main-thread hitch.
+        // [Song] is a value type composed of Sendable members, so the snapshot crosses safely.
+        let queueSnapshot = self.queue
+        let safeIndex = min(max(self.currentIndex, 0), queueSnapshot.count - 1)
+        let currentVideoId = self.currentTrack?.videoId ?? queueSnapshot[safe: safeIndex]?.videoId
+        let resolvedDuration = max(self.duration, self.currentTrack?.duration ?? queueSnapshot[safe: safeIndex]?.duration ?? 0)
+        let clampedProgress = resolvedDuration > 0
+            ? min(max(self.progress, 0), resolvedDuration)
+            : max(self.progress, 0)
+        let count = queueSnapshot.count
+
+        let session = PersistedPlaybackSession(
+            queue: queueSnapshot,
+            currentIndex: safeIndex,
+            currentVideoId: currentVideoId,
+            progress: clampedProgress,
+            duration: resolvedDuration
+        )
+
+        // Encode the queue ONCE (the legacy savedQueueKey payload is the same [Song] array embedded
+        // in the session, so we no longer double-encode — that halves the per-save work, which was the
+        // PERF-002 concern). The write stays SYNCHRONOUS so the saved state is immediately durable:
+        // a detached fire-and-forget save would race restore/clear and could be lost if the app
+        // terminates right after a track change.
         do {
             let encoder = JSONEncoder()
-            let safeIndex = min(max(self.currentIndex, 0), self.queue.count - 1)
-            let currentVideoId = self.currentTrack?.videoId ?? self.queue[safe: safeIndex]?.videoId
-            let resolvedDuration = max(self.duration, self.currentTrack?.duration ?? self.queue[safe: safeIndex]?.duration ?? 0)
-            let clampedProgress = resolvedDuration > 0
-                ? min(max(self.progress, 0), resolvedDuration)
-                : max(self.progress, 0)
+            let queueData = try encoder.encode(session.queue)
+            let sessionData = try encoder.encode(session)
 
-            let queueData = try encoder.encode(self.queue)
-            let sessionData = try encoder.encode(
-                PersistedPlaybackSession(
-                    queue: self.queue,
-                    currentIndex: safeIndex,
-                    currentVideoId: currentVideoId,
-                    progress: clampedProgress,
-                    duration: resolvedDuration
-                )
-            )
-
-            UserDefaults.standard.set(queueData, forKey: Self.savedQueueKey)
-            UserDefaults.standard.set(safeIndex, forKey: Self.savedQueueIndexKey)
-            UserDefaults.standard.set(sessionData, forKey: Self.savedPlaybackSessionKey)
-            self.logger.info("Saved playback session with \(self.queue.count) songs at index \(safeIndex)")
+            UserDefaults.standard.set(queueData, forKey: self.savedQueueKey)
+            UserDefaults.standard.set(safeIndex, forKey: self.savedQueueIndexKey)
+            UserDefaults.standard.set(sessionData, forKey: self.savedPlaybackSessionKey)
+            self.logger.info("Saved playback session with \(count) songs at index \(safeIndex)")
         } catch {
             self.logger.error("Failed to save playback session: \(error.localizedDescription)")
         }
@@ -449,12 +505,25 @@ extension PlayerService {
 
         let decoder = JSONDecoder()
 
-        if let sessionData = UserDefaults.standard.data(forKey: Self.savedPlaybackSessionKey) {
+        if let sessionData = UserDefaults.standard.data(forKey: self.savedPlaybackSessionKey) {
             do {
                 let savedSession = try decoder.decode(PersistedPlaybackSession.self, from: sessionData)
+
+                // Validate the schema version rather than blindly applying. A session written by a
+                // NEWER app version (schemaVersion > current) may carry fields this build cannot
+                // interpret, so fall back to the legacy queue instead of mis-restoring. Versions at
+                // or below the current schema are field-compatible and applied directly (the
+                // optional-with-default decode keeps pre-versioning v0 sessions readable).
+                guard savedSession.schemaVersion <= PersistedPlaybackSession.currentSchemaVersion else {
+                    self.logger.info(
+                        "Saved playback session schemaVersion \(savedSession.schemaVersion) is newer than supported \(PersistedPlaybackSession.currentSchemaVersion); falling back to legacy queue"
+                    )
+                    return self.restoreLegacyQueueFromPersistence(using: decoder)
+                }
+
                 guard !savedSession.queue.isEmpty else {
                     self.logger.info("Saved playback session is empty")
-                    UserDefaults.standard.removeObject(forKey: Self.savedPlaybackSessionKey)
+                    UserDefaults.standard.removeObject(forKey: self.savedPlaybackSessionKey)
                     return self.restoreLegacyQueueFromPersistence(using: decoder)
                 }
 
@@ -476,7 +545,7 @@ extension PlayerService {
                 return true
             } catch {
                 self.logger.error("Failed to restore playback session: \(error.localizedDescription)")
-                UserDefaults.standard.removeObject(forKey: Self.savedPlaybackSessionKey)
+                UserDefaults.standard.removeObject(forKey: self.savedPlaybackSessionKey)
             }
         }
 
@@ -491,8 +560,8 @@ extension PlayerService {
 
     /// Restores the legacy queue/index payload when no playback session is available.
     private func restoreLegacyQueueFromPersistence(using decoder: JSONDecoder) -> Bool {
-        guard let queueData = UserDefaults.standard.data(forKey: Self.savedQueueKey),
-              let savedIndex = UserDefaults.standard.object(forKey: Self.savedQueueIndexKey) as? Int
+        guard let queueData = UserDefaults.standard.data(forKey: self.savedQueueKey),
+              let savedIndex = UserDefaults.standard.object(forKey: self.savedQueueIndexKey) as? Int
         else {
             self.logger.info("No saved queue found")
             return false
@@ -530,9 +599,9 @@ extension PlayerService {
 
     /// Removes all persisted queue/session payloads.
     private func removeSavedPlaybackSession() {
-        UserDefaults.standard.removeObject(forKey: Self.savedQueueKey)
-        UserDefaults.standard.removeObject(forKey: Self.savedQueueIndexKey)
-        UserDefaults.standard.removeObject(forKey: Self.savedPlaybackSessionKey)
+        UserDefaults.standard.removeObject(forKey: self.savedQueueKey)
+        UserDefaults.standard.removeObject(forKey: self.savedQueueIndexKey)
+        UserDefaults.standard.removeObject(forKey: self.savedPlaybackSessionKey)
     }
 
     /// Resolves the queue index from saved metadata, preferring the saved video ID when available.

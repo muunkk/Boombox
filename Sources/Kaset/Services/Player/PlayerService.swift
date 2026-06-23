@@ -177,7 +177,12 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
 
     // MARK: - Initialization
 
-    override init() {
+    /// Prefix for the queue-persistence UserDefaults keys; "" in production. Tests pass a unique
+    /// value to isolate persistence from sibling suites sharing UserDefaults.standard.
+    let queuePersistenceKeyPrefix: String
+
+    init(queuePersistenceKeyPrefix: String = "") {
+        self.queuePersistenceKeyPrefix = queuePersistenceKeyPrefix
         super.init()
         // Restore saved volume from UserDefaults
         if UserDefaults.standard.object(forKey: Self.volumeKey) != nil {

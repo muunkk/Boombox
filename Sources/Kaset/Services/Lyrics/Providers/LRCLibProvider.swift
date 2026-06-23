@@ -32,8 +32,16 @@ final class LRCLibProvider: LyricsProvider {
 
         guard let url = components.url else { return .unavailable }
 
+        // Honor cancellation (e.g. track changed before the fetch starts) without
+        // issuing a doomed network request.
+        if Task.isCancelled { return .unavailable }
+
         var request = URLRequest(url: url)
         request.setValue("Boombox/1.0", forHTTPHeaderField: "User-Agent")
+        // Short timeout for this third-party lookup so a hung/slow lrclib.net
+        // response fast-fails instead of blocking lyrics resolution for the
+        // default 60s.
+        request.timeoutInterval = 10
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)

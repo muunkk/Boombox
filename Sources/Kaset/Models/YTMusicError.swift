@@ -14,6 +14,9 @@ enum YTMusicError: LocalizedError {
     case parseError(message: String)
     /// API returned an error.
     case apiError(message: String, code: Int?)
+    /// Server rate-limited the request (HTTP 429). `retryAfter` carries the
+    /// server's suggested wait (parsed from the Retry-After header) when present.
+    case rateLimited(retryAfter: TimeInterval?)
     /// Playback error.
     case playbackError(message: String)
     /// Invalid input provided to an operation.
@@ -36,6 +39,8 @@ enum YTMusicError: LocalizedError {
                 return "API error (\(code)): \(message)"
             }
             return "API error: \(message)"
+        case .rateLimited:
+            return "Too many requests. Please wait a moment and try again."
         case let .playbackError(message):
             return "Playback error: \(message)"
         case let .invalidInput(message):
@@ -53,6 +58,8 @@ enum YTMusicError: LocalizedError {
             "Check your internet connection and try again."
         case .parseError, .apiError:
             "Try again. If the problem persists, the service may be temporarily unavailable."
+        case .rateLimited:
+            "Wait a moment before trying again."
         case .playbackError:
             "Try playing a different track."
         case .invalidInput:
@@ -89,6 +96,10 @@ enum YTMusicError: LocalizedError {
                 return code >= 500
             }
             return true
+        case .rateLimited:
+            // Honor a single bounded retry that respects the Retry-After delay
+            // (see RetryPolicy) rather than failing instantly or hammering.
+            return true
         case .parseError:
             // Parse errors won't be fixed by retrying
             return false
@@ -104,6 +115,38 @@ enum YTMusicError: LocalizedError {
         }
     }
 
+    /// Whether this error should be *automatically* retried by `RetryPolicy`.
+    ///
+    /// This is intentionally stricter than ``isRetryable``: ``isRetryable`` also
+    /// drives the user-facing "Retry" button (a confirmed-offline error should
+    /// still let the user retry after reconnecting), whereas automatic retry
+    /// should not burn the backoff budget on a confirmed-dead link that cannot
+    /// recover within the retry window. Connectivity-fatal `URLError`s therefore
+    /// fail fast instead of sleeping through ~3s+ of guaranteed-to-fail attempts.
+    var isAutomaticallyRetryable: Bool {
+        switch self {
+        case let .networkError(underlying):
+            if let urlError = underlying as? URLError {
+                switch urlError.code {
+                case .notConnectedToInternet,
+                     .dataNotAllowed,
+                     .cannotConnectToHost,
+                     .cannotFindHost,
+                     .dnsLookupFailed,
+                     .internationalRoamingOff:
+                    return false
+                default:
+                    return true
+                }
+            }
+            return true
+        default:
+            // For every other case, automatic-retry eligibility matches the
+            // general retryability rule.
+            return self.isRetryable
+        }
+    }
+
     /// User-friendly title for displaying in error UI.
     var userFriendlyTitle: String {
         switch self {
@@ -113,6 +156,8 @@ enum YTMusicError: LocalizedError {
             "Connection Error"
         case .apiError:
             "Server Error"
+        case .rateLimited:
+            "Too Many Requests"
         case .parseError:
             "Data Error"
         case .playbackError:
@@ -139,6 +184,8 @@ enum YTMusicError: LocalizedError {
             } else {
                 "Something went wrong. Please try again."
             }
+        case .rateLimited:
+            "Too many requests. Please wait a moment before trying again."
         case .parseError:
             "Unable to load content. Please try again."
         case .playbackError:

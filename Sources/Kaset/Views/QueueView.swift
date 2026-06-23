@@ -36,6 +36,10 @@ struct QueueView: View {
     /// Namespace for glass effect morphing.
     @Namespace private var queueNamespace
 
+    /// Cached display entries, rebuilt only when the queue identity changes (not on
+    /// every isPlaying/currentIndex-driven body pass). See P3F038.
+    @State private var cachedEntries: [QueueDisplayEntry] = []
+
     var body: some View {
         GlassEffectContainer(spacing: 0) {
             VStack(spacing: 0) {
@@ -125,11 +129,11 @@ struct QueueView: View {
         .accessibilityIdentifier(AccessibilityID.Queue.emptyState)
     }
 
-    /// Stable per-position+videoId identities for the queue. A playlist/album
-    /// may legitimately repeat a track, so videoId alone is not unique and
-    /// collides under ForEach. See P2F035.
-    private var queueEntries: [QueueDisplayEntry] {
-        QueueDisplayEntry.entries(for: self.playerService.queue)
+    /// Identity token for the current queue contents (per-position videoId). Used
+    /// to rebuild `cachedEntries` only when the queue actually changes rather than
+    /// on every isPlaying/currentIndex-driven body pass. See P3F038.
+    private var queueIdentity: [String] {
+        self.playerService.queue.map(\.videoId)
     }
 
     private var queueListView: some View {
@@ -139,7 +143,7 @@ struct QueueView: View {
                 // legitimately repeat a track, so videoId alone is not unique
                 // and collides under ForEach (dropped rows, wrong highlight).
                 // See P2F035.
-                ForEach(self.queueEntries) { entry in
+                ForEach(self.cachedEntries) { entry in
                     let index = entry.index
                     let song = entry.song
                     QueueRowView(
@@ -163,6 +167,20 @@ struct QueueView: View {
             .padding(.vertical, 8)
         }
         .accessibilityIdentifier(AccessibilityID.Queue.scrollView)
+        // Build entries once on appearance and rebuild only when the queue identity
+        // changes — not on every isPlaying/currentIndex body pass. See P3F038.
+        .task {
+            self.rebuildEntriesIfNeeded()
+        }
+        .onChange(of: self.queueIdentity) {
+            self.rebuildEntriesIfNeeded()
+        }
+    }
+
+    /// Rebuilds `cachedEntries` from the current queue. Cheap to call: the
+    /// O(n) allocation only happens here, gated by the queue-identity change.
+    private func rebuildEntriesIfNeeded() {
+        self.cachedEntries = QueueDisplayEntry.entries(for: self.playerService.queue)
     }
 }
 

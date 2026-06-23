@@ -37,12 +37,34 @@ final class FavoritesManager {
 
     // MARK: - Persistence
 
-    /// File URL for persisted data.
+    /// Sentinel for the primary (non-brand) account scope.
+    private static let primaryAccountID = "primary"
+
+    /// Active account scope for the backing file. `nil`/`"primary"` uses the legacy
+    /// `favorites.json`; brand accounts use `favorites-<brandId>.json` so one
+    /// account's pinned items are never surfaced to another on a shared machine.
+    private var activeAccountID = FavoritesManager.primaryAccountID
+
+    /// File URL for persisted data, scoped to the active account.
     private var fileURL: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support", isDirectory: true)
         let appDir = appSupport.appendingPathComponent("Boombox", isDirectory: true)
-        return appDir.appendingPathComponent("favorites.json")
+        return appDir.appendingPathComponent(Self.fileName(for: self.activeAccountID))
+    }
+
+    /// Resolves the favorites file name for an account scope. The primary account
+    /// keeps the historical `favorites.json` for backward compatibility.
+    private static func fileName(for accountID: String) -> String {
+        guard accountID != self.primaryAccountID else { return "favorites.json" }
+        // Sanitize the brand ID so it is always a safe single path component.
+        let safeID = accountID.replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: ":", with: "_")
+        return "favorites-\(safeID).json"
+    }
+
+    private static func resolvedAccountID(_ accountID: String?) -> String {
+        accountID ?? self.primaryAccountID
     }
 
     /// Task for the current save operation - cancelled when new save is triggered.
@@ -101,6 +123,10 @@ final class FavoritesManager {
             self.items = decoded
             if skipped > 0 {
                 DiagnosticsLogger.ui.error("Skipped \(skipped) unreadable favorite item(s) during load")
+                // A partially successful decode pruned recoverable entries. Flag it so the
+                // next save backs up the original file before overwriting it with the
+                // surviving subset (a future build may be able to decode the skipped items).
+                self.loadFailed = true
             }
             DiagnosticsLogger.ui.info("Loaded \(decoded.count) favorite items")
         } catch {
@@ -132,9 +158,12 @@ final class FavoritesManager {
         let shouldBackupCorruptFile = self.loadFailed
         self.loadFailed = false
 
-        // Perform disk I/O off the main actor with debounce.
+        // Perform disk I/O genuinely off the main actor with debounce. A detached
+        // task does not inherit this @MainActor isolation, so the JSON encode and
+        // synchronous file writes below run off the main thread. The closure only
+        // touches captured Sendable value types (no self / main-actor state).
         // Slight delay coalesces rapid successive saves.
-        self.saveTask = Task(priority: .utility) {
+        self.saveTask = Task.detached(priority: .utility) {
             // Debounce: wait briefly to coalesce rapid changes
             try? await Task.sleep(for: .milliseconds(100))
 
@@ -160,6 +189,39 @@ final class FavoritesManager {
                 DiagnosticsLogger.ui.error("Failed to save favorites: \(error.localizedDescription)")
             }
         }
+    }
+
+    // MARK: - Account Lifecycle
+
+    /// Switches the favorites scope to a given account and reloads its items from disk.
+    /// Pass `nil` for the primary account. No-op for test instances that skip persistence
+    /// or when the scope is unchanged.
+    /// - Parameter accountID: The active account identifier, or `nil` for the primary account.
+    func setActiveAccountID(_ accountID: String?) {
+        guard !self.skipPersistence else { return }
+        let resolved = Self.resolvedAccountID(accountID)
+        guard resolved != self.activeAccountID else { return }
+
+        // Cancel any pending save for the previous scope so it cannot write the old
+        // account's items into the new account's file after the switch.
+        self.saveTask?.cancel()
+
+        self.activeAccountID = resolved
+        self.loadFailed = false
+        self.items = []
+        self.load()
+        DiagnosticsLogger.ui.debug("FavoritesManager: Switched scope to account \(resolved)")
+    }
+
+    /// Clears in-memory favorites without writing to disk. Used on sign-out / account
+    /// teardown so one account's pinned items are not visible to the next session.
+    /// Resets the scope back to the primary account.
+    func clear() {
+        self.saveTask?.cancel()
+        self.items = []
+        self.loadFailed = false
+        self.activeAccountID = Self.primaryAccountID
+        DiagnosticsLogger.ui.debug("FavoritesManager: Cleared in-memory favorites")
     }
 
     // MARK: - Actions

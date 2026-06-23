@@ -12,6 +12,7 @@ final class SettingsManager {
     private enum Keys {
         static let showNowPlayingNotifications = "settings.showNowPlayingNotifications"
         static let defaultLaunchPage = "settings.defaultLaunchPage"
+        static let lastUsedPage = "settings.lastUsedPage"
         static let hapticFeedbackEnabled = "settings.hapticFeedbackEnabled"
         static let rememberPlaybackSettings = "settings.rememberPlaybackSettings"
         static let mediaControlStyle = "settings.mediaControlStyle"
@@ -109,6 +110,20 @@ final class SettingsManager {
             case .likedMusic: .likedMusic
             case .playlists: .library
             case .lastUsed: .home // Fallback, actual value comes from lastUsedPage
+            }
+        }
+
+        /// Maps a navigation selection back to a launch page so the "Last Used"
+        /// preference can record where the user is. Pages without a launch-page
+        /// equivalent (Search, History) and the `.lastUsed` sentinel return `nil`.
+        init?(navigationItem: NavigationItem) {
+            switch navigationItem {
+            case .home: self = .home
+            case .explore: self = .explore
+            case .newReleases: self = .newReleases
+            case .likedMusic: self = .likedMusic
+            case .library: self = .playlists
+            case .search, .history: return nil
             }
         }
     }
@@ -232,8 +247,13 @@ final class SettingsManager {
         }
     }
 
-    /// The last page the user was on (for "Last Used" option).
-    var lastUsedPage: LaunchPage = .home
+    /// The last page the user was on (for "Last Used" option). Persisted so the
+    /// "Last Used" launch preference restores the prior page after relaunch.
+    var lastUsedPage: LaunchPage {
+        didSet {
+            UserDefaults.standard.set(self.lastUsedPage.rawValue, forKey: Keys.lastUsedPage)
+        }
+    }
 
     /// Whether synced lyrics are preferred.
     var syncedLyricsEnabled: Bool {
@@ -377,6 +397,17 @@ final class SettingsManager {
             self.defaultLaunchPage = page
         } else {
             self.defaultLaunchPage = .home
+        }
+
+        // Restore the last visited page. `.lastUsed` is never a concrete page, so a
+        // stored sentinel (or missing value) falls back to Home.
+        if let rawValue = UserDefaults.standard.string(forKey: Keys.lastUsedPage),
+           let page = LaunchPage(rawValue: rawValue),
+           page != .lastUsed
+        {
+            self.lastUsedPage = page
+        } else {
+            self.lastUsedPage = .home
         }
 
         if let rawValue = UserDefaults.standard.string(forKey: Keys.contentLanguage),

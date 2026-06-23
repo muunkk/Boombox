@@ -174,19 +174,20 @@ struct MainWindow: View {
             }
         }
         .overlay(alignment: .top) {
-            // Error toast for account switching failures
-            AccountErrorToast()
-                .padding(.top, 60)
-        }
-        .overlay(alignment: .top) {
-            // Error toast for content-action failures (add to library, play album, like, …)
-            ContentActionErrorToast()
-                .padding(.top, 60)
-        }
-        .overlay(alignment: .top) {
-            // Error toast for playback failures (e.g. a Mix that could not start)
-            PlaybackErrorToast()
-                .padding(.top, 60)
+            // Stack all transient error toasts vertically so concurrent errors
+            // (e.g. an offline failure hitting both a content action and playback)
+            // do not render at the same Y and overlap. Each toast's body collapses
+            // to an empty Group when not visible, so the VStack only reserves space
+            // for toasts that are currently showing.
+            VStack(spacing: 8) {
+                // Error toast for account switching failures
+                AccountErrorToast()
+                // Error toast for content-action failures (add to library, play album, like, …)
+                ContentActionErrorToast()
+                // Error toast for playback failures (e.g. a Mix that could not start)
+                PlaybackErrorToast()
+            }
+            .padding(.top, 60)
         }
         .onChange(of: self.showCommandBar.wrappedValue) { _, newValue in
             if newValue {
@@ -352,8 +353,11 @@ struct MainWindow: View {
                     }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
-                // Ensure the sidebar returns when the app is re-activated from the Dock or app switcher.
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                // Ensure the sidebar returns when the app is re-activated from the
+                // Dock or app switcher. Keyed on app activation rather than per-window
+                // key changes so opening Settings, the login sheet, or the menu-bar
+                // popover does not silently undo an intentional ⌃⌘S sidebar collapse.
                 if self.columnVisibility != .all {
                     self.columnVisibility = .all
                 }
@@ -558,6 +562,14 @@ struct MainWindow: View {
         case .loggedOut:
             // Onboarding view handles login, no need to auto-show sheet
             self.accountService.clearAccounts()
+            // Logging out (manual sign-out or session expiry) while in Focus or
+            // Small Player mode would otherwise strand the window with player-only
+            // chrome and no exit affordance. Reset to .standard so the
+            // PlayerPresentationWindowCoordinator's onChange restores the window
+            // frame/chrome and the full app renders after re-login.
+            if self.playerPresentationMode.wrappedValue != .standard {
+                self.playerPresentationMode.wrappedValue = .standard
+            }
         case .loggingIn:
             self.showLoginSheet = true
         case .loggedIn:

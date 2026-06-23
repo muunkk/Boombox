@@ -102,27 +102,41 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
     }
 
     func updateNSViewController(_ viewController: QueueListViewController, context: Context) {
-        context.coordinator.queue = self.queue
-        context.coordinator.currentIndex = self.currentIndex
-        context.coordinator.isPlaying = self.isPlaying
-        context.coordinator.favoritesManager = self.favoritesManager
-        context.coordinator.playerService = self.playerService
-        context.coordinator.globalNavigation = self.globalNavigation
+        let coordinator = context.coordinator
 
-        if !context.coordinator.isDragging {
+        // Diff the queue by per-position videoId identity BEFORE overwriting the
+        // coordinator's snapshot. The contents change far less often than
+        // isPlaying/currentIndex (which flip ~2x/sec during playback), so only do
+        // a full reloadData() when the queue actually changed. Otherwise the
+        // incremental appearance loop below handles highlight/waveform updates.
+        let newIdentity = self.queue.map(\.videoId)
+        let queueChanged = newIdentity != coordinator.lastAppliedQueueIdentity
+
+        coordinator.queue = self.queue
+        coordinator.currentIndex = self.currentIndex
+        coordinator.isPlaying = self.isPlaying
+        coordinator.favoritesManager = self.favoritesManager
+        coordinator.playerService = self.playerService
+        coordinator.globalNavigation = self.globalNavigation
+
+        if queueChanged, !coordinator.isDragging {
             viewController.tableView?.reloadData()
+            coordinator.lastAppliedQueueIdentity = newIdentity
         }
 
-        // Update current track highlighting and waveform animation
+        // Update current-track highlighting and waveform animation incrementally.
+        // Restrict to visible (laid-out) rows via enumerateAvailableRowViews so the
+        // work scales with on-screen rows, not total queue length.
         if let tableView = viewController.tableView {
-            for row in 0 ..< self.queue.count {
-                if let cellView = tableView.view(atColumn: 0, row: row, makeIfNecessary: false) as? QueueTableCellView {
-                    cellView.updateAppearance(
-                        isCurrentTrack: row == self.currentIndex,
-                        isPlaying: self.isPlaying,
-                        index: row
-                    )
-                }
+            let currentIndex = self.currentIndex
+            let isPlaying = self.isPlaying
+            tableView.enumerateAvailableRowViews { _, row in
+                guard let cellView = tableView.view(atColumn: 0, row: row, makeIfNecessary: false) as? QueueTableCellView else { return }
+                cellView.updateAppearance(
+                    isCurrentTrack: row == currentIndex,
+                    isPlaying: isPlaying,
+                    index: row
+                )
             }
         }
     }
@@ -213,6 +227,11 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
         weak var viewController: QueueListViewController?
         var isDragging = false
         private let dragType = NSPasteboard.PasteboardType("com.melboonchan.boombox.queueitem")
+        /// Reuse identifier so NSTableView recycles cells (enables prepareForReuse()).
+        fileprivate static let cellReuseIdentifier = NSUserInterfaceItemIdentifier("QueueTableCell")
+        /// Snapshot of the queue identity last applied to the table, used to decide
+        /// whether a full reloadData() is needed (vs. an incremental appearance update).
+        fileprivate var lastAppliedQueueIdentity: [String] = []
 
         init(queue: [Song], currentIndex: Int, isPlaying: Bool, favoritesManager: FavoritesManager,
              playerService: PlayerService, globalNavigation: GlobalNavigationCoordinator,
@@ -264,8 +283,17 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
             self.queue.count
         }
 
-        func tableView(_: NSTableView, viewFor _: NSTableColumn?, row: Int) -> NSView? {
-            let cellView = QueueTableCellView()
+        func tableView(_ tableView: NSTableView, viewFor _: NSTableColumn?, row: Int) -> NSView? {
+            // Reuse cells from NSTableView's pool so prepareForReuse() runs and the
+            // per-cell image-load Task is recycled instead of re-fired on every reload.
+            let cellView = tableView.makeView(
+                withIdentifier: Self.cellReuseIdentifier,
+                owner: self
+            ) as? QueueTableCellView ?? {
+                let view = QueueTableCellView()
+                view.identifier = Self.cellReuseIdentifier
+                return view
+            }()
             let song = self.queue[row]
 
             let albumNavigation: (() -> Void)? = if let album = song.album, album.hasNavigableId {

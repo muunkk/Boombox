@@ -66,6 +66,11 @@ final class NetworkMonitor {
     private let queue: DispatchQueue
     private let logger = DiagnosticsLogger.network
 
+    /// Long-lived task that applies path updates in submission order. Cancelled
+    /// when the monitor is torn down.
+    @ObservationIgnored
+    private var consumerTask: Task<Void, Never>?
+
     private init() {
         self.monitor = NWPathMonitor()
         self.queue = DispatchQueue(label: "com.melboonchan.boombox.networkMonitor", qos: .utility)
@@ -74,14 +79,31 @@ final class NetworkMonitor {
 
     deinit {
         self.monitor.cancel()
+        self.consumerTask?.cancel()
     }
 
     /// Starts monitoring network changes.
+    ///
+    /// Path updates are funneled through an `AsyncStream` consumed by a single
+    /// long-lived task so they are applied in submission order. Spawning a fresh
+    /// `Task` per update (the prior approach) does not guarantee ordering, so a
+    /// stale "unsatisfied" update could run after a newer "satisfied" one and
+    /// strand `isConnected` on a false value during rapid flapping.
     private func startMonitoring() {
-        self.monitor.pathUpdateHandler = { [weak self] path in
-            Task { @MainActor [weak self] in
+        let (stream, continuation) = AsyncStream<NWPath>.makeStream(
+            bufferingPolicy: .bufferingNewest(16)
+        )
+
+        self.consumerTask = Task { @MainActor [weak self] in
+            for await path in stream {
                 self?.updatePath(path)
             }
+        }
+
+        // pathUpdateHandler is invoked serially on the monitor queue; yielding
+        // preserves that order for the consumer.
+        self.monitor.pathUpdateHandler = { path in
+            continuation.yield(path)
         }
         self.monitor.start(queue: self.queue)
         self.logger.info("Network monitoring started")

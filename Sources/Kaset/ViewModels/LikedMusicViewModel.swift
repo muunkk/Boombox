@@ -153,7 +153,11 @@ final class LikedMusicViewModel {
             self.loadingState = .loaded
         } catch {
             Self.logger.error("Failed to load more liked songs: \(error.localizedDescription)")
-            // Keep loaded state so user can retry
+            // Stop the scroll sentinel from re-firing the same failing continuation
+            // request in a tight loop: clearing hasMore makes the per-row .task
+            // guard (`index >= count - 3 && hasMore`) false. The token is preserved
+            // so a future refresh can resume from where pagination stopped.
+            self.hasMore = false
             self.loadingState = .loaded
         }
     }

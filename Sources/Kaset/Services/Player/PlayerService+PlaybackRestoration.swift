@@ -125,7 +125,10 @@ private extension PlayerService {
         // Don't resurrect a deliberately-ended state: when the native queue ends and playback is
         // marked `.ended` synchronously, a STATE_UPDATE from YouTube's lingering autoplay must not
         // flip us back to `.playing` before the corrective pause lands.
-        if isPlaying, self.state != .ended {
+        // @Observable does not dedupe equal assignments: every write to `state` fires Observation
+        // unconditionally, re-evaluating every dependent SwiftUI body. The observer ticks ~2x/sec
+        // during playback, so guard the `.playing` write to only mutate on an actual change.
+        if isPlaying, self.state != .playing, self.state != .ended {
             self.state = .playing
         } else if !isPlaying, self.state == .playing || self.state == .loading || self.state == .buffering {
             // Resolve a freshly loaded-but-not-autoplaying track (autoplay blocked, AirPlay handoff)

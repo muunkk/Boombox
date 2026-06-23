@@ -1,3 +1,4 @@
+import AppKit
 import WebKit
 
 // MARK: - SingletonPlayerWebView
@@ -204,7 +205,98 @@ final class SingletonPlayerWebView {
             self.playerService = playerService
         }
 
+        /// Decides whether a top-level navigation is allowed for the authenticated playback WebView.
+        ///
+        /// The hidden DRM-playback WebView carries the full logged-in YouTube/Google session and has the
+        /// `singletonPlayer` JS bridge attached, so it must stay pinned to the YouTube/Google origins that
+        /// playback, AirPlay, and login-refresh actually need. Off-origin top-level navigations (an external
+        /// link surfaced in the page, an ad/redirect, or a MITM'd response) are cancelled so the session and
+        /// the JS bridge never follow the user onto an untrusted origin. User-initiated off-origin links are
+        /// opened in the default browser instead.
+        ///
+        /// Only main-frame navigations are restricted; sub-resource/iframe loads (ads, embeds, `googlevideo`
+        /// media segments) are left untouched so DRM playback is not affected.
+        func webView(
+            _: WKWebView,
+            decidePolicyFor navigationAction: WKNavigationAction,
+            decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void
+        ) {
+            // Only constrain top-level (main-frame) navigations. Sub-resource / iframe loads
+            // (media segments, ads, embeds) must pass through untouched for playback to work.
+            guard navigationAction.targetFrame?.isMainFrame == true else {
+                decisionHandler(.allow)
+                return
+            }
+
+            guard let url = navigationAction.request.url else {
+                decisionHandler(.allow)
+                return
+            }
+
+            if Self.isAllowedPlaybackURL(url) {
+                decisionHandler(.allow)
+                return
+            }
+
+            // A user-activated link to an off-origin destination should open in the user's browser,
+            // never inside the authenticated playback WebView.
+            DiagnosticsLogger.player.warning(
+                "Blocking off-origin playback navigation to host: \(url.host ?? "nil", privacy: .public)"
+            )
+            if navigationAction.navigationType == .linkActivated {
+                NSWorkspace.shared.open(url)
+            }
+            decisionHandler(.cancel)
+        }
+
+        /// Returns `true` if `url` is an https YouTube/Google origin the playback WebView is allowed to load.
+        ///
+        /// The allowlist is intentionally permissive across the YouTube/Google sub-origins that real
+        /// playback, AirPlay, and OAuth login-refresh bounces touch (e.g. `accounts.google.com`,
+        /// `*.youtube.com`, `googleusercontent.com`), while still rejecting arbitrary third-party origins.
+        static func isAllowedPlaybackURL(_ url: URL) -> Bool {
+            guard url.scheme?.lowercased() == "https", let host = url.host?.lowercased() else {
+                return false
+            }
+
+            let allowedSuffixes = [
+                ".youtube.com",
+                ".google.com",
+                ".googleusercontent.com",
+                ".ytimg.com",
+                ".ggpht.com",
+                ".gstatic.com",
+                ".googlevideo.com",
+            ]
+            let allowedExact = [
+                "youtube.com",
+                "google.com",
+                "youtu.be",
+            ]
+
+            if allowedExact.contains(host) {
+                return true
+            }
+            // Suffixes carry a leading dot so only true sub-domains match (".youtube.com" matches
+            // "music.youtube.com" but NOT a look-alike like "evilyoutube.com").
+            return allowedSuffixes.contains { host.hasSuffix($0) }
+        }
+
         func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
+            // Only trust messages from the top-level YouTube Music frame. WebKit registers script-message
+            // handlers for ALL frames, so a cross-origin sub-frame (ad/embed) could otherwise spoof
+            // playback control or now-playing/like metadata via window.webkit.messageHandlers.singletonPlayer.
+            let origin = message.frameInfo.securityOrigin
+            guard message.frameInfo.isMainFrame,
+                  origin.protocol == "https",
+                  origin.host == "music.youtube.com"
+            else {
+                DiagnosticsLogger.player.warning(
+                    "Dropping singletonPlayer message from untrusted frame/origin"
+                )
+                return
+            }
+
             guard let body = message.body as? [String: Any],
                   let type = body["type"] as? String
             else { return }

@@ -142,6 +142,16 @@ struct KasetApp: App {
                         self.appDelegate.currentPlayerPresentationMode = newMode
                         self.appDelegate.transitionPlayerPresentationMode(from: oldMode, to: newMode)
                     }
+                    .onChange(of: self.navigationSelection) { _, newSelection in
+                        // Record the current page so the "Last Used" launch preference
+                        // can restore it after relaunch. Pages without a launch-page
+                        // equivalent (Search, History) leave the value unchanged.
+                        if let newSelection,
+                           let page = SettingsManager.LaunchPage(navigationItem: newSelection)
+                        {
+                            self.settings.lastUsedPage = page
+                        }
+                    }
                     .onChange(of: self.settings.menuBarItemEnabled) { _, newValue in
                         self.appDelegate.menuBarController?.setEnabled(newValue)
                         self.appDelegate.menuBarController?.applyHotkey(

@@ -110,16 +110,22 @@ extension Song {
     }
 
     /// Parses duration string like "3:45" to TimeInterval.
+    ///
+    /// Uses overflow-checked base-60 folding so a malformed/adversarial duration
+    /// field (e.g. "9999999999999999:00:00") yields nil instead of trapping.
     private static func parseDuration(_ string: String) -> TimeInterval? {
         let components = string.split(separator: ":").compactMap { Int($0) }
-        guard components.count >= 2 else { return nil }
-
-        if components.count == 2 {
-            return TimeInterval(components[0] * 60 + components[1])
-        } else if components.count == 3 {
-            return TimeInterval(components[0] * 3600 + components[1] * 60 + components[2])
+        guard components.count == 2 || components.count == 3 else { return nil }
+        var total = 0
+        for component in components {
+            guard component >= 0 else { return nil }
+            let (scaled, mulOverflow) = total.multipliedReportingOverflow(by: 60)
+            if mulOverflow { return nil }
+            let (sum, addOverflow) = scaled.addingReportingOverflow(component)
+            if addOverflow { return nil }
+            total = sum
         }
-        return nil
+        return TimeInterval(total)
     }
 }
 

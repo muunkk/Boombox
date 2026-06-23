@@ -110,7 +110,14 @@ enum SearchResponseParser {
     /// `musicShelfRenderer` (Songs / Albums / Artists / Playlists shelves), and
     /// occasionally `itemSectionRenderer` wrappers around either. An itemSectionRenderer
     /// returns the recursively-parsed inner sections so order is preserved through wrappers.
-    private static func parseSearchSections(_ sectionData: [String: Any]) -> [DraftSection] {
+    private static func parseSearchSections(_ sectionData: [String: Any], depth: Int = 0) -> [DraftSection] {
+        // Real responses nest itemSectionRenderer wrappers one or two levels; cap
+        // descent so an adversarial deeply-nested response can't overflow the stack.
+        guard depth < 16 else {
+            self.logger.debug("SearchResponseParser: itemSectionRenderer nesting exceeded depth cap; ignoring deeper wrappers")
+            return []
+        }
+
         var sections: [DraftSection] = []
 
         if let cardShelfRenderer = sectionData["musicCardShelfRenderer"] as? [String: Any] {
@@ -151,7 +158,7 @@ enum SearchResponseParser {
            let inner = itemSection["contents"] as? [[String: Any]]
         {
             for nested in inner {
-                sections.append(contentsOf: Self.parseSearchSections(nested))
+                sections.append(contentsOf: Self.parseSearchSections(nested, depth: depth + 1))
             }
         }
 

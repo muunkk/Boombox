@@ -657,9 +657,17 @@ struct PlayerBar: View {
 
     private func refreshAudioOutputLoop() async {
         while !Task.isCancelled {
-            self.audioOutput = AudioOutputDeviceInfo.currentDefaultOutput()
-            if self.isAudioOutputPickerPresented {
-                self.availableAudioOutputs = AudioOutputDeviceInfo.availableOutputDevices()
+            // Run the synchronous CoreAudio HAL property reads off the MainActor —
+            // they can block on coreaudiod (notably while Bluetooth/AirPlay devices
+            // connect/disconnect). The static methods touch only CoreAudio C APIs and
+            // local state, so they are safe off-actor; results are assigned back here
+            // on the MainActor.
+            let pickerPresented = self.isAudioOutputPickerPresented
+            let output = await Task.detached { AudioOutputDeviceInfo.currentDefaultOutput() }.value
+            self.audioOutput = output
+            if pickerPresented {
+                let available = await Task.detached { AudioOutputDeviceInfo.availableOutputDevices() }.value
+                self.availableAudioOutputs = available
             }
             try? await Task.sleep(for: .seconds(5))
         }

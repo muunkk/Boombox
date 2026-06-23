@@ -289,9 +289,11 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
         self.logger.info("Force backup: \(authCookies.count) YouTube/Google cookies to Keychain")
         guard let archive = KeychainCookieStorage.makeArchiveData(from: authCookies) else { return }
 
-        // Perform Keychain/file I/O off the main actor.
+        // Perform Keychain/file I/O off the main actor. A plain `Task {}` created here would inherit
+        // MainActor isolation (priority only affects scheduling), so use `Task.detached` to run the
+        // synchronous SecItem Keychain writes off the main actor (matching `performCookieBackup`).
         // Fire-and-forget: failures are handled inside KeychainCookieStorage.
-        Task(priority: .utility) {
+        Task.detached(priority: .utility) {
             _ = KeychainCookieStorage.saveArchiveData(archive.data, cookieCount: archive.cookieCount)
         }
     }
@@ -316,7 +318,9 @@ final class WebKitManager: NSObject, WebKitManagerProtocol {
             throw AuthCookieImportError.noSupportedCookies
         }
 
-        let didSave = await Task(priority: .utility) {
+        // Use `Task.detached` so the blocking SecItem Keychain write runs off the main actor; the
+        // `await ...value` then suspends the MainActor instead of blocking it during persistence.
+        let didSave = await Task.detached(priority: .utility) {
             KeychainCookieStorage.saveArchiveData(archive.data, cookieCount: archive.cookieCount)
         }.value
 
