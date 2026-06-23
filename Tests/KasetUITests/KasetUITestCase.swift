@@ -61,6 +61,14 @@ enum TestAccessibilityID {
         static let container = "likedMusicView"
     }
 
+    enum History {
+        static let container = "historyView"
+    }
+
+    enum NewReleases {
+        static let container = "newReleasesView"
+    }
+
     enum MainWindow {
         static let container = "mainWindow"
         static let commandBar = "mainWindow.commandBar"

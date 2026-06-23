@@ -191,6 +191,13 @@ enum AccessibilityID {
     // MARK: - History View
 
     enum History {
+        static let container = "historyView"
         static let scrollView = "historyView.scrollView"
+    }
+
+    // MARK: - New Releases View
+
+    enum NewReleases {
+        static let container = "newReleasesView"
     }
 }

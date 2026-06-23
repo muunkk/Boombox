@@ -129,6 +129,19 @@ struct NavigationSwipeGestures: ViewModifier {
         self.isTrackingSwipe = false
     }
 
+    /// Minimum ratio of horizontal-to-vertical scroll delta required to treat a
+    /// scroll as a navigation swipe rather than (carousel) content scrolling.
+    private static let swipeHorizontalDominance: CGFloat = 2.0
+    /// Minimum horizontal magnitude (points) before a scroll can become a swipe.
+    private static let swipeMinHorizontalDelta: CGFloat = 1.5
+
+    /// Whether a precise scroll is dominantly horizontal enough to promote to a
+    /// back/forward navigation swipe. Pure logic, extracted for unit testing.
+    static func isStronglyHorizontal(deltaX: CGFloat, deltaY: CGFloat) -> Bool {
+        abs(deltaX) > self.swipeHorizontalDominance * abs(deltaY)
+            && abs(deltaX) > self.swipeMinHorizontalDelta
+    }
+
     /// Promotes a horizontal scroll to a navigation swipe via AppKit's
     /// fluid swipe tracking API. Called from a local event monitor; we only
     /// hook the gesture when it `began` so we don't interfere with ongoing
@@ -138,13 +151,16 @@ struct NavigationSwipeGestures: ViewModifier {
               event.phase == .began,
               NSEvent.isSwipeTrackingFromScrollEventsEnabled,
               event.hasPreciseScrollingDeltas,
-              abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY)
+              // Require clear horizontal dominance + magnitude before promoting
+              // to a back/forward swipe. A looser deltaX > deltaY test also
+              // captured the near-horizontal flicks used to scroll horizontal
+              // carousels inside pushed detail views, hijacking them into
+              // navigation. Deliberate two-finger swipes stay strongly
+              // horizontal and still qualify.
+              Self.isStronglyHorizontal(deltaX: event.scrollingDeltaX, deltaY: event.scrollingDeltaY)
         else {
             return
         }
-
-        // No-op gestures (delta near zero) shouldn't kick off tracking.
-        guard abs(event.scrollingDeltaX) > 0.1 else { return }
 
         // Only intercept if we have somewhere to navigate; otherwise let the
         // event flow normally to scrollables underneath.

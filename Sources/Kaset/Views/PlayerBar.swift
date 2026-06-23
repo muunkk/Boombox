@@ -9,6 +9,7 @@ struct PlayerBar: View {
 
     @Environment(PlayerService.self) private var playerService
     @Environment(\.isSidebarCollapsed) private var isSidebarCollapsed
+    @Environment(\.isTextEntryFocused) private var isTextEntryFocused
 
     /// Namespace for glass effect morphing and unioning.
     @Namespace private var playerNamespace
@@ -121,6 +122,11 @@ struct PlayerBar: View {
                 .opacity(0)
                 .accessibilityHidden(true)
             }
+            // While a text field (e.g. Search) is focused these hidden key
+            // equivalents would steal Space and ⌘-arrow caret navigation from
+            // the field editor, so disable them — the buttons re-arm the moment
+            // focus leaves the field.
+            .disabled(self.isTextEntryFocused)
         }
         .onChange(of: self.playerService.progress) { _, newValue in
             // Sync local seek value when not actively seeking

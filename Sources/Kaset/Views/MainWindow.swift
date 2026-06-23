@@ -38,6 +38,22 @@ struct MainWindow: View {
     @State private var libraryViewModel: LibraryViewModel?
     @State private var historyViewModel: HistoryViewModel?
 
+    // MARK: - Per-tab navigation paths (persist drill-down across tab switches)
+
+    //
+    // Switching the sidebar selection tears down the previous tab's view, so a
+    // path owned by that view as @State would reset to empty. Holding one path
+    // per tab here and passing it down as a @Binding preserves each tab's
+    // drill-down position when the user leaves and returns.
+
+    @State private var homeNavigationPath = NavigationPath()
+    @State private var exploreNavigationPath = NavigationPath()
+    @State private var searchNavigationPath = NavigationPath()
+    @State private var newReleasesNavigationPath = NavigationPath()
+    @State private var likedMusicNavigationPath = NavigationPath()
+    @State private var libraryNavigationPath = NavigationPath()
+    @State private var historyNavigationPath = NavigationPath()
+
     /// Column visibility state for NavigationSplitView - persisted to fix restoration from dock.
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
@@ -472,21 +488,37 @@ struct MainWindow: View {
         Group {
             switch item {
             case .home:
-                if let vm = homeViewModel { HomeView(viewModel: vm) }
+                if let vm = homeViewModel {
+                    HomeView(viewModel: vm, navigationPath: self.$homeNavigationPath)
+                }
             case .explore:
-                if let vm = exploreViewModel { ExploreView(viewModel: vm) }
+                if let vm = exploreViewModel {
+                    ExploreView(viewModel: vm, navigationPath: self.$exploreNavigationPath)
+                }
             case .search:
                 if let vm = searchViewModel {
-                    SearchView(viewModel: vm, focusTrigger: self.searchFocusTrigger)
+                    SearchView(
+                        viewModel: vm,
+                        navigationPath: self.$searchNavigationPath,
+                        focusTrigger: self.searchFocusTrigger
+                    )
                 }
             case .newReleases:
-                if let vm = newReleasesViewModel { NewReleasesView(viewModel: vm) }
+                if let vm = newReleasesViewModel {
+                    NewReleasesView(viewModel: vm, navigationPath: self.$newReleasesNavigationPath)
+                }
             case .likedMusic:
-                if let vm = likedMusicViewModel { LikedMusicView(viewModel: vm) }
+                if let vm = likedMusicViewModel {
+                    LikedMusicView(viewModel: vm, navigationPath: self.$likedMusicNavigationPath)
+                }
             case .library:
-                if let vm = libraryViewModel { LibraryView(viewModel: vm) }
+                if let vm = libraryViewModel {
+                    LibraryView(viewModel: vm, navigationPath: self.$libraryNavigationPath)
+                }
             case .history:
-                if let vm = historyViewModel { HistoryView(viewModel: vm) }
+                if let vm = historyViewModel {
+                    HistoryView(viewModel: vm, navigationPath: self.$historyNavigationPath)
+                }
             }
         }
         .environment(self.libraryViewModel)

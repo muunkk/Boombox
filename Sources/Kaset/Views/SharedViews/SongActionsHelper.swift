@@ -149,13 +149,39 @@ enum SongActionsHelper {
         }
     }
 
-    /// Adds a song to the library by playing it and toggling library status.
-    /// Note: This still requires playing because library toggle works on current track.
-    static func addToLibrary(_ song: Song, playerService: PlayerService) {
-        Task {
-            await playerService.play(song: song)
-            try? await Task.sleep(for: .milliseconds(100))
-            playerService.toggleLibraryStatus()
+    /// Adds a song to the library via the API without affecting playback.
+    ///
+    /// Uses the song's "add" feedback token directly (fetching full metadata to
+    /// obtain it when the list/search `Song` doesn't carry one), so the user's
+    /// current track is never interrupted. Using the explicit add token also
+    /// avoids the toggle's accidental-remove behavior when the song is already
+    /// in the library.
+    static func addToLibrary(_ song: Song, client: any YTMusicClientProtocol) async {
+        do {
+            // Prefer a token already attached to the song.
+            if let addToken = song.feedbackTokens?.add {
+                try await client.editSongLibraryStatus(feedbackTokens: [addToken])
+                DiagnosticsLogger.api.info("Added song to library: \(song.title)")
+                return
+            }
+
+            // Otherwise fetch full metadata to obtain the add token.
+            let metadata = try await client.getSong(videoId: song.videoId)
+
+            if metadata.isInLibrary == true {
+                DiagnosticsLogger.api.info("Song already in library: \(song.title)")
+                return
+            }
+
+            guard let addToken = metadata.feedbackTokens?.add else {
+                DiagnosticsLogger.api.error("No add feedback token available for song: \(song.title)")
+                return
+            }
+
+            try await client.editSongLibraryStatus(feedbackTokens: [addToken])
+            DiagnosticsLogger.api.info("Added song to library: \(song.title)")
+        } catch {
+            DiagnosticsLogger.api.error("Failed to add song to library: \(error.localizedDescription)")
         }
     }
 
