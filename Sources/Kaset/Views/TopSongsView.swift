@@ -188,7 +188,7 @@ struct TopSongsView: View {
         Divider()
 
         Button {
-            SongActionsHelper.addToLibrary(song, playerService: self.playerService)
+            Task { await SongActionsHelper.addToLibrary(song, client: self.viewModel.client) }
         } label: {
             Label("Add to Library", systemImage: "plus.circle")
         }

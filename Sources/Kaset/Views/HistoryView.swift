@@ -7,9 +7,8 @@ struct HistoryView: View {
     @State var viewModel: HistoryViewModel
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
-    @State private var isRefreshing = false
     @State private var hoveredSongId: String?
 
     var body: some View {
@@ -37,24 +36,10 @@ struct HistoryView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .localizedNavigationTitle("Listening History")
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Button {
-                        Task { await self.performRefresh() }
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                            .rotationEffect(.degrees(self.isRefreshing ? 360 : 0))
-                            .animation(
-                                self.isRefreshing ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default,
-                                value: self.isRefreshing
-                            )
-                    }
-                    .help(String(localized: "Refresh"))
-                    .disabled(self.isRefreshing)
-                }
-            }
             .navigationDestinations(client: self.viewModel.client)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.History.container)
         .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
@@ -76,13 +61,10 @@ struct HistoryView: View {
         }
     }
 
-    /// Refreshes with visual feedback: spinning icon → data swap.
+    /// Refreshes the history list. Returns whether the data changed.
     @discardableResult
     private func performRefresh() async -> Bool {
-        self.isRefreshing = true
-        let changed = await self.viewModel.refresh()
-        self.isRefreshing = false
-        return changed
+        await self.viewModel.refresh()
     }
 
     // MARK: - Content
@@ -139,11 +121,12 @@ struct HistoryView: View {
                         if case let .song(song) = item { return song }
                         return nil
                     }
+                    let rows = Self.historyRows(for: songs, sectionID: section.id)
 
-                    ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
-                        self.songRow(song, allSongs: songs, index: index)
-                            .id("\(section.id)-\(index)")
-                        if index < songs.count - 1 {
+                    ForEach(rows) { row in
+                        self.songRow(row.song, allSongs: songs, index: row.index)
+                            .id(row.id)
+                        if row.index < songs.count - 1 {
                             Divider()
                                 .padding(.leading, 72)
                         }
@@ -153,6 +136,36 @@ struct HistoryView: View {
             .padding(.vertical, 20)
         }
         .accessibilityIdentifier(AccessibilityID.History.scrollView)
+    }
+
+    // MARK: - Stable Row Identity
+
+    /// A history list row paired with a stable, section-unique identity.
+    ///
+    /// `Song.id` equals its `videoId`, so a track played more than once in the
+    /// same time period yields duplicate ids. To keep `ForEach` identity stable
+    /// across the playback-driven refresh (which prepends rows and shifts every
+    /// index), each row is keyed by `section + videoId + occurrence`, which is
+    /// unique within the section and tolerates duplicates — unlike the previous
+    /// index-based `id: \.offset` anti-pattern.
+    struct HistorySongRow: Identifiable {
+        let id: String
+        let song: Song
+        let index: Int
+    }
+
+    /// Builds stable, section-unique identities for a section's songs.
+    static func historyRows(for songs: [Song], sectionID: String) -> [HistorySongRow] {
+        var occurrences: [String: Int] = [:]
+        return songs.enumerated().map { index, song in
+            let occurrence = occurrences[song.videoId, default: 0]
+            occurrences[song.videoId] = occurrence + 1
+            return HistorySongRow(
+                id: "\(sectionID)-\(song.videoId)-\(occurrence)",
+                song: song,
+                index: index
+            )
+        }
     }
 
     // MARK: - Song Row

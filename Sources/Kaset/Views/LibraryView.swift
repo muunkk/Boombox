@@ -48,7 +48,7 @@ struct LibraryView: View {
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var settings = SettingsManager.shared
 
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var selectedFilter: LibraryFilter = .all
 
     var body: some View {
@@ -520,9 +520,10 @@ enum LibraryItem: Identifiable {
 }
 
 #Preview {
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    LibraryView(viewModel: LibraryViewModel(client: client))
+    LibraryView(viewModel: LibraryViewModel(client: client), navigationPath: $navigationPath)
         .environment(PlayerService())
         .environment(FavoritesManager.shared)
 }

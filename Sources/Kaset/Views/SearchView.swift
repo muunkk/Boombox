@@ -11,7 +11,7 @@ struct SearchView: View {
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @Environment(LibraryViewModel.self) private var libraryViewModel: LibraryViewModel?
     @Environment(GlobalNavigationCoordinator.self) private var globalNavigation
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
 
     /// External trigger for focusing the search field (from keyboard shortcut).
@@ -24,9 +24,15 @@ struct SearchView: View {
 
     @State private var recentSearchesStore = RecentSearchesStore.shared
 
-    /// Initializes SearchView with optional focus trigger binding.
-    init(viewModel: SearchViewModel, focusTrigger: Binding<Bool> = .constant(false)) {
+    /// Initializes SearchView with a parent-owned navigation path and optional
+    /// focus trigger binding.
+    init(
+        viewModel: SearchViewModel,
+        navigationPath: Binding<NavigationPath>,
+        focusTrigger: Binding<Bool> = .constant(false)
+    ) {
         _viewModel = State(initialValue: viewModel)
+        _navigationPath = navigationPath
         _focusTrigger = focusTrigger
     }
 
@@ -50,6 +56,9 @@ struct SearchView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
+        // Silences PlayerBar's hidden Space / ⌘-arrow shortcuts while the search
+        // field is focused so typing and caret navigation work normally.
+        .environment(\.isTextEntryFocused, self.isSearchFieldFocused)
         .onAppear {
             self.isSearchFieldFocused = true
         }
@@ -79,8 +88,10 @@ struct SearchView: View {
                 }
             }
 
-            // Filter chips
-            if !self.viewModel.results.isEmpty {
+            // Filter chips — keep them visible whenever a search has produced a
+            // result (or a no-results) view, so a zero-result filter doesn't trap
+            // the user with no way back to All/another filter.
+            if self.viewModel.loadingState == .loaded || self.viewModel.loadingState == .loadingMore {
                 self.filterChips
             }
         }
@@ -555,7 +566,7 @@ struct SearchView: View {
         Divider()
 
         Button {
-            SongActionsHelper.addToLibrary(song, playerService: self.playerService)
+            Task { await SongActionsHelper.addToLibrary(song, client: self.viewModel.client) }
         } label: {
             Label("Add to Library", systemImage: "plus.circle")
         }
@@ -804,9 +815,10 @@ private extension SearchSection {
 
 #Preview {
     @Previewable @State var focusTrigger = false
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    SearchView(viewModel: SearchViewModel(client: client), focusTrigger: $focusTrigger)
+    SearchView(viewModel: SearchViewModel(client: client), navigationPath: $navigationPath, focusTrigger: $focusTrigger)
         .environment(PlayerService())
         .environment(FavoritesManager.shared)
 }

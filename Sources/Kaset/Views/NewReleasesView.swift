@@ -5,7 +5,7 @@ import SwiftUI
 struct NewReleasesView: View {
     @State var viewModel: NewReleasesViewModel
     @Environment(PlayerService.self) private var playerService
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
@@ -35,6 +35,8 @@ struct NewReleasesView: View {
             .localizedNavigationTitle("New Releases")
             .navigationDestinations(client: self.viewModel.client)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(AccessibilityID.NewReleases.container)
         .navigationSwipeGestures(path: self.$navigationPath)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
@@ -117,8 +119,9 @@ struct NewReleasesView: View {
 }
 
 #Preview {
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    NewReleasesView(viewModel: NewReleasesViewModel(client: client))
+    NewReleasesView(viewModel: NewReleasesViewModel(client: client), navigationPath: $navigationPath)
         .environment(PlayerService())
 }

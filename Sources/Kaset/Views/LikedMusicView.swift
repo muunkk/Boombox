@@ -9,7 +9,7 @@ struct LikedMusicView: View {
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @State private var networkMonitor = NetworkMonitor.shared
 
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var hoveredSongId: String?
 
     var body: some View {
@@ -300,9 +300,10 @@ struct LikedMusicView: View {
 }
 
 #Preview {
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    LikedMusicView(viewModel: LikedMusicViewModel(client: client))
+    LikedMusicView(viewModel: LikedMusicViewModel(client: client), navigationPath: $navigationPath)
         .environment(PlayerService())
         .environment(FavoritesManager.shared)
 }
