@@ -541,3 +541,110 @@
 "Your Library" = "Pustaka Anda";
 
 "Your library is empty" = "Pustaka Anda kosong";
+
+"Add a menu bar item with a compact player." = "Tambahkan item bilah menu dengan pemutar ringkas.";
+
+"Audio Output" = "Keluaran Audio";
+
+"Audio Output: %@" = "Keluaran Audio: %@";
+
+/* Label for a YouTube brand account. */
+"Brand" = "Brand";
+
+"Choose something to play" = "Pilih sesuatu untuk diputar";
+
+"Clear All" = "Hapus Semua";
+
+"Conflicts with %@" = "Bertentangan dengan %@";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "Tidak dapat memulai mix. Silakan coba lagi.";
+
+"Density" = "Kepadatan";
+
+"Display Mode" = "Mode Tampilan";
+
+"Focus" = "Fokus";
+
+"Global Hotkeys" = "Pintasan Global";
+
+"Global hotkey to open the menu bar player." = "Pintasan global untuk membuka pemutar bilah menu.";
+
+"Google passkeys require Safari for this private app. Sign in there, then paste only the allowlisted YouTube or Google auth cookie rows here. They are imported locally into WebKit and Keychain, then the paste box is cleared." = "Kunci sandi Google memerlukan Safari untuk aplikasi privat ini. Masuklah di sana, lalu tempel hanya baris cookie autentikasi YouTube atau Google yang diizinkan di sini. Cookie diimpor secara lokal ke WebKit dan Keychain, lalu kotak tempel dibersihkan.";
+
+"Hide" = "Sembunyikan";
+
+"Hide Queue" = "Sembunyikan Antrean";
+
+"Import Cookies" = "Impor Cookie";
+
+"In-app shortcuts only fire while Boombox is active. They cannot conflict with shortcuts in other apps." = "Pintasan dalam aplikasi hanya aktif saat Boombox aktif. Pintasan ini tidak dapat bertentangan dengan pintasan di aplikasi lain.";
+
+"Menu Bar Player" = "Pemutar Bilah Menu";
+
+"Menu Bar Shortcut" = "Pintasan Bilah Menu";
+
+"No Output Devices" = "Tidak Ada Perangkat Keluaran";
+
+"Not selected" = "Tidak dipilih";
+
+"Nothing Playing" = "Tidak Ada yang Diputar";
+
+"Now playing artwork for %@ by %@" = "Sampul yang sedang diputar untuk %@ oleh %@";
+
+"Now playing: %@ by %@" = "Sedang diputar: %@ oleh %@";
+
+"Open Boombox" = "Buka Boombox";
+
+"Open YouTube Music in Safari" = "Buka YouTube Music di Safari";
+
+"Output" = "Keluaran";
+
+"Overrides a standard macOS shortcut" = "Menggantikan pintasan macOS standar";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "Pribadi";
+
+/* Type label for a podcast item. */
+"Podcast" = "Podcast";
+
+"Queue is empty" = "Antrean kosong";
+
+"Quick Actions" = "Tindakan Cepat";
+
+"Recent Searches" = "Pencarian Terbaru";
+
+"Refresh Devices" = "Segarkan Perangkat";
+
+"Remove from history" = "Hapus dari riwayat";
+
+"Reset" = "Atur Ulang";
+
+"Reset All to Defaults" = "Atur Ulang Semua ke Default";
+
+"Safari cookie rows or Cookie header" = "Baris cookie Safari atau header Cookie";
+
+"Search \"%@\"" = "Cari \"%@\"";
+
+"Search music…" = "Cari musik…";
+
+"Show Queue" = "Tampilkan Antrean";
+
+"Show in Menu Bar" = "Tampilkan di Bilah Menu";
+
+"Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" = "Tampilkan teks romanisasi (romaji, pinyin, dll.) di bawah lirik non-Latin";
+
+/* Type label for a song item. */
+"Song" = "Lagu";
+
+"Suggestions" = "Saran";
+
+"Top result" = "Hasil teratas";
+
+"Use Safari for passkey sign-in" = "Gunakan Safari untuk masuk dengan kunci sandi";
+
+"Use embedded sign-in" = "Gunakan masuk tertanam";
+
+"Volume" = "Volume";
+
+"Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "Berfungsi di seluruh sistem saat Boombox berjalan. Dinonaktifkan sampai Tampilkan di Bilah Menu aktif.";

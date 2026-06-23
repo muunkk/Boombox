@@ -130,15 +130,15 @@ struct FavoriteItem: Identifiable, Codable {
     var typeLabel: String {
         switch self.itemType {
         case .song:
-            "Song"
+            String(localized: "Song")
         case .album:
-            "Album"
+            String(localized: "Album")
         case .playlist:
-            "Playlist"
+            String(localized: "Playlist")
         case .artist:
-            "Artist"
+            String(localized: "Artist")
         case .podcastShow:
-            "Podcast"
+            String(localized: "Podcast")
         }
     }
 }

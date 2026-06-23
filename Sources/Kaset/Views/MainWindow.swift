@@ -183,6 +183,11 @@ struct MainWindow: View {
             ContentActionErrorToast()
                 .padding(.top, 60)
         }
+        .overlay(alignment: .top) {
+            // Error toast for playback failures (e.g. a Mix that could not start)
+            PlaybackErrorToast()
+                .padding(.top, 60)
+        }
         .onChange(of: self.showCommandBar.wrappedValue) { _, newValue in
             if newValue {
                 self.isCommandBarPresented = true

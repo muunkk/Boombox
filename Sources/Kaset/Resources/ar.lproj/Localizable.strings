@@ -579,3 +579,18 @@
 "Volume" = "مستوى الصوت";
 "Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "يعمل على مستوى النظام أثناء تشغيل Boombox. معطّل حتى يتم تفعيل \"إظهار في شريط القوائم\".";
 "Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" = "إظهار النص المكتوب بالحروف اللاتينية (روماجي، بينيين، إلخ) أسفل الكلمات غير اللاتينية";
+
+/* Label for a YouTube brand account. */
+"Brand" = "علامة تجارية";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "تعذّر بدء المزيج. يرجى المحاولة مرة أخرى.";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "شخصي";
+
+/* Type label for a podcast item. */
+"Podcast" = "بودكاست";
+
+/* Type label for a song item. */
+"Song" = "أغنية";

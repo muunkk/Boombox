@@ -579,3 +579,18 @@
 "Volume" = "Ses Düzeyi";
 "Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "Boombox çalışırken sistem genelinde çalışır. Menü Çubuğunda Göster açılana kadar devre dışıdır.";
 "Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" = "Latin olmayan şarkı sözlerinin altında romanize edilmiş metni (romaji, pinyin vb.) göster";
+
+/* Label for a YouTube brand account. */
+"Brand" = "Marka";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "Mix başlatılamadı. Lütfen tekrar deneyin.";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "Kişisel";
+
+/* Type label for a podcast item. */
+"Podcast" = "Podcast";
+
+/* Type label for a song item. */
+"Song" = "Şarkı";

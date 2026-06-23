@@ -547,7 +547,6 @@ final class YTMusicClient: YTMusicClientProtocol {
         self.logger.info("Resetting client session state for account switch")
         self.continuationTokens.removeAll()
         self.searchContinuationToken = nil
-        self.likedSongsContinuationToken = nil
     }
 
     /// Fetches search suggestions for autocomplete.
@@ -663,14 +662,6 @@ final class YTMusicClient: YTMusicClientProtocol {
 
     // MARK: - Liked Songs with Pagination
 
-    /// Continuation token for liked songs pagination.
-    private var likedSongsContinuationToken: String?
-
-    /// Whether more liked songs are available to load.
-    var hasMoreLikedSongs: Bool {
-        self.likedSongsContinuationToken != nil
-    }
-
     /// Fetches the user's liked songs with pagination support.
     /// Uses VLLM (Liked Music playlist) which returns all songs with proper pagination,
     /// unlike FEmusic_liked_videos which is limited to ~13 songs.
@@ -686,50 +677,36 @@ final class YTMusicClient: YTMusicClientProtocol {
         // Use playlist parser since VLLM returns playlist format
         let playlistResponse = PlaylistParser.parsePlaylistWithContinuation(data, playlistId: "LM")
 
-        // Store continuation token for pagination
-        self.likedSongsContinuationToken = playlistResponse.continuationToken
-        let hasMore = playlistResponse.hasMore
-
-        // Convert to LikedSongsResponse format
+        // The continuation token travels back to the caller via `response`, which
+        // owns its own pagination cursor — no shared client state to contaminate.
         let response = LikedSongsResponse(
             songs: playlistResponse.detail.tracks,
             continuationToken: playlistResponse.continuationToken
         )
 
-        self.logger.info("Parsed \(response.songs.count) liked songs, hasMore: \(hasMore)")
+        self.logger.info("Parsed \(response.songs.count) liked songs, hasMore: \(response.hasMore)")
         return response
     }
 
     /// Fetches the next batch of liked songs via continuation.
+    /// The caller supplies the continuation token returned by the previous page,
+    /// so pagination state is scoped per request rather than shared on the client.
     /// Returns nil if no more songs are available.
-    func getLikedSongsContinuation() async throws -> LikedSongsResponse? {
-        guard let token = likedSongsContinuationToken else {
-            self.logger.debug("No liked songs continuation token available")
-            return nil
-        }
-
+    func getLikedSongsContinuation(token: String) async throws -> LikedSongsResponse? {
         self.logger.info("Fetching liked songs continuation")
 
-        do {
-            let continuationData = try await requestContinuation(token)
-            // Use playlist continuation parser since VLLM returns playlist format
-            let playlistResponse = PlaylistParser.parsePlaylistContinuation(continuationData)
-            self.likedSongsContinuationToken = playlistResponse.continuationToken
-            let hasMore = playlistResponse.hasMore
+        let continuationData = try await requestContinuation(token)
+        // Use playlist continuation parser since VLLM returns playlist format
+        let playlistResponse = PlaylistParser.parsePlaylistContinuation(continuationData)
 
-            // Convert to LikedSongsResponse format
-            let response = LikedSongsResponse(
-                songs: playlistResponse.tracks,
-                continuationToken: playlistResponse.continuationToken
-            )
+        // Convert to LikedSongsResponse format
+        let response = LikedSongsResponse(
+            songs: playlistResponse.tracks,
+            continuationToken: playlistResponse.continuationToken
+        )
 
-            self.logger.info("Liked songs continuation loaded: \(response.songs.count) songs, hasMore: \(hasMore)")
-            return response
-        } catch {
-            self.logger.warning("Failed to fetch liked songs continuation: \(error.localizedDescription)")
-            self.likedSongsContinuationToken = nil
-            throw error
-        }
+        self.logger.info("Liked songs continuation loaded: \(response.songs.count) songs, hasMore: \(response.hasMore)")
+        return response
     }
 
     // MARK: - Playlist with Pagination

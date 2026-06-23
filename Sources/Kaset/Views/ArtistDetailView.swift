@@ -57,6 +57,17 @@ struct ArtistDetailView: View {
         .refreshable {
             await self.viewModel.refresh()
         }
+        .alert(
+            String(localized: "Subscription Error"),
+            isPresented: Binding(
+                get: { self.viewModel.subscriptionError != nil },
+                set: { if !$0 { self.viewModel.clearSubscriptionError() } }
+            )
+        ) {
+            Button(String(localized: "OK")) { self.viewModel.clearSubscriptionError() }
+        } message: {
+            Text(self.viewModel.subscriptionError ?? String(localized: "An unknown error occurred"))
+        }
     }
 
     // MARK: - Views

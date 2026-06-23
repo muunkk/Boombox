@@ -77,7 +77,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
     private var _newReleasesContinuationIndex = 0
     private var _historyContinuationIndex = 0
     private var _podcastsContinuationIndex = 0
-    private var _likedSongsContinuationIndex = 0
 
     var hasMoreHomeSections: Bool {
         self._homeContinuationIndex < self.homeContinuationSections.count
@@ -105,10 +104,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
 
     var hasMorePodcastsSections: Bool {
         self._podcastsContinuationIndex < self.podcastsContinuationSections.count
-    }
-
-    var hasMoreLikedSongs: Bool {
-        self._likedSongsContinuationIndex < self.likedSongsContinuationSongs.count
     }
 
     private var _searchContinuationIndex = 0
@@ -459,7 +454,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         self._newReleasesContinuationIndex = 0
         self._historyContinuationIndex = 0
         self._podcastsContinuationIndex = 0
-        self._likedSongsContinuationIndex = 0
         self._searchContinuationIndex = 0
     }
 
@@ -497,23 +491,46 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
 
     func getLikedSongs() async throws -> LikedSongsResponse {
         self.getLikedSongsCalled = true
-        self._likedSongsContinuationIndex = 0
         if let error = shouldThrowError { throw error }
         let hasMore = !self.likedSongsContinuationSongs.isEmpty
-        return LikedSongsResponse(songs: self.likedSongs, continuationToken: hasMore ? "mock-token" : nil)
+        // Encode the page index in the continuation token so the continuation
+        // lookup is scoped per request, mirroring the real client.
+        return LikedSongsResponse(
+            songs: self.likedSongs,
+            continuationToken: hasMore ? Self.makeLikedSongsToken(index: 0) : nil
+        )
     }
 
-    func getLikedSongsContinuation() async throws -> LikedSongsResponse? {
+    func getLikedSongsContinuation(token: String) async throws -> LikedSongsResponse? {
         self.getLikedSongsContinuationCalled = true
         self.getLikedSongsContinuationCallCount += 1
         if let error = shouldThrowError { throw error }
-        guard self._likedSongsContinuationIndex < self.likedSongsContinuationSongs.count else {
+        guard let index = Self.parseLikedSongsToken(token),
+              index < self.likedSongsContinuationSongs.count
+        else {
             return nil
         }
-        let songs = self.likedSongsContinuationSongs[self._likedSongsContinuationIndex]
-        self._likedSongsContinuationIndex += 1
-        let hasMore = self._likedSongsContinuationIndex < self.likedSongsContinuationSongs.count
-        return LikedSongsResponse(songs: songs, continuationToken: hasMore ? "mock-token-\(self._likedSongsContinuationIndex)" : nil)
+        let songs = self.likedSongsContinuationSongs[index]
+        let nextIndex = index + 1
+        let hasMore = nextIndex < self.likedSongsContinuationSongs.count
+        return LikedSongsResponse(
+            songs: songs,
+            continuationToken: hasMore ? Self.makeLikedSongsToken(index: nextIndex) : nil
+        )
+    }
+
+    /// Builds an opaque liked-songs continuation token that encodes the page index.
+    private static func makeLikedSongsToken(index: Int) -> String {
+        "liked-cont|\(index)"
+    }
+
+    /// Parses a token produced by `makeLikedSongsToken` back into its page index.
+    private static func parseLikedSongsToken(_ token: String) -> Int? {
+        let parts = token.split(separator: "|", omittingEmptySubsequences: false)
+        guard parts.count == 2, parts[0] == "liked-cont", let index = Int(parts[1]) else {
+            return nil
+        }
+        return index
     }
 
     func getPlaylist(id: String) async throws -> PlaylistTracksResponse {
@@ -796,7 +813,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         self._newReleasesContinuationIndex = 0
         self._historyContinuationIndex = 0
         self._podcastsContinuationIndex = 0
-        self._likedSongsContinuationIndex = 0
         self.searchCalled = false
         self.searchQueries = []
         self.getSearchSuggestionsCalled = false

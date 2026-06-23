@@ -267,6 +267,75 @@ struct ContentActionErrorToast: View {
     }
 }
 
+// MARK: - PlaybackErrorToast
+
+/// A toast that observes `PlayerService.lastPlaybackError` and auto-dismisses.
+///
+/// Surfaces playback failures that previously failed silently (e.g. a Mix that
+/// could not start because of an offline/API error or empty result). Add this to
+/// MainWindow as an overlay (mirrors `AccountErrorToast`). The observed error is
+/// cleared on `PlayerService` after display so it does not re-trigger.
+@available(macOS 26.0, *)
+struct PlaybackErrorToast: View {
+    @Environment(PlayerService.self) private var playerService
+
+    @State private var isVisible = false
+    @State private var dismissTask: Task<Void, Never>?
+
+    /// Duration before auto-dismiss in seconds.
+    private let autoDismissDelay: Duration = .seconds(4)
+
+    var body: some View {
+        Group {
+            if self.isVisible, let message = playerService.lastPlaybackError {
+                ToastView(
+                    message: message,
+                    isError: true,
+                    onDismiss: { self.dismiss() }
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(duration: 0.3), value: self.isVisible)
+        .onChange(of: self.playerService.lastPlaybackError) { _, newValue in
+            if newValue != nil {
+                self.show()
+            }
+        }
+    }
+
+    // MARK: - Private Methods
+
+    private func show() {
+        // Cancel any existing dismiss task
+        self.dismissTask?.cancel()
+
+        self.isVisible = true
+
+        // Announce to VoiceOver so the transient toast is read regardless of focus.
+        if let message = playerService.lastPlaybackError {
+            AccessibilityNotification.Announcement(message).post()
+        }
+
+        // Schedule auto-dismiss
+        self.dismissTask = Task {
+            try? await Task.sleep(for: self.autoDismissDelay)
+            if !Task.isCancelled {
+                await MainActor.run {
+                    self.dismiss()
+                }
+            }
+        }
+    }
+
+    private func dismiss() {
+        self.isVisible = false
+        self.playerService.lastPlaybackError = nil
+        self.dismissTask?.cancel()
+        self.dismissTask = nil
+    }
+}
+
 // MARK: - AccessibilityID.Toast
 
 extension AccessibilityID {
