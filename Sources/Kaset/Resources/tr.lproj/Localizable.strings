@@ -530,3 +530,67 @@
 
 "Your library is empty" = "Kitaplığınız boş";
 
+/* Added in pass 2: previously-missing UI strings. */
+"Add a menu bar item with a compact player." = "Menü çubuğuna kompakt oynatıcılı bir öğe ekleyin.";
+"Audio Output" = "Ses Çıkışı";
+"Audio Output: %@" = "Ses Çıkışı: %@";
+"Choose something to play" = "Çalmak için bir şey seçin";
+"Clear All" = "Tümünü Temizle";
+"Conflicts with %@" = "%@ ile çakışıyor";
+"Density" = "Yoğunluk";
+"Display Mode" = "Görüntüleme Modu";
+"Episodes" = "Bölümler";
+"Focus" = "Odak";
+"Global Hotkeys" = "Genel Kısayollar";
+"Global hotkey to open the menu bar player." = "Menü çubuğu oynatıcısını açmak için genel kısayol.";
+"Google passkeys require Safari for this private app. Sign in there, then paste only the allowlisted YouTube or Google auth cookie rows here. They are imported locally into WebKit and Keychain, then the paste box is cleared." = "Bu özel uygulama için Google passkey’leri Safari gerektirir. Orada oturum açın, ardından yalnızca izin verilen YouTube veya Google kimlik doğrulama çerez satırlarını buraya yapıştırın. Bunlar yerel olarak WebKit ve Anahtar Zinciri’ne aktarılır, sonra yapıştırma kutusu temizlenir.";
+"Hide" = "Gizle";
+"Hide Queue" = "Kuyruğu Gizle";
+"Import Cookies" = "Çerezleri İçe Aktar";
+"In-app shortcuts only fire while Boombox is active. They cannot conflict with shortcuts in other apps." = "Uygulama içi kısayollar yalnızca Boombox etkinken çalışır. Diğer uygulamalardaki kısayollarla çakışamaz.";
+"Menu Bar Player" = "Menü Çubuğu Oynatıcısı";
+"Menu Bar Shortcut" = "Menü Çubuğu Kısayolu";
+"No Output Devices" = "Çıkış Aygıtı Yok";
+"Not selected" = "Seçili değil";
+"Nothing Playing" = "Hiçbir Şey Çalmıyor";
+"Now playing artwork for %@ by %@" = "Şu an çalan kapak: %@ — %@";
+"Now playing: %@ by %@" = "Şu an çalıyor: %@ — %@";
+"Open Boombox" = "Boombox’ı Aç";
+"Open YouTube Music in Safari" = "YouTube Music’i Safari’de Aç";
+"Output" = "Çıkış";
+"Overrides a standard macOS shortcut" = "Standart bir macOS kısayolunu geçersiz kılar";
+"Queue is empty" = "Kuyruk boş";
+"Quick Actions" = "Hızlı Eylemler";
+"Recent Searches" = "Son Aramalar";
+"Refresh Devices" = "Aygıtları Yenile";
+"Remove from history" = "Geçmişten kaldır";
+"Reset" = "Sıfırla";
+"Reset All to Defaults" = "Tümünü Varsayılanlara Sıfırla";
+"Safari cookie rows or Cookie header" = "Safari çerez satırları veya Cookie başlığı";
+"Search \"%@\"" = "\"%@\" ara";
+"Search music…" = "Müzik ara…";
+"Search songs, albums, artists..." = "Şarkı, albüm, sanatçı ara...";
+"Show Queue" = "Kuyruğu Göster";
+"Show in Menu Bar" = "Menü Çubuğunda Göster";
+"Suggestions" = "Öneriler";
+"Top result" = "En iyi sonuç";
+"Use Safari for passkey sign-in" = "Passkey ile oturum açmak için Safari kullan";
+"Use embedded sign-in" = "Gömülü oturum açmayı kullan";
+"Volume" = "Ses Düzeyi";
+"Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "Boombox çalışırken sistem genelinde çalışır. Menü Çubuğunda Göster açılana kadar devre dışıdır.";
+"Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" = "Latin olmayan şarkı sözlerinin altında romanize edilmiş metni (romaji, pinyin vb.) göster";
+
+/* Label for a YouTube brand account. */
+"Brand" = "Marka";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "Mix başlatılamadı. Lütfen tekrar deneyin.";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "Kişisel";
+
+/* Type label for a podcast item. */
+"Podcast" = "Podcast";
+
+/* Type label for a song item. */
+"Song" = "Şarkı";

@@ -53,15 +53,24 @@ struct NewReleasesView: View {
 
     // MARK: - Views
 
+    @ViewBuilder
     private var contentView: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 32) {
-                ForEach(self.viewModel.sections) { section in
-                    self.sectionView(section)
+        if self.viewModel.sections.isEmpty {
+            ContentUnavailableView(
+                "Nothing here yet",
+                systemImage: "music.note",
+                description: Text("No content is available right now. Pull to refresh.")
+            )
+        } else {
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 32) {
+                    ForEach(self.viewModel.sections) { section in
+                        self.sectionView(section)
+                    }
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 20)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 20)
         }
     }
 

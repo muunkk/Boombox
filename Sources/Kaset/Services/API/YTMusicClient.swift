@@ -547,7 +547,6 @@ final class YTMusicClient: YTMusicClientProtocol {
         self.logger.info("Resetting client session state for account switch")
         self.continuationTokens.removeAll()
         self.searchContinuationToken = nil
-        self.likedSongsContinuationToken = nil
     }
 
     /// Fetches search suggestions for autocomplete.
@@ -663,14 +662,6 @@ final class YTMusicClient: YTMusicClientProtocol {
 
     // MARK: - Liked Songs with Pagination
 
-    /// Continuation token for liked songs pagination.
-    private var likedSongsContinuationToken: String?
-
-    /// Whether more liked songs are available to load.
-    var hasMoreLikedSongs: Bool {
-        self.likedSongsContinuationToken != nil
-    }
-
     /// Fetches the user's liked songs with pagination support.
     /// Uses VLLM (Liked Music playlist) which returns all songs with proper pagination,
     /// unlike FEmusic_liked_videos which is limited to ~13 songs.
@@ -686,50 +677,36 @@ final class YTMusicClient: YTMusicClientProtocol {
         // Use playlist parser since VLLM returns playlist format
         let playlistResponse = PlaylistParser.parsePlaylistWithContinuation(data, playlistId: "LM")
 
-        // Store continuation token for pagination
-        self.likedSongsContinuationToken = playlistResponse.continuationToken
-        let hasMore = playlistResponse.hasMore
-
-        // Convert to LikedSongsResponse format
+        // The continuation token travels back to the caller via `response`, which
+        // owns its own pagination cursor — no shared client state to contaminate.
         let response = LikedSongsResponse(
             songs: playlistResponse.detail.tracks,
             continuationToken: playlistResponse.continuationToken
         )
 
-        self.logger.info("Parsed \(response.songs.count) liked songs, hasMore: \(hasMore)")
+        self.logger.info("Parsed \(response.songs.count) liked songs, hasMore: \(response.hasMore)")
         return response
     }
 
     /// Fetches the next batch of liked songs via continuation.
+    /// The caller supplies the continuation token returned by the previous page,
+    /// so pagination state is scoped per request rather than shared on the client.
     /// Returns nil if no more songs are available.
-    func getLikedSongsContinuation() async throws -> LikedSongsResponse? {
-        guard let token = likedSongsContinuationToken else {
-            self.logger.debug("No liked songs continuation token available")
-            return nil
-        }
-
+    func getLikedSongsContinuation(token: String) async throws -> LikedSongsResponse? {
         self.logger.info("Fetching liked songs continuation")
 
-        do {
-            let continuationData = try await requestContinuation(token)
-            // Use playlist continuation parser since VLLM returns playlist format
-            let playlistResponse = PlaylistParser.parsePlaylistContinuation(continuationData)
-            self.likedSongsContinuationToken = playlistResponse.continuationToken
-            let hasMore = playlistResponse.hasMore
+        let continuationData = try await requestContinuation(token)
+        // Use playlist continuation parser since VLLM returns playlist format
+        let playlistResponse = PlaylistParser.parsePlaylistContinuation(continuationData)
 
-            // Convert to LikedSongsResponse format
-            let response = LikedSongsResponse(
-                songs: playlistResponse.tracks,
-                continuationToken: playlistResponse.continuationToken
-            )
+        // Convert to LikedSongsResponse format
+        let response = LikedSongsResponse(
+            songs: playlistResponse.tracks,
+            continuationToken: playlistResponse.continuationToken
+        )
 
-            self.logger.info("Liked songs continuation loaded: \(response.songs.count) songs, hasMore: \(hasMore)")
-            return response
-        } catch {
-            self.logger.warning("Failed to fetch liked songs continuation: \(error.localizedDescription)")
-            self.likedSongsContinuationToken = nil
-            throw error
-        }
+        self.logger.info("Liked songs continuation loaded: \(response.songs.count) songs, hasMore: \(response.hasMore)")
+        return response
     }
 
     // MARK: - Playlist with Pagination
@@ -857,6 +834,9 @@ final class YTMusicClient: YTMusicClientProtocol {
                     hasMoreSongs: detail.hasMoreSongs,
                     songsBrowseId: detail.songsBrowseId,
                     songsParams: detail.songsParams,
+                    hasMoreAlbums: detail.hasMoreAlbums,
+                    albumsBrowseId: detail.albumsBrowseId,
+                    albumsParams: detail.albumsParams,
                     mixPlaylistId: detail.mixPlaylistId,
                     mixVideoId: detail.mixVideoId
                 )
@@ -1360,11 +1340,16 @@ final class YTMusicClient: YTMusicClientProtocol {
 
         guard let cookieHeader = await webKitManager.cookieHeader(for: "youtube.com") else {
             self.logger.error("No cookies found for youtube.com domain")
+            // Route through the global recovery so the LoginSheet appears, just as
+            // the 401/403 network path does — otherwise a screen catching this
+            // would render a buttonless "Authentication Required" card.
+            self.authService.sessionExpired()
             throw YTMusicError.notAuthenticated
         }
 
         guard let sapisid = await webKitManager.getSAPISID() else {
             self.logger.error("SAPISID cookie not found or expired")
+            self.authService.sessionExpired()
             throw YTMusicError.authExpired
         }
 
@@ -1511,11 +1496,13 @@ final class YTMusicClient: YTMusicClientProtocol {
             throw YTMusicError.authExpired
         case let .httpError(statusCode):
             self.logger.error("API error: HTTP \(statusCode)")
-            // 400/403 are the failure modes a stale/rotated API key produces; clear
-            // the cached key so a process-lifetime-cached bad key can self-heal.
-            if statusCode == 400 || statusCode == 403 {
-                self.apiKeyProvider.invalidate()
-            }
+            // Note: we intentionally do NOT invalidate the API key here. YouTube
+            // Music returns HTTP 400 for many endpoint-specific, key-unrelated
+            // failures (deleted/invalid browse or playlist id, malformed/expired
+            // continuation token, non-navigable artist id, …). The genuine
+            // dead/rotated-key signal (401/403) is routed to the `.authError`
+            // branch above, which already invalidates the key, so a single
+            // routine 400 no longer forces the next valid request to re-bootstrap.
             throw YTMusicError.apiError(
                 message: "HTTP \(statusCode)",
                 code: statusCode

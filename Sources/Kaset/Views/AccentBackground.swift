@@ -94,7 +94,12 @@ struct AccentBackground: View {
             return
         }
 
-        let extracted = ColorExtractor.extractPalette(from: image)
+        // Run the synchronous CGImage decode + bitmap rasterization + sampling
+        // off the MainActor to avoid UI jank (the full-resolution image is
+        // returned by ImageCache, so the extraction is non-trivial).
+        let extracted = await Task.detached(priority: .userInitiated) {
+            ColorExtractor.extractPalette(from: image)
+        }.value
         await AccentPaletteCache.shared.store(extracted, for: url)
         guard !Task.isCancelled else { return }
         self.palette = extracted

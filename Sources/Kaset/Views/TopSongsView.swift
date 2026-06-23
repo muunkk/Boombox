@@ -8,31 +8,41 @@ struct TopSongsView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
+    @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
         Group {
-            switch self.viewModel.loadingState {
-            case .idle, .loading:
-                if self.viewModel.songs.isEmpty {
-                    LoadingView(String(localized: "Loading songs..."))
-                } else {
-                    // Show existing songs while loading more
-                    self.songsListView
-                        .overlay(alignment: .top) {
-                            if self.viewModel.loadingState == .loading {
-                                ProgressView()
-                                    .controlSize(.regular)
-                                    .frame(width: 20, height: 20)
-                                    .padding()
-                            }
-                        }
+            if !self.networkMonitor.isConnected, self.viewModel.songs.isEmpty {
+                ErrorView(
+                    title: String(localized: "No Connection"),
+                    message: String(localized: "Please check your internet connection and try again.")
+                ) {
+                    Task { await self.viewModel.load() }
                 }
-            case .loaded, .loadingMore:
-                self.songsListView
-            case let .error(error):
-                ErrorView(error: error) {
-                    Task {
-                        await self.viewModel.load()
+            } else {
+                switch self.viewModel.loadingState {
+                case .idle, .loading:
+                    if self.viewModel.songs.isEmpty {
+                        LoadingView(String(localized: "Loading songs..."))
+                    } else {
+                        // Show existing songs while loading more
+                        self.songsListView
+                            .overlay(alignment: .top) {
+                                if self.viewModel.loadingState == .loading {
+                                    ProgressView()
+                                        .controlSize(.regular)
+                                        .frame(width: 20, height: 20)
+                                        .padding()
+                                }
+                            }
+                    }
+                case .loaded, .loadingMore:
+                    self.songsListView
+                case let .error(error):
+                    ErrorView(error: error) {
+                        Task {
+                            await self.viewModel.load()
+                        }
                     }
                 }
             }

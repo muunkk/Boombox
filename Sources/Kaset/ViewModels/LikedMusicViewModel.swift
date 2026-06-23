@@ -19,6 +19,22 @@ final class LikedMusicViewModel {
     /// Whether more songs are available to load.
     private(set) var hasMore: Bool = false
 
+    /// Continuation cursor for the next page of liked songs. Owned by this view
+    /// model (not the shared client) so repeated or concurrent liked-music loads
+    /// never cross pagination state.
+    @ObservationIgnored
+    private var continuationToken: String?
+
+    /// Number of consecutive continuation pages that contained only already-seen
+    /// songs. Used to keep paginating past legitimate duplicates while still
+    /// bounding runaway pagination on overlapping feeds.
+    @ObservationIgnored
+    private var consecutiveEmptyPages = 0
+
+    /// Maximum number of consecutive all-duplicate pages to tolerate before
+    /// giving up on pagination (guards against infinite loops).
+    private static let maxConsecutiveEmptyPages = 3
+
     /// The API client.
     let client: any YTMusicClientProtocol
     private static let logger = DiagnosticsLogger.api
@@ -46,7 +62,9 @@ final class LikedMusicViewModel {
                 mutableSong.likeStatus = .like
                 return mutableSong
             }
+            self.continuationToken = response.continuationToken
             self.hasMore = response.hasMore
+            self.consecutiveEmptyPages = 0
             // Also populate the like status manager cache
             for song in self.songs {
                 SongLikeStatusManager.shared.setStatus(.like, for: song.videoId)
@@ -65,13 +83,16 @@ final class LikedMusicViewModel {
 
     /// Loads more liked songs via continuation.
     func loadMore() async {
-        guard self.loadingState == .loaded, self.hasMore else { return }
+        guard self.loadingState == .loaded,
+              self.hasMore,
+              let token = continuationToken else { return }
 
         self.loadingState = .loadingMore
         Self.logger.info("Loading more liked songs")
 
         do {
-            guard let response = try await client.getLikedSongsContinuation() else {
+            guard let response = try await client.getLikedSongsContinuation(token: token) else {
+                self.continuationToken = nil
                 self.hasMore = false
                 self.loadingState = .loaded
                 return
@@ -89,15 +110,35 @@ final class LikedMusicViewModel {
                     return mutableSong
                 }
 
-            // If no new unique songs were added, stop pagination
+            // A page with no new unique songs does NOT necessarily mean the end of
+            // the liked-music list: an all-duplicate or empty continuation page can
+            // be followed by distinct songs further on. Keep paginating (advancing
+            // the token) while the server still reports more pages, but cap the
+            // number of consecutive all-duplicate/empty pages to avoid runaway loops.
             if newSongs.isEmpty {
-                self.hasMore = false
-                self.loadingState = .loaded
-                Self.logger.info("No new unique songs in continuation, stopping pagination")
+                self.consecutiveEmptyPages += 1
+                if let nextToken = response.continuationToken,
+                   response.hasMore,
+                   self.consecutiveEmptyPages < Self.maxConsecutiveEmptyPages
+                {
+                    self.continuationToken = nextToken
+                    self.hasMore = true
+                    self.loadingState = .loaded
+                    Self.logger.info("Continuation page had only duplicates (\(self.consecutiveEmptyPages)/\(Self.maxConsecutiveEmptyPages)), advancing token")
+                } else {
+                    self.continuationToken = nil
+                    self.hasMore = false
+                    self.loadingState = .loaded
+                    Self.logger.info("No new unique songs in continuation, stopping pagination")
+                }
                 return
             }
 
+            // Found new unique songs — reset the all-duplicate page counter.
+            self.consecutiveEmptyPages = 0
+
             self.songs.append(contentsOf: newSongs)
+            self.continuationToken = response.continuationToken
             self.hasMore = response.hasMore
 
             // Populate the like status manager cache
@@ -122,6 +163,8 @@ final class LikedMusicViewModel {
         self.cancelAllLiveSyncTasks()
         self.songs = []
         self.hasMore = false
+        self.continuationToken = nil
+        self.consecutiveEmptyPages = 0
         await self.load()
     }
 

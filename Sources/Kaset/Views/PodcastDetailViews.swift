@@ -9,6 +9,7 @@ struct PodcastShowView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(LibraryViewModel.self) private var libraryViewModel: LibraryViewModel?
+    @State private var networkMonitor = NetworkMonitor.shared
 
     @State private var episodes: [PodcastEpisode] = []
     @State private var continuationToken: String?
@@ -23,7 +24,16 @@ struct PodcastShowView: View {
 
     var body: some View {
         Group {
-            if case let .error(error) = self.loadingState {
+            if !self.networkMonitor.isConnected, self.episodes.isEmpty {
+                ErrorView(
+                    title: String(localized: "No Connection"),
+                    message: String(localized: "Please check your internet connection and try again.")
+                ) {
+                    // Reset to .idle so loadShow()'s guard allows the retry.
+                    self.loadingState = .idle
+                    Task { await self.loadShow() }
+                }
+            } else if case let .error(error) = self.loadingState {
                 ErrorView(error: error) {
                     // Reset to .idle so loadShow()'s guard allows the retry.
                     self.loadingState = .idle
@@ -182,6 +192,14 @@ struct PodcastShowView: View {
                 ProgressView()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
+            } else if self.episodes.isEmpty {
+                ContentUnavailableView(
+                    "No Episodes",
+                    systemImage: "mic.slash",
+                    description: Text("This show has no published episodes yet.")
+                )
+                .frame(maxWidth: .infinity)
+                .padding()
             } else {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     ForEach(Array(self.previewEpisodes.enumerated()), id: \.element.id) { index, episode in

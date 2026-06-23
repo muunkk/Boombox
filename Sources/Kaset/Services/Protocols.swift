@@ -178,12 +178,12 @@ protocol YTMusicLibraryProviding: Sendable {
     /// Fetches the user's liked songs with pagination support.
     func getLikedSongs() async throws -> LikedSongsResponse
 
-    /// Fetches the next batch of liked songs via continuation.
+    /// Fetches the next batch of liked songs via continuation using a
+    /// caller-held token. Scoping the token per request keeps pagination state
+    /// out of shared client state so concurrent or repeated liked-music loads
+    /// never contaminate each other's pages.
     /// Returns nil if no more songs are available.
-    func getLikedSongsContinuation() async throws -> LikedSongsResponse?
-
-    /// Whether more liked songs are available to load.
-    var hasMoreLikedSongs: Bool { get }
+    func getLikedSongsContinuation(token: String) async throws -> LikedSongsResponse?
 
     /// Fetches playlist details including tracks with pagination support.
     func getPlaylist(id: String) async throws -> PlaylistTracksResponse

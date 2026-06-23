@@ -35,10 +35,6 @@ import Foundation
             false
         }
 
-        var hasMoreLikedSongs: Bool {
-            false
-        }
-
         // MARK: - Mock Data
 
         private let homeSections: [HomeSection]
@@ -265,7 +261,7 @@ import Foundation
             return LikedSongsResponse(songs: self.likedSongs, continuationToken: nil)
         }
 
-        func getLikedSongsContinuation() async throws -> LikedSongsResponse? {
+        func getLikedSongsContinuation(token _: String) async throws -> LikedSongsResponse? {
             nil
         }
 

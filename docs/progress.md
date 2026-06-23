@@ -98,3 +98,36 @@ Toolchain: Swift 6.3.2, Xcode 26.5, SwiftLint 0.64.0, SwiftFormat 0.61.1.
 ## UI-Test Strategy (decision)
 
 Full XCUITest execution is **delegated to CI** (`.github/workflows/tests.yml` → "macOS UI Tests" on macos-26), which is the authoritative merge gate. Local XCUITest runs are blocked by Gatekeeper on Apple Silicon for the unsigned test runner, and are disruptive (grab the GUI). Local runtime verification = build + live-app launch + log/crash capture + unit/VM tests + static audits. A signed local `build-for-testing` + `test-without-building` flow could enable local UI runs later if desired.
+
+---
+
+# Pass 2 — Second `/goal` loop (branch `qa/pass-2-audit-fixes`)
+
+Re-ran the full document → test → fix → retest loop on the post-pass-1 code, with a **bigger, differently-lensed** agent team and **rate-limit-resilient workflows** (after named background agents proved fragile to transient server limits).
+
+| Phase | Result |
+|-------|--------|
+| Catalog refresh | ✅ +10 new stories, 20 behavior updates → **383 stories** |
+| Deep hunt (8 lenses) | ✅ 54 findings (concurrency, crash, error-state, ux/a11y, playback, data, memory, regression) |
+| Adversarial verify | ✅ **51 confirmed, 3 refuted** (3 high, 10 medium, 38 low) |
+| Fix (6 batches + cross-batch completion) | ✅ all 51 fixed |
+| Retest | ✅ **981 unit tests, 0 failures** (×2 runs), swiftlint/swiftformat clean |
+| PR / CI / merge | 🔄 in progress |
+
+**Pass-2 highlights** (full detail in [`audit-findings-pass2.md`](./audit-findings-pass2.md)):
+- **HIGH** — 47–59 user-facing strings missing from the runtime `.lproj` (English leaked in all locales); zero-accessibility queue rows; playWithMix metadata stub + state leak; `play(videoId:)` leaked previous track's like/library state; artist album-pagination dropped.
+- Plus concurrency (volume-scroll lost-update, unguarded web-queue corrections), error-surfacing toasts/alerts, liked-songs per-request pagination, and broad a11y/localization polish.
+
+**Resilience notes (pass 2):** the catalog-refresh workflow crashed once on a transient server rate-limit (null-guarded + resumed); the 8 named hunters died silently on the same limit and were re-run as a workflow; a test SIGTRAP and a cross-suite shared-singleton race were both diagnosed and fixed. Fixes in commits `0cb06f1` + `ed470ef`.
+
+### Fix Batches (Pass 2)
+
+| Batch | Findings |
+|-------|----------|
+| player | P2 playback state/metadata/queue (11) |
+| data | parsers/pagination/client (7) |
+| systems | localization/imagecache/notifications/lyrics (7) |
+| playerui | menubar/volume/queue-ui a11y (5) |
+| viewmodels | artist/playlist/search/topsongs (4) |
+| views | a11y + localization polish (17) |
+| cross-batch | localization runtime keys, error toasts, liked pagination |

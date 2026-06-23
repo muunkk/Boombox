@@ -1,5 +1,29 @@
 import SwiftUI
 
+// MARK: - QueueDisplayEntry
+
+/// Stable, unique identity for a queue row at a given position.
+///
+/// A playlist or album may legitimately contain the same track more than once,
+/// so neither `Song.videoId` nor `Song.id` is unique within a queue. Driving
+/// `ForEach` off a bare videoId collides (dropped rows, wrong row highlighted as
+/// current, tap/remove targeting the wrong copy). Keying on position+videoId
+/// keeps rendering correct even with duplicate tracks. See P2F035.
+@available(macOS 26.0, *)
+struct QueueDisplayEntry: Identifiable {
+    /// Composite "index-videoId" key, unique and stable for a given snapshot.
+    let id: String
+    let index: Int
+    let song: Song
+
+    /// Builds display entries for a queue snapshot.
+    static func entries(for queue: [Song]) -> [QueueDisplayEntry] {
+        queue.enumerated().map { index, song in
+            QueueDisplayEntry(id: "\(index)-\(song.videoId)", index: index, song: song)
+        }
+    }
+}
+
 // MARK: - QueueView
 
 /// Right sidebar panel displaying the playback queue.
@@ -101,10 +125,23 @@ struct QueueView: View {
         .accessibilityIdentifier(AccessibilityID.Queue.emptyState)
     }
 
+    /// Stable per-position+videoId identities for the queue. A playlist/album
+    /// may legitimately repeat a track, so videoId alone is not unique and
+    /// collides under ForEach. See P2F035.
+    private var queueEntries: [QueueDisplayEntry] {
+        QueueDisplayEntry.entries(for: self.playerService.queue)
+    }
+
     private var queueListView: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(Array(self.playerService.queue.enumerated()), id: \.element.videoId) { index, song in
+                // Composite position+videoId identity: a playlist/album may
+                // legitimately repeat a track, so videoId alone is not unique
+                // and collides under ForEach (dropped rows, wrong highlight).
+                // See P2F035.
+                ForEach(self.queueEntries) { entry in
+                    let index = entry.index
+                    let song = entry.song
                     QueueRowView(
                         song: song,
                         isCurrentTrack: index == self.playerService.currentIndex,
@@ -222,6 +259,18 @@ private struct QueueRowView: View {
                     Label("Remove from Queue", systemImage: "minus.circle")
                 }
             }
+        }
+        // VoiceOver: the row is tap-to-play but onTapGesture is not promoted to
+        // an accessible action, so expose play/remove explicitly. Use .contain
+        // so the nested Go-to-Album / Go-to-Artist buttons stay reachable.
+        // See P2F020.
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(Text(self.song.title + ", " + (self.song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : self.song.artistsDisplay)))
+        .accessibilityValue(self.isCurrentTrack ? Text(String(localized: "Now Playing")) : Text(""))
+        .accessibilityAction { self.onTap() }
+        .accessibilityAction(named: Text(String(localized: "Remove from Queue"))) {
+            if !self.isCurrentTrack { self.onRemove() }
         }
     }
 

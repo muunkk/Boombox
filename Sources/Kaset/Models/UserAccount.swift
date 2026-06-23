@@ -49,7 +49,9 @@ public struct UserAccount: Identifiable, Equatable, Sendable, Hashable {
     /// Human-readable label for the account type.
     /// Returns "Personal" for primary accounts, "Brand" for brand accounts.
     public var typeLabel: String {
-        self.isPrimary ? "Personal" : "Brand"
+        self.isPrimary
+            ? String(localized: "Personal")
+            : String(localized: "Brand")
     }
 
     // MARK: - Initialization

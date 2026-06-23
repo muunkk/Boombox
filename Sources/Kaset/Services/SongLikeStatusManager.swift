@@ -250,6 +250,12 @@ final class SongLikeStatusManager {
                 LikeStatusEvent(videoId: song.videoId, status: rollbackStatus, song: song),
                 for: resolvedAccountID
             )
+            // Surface the failure as a transient toast (mirrors content-action errors)
+            // so a reverted like/dislike isn't a silent no-op for the user.
+            ActionErrorPresenter.shared.show(
+                error: error,
+                fallback: String(localized: "Couldn't update the rating. Please try again.")
+            )
             DiagnosticsLogger.api.error("Failed to rate song: \(error.localizedDescription)")
             return rollbackStatus
         }

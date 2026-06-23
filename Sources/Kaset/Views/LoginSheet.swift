@@ -71,7 +71,7 @@ struct LoginSheet: View {
         .padding()
     }
 
-    private var loginHelpText: String {
+    private var loginHelpText: LocalizedStringKey {
         switch self.loginMode {
         case .embedded:
             "Embedded sign-in may work for passwords, but Google passkeys usually need Safari for this private app."

@@ -10,17 +10,27 @@ import SwiftUI
 struct MoodCategoryDetailView: View {
     @State var viewModel: MoodCategoryViewModel
     @Environment(PlayerService.self) private var playerService
+    @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
         Group {
-            switch self.viewModel.loadingState {
-            case .idle, .loading:
-                LoadingView("Loading \(self.viewModel.category.title)...")
-            case .loaded, .loadingMore:
-                self.contentView
-            case let .error(error):
-                ErrorView(error: error) {
-                    Task { await self.viewModel.refresh() }
+            if !self.networkMonitor.isConnected {
+                ErrorView(
+                    title: String(localized: "No Connection"),
+                    message: String(localized: "Please check your internet connection and try again.")
+                ) {
+                    Task { await self.viewModel.load() }
+                }
+            } else {
+                switch self.viewModel.loadingState {
+                case .idle, .loading:
+                    LoadingView("Loading \(self.viewModel.category.title)...")
+                case .loaded, .loadingMore:
+                    self.contentView
+                case let .error(error):
+                    ErrorView(error: error) {
+                        Task { await self.viewModel.refresh() }
+                    }
                 }
             }
         }

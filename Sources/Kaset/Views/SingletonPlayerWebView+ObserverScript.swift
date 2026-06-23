@@ -319,11 +319,20 @@ extension SingletonPlayerWebView {
                         }
                     }
 
+                    // Prefer the real media clock (sub-second floats) and fall back to the
+                    // progress-bar attributes (whole seconds) only when the video element is missing.
+                    const progress = (video && isFinite(video.currentTime))
+                        ? video.currentTime
+                        : (progressBar ? parseInt(progressBar.getAttribute('value') || '0') : 0);
+                    const duration = (video && isFinite(video.duration))
+                        ? video.duration
+                        : (progressBar ? parseInt(progressBar.getAttribute('aria-valuemax') || '0') : 0);
+
                     bridge.postMessage({
                         type: 'STATE_UPDATE',
                         isPlaying: isPlaying,
-                        progress: progressBar ? parseInt(progressBar.getAttribute('value') || '0') : 0,
-                        duration: progressBar ? parseInt(progressBar.getAttribute('aria-valuemax') || '0') : 0,
+                        progress: progress,
+                        duration: duration,
                         title: title,
                         artist: artist,
                         videoId: videoId,

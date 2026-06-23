@@ -11,23 +11,33 @@ struct ArtistDetailView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
+    @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
         Group {
-            switch self.viewModel.loadingState {
-            case .idle, .loading:
-                LoadingView(String(localized: "Loading artist..."))
-            case .loaded, .loadingMore:
-                if let detail = viewModel.artistDetail {
-                    self.contentView(detail)
-                } else {
-                    ErrorView(title: String(localized: "Unable to load artist"), message: String(localized: "Artist not found")) {
+            if !self.networkMonitor.isConnected {
+                ErrorView(
+                    title: String(localized: "No Connection"),
+                    message: String(localized: "Please check your internet connection and try again.")
+                ) {
+                    Task { await self.viewModel.load() }
+                }
+            } else {
+                switch self.viewModel.loadingState {
+                case .idle, .loading:
+                    LoadingView(String(localized: "Loading artist..."))
+                case .loaded, .loadingMore:
+                    if let detail = viewModel.artistDetail {
+                        self.contentView(detail)
+                    } else {
+                        ErrorView(title: String(localized: "Unable to load artist"), message: String(localized: "Artist not found")) {
+                            Task { await self.viewModel.load() }
+                        }
+                    }
+                case let .error(error):
+                    ErrorView(error: error) {
                         Task { await self.viewModel.load() }
                     }
-                }
-            case let .error(error):
-                ErrorView(error: error) {
-                    Task { await self.viewModel.load() }
                 }
             }
         }
@@ -46,6 +56,17 @@ struct ArtistDetailView: View {
         }
         .refreshable {
             await self.viewModel.refresh()
+        }
+        .alert(
+            String(localized: "Subscription Error"),
+            isPresented: Binding(
+                get: { self.viewModel.subscriptionError != nil },
+                set: { if !$0 { self.viewModel.clearSubscriptionError() } }
+            )
+        ) {
+            Button(String(localized: "OK")) { self.viewModel.clearSubscriptionError() }
+        } message: {
+            Text(self.viewModel.subscriptionError ?? String(localized: "An unknown error occurred"))
         }
     }
 

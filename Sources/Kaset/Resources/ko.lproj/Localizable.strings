@@ -549,3 +549,110 @@
 "Your Library" = "내 보관함";
 
 "Your library is empty" = "보관함이 비어 있습니다";
+
+"Add a menu bar item with a compact player." = "메뉴 막대에 간편 플레이어 항목을 추가합니다.";
+
+"Audio Output" = "오디오 출력";
+
+"Audio Output: %@" = "오디오 출력: %@";
+
+/* Label for a YouTube brand account. */
+"Brand" = "브랜드";
+
+"Choose something to play" = "재생할 항목을 선택하세요";
+
+"Clear All" = "모두 지우기";
+
+"Conflicts with %@" = "%@와(과) 충돌";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "믹스를 시작하지 못했습니다. 다시 시도해 주세요.";
+
+"Density" = "밀도";
+
+"Display Mode" = "표시 모드";
+
+"Focus" = "집중";
+
+"Global Hotkeys" = "전역 단축키";
+
+"Global hotkey to open the menu bar player." = "메뉴 막대 플레이어를 여는 전역 단축키입니다.";
+
+"Google passkeys require Safari for this private app. Sign in there, then paste only the allowlisted YouTube or Google auth cookie rows here. They are imported locally into WebKit and Keychain, then the paste box is cleared." = "이 비공개 앱에서 Google 패스키는 Safari가 필요합니다. 거기서 로그인한 다음, 허용된 YouTube 또는 Google 인증 쿠키 행만 여기에 붙여넣으세요. 쿠키는 로컬에서 WebKit과 키체인으로 가져온 후 붙여넣기 상자가 지워집니다.";
+
+"Hide" = "숨기기";
+
+"Hide Queue" = "대기열 숨기기";
+
+"Import Cookies" = "쿠키 가져오기";
+
+"In-app shortcuts only fire while Boombox is active. They cannot conflict with shortcuts in other apps." = "앱 내 단축키는 Boombox가 활성 상태일 때만 작동합니다. 다른 앱의 단축키와 충돌하지 않습니다.";
+
+"Menu Bar Player" = "메뉴 막대 플레이어";
+
+"Menu Bar Shortcut" = "메뉴 막대 단축키";
+
+"No Output Devices" = "출력 장치 없음";
+
+"Not selected" = "선택 안 됨";
+
+"Nothing Playing" = "재생 중인 항목 없음";
+
+"Now playing artwork for %@ by %@" = "%@(아티스트 %@) 재생 중인 아트워크";
+
+"Now playing: %@ by %@" = "재생 중: %@ — %@";
+
+"Open Boombox" = "Boombox 열기";
+
+"Open YouTube Music in Safari" = "Safari에서 YouTube Music 열기";
+
+"Output" = "출력";
+
+"Overrides a standard macOS shortcut" = "표준 macOS 단축키를 재정의함";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "개인";
+
+/* Type label for a podcast item. */
+"Podcast" = "팟캐스트";
+
+"Queue is empty" = "대기열이 비어 있음";
+
+"Quick Actions" = "빠른 동작";
+
+"Recent Searches" = "최근 검색";
+
+"Refresh Devices" = "장치 새로 고침";
+
+"Remove from history" = "기록에서 제거";
+
+"Reset" = "재설정";
+
+"Reset All to Defaults" = "모두 기본값으로 재설정";
+
+"Safari cookie rows or Cookie header" = "Safari 쿠키 행 또는 Cookie 헤더";
+
+"Search \"%@\"" = "\"%@\" 검색";
+
+"Search music…" = "음악 검색…";
+
+"Show Queue" = "대기열 표시";
+
+"Show in Menu Bar" = "메뉴 막대에 표시";
+
+"Show romanized text (romaji, pinyin, etc.) below non-Latin lyrics" = "비라틴 문자 가사 아래에 로마자 표기(로마지, 병음 등) 표시";
+
+/* Type label for a song item. */
+"Song" = "노래";
+
+"Suggestions" = "추천";
+
+"Top result" = "최상위 결과";
+
+"Use Safari for passkey sign-in" = "패스키 로그인에 Safari 사용";
+
+"Use embedded sign-in" = "내장 로그인 사용";
+
+"Volume" = "음량";
+
+"Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "Boombox가 실행되는 동안 시스템 전체에서 작동합니다. 메뉴 막대에 표시가 켜질 때까지 비활성화됩니다.";

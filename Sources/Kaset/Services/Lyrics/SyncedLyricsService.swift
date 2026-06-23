@@ -33,6 +33,14 @@ final class SyncedLyricsService {
     /// In-memory cache keyed by videoId.
     private var cache: [String: LyricResult] = [:]
 
+    /// Insertion order of `cache` keys, used to evict the oldest entries once
+    /// the cache exceeds `Self.maxCacheEntries`. Prevents unbounded growth over
+    /// a long listening session spanning many tracks.
+    private var cacheOrder: [String] = []
+
+    /// Maximum number of cached lyric results retained at once.
+    private static let maxCacheEntries = 100
+
     /// Base synced lyrics before romanization is applied for display.
     private var currentBaseSyncedLyrics: SyncedLyrics?
 
@@ -42,6 +50,20 @@ final class SyncedLyricsService {
     init(providers: [LyricsProvider] = [LRCLibProvider()]) {
         self.providers = providers
         self.observeRomanizationSetting()
+    }
+
+    /// Stores a lyric result in the bounded in-memory cache, evicting the oldest
+    /// entries once the cache exceeds `Self.maxCacheEntries`.
+    private func storeInCache(_ videoId: String, _ result: LyricResult) {
+        if self.cache[videoId] == nil {
+            self.cacheOrder.append(videoId)
+        }
+        self.cache[videoId] = result
+
+        while self.cacheOrder.count > Self.maxCacheEntries {
+            let oldest = self.cacheOrder.removeFirst()
+            self.cache.removeValue(forKey: oldest)
+        }
     }
 
     func fetchLyrics(for info: LyricsSearchInfo) async {
@@ -119,11 +141,11 @@ final class SyncedLyricsService {
         if lyrics.isAvailable {
             self.currentLyrics = .plain(lyrics)
             self.activeProvider = lyrics.source
-            self.cache[videoId] = .plain(lyrics)
+            self.storeInCache(videoId, .plain(lyrics))
         } else {
             self.currentLyrics = .unavailable
             self.activeProvider = nil
-            self.cache[videoId] = .unavailable
+            self.storeInCache(videoId, .unavailable)
         }
     }
 
@@ -259,14 +281,14 @@ final class SyncedLyricsService {
         if let best {
             switch best.result {
             case .synced:
-                self.cache[videoId] = best.result
+                self.storeInCache(videoId, best.result)
                 return .init(result: best.result, activeProvider: best.provider)
             case .plain:
                 if case let .plain(cachedPlain)? = cached {
                     return .init(result: .plain(cachedPlain), activeProvider: cachedPlain.source)
                 }
 
-                self.cache[videoId] = best.result
+                self.storeInCache(videoId, best.result)
                 return .init(result: best.result, activeProvider: best.provider)
             case .unavailable:
                 break
@@ -277,7 +299,7 @@ final class SyncedLyricsService {
             return .init(result: .plain(cachedPlain), activeProvider: cachedPlain.source)
         }
 
-        self.cache[videoId] = .unavailable
+        self.storeInCache(videoId, .unavailable)
         return .init(result: .unavailable, activeProvider: nil)
     }
 

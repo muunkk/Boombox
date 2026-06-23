@@ -20,6 +20,15 @@ final class PlaylistDetailViewModel {
     /// crosses pagination state.
     private var continuationToken: String?
 
+    /// Number of consecutive continuation pages that contained only
+    /// already-seen tracks. Used to keep paginating past legitimate intra-playlist
+    /// duplicates while still bounding runaway pagination on overlapping radio feeds.
+    private var consecutiveEmptyPages = 0
+
+    /// Maximum number of consecutive all-duplicate pages to tolerate before
+    /// giving up on pagination (guards against infinite loops on radio feeds).
+    private static let maxConsecutiveEmptyPages = 3
+
     private let playlist: Playlist
     /// The API client (exposed for add to library action).
     let client: any YTMusicClientProtocol
@@ -172,15 +181,34 @@ final class PlaylistDetailViewModel {
             // Filter out duplicates from the new tracks
             let newTracks = response.tracks.filter { !existingVideoIds.contains($0.videoId) }
 
-            // If no new unique tracks were added, stop pagination
-            // This handles radio playlists that return overlapping data
+            // A page with no new unique tracks does NOT necessarily mean the end of
+            // the playlist: user playlists legitimately contain the same video more
+            // than once, so one continuation page can be all repeats while distinct
+            // tracks remain further on. Keep paginating (advancing the token) as long
+            // as the server still reports more pages, but cap the number of
+            // consecutive all-duplicate pages to avoid runaway loops on overlapping
+            // radio feeds.
             if newTracks.isEmpty {
-                self.continuationToken = nil
-                self.hasMore = false
-                self.loadingState = .loaded
-                self.logger.info("No new unique tracks in continuation, stopping pagination")
+                self.consecutiveEmptyPages += 1
+                if let nextToken = response.continuationToken,
+                   response.hasMore,
+                   self.consecutiveEmptyPages < Self.maxConsecutiveEmptyPages
+                {
+                    self.continuationToken = nextToken
+                    self.hasMore = true
+                    self.loadingState = .loaded
+                    self.logger.info("Continuation page had only duplicates (\(self.consecutiveEmptyPages)/\(Self.maxConsecutiveEmptyPages)), advancing token")
+                } else {
+                    self.continuationToken = nil
+                    self.hasMore = false
+                    self.loadingState = .loaded
+                    self.logger.info("No new unique tracks in continuation, stopping pagination")
+                }
                 return
             }
+
+            // Found new unique tracks — reset the all-duplicate page counter.
+            self.consecutiveEmptyPages = 0
 
             // Append only new tracks to existing playlist
             let allTracks = currentDetail.tracks + newTracks
@@ -218,6 +246,7 @@ final class PlaylistDetailViewModel {
         self.playlistDetail = nil
         self.hasMore = false
         self.continuationToken = nil
+        self.consecutiveEmptyPages = 0
         await self.load()
     }
 }

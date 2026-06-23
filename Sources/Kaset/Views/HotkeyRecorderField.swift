@@ -26,6 +26,9 @@ struct HotkeyRecorderField: View {
                     .frame(minWidth: 110)
                     .foregroundStyle(self.isRecording ? .red : .primary)
             }
+            .accessibilityLabel(Text("Keyboard shortcut"))
+            .accessibilityValue(Text(self.displayText))
+            .accessibilityHint(Text("Activate to record a key combination"))
 
             if !self.isRecording, self.shortcut != nil {
                 Button("Clear") {

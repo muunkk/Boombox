@@ -158,8 +158,14 @@ enum SongActionsHelper {
     /// in the library.
     static func addToLibrary(_ song: Song, client: any YTMusicClientProtocol) async {
         do {
-            // Prefer a token already attached to the song.
-            if let addToken = song.feedbackTokens?.add {
+            // Prefer a token already attached to the song, but only when the song
+            // isn't known to already be in the library. Some parsers emit
+            // toggle-style feedback tokens where `add` is actually the
+            // remove-action endpoint for an in-library song, so trusting it
+            // unconditionally could accidentally remove the song. When
+            // `isInLibrary` is nil (the common list/search case) the optimization
+            // still applies.
+            if song.isInLibrary != true, let addToken = song.feedbackTokens?.add {
                 try await client.editSongLibraryStatus(feedbackTokens: [addToken])
                 DiagnosticsLogger.api.info("Added song to library: \(song.title)")
                 return
@@ -182,6 +188,10 @@ enum SongActionsHelper {
             DiagnosticsLogger.api.info("Added song to library: \(song.title)")
         } catch {
             DiagnosticsLogger.api.error("Failed to add song to library: \(error.localizedDescription)")
+            ActionErrorPresenter.shared.show(
+                error: error,
+                fallback: String(localized: "Couldn’t add to library. Please try again.")
+            )
         }
     }
 
@@ -211,6 +221,10 @@ enum SongActionsHelper {
             DiagnosticsLogger.api.info("Added playlist to library: \(playlist.title)")
         } catch {
             DiagnosticsLogger.api.error("Failed to add playlist to library: \(error.localizedDescription)")
+            ActionErrorPresenter.shared.show(
+                error: error,
+                fallback: String(localized: "Couldn’t add to library. Please try again.")
+            )
         }
     }
 
@@ -240,6 +254,10 @@ enum SongActionsHelper {
             DiagnosticsLogger.api.info("Removed playlist from library: \(playlist.title)")
         } catch {
             DiagnosticsLogger.api.error("Failed to remove playlist from library: \(error.localizedDescription)")
+            ActionErrorPresenter.shared.show(
+                error: error,
+                fallback: String(localized: "Couldn’t remove from library. Please try again.")
+            )
         }
     }
 
@@ -585,6 +603,10 @@ enum SongActionsHelper {
                 DiagnosticsLogger.ui.info("Added album '\(album.title)' (\(songs.count) songs) to play next")
             } catch {
                 DiagnosticsLogger.ui.error("Failed to add album to queue: \(error.localizedDescription)")
+                ActionErrorPresenter.shared.show(
+                    error: error,
+                    fallback: String(localized: "Couldn’t add the album to the queue. Please try again.")
+                )
             }
         }
     }
@@ -664,6 +686,10 @@ enum SongActionsHelper {
                 DiagnosticsLogger.ui.info("Added album '\(album.title)' (\(songs.count) songs) to end of queue")
             } catch {
                 DiagnosticsLogger.ui.error("Failed to add album to queue: \(error.localizedDescription)")
+                ActionErrorPresenter.shared.show(
+                    error: error,
+                    fallback: String(localized: "Couldn’t add the album to the queue. Please try again.")
+                )
             }
         }
     }
@@ -747,6 +773,10 @@ enum SongActionsHelper {
                 DiagnosticsLogger.ui.info("Playing album '\(album.title)' (\(songs.count) songs)")
             } catch {
                 DiagnosticsLogger.ui.error("Failed to play album: \(error.localizedDescription)")
+                ActionErrorPresenter.shared.show(
+                    error: error,
+                    fallback: String(localized: "Couldn’t play the album. Please try again.")
+                )
             }
         }
     }

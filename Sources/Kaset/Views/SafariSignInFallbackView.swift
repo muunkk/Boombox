@@ -116,7 +116,9 @@ struct SafariSignInFallbackView: View {
             do {
                 let result = try await self.webKitManager.importAuthCookies(from: self.cookieText)
                 self.cookieText = ""
-                self.statusMessage = "Imported \(result.importedCount) auth cookies locally. Checking login..."
+                self.statusMessage = String(
+                    localized: "Imported \(result.importedCount) auth cookies locally. Checking login…"
+                )
                 self.onImportCompleted()
             } catch {
                 self.errorMessage = error.localizedDescription

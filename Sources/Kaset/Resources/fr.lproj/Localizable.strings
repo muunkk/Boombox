@@ -550,3 +550,108 @@
 "Your Library" = "Votre bibliothèque";
 
 "Your library is empty" = "Votre bibliothèque est vide";
+
+"Add a menu bar item with a compact player." = "Ajouter un élément à la barre de menus avec un lecteur compact.";
+
+"Audio Output" = "Sortie audio";
+
+"Audio Output: %@" = "Sortie audio : %@";
+
+/* Label for a YouTube brand account. */
+"Brand" = "Marque";
+
+"Choose something to play" = "Choisissez un morceau à écouter";
+
+"Clear All" = "Tout effacer";
+
+"Conflicts with %@" = "En conflit avec %@";
+
+/* Shown when starting a radio/mix fails. */
+"Couldn't start the mix. Please try again." = "Impossible de lancer le mix. Veuillez réessayer.";
+
+"Density" = "Densité";
+
+"Display Mode" = "Mode d’affichage";
+
+"Focus" = "Focus";
+
+"Global Hotkeys" = "Raccourcis globaux";
+
+"Global hotkey to open the menu bar player." = "Raccourci global pour ouvrir le lecteur de la barre de menus.";
+
+"Google passkeys require Safari for this private app. Sign in there, then paste only the allowlisted YouTube or Google auth cookie rows here. They are imported locally into WebKit and Keychain, then the paste box is cleared." = "Les passkeys Google nécessitent Safari pour cette application privée. Connectez-vous là-bas, puis collez ici uniquement les lignes de cookies d’authentification YouTube ou Google autorisées. Elles sont importées localement dans WebKit et le Trousseau, puis le champ de collage est effacé.";
+
+"Hide" = "Masquer";
+
+"Hide Queue" = "Masquer la file d’attente";
+
+"Import Cookies" = "Importer les cookies";
+
+"In-app shortcuts only fire while Boombox is active. They cannot conflict with shortcuts in other apps." = "Les raccourcis intégrés ne fonctionnent que lorsque Boombox est actif. Ils ne peuvent pas entrer en conflit avec les raccourcis d’autres applications.";
+
+"Menu Bar Player" = "Lecteur de la barre de menus";
+
+"Menu Bar Shortcut" = "Raccourci de la barre de menus";
+
+"No Output Devices" = "Aucun périphérique de sortie";
+
+"Not selected" = "Non sélectionné";
+
+"Nothing Playing" = "Aucune lecture en cours";
+
+"Now playing artwork for %@ by %@" = "Pochette en cours de lecture pour %@ par %@";
+
+"Now playing: %@ by %@" = "En cours de lecture : %@ par %@";
+
+"Open Boombox" = "Ouvrir Boombox";
+
+"Open YouTube Music in Safari" = "Ouvrir YouTube Music dans Safari";
+
+"Output" = "Sortie";
+
+"Overrides a standard macOS shortcut" = "Remplace un raccourci macOS standard";
+
+/* Label for a personal (primary) Google account. */
+"Personal" = "Personnel";
+
+/* Type label for a podcast item. */
+"Podcast" = "Podcast";
+
+"Queue is empty" = "La file d’attente est vide";
+
+"Quick Actions" = "Actions rapides";
+
+"Recent Searches" = "Recherches récentes";
+
+"Refresh Devices" = "Actualiser les périphériques";
+
+"Remove from history" = "Supprimer de l’historique";
+
+"Reset" = "Réinitialiser";
+
+"Reset All to Defaults" = "Tout réinitialiser aux valeurs par défaut";
+
+"Safari cookie rows or Cookie header" = "Lignes de cookies Safari ou en-tête Cookie";
+
+"Search \"%@\"" = "Rechercher « %@ »";
+
+"Search music…" = "Rechercher de la musique…";
+
+"Show Queue" = "Afficher la file d’attente";
+
+"Show in Menu Bar" = "Afficher dans la barre de menus";
+
+/* Type label for a song item. */
+"Song" = "Morceau";
+
+"Suggestions" = "Suggestions";
+
+"Top result" = "Meilleur résultat";
+
+"Use Safari for passkey sign-in" = "Utiliser Safari pour la connexion par passkey";
+
+"Use embedded sign-in" = "Utiliser la connexion intégrée";
+
+"Volume" = "Volume";
+
+"Works system-wide while Boombox is running. Disabled until Show in Menu Bar is on." = "Fonctionne à l’échelle du système lorsque Boombox est en cours d’exécution. Désactivé tant que « Afficher dans la barre de menus » n’est pas activé.";

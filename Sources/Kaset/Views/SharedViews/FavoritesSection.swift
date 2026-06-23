@@ -234,7 +234,7 @@ private struct FavoriteItemCard: View {
                 self.isHovering = hovering
             }
         }
-        .accessibilityLabel("\(self.item.title), \(self.item.typeLabel), \(self.item.subtitle ?? "")")
+        .accessibilityLabel(Text("\(self.item.title), \(self.item.typeLabel), \(self.item.subtitle ?? "")"))
         .accessibilityHint(String(localized: "Drag to reorder"))
     }
 

@@ -205,6 +205,7 @@ struct SearchView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(index == self.selectedSuggestionIndex ? .isSelected : [])
     }
 
     private var filterChips: some View {

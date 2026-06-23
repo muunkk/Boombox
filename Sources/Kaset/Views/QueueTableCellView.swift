@@ -103,6 +103,12 @@ class QueueTableCellView: NSView {
         self.artistLabel.font = NSFont.systemFont(ofSize: 11)
         self.artistLabel.textColor = NSColor.secondaryLabelColor
 
+        // Hide the child text fields from the accessibility tree so VoiceOver
+        // reads the row's composed label (see configureAccessibility) rather
+        // than fragmented fields. See P2F019.
+        self.titleLabel.setAccessibilityElement(false)
+        self.artistLabel.setAccessibilityElement(false)
+
         infoStackView.addArrangedSubview(self.titleLabel)
         infoStackView.addArrangedSubview(self.artistLabel)
 
@@ -113,6 +119,9 @@ class QueueTableCellView: NSView {
         self.durationLabel.font = NSFont.systemFont(ofSize: 11)
         self.durationLabel.textColor = NSColor.tertiaryLabelColor
         self.durationLabel.setContentCompressionResistancePriority(.required, for: .horizontal) // Don't compress duration
+        self.durationLabel.setAccessibilityElement(false)
+        self.indicatorLabel.setAccessibilityElement(false)
+        self.thumbnailImageView.setAccessibilityElement(false)
 
         // Spacer takes all flexible space so title/artist and duration stay consistently aligned across rows
         let spacerView = NSView()
@@ -169,7 +178,8 @@ class QueueTableCellView: NSView {
         self.titleLabel.font = NSFont.systemFont(ofSize: 13, weight: isCurrentTrack ? .semibold : .regular)
         self.titleLabel.textColor = isCurrentTrack ? NSColor.systemRed : NSColor.labelColor
 
-        self.artistLabel.stringValue = song.artistsDisplay.isEmpty ? "Unknown Artist" : song.artistsDisplay
+        let artistText = song.artistsDisplay.isEmpty ? String(localized: "Unknown Artist") : song.artistsDisplay
+        self.artistLabel.stringValue = artistText
 
         if let duration = song.duration {
             let mins = Int(duration) / 60
@@ -178,6 +188,8 @@ class QueueTableCellView: NSView {
         } else {
             self.durationLabel.stringValue = ""
         }
+
+        self.configureAccessibility(title: song.title, artist: artistText, isCurrentTrack: isCurrentTrack)
 
         let songId = song.id
         self.currentSongId = songId
@@ -196,6 +208,50 @@ class QueueTableCellView: NSView {
             guard !Task.isCancelled, self?.currentSongId == songId else { return }
             self?.thumbnailImageView.image = image
         }
+    }
+
+    /// Makes the row a single coherent VoiceOver element. The composed label
+    /// reads title, artist, duration, and (when applicable) the now-playing
+    /// state; activation plays the song and a custom action removes it.
+    /// See P2F019.
+    private func configureAccessibility(title: String, artist: String, isCurrentTrack: Bool) {
+        self.setAccessibilityElement(true)
+        self.setAccessibilityRole(.button)
+
+        var components = [title, artist]
+        let duration = self.durationLabel.stringValue
+        if !duration.isEmpty {
+            components.append(duration)
+        }
+        if isCurrentTrack {
+            components.append(String(localized: "Now Playing"))
+        }
+        self.setAccessibilityLabel(components.joined(separator: ", "))
+
+        // Expose removal as a custom action (only when not the current track,
+        // mirroring the context-menu / glass-panel behavior).
+        if isCurrentTrack {
+            self.setAccessibilityCustomActions([])
+        } else {
+            let removeAction = NSAccessibilityCustomAction(
+                name: String(localized: "Remove from Queue"),
+                target: self,
+                selector: #selector(self.performAccessibilityRemove)
+            )
+            self.setAccessibilityCustomActions([removeAction])
+        }
+    }
+
+    @objc private func performAccessibilityRemove() -> Bool {
+        self.onRemove?()
+        return true
+    }
+
+    /// VoiceOver activation (e.g. Control-Option-Space) plays the row, matching
+    /// the click behavior.
+    override func accessibilityPerformPress() -> Bool {
+        self.onPlay?()
+        return true
     }
 
     func updateAppearance(isCurrentTrack: Bool, isPlaying: Bool, index: Int) {

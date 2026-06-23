@@ -53,14 +53,16 @@ extension PlayerService {
 
         guard let client = self.ytMusicClient else {
             self.logger.warning("No YTMusicClient available for playing mix")
+            self.lastPlaybackError = String(localized: "Couldn't start the mix. Please try again.")
             return
         }
 
         do {
             // Fetch mix queue from API
             let result = try await client.getMixQueue(playlistId: playlistId, startVideoId: startVideoId)
-            guard !result.songs.isEmpty else {
+            guard let firstSong = result.songs.first else {
                 self.logger.warning("Mix queue returned empty")
+                self.lastPlaybackError = String(localized: "Couldn't start the mix. Please try again.")
                 return
             }
 
@@ -75,15 +77,19 @@ extension PlayerService {
             // Set up the queue and play the first song
             self.queue = shuffledSongs
             self.currentIndex = 0
-            self.currentTrack = shuffledSongs[0]
 
-            // Start playback
-            await self.play(videoId: shuffledSongs[0].videoId)
+            // Start playback via play(song:) so the full first-song metadata (title/artist/album/
+            // thumbnail) is preserved instead of being replaced by play(videoId:)'s "Loading..." stub,
+            // and so isKasetInitiatedPlayback is set (re-enabling the autoplay corrector). Matches the
+            // playQueue / playWithRadio pattern. play(song:) assigns currentTrack itself.
+            let startingSong = shuffledSongs.first ?? firstSong
+            await self.play(song: startingSong)
 
             self.logger.info("Mix queue loaded with \(shuffledSongs.count) songs, hasContinuation: \(result.continuationToken != nil)")
             self.saveQueueForPersistence()
         } catch {
             self.logger.warning("Failed to fetch mix queue: \(error.localizedDescription)")
+            self.lastPlaybackError = String(localized: "Couldn't start the mix. Please try again.")
         }
     }
 
@@ -273,6 +279,19 @@ extension PlayerService {
     ///   - source: Indices of items to move.
     ///   - destination: Index where items will be placed (after removal from source).
     func reorderQueue(from source: IndexSet, to destination: Int) {
+        // Drag source/destination indices are captured at drag START and can go stale if the queue
+        // shrinks mid-drag (auto-advance, reconcile, removeFromQueue). Validate against the live
+        // bounds first so Array.move never traps on an out-of-range offset. move(toOffset:) legally
+        // accepts 0...count.
+        guard source.allSatisfy({ $0 >= 0 && $0 < self.queue.count }),
+              destination >= 0,
+              destination <= self.queue.count
+        else {
+            self.logger.warning(
+                "Reorder indices stale (source=\(source), destination=\(destination), count=\(self.queue.count)); ignoring"
+            )
+            return
+        }
         guard !source.contains(self.currentIndex) else {
             self.logger.warning("Cannot reorder: cannot move current track")
             return

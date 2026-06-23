@@ -39,7 +39,7 @@ enum HomeResponseParser {
     static func parseContinuation(_ data: [String: Any]) -> [HomeSection] {
         var sections: [HomeSection] = []
 
-        // Try continuationContents
+        // Try continuationContents (legacy format)
         if let continuationContents = data["continuationContents"] as? [String: Any] {
             // Try sectionListContinuation
             if let sectionListContinuation = continuationContents["sectionListContinuation"] as? [String: Any],
@@ -60,6 +60,22 @@ enum HomeResponseParser {
             }
         }
 
+        // Try 2025 format: onResponseReceivedActions -> appendContinuationItemsAction
+        // -> continuationItems. The trailing continuationItemRenderer is not a
+        // section, so parseHomeSection returns nil for it and it is skipped.
+        if sections.isEmpty,
+           let onResponseReceivedActions = data["onResponseReceivedActions"] as? [[String: Any]],
+           let firstAction = onResponseReceivedActions.first,
+           let appendAction = firstAction["appendContinuationItemsAction"] as? [String: Any],
+           let continuationItems = appendAction["continuationItems"] as? [[String: Any]]
+        {
+            for sectionData in continuationItems {
+                if let section = parseHomeSection(sectionData) {
+                    sections.append(section)
+                }
+            }
+        }
+
         return sections
     }
 
@@ -71,19 +87,35 @@ enum HomeResponseParser {
               let firstTab = tabs.first,
               let tabRenderer = firstTab["tabRenderer"] as? [String: Any],
               let tabContent = tabRenderer["content"] as? [String: Any],
-              let sectionListRenderer = tabContent["sectionListRenderer"] as? [String: Any],
-              let continuations = sectionListRenderer["continuations"] as? [[String: Any]],
-              let firstContinuation = continuations.first,
-              let nextContinuationData = firstContinuation["nextContinuationData"] as? [String: Any],
-              let token = nextContinuationData["continuation"] as? String
+              let sectionListRenderer = tabContent["sectionListRenderer"] as? [String: Any]
         else {
-            return nil
+            // Fall back to the 2025 onResponseReceivedActions shape (rare on the
+            // initial browse, but handle it for parity with the continuation path).
+            return self.extractTokenFrom2025Actions(data)
         }
-        return token
+
+        // Legacy format: continuations[].nextContinuationData.continuation
+        if let continuations = sectionListRenderer["continuations"] as? [[String: Any]],
+           let firstContinuation = continuations.first,
+           let nextContinuationData = firstContinuation["nextContinuationData"] as? [String: Any],
+           let token = nextContinuationData["continuation"] as? String
+        {
+            return token
+        }
+
+        // 2025 format: a trailing continuationItemRenderer at the end of contents.
+        if let sectionContents = sectionListRenderer["contents"] as? [[String: Any]],
+           let token = Self.extractTokenFromContents(sectionContents)
+        {
+            return token
+        }
+
+        return Self.extractTokenFrom2025Actions(data)
     }
 
     /// Extracts continuation token from a continuation response.
     static func extractContinuationTokenFromContinuation(_ data: [String: Any]) -> String? {
+        // Legacy format.
         if let continuationContents = data["continuationContents"] as? [String: Any],
            let sectionListContinuation = continuationContents["sectionListContinuation"] as? [String: Any],
            let continuations = sectionListContinuation["continuations"] as? [[String: Any]],
@@ -93,7 +125,36 @@ enum HomeResponseParser {
         {
             return token
         }
-        return nil
+
+        // 2025 format: onResponseReceivedActions -> appendContinuationItemsAction
+        // -> continuationItems (trailing continuationItemRenderer carries token).
+        return Self.extractTokenFrom2025Actions(data)
+    }
+
+    /// Extracts a continuation token from the 2025 onResponseReceivedActions shape.
+    private static func extractTokenFrom2025Actions(_ data: [String: Any]) -> String? {
+        guard let onResponseReceivedActions = data["onResponseReceivedActions"] as? [[String: Any]],
+              let firstAction = onResponseReceivedActions.first,
+              let appendAction = firstAction["appendContinuationItemsAction"] as? [String: Any],
+              let continuationItems = appendAction["continuationItems"] as? [[String: Any]]
+        else {
+            return nil
+        }
+        return Self.extractTokenFromContents(continuationItems)
+    }
+
+    /// Extracts a continuation token from the trailing `continuationItemRenderer`
+    /// in a contents array (2025 format), mirroring the playlist parser.
+    private static func extractTokenFromContents(_ contents: [[String: Any]]) -> String? {
+        guard let lastItem = contents.last,
+              let continuationItemRenderer = lastItem["continuationItemRenderer"] as? [String: Any],
+              let continuationEndpoint = continuationItemRenderer["continuationEndpoint"] as? [String: Any],
+              let continuationCommand = continuationEndpoint["continuationCommand"] as? [String: Any],
+              let token = continuationCommand["token"] as? String
+        else {
+            return nil
+        }
+        return token
     }
 
     // MARK: - Section Parsing

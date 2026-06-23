@@ -178,6 +178,16 @@ struct MainWindow: View {
             AccountErrorToast()
                 .padding(.top, 60)
         }
+        .overlay(alignment: .top) {
+            // Error toast for content-action failures (add to library, play album, like, …)
+            ContentActionErrorToast()
+                .padding(.top, 60)
+        }
+        .overlay(alignment: .top) {
+            // Error toast for playback failures (e.g. a Mix that could not start)
+            PlaybackErrorToast()
+                .padding(.top, 60)
+        }
         .onChange(of: self.showCommandBar.wrappedValue) { _, newValue in
             if newValue {
                 self.isCommandBarPresented = true
@@ -315,7 +325,9 @@ struct MainWindow: View {
                             ToolbarItem(placement: .navigation) {
                                 Picker("Display Mode", selection: self.$settings.displayMode) {
                                     ForEach(SettingsManager.DisplayMode.allCases) { mode in
-                                        Image(systemName: mode.systemImage).tag(mode)
+                                        Image(systemName: mode.systemImage)
+                                            .tag(mode)
+                                            .accessibilityLabel(mode.displayName)
                                     }
                                 }
                                 .pickerStyle(.segmented)
@@ -327,7 +339,9 @@ struct MainWindow: View {
                             ToolbarItem(placement: .navigation) {
                                 Picker("Density", selection: self.$settings.displayDensity) {
                                     ForEach(SettingsManager.DisplayDensity.allCases) { density in
-                                        Image(systemName: density.systemImage).tag(density)
+                                        Image(systemName: density.systemImage)
+                                            .tag(density)
+                                            .accessibilityLabel(density.displayName)
                                     }
                                 }
                                 .pickerStyle(.segmented)
