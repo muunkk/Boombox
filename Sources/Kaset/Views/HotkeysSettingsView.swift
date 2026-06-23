@@ -54,6 +54,16 @@ struct HotkeysSettingsView: View {
         .frame(minWidth: 460, minHeight: 480)
     }
 
+    /// Command-only shortcuts reserved by standard macOS app/window behavior.
+    /// Binding one of these to an in-app action silently overrides the system
+    /// default (Quit/Close/Minimize/Hide/Settings) while Boombox is focused,
+    /// which the project's "Preserve Standard macOS Shortcuts" rule discourages.
+    private static let reservedShortcutStrings: Set<String> = ["⌘Q", "⌘W", "⌘M", "⌘H", "⌘,"]
+
+    private func isReserved(_ shortcut: HotkeyShortcut) -> Bool {
+        Self.reservedShortcutStrings.contains(shortcut.displayString)
+    }
+
     private func actions(in category: ShortcutAction.Category) -> [ShortcutAction] {
         ShortcutAction.allCases.filter { $0.category == category }
     }
@@ -65,6 +75,12 @@ struct HotkeysSettingsView: View {
 
                 if let conflict = self.manager.conflict(for: self.manager.shortcut(for: action), excluding: action) {
                     Text(String(localized: "Conflicts with \(conflict.displayName)"))
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+
+                if self.isReserved(self.manager.shortcut(for: action)) {
+                    Text("Overrides a standard macOS shortcut")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 }

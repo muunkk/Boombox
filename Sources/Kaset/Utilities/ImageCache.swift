@@ -14,7 +14,7 @@ actor ImageCache {
     /// Maximum disk cache size in bytes (200MB).
     private static let maxDiskCacheSize: Int64 = 200 * 1024 * 1024
 
-    private let memoryCache = NSCache<NSURL, NSImage>()
+    private let memoryCache = NSCache<NSString, NSImage>()
     private var inFlight: [URL: Task<NSImage?, Never>] = [:]
     private let fileManager = FileManager.default
     private let diskCacheURL: URL
@@ -68,14 +68,16 @@ actor ImageCache {
     ///   - targetSize: Optional target size for downsampling. If provided, the image will be
     ///                 downsampled to fit this size, significantly reducing memory usage.
     func image(for url: URL, targetSize: CGSize? = nil) async -> NSImage? {
+        let key = self.memoryKey(for: url, targetSize: targetSize)
+
         // Check memory cache
-        if let cached = memoryCache.object(forKey: url as NSURL) {
+        if let cached = memoryCache.object(forKey: key) {
             return cached
         }
 
         // Check disk cache
         if let diskImage = loadFromDisk(url: url, targetSize: targetSize) {
-            self.memoryCache.setObject(diskImage, forKey: url as NSURL)
+            self.memoryCache.setObject(diskImage, forKey: key)
             return diskImage
         }
 
@@ -90,7 +92,7 @@ actor ImageCache {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 guard let image = Self.createImage(from: data, targetSize: targetSize) else { return nil }
                 let cost = targetSize != nil ? Int(image.size.width * image.size.height * 4) : data.count
-                self.memoryCache.setObject(image, forKey: url as NSURL, cost: cost)
+                self.memoryCache.setObject(image, forKey: key, cost: cost)
                 self.saveToDisk(url: url, data: data)
                 return image
             } catch {
@@ -119,8 +121,8 @@ actor ImageCache {
                 // Check cancellation before starting new work
                 guard !Task.isCancelled else { break }
 
-                // Skip if already in memory cache
-                if self.memoryCache.object(forKey: url as NSURL) != nil {
+                // Skip if already in memory cache for this size
+                if self.memoryCache.object(forKey: self.memoryKey(for: url, targetSize: targetSize)) != nil {
                     continue
                 }
 
@@ -205,6 +207,28 @@ actor ImageCache {
             }
         }
         return totalSize
+    }
+
+    // MARK: - Memory Cache Helpers
+
+    /// Builds the memory-cache key. The cached `NSImage` is downsampled to the
+    /// requested `targetSize`, so the size must be part of the key — otherwise
+    /// a later request at a different size would be served the first size
+    /// (e.g. a 160×160 thumbnail upscaled to a 320×320 display, appearing
+    /// blurry). Disk caching stays keyed by URL only (it stores original bytes
+    /// and re-downsamples per request).
+    private func memoryKey(for url: URL, targetSize: CGSize?) -> NSString {
+        Self.memoryCacheKey(for: url, targetSize: targetSize)
+    }
+
+    /// Pure key builder, exposed for testing. A `nil` size keys by URL only;
+    /// a non-nil size appends `#<w>x<h>` so distinct downsample sizes get
+    /// distinct entries.
+    nonisolated static func memoryCacheKey(for url: URL, targetSize: CGSize?) -> NSString {
+        guard let targetSize else {
+            return url.absoluteString as NSString
+        }
+        return "\(url.absoluteString)#\(Int(targetSize.width))x\(Int(targetSize.height))" as NSString
     }
 
     // MARK: - Disk Cache Helpers
