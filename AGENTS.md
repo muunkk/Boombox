@@ -12,13 +12,15 @@ Boombox is a native macOS YouTube Music client (Swift/SwiftUI) using a hidden We
 
 > 🚨 **NEVER leak secrets, cookies, API keys, or tokens** — Under NO circumstances include real cookies, authentication tokens, API keys, SAPISID values, or any sensitive credentials in code, comments, logs, documentation, test fixtures, or any output. Always use placeholder values like `"REDACTED"`, `"mock-token"`, or `"test-cookie"`. **Violation of this rule is a critical security incident.**
 
-> ⚠️ **ALWAYS confirm before running UI tests** — UI tests launch the app and can be disruptive. Ask the human for permission before executing any UI test.
+> ⚠️ **UI tests may be run autonomously** — UI tests (and live app launches) launch the app and can be disruptive, so run them **serially** (one app instance at a time, never in parallel worktrees) and kill stray `Boombox`/`Kaset` processes first (`Scripts/compile_and_run.sh` handles this). Agents no longer need to ask for per-run permission before executing UI tests or launching the app, but should still surface results and any disruption. (Updated 2026-06-23 per maintainer authorization for autonomous QA runs.)
 
 > ⚠️ **No Third-Party Frameworks** — Do not introduce third-party dependencies without asking first.
 
 > ⚠️ **Prefer API over WebView** — Always use `YTMusicClient` API calls when functionality exists. Only use WebView for playback (DRM-protected audio) and authentication.
 
 > 📝 **Document Architectural Decisions** — For significant design changes, create an ADR in `docs/adr/`.
+
+> 📊 **Document Progress** — Keep ongoing/multi-step work (QA runs, audits, bugfix loops, feature efforts) documented in `docs/progress.md`, the canonical progress log. Update it as phases complete; for feature/QA status tracking use the canonical spreadsheet `docs/user-stories.csv`.
 
 > ⌨️ **Preserve Standard macOS Shortcuts** — Do not override standard app/window shortcuts such as `⌘M`, `⌘W`, `⌘Q`, `⌘H`, or `⌘,` unless the human explicitly asks for it. When adding media shortcuts, prefer native macOS and Apple Music conventions, and update `docs/keyboard-shortcuts.md`.
 
