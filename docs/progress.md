@@ -20,9 +20,9 @@
 | P1 | Document every feature → user stories → canonical `docs/user-stories.csv` | ✅ Done — **373 stories**, 15 areas |
 | P2 | Test every user story + hunt bugs → document all errors in the CSV | ✅ Done — **36 found → 35 confirmed** (44 stories flagged) |
 | P3 | Synthesize prioritized fix plan from findings | ✅ Done — 4 disjoint batches, per-finding verified fixes |
-| P4 | Fix every logistical/UX error + bug (build→audit→fix sub-loop, isolated worktrees) | 🔄 In progress (4 fixers in worktrees) |
-| P5 | Retest every user behavior post-fix → update CSV | ⏳ Pending |
-| P6 | Commit → push → PR → watch CI → fix failures → merge when green (loop) | ⏳ Pending |
+| P4 | Fix every logistical/UX error + bug (build→audit→fix sub-loop, isolated worktrees) | ✅ Done — all 35 fixed, 4 batches merged |
+| P5 | Retest every user behavior post-fix → update CSV | ✅ Done — **926 unit tests green**; CSV Fix Status updated |
+| P6 | Commit → push → PR → watch CI → fix failures → merge when green (loop) | 🔄 In progress |
 
 ## Parallel Execution Tracks
 
@@ -65,7 +65,24 @@ Toolchain: Swift 6.3.2, Xcode 26.5, SwiftLint 0.64.0, SwiftFormat 0.61.1.
 - **2026-06-23 ~01:05** — Adversarial verify workflow: **35 confirmed, 1 refuted** (F006). Corrected severities: 1 high, 13 medium, 21 low. F027 downgraded high→low (xcstrings is shipped dead-weight; runtime reads .lproj).
 - **2026-06-23 ~01:08** — P2 documented: `docs/audit-findings.md` written; `user-stories.csv` updated — 44 stories flagged with issues, 329 pass; per-story Test Method/Result/Severity/Fix Status filled.
 - **2026-06-23 ~01:10** — P4 launched: 4 fixer agents in isolated worktrees (`fix/playback`, `fix/data`, `fix/ui`, `fix/systems`), disjoint file allowlists, each must leave its worktree green (swiftformat + swiftlint + build + test) and commit.
-- _(updates appended as phases complete)_
+- **2026-06-23 ~11:07** — P4 fixers run in 4 worktrees. Playback finished & merged first (verified green, 898 tests).
+- **2026-06-23 ~11:10** — **Usage limit interrupted** data/ui/systems fixers mid-work (uncommitted edits preserved in worktrees). Recovery: resume-nudged all three.
+  - `fixer-data` revived → finished but died again before commit → **salvaged** (worktree was green; formatted/linted/committed `eb12d83`).
+  - `fixer-ui` stayed dead → **salvaged**; hit a SIGTRAP test crash traced to a Swift 6 `@MainActor` isolation issue in `UIFixTests` (View-inferred isolation called from a background test thread) — fixed by making the suite `@MainActor`; committed `7848ab7`.
+  - `fixer-systems` revived (slower) → finished & committed `e0b6ccb` (incl. HIGH romanizer crash + tests).
+- **2026-06-23 ~11:25** — Batches merged into integrated branch (disjoint files → clean merges, no conflicts).
+- **2026-06-23 ~11:29** — **Final 4-batch verification GREEN**: swiftformat 0/253, swiftlint 0 violations, build ✓, **926 unit tests, 0 failures** (33 new fix tests added).
+- **2026-06-23 ~11:30** — P5: CSV Fix Status updated (44 flagged stories → Fixed & retested); `audit-findings.md` regenerated as RESOLVED.
+- _(P6 push/PR/CI/merge next)_
+
+## Fix Batches (P4)
+
+| Batch | Commit | Findings | Result |
+|-------|--------|----------|--------|
+| `fix/playback` | `defcec4` | F001–F005 | merged, green |
+| `fix/ui` | `7848ab7` | F017–F026 | merged, green (recovered) |
+| `fix/systems` | `e0b6ccb` | F027–F036 | merged, green |
+| `fix/data` | `eb12d83` | F007–F016, F023 | merged, green (recovered) |
 
 ## Confirmed Findings (P2 → P4)
 
