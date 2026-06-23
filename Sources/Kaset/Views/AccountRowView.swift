@@ -142,10 +142,16 @@ struct AccountRowView: View {
             label += ", \(handle)"
         }
 
-        label += ", \(self.account.typeLabel) account"
+        label += String(
+            localized: ", \(self.account.typeLabel) account",
+            comment: "VoiceOver: account type suffix for an account row"
+        )
 
         if self.isSelected {
-            label += ", currently selected"
+            label += String(
+                localized: ", currently selected",
+                comment: "VoiceOver: selection state suffix for an account row"
+            )
         }
 
         return label

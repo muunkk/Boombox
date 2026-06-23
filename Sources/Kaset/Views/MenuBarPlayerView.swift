@@ -393,9 +393,13 @@ struct MenuBarPlayerView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 2) {
-                        ForEach(Array(self.playerService.queue.enumerated()), id: \.element.videoId) { index, song in
+                        // Composite position+videoId identity: a playlist/album
+                        // may legitimately repeat a track, so videoId alone is
+                        // not unique and collides under ForEach. See P2F035.
+                        ForEach(QueueDisplayEntry.entries(for: self.playerService.queue)) { entry in
+                            let index = entry.index
                             MenuBarQueueRow(
-                                song: song,
+                                song: entry.song,
                                 isCurrent: index == self.playerService.currentIndex,
                                 onPlay: {
                                     Task {

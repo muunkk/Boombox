@@ -89,6 +89,14 @@ struct SyncedLineView: View {
         .onTapGesture {
             self.onTap()
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(self.line.text.isEmpty ? Text("Musical interlude") : Text(self.line.text))
+        .accessibilityHint(Text("Seek to this line"))
+        .accessibilityValue(self.status == .current ? Text("Current line") : Text(""))
+        .accessibilityAction {
+            self.onTap()
+        }
         .padding(.vertical, 4)
     }
 }

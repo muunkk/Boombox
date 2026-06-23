@@ -56,7 +56,20 @@ struct HomeView: View {
 
     // MARK: - Views
 
+    @ViewBuilder
     private var contentView: some View {
+        if self.viewModel.displaySections.isEmpty, !self.favoritesManager.isVisible {
+            ContentUnavailableView(
+                "Nothing here yet",
+                systemImage: "music.note",
+                description: Text("No content is available right now. Pull to refresh.")
+            )
+        } else {
+            self.sectionsScrollView
+        }
+    }
+
+    private var sectionsScrollView: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 32) {
                 // Favorites section (hidden when empty)

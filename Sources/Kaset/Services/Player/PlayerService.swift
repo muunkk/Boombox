@@ -98,6 +98,11 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Whether a restored load should automatically resume after seeking to the saved position.
     var shouldAutoResumeAfterRestoredLoad: Bool = false
 
+    /// User-facing message for the most recent playback action that failed silently (e.g. a Mix that
+    /// could not start because of an offline/API error or empty result). Observed by a shared error
+    /// toast so a dead "Mix" tap is explained rather than appearing broken. Cleared after display.
+    var lastPlaybackError: String?
+
     /// Like status of the current track.
     var currentTrackLikeStatus: LikeStatus = .indifferent
 
@@ -395,6 +400,14 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         self.songNearingEnd = false
         self.shouldSuppressAutoplayAfterQueueEnd = false
 
+        // Clear the previous track's like/library/feedback-token state before the minimal stub is
+        // assigned; otherwise a toggleLibraryStatus() during the metadata-fetch window would POST the
+        // prior song's feedback token. Mirrors the reset-then-seed protection in play(song:).
+        self.resetTrackStatus()
+        if let cachedStatus = SongLikeStatusManager.shared.status(for: videoId) {
+            self.currentTrackLikeStatus = cachedStatus
+        }
+
         // Create a minimal Song object for now
         self.currentTrack = Song(
             id: videoId,
@@ -405,6 +418,10 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
             thumbnailURL: nil,
             videoId: videoId
         )
+
+        // Mark that we initiated this playback so the autoplay-divergence corrector
+        // (handleKasetInitiatedPlaybackMetadata) is active for this overload too. Mirrors play(song:).
+        self.isKasetInitiatedPlayback = true
 
         self.pendingPlayVideoId = videoId
 
@@ -697,11 +714,8 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
 
         // Fall back to YouTube's previous if no local queue
         if self.progress > 3 {
-            if self.pendingPlayVideoId != nil {
-                await self.seek(to: 0)
-            } else {
-                await self.seek(to: 0)
-            }
+            // seek(to:) already branches internally on pendingPlayVideoId, so both arms were identical.
+            await self.seek(to: 0)
         } else {
             SingletonPlayerWebView.shared.previous()
         }
@@ -808,6 +822,11 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         self.currentTrack = nil
         self.progress = 0
         self.duration = 0
+        // Clear the pending video identity so transport controls disable (canControlPlayback),
+        // PersistentPlayerView is dismissed, and a subsequent playPause() no longer pokes the
+        // now-stale WebView. Collapse the hidden WebView frame cleanly.
+        self.pendingPlayVideoId = nil
+        self.showMiniPlayer = false
     }
 
     /// Show the AirPlay picker for selecting audio output devices.

@@ -197,12 +197,18 @@ struct SidebarProfileView: View {
     // MARK: - Accessibility
 
     private func profileAccessibilityLabel(for account: UserAccount) -> String {
-        var label = "Profile: \(account.name)"
+        var label = String(
+            localized: "Profile: \(account.name)",
+            comment: "VoiceOver: sidebar profile label with the account name"
+        )
         if let handle = account.handle {
             label += ", \(handle)"
         }
         if self.accountService.hasBrandAccounts {
-            label += ". Multiple accounts available."
+            label += String(
+                localized: ". Multiple accounts available.",
+                comment: "VoiceOver: appended to the sidebar profile label when brand accounts exist"
+            )
         }
         return label
     }

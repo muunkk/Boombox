@@ -34,7 +34,7 @@ extension PlayerService {
     }
 
     private var canAdvanceNativeQueueAfterTrackEnd: Bool {
-        self.shuffleEnabled
+        (self.shuffleEnabled && self.queue.count > 1)
             || self.repeatMode == .one
             || self.currentIndex < self.queue.count - 1
             || self.repeatMode == .all
@@ -166,7 +166,7 @@ extension PlayerService {
             "YouTube loaded different track '\(title)' (\(resolvedVideoId)), re-playing intended track '\(intendedSong.title)'"
         )
         self.isKasetInitiatedPlayback = false
-        Task {
+        self.scheduleWebQueueReconciliation {
             await self.play(song: intendedSong, webLoadStrategy: .forceFullPageWhenSameVideoId)
         }
         return true
@@ -328,7 +328,7 @@ extension PlayerService {
             self.logger.info(
                 "Repeat one: observed \(observedVideoId) diverged from queue; re-playing without advancing queue index"
             )
-            Task {
+            self.scheduleWebQueueReconciliation {
                 await self.play(song: currentQueueSong, webLoadStrategy: .forceFullPageWhenSameVideoId)
             }
             return true
@@ -361,7 +361,7 @@ extension PlayerService {
         self.logger.info(
             "Observed track \(observedVideoId) diverged from native queue track \(currentQueueSong.videoId); re-playing intended queue track"
         )
-        Task {
+        self.scheduleWebQueueReconciliation {
             await self.play(song: currentQueueSong, webLoadStrategy: .forceFullPageWhenSameVideoId)
         }
         return true

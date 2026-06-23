@@ -122,9 +122,14 @@ private extension PlayerService {
             self.duration = duration
         }
 
-        if isPlaying {
+        // Don't resurrect a deliberately-ended state: when the native queue ends and playback is
+        // marked `.ended` synchronously, a STATE_UPDATE from YouTube's lingering autoplay must not
+        // flip us back to `.playing` before the corrective pause lands.
+        if isPlaying, self.state != .ended {
             self.state = .playing
-        } else if self.state == .playing {
+        } else if !isPlaying, self.state == .playing || self.state == .loading || self.state == .buffering {
+            // Resolve a freshly loaded-but-not-autoplaying track (autoplay blocked, AirPlay handoff)
+            // to a usable paused state instead of leaving it stuck in `.loading`/`.buffering`.
             self.state = .paused
         }
 

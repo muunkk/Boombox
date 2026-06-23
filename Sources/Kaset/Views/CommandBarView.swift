@@ -238,6 +238,7 @@ struct CommandBarView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(index == self.selectedSuggestionIndex ? .isSelected : [])
     }
 
     // MARK: - Actions

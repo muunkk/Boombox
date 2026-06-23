@@ -102,12 +102,34 @@ struct HistoryView: View {
         }
     }
 
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.system(size: 48))
+                .foregroundStyle(.tertiary)
+
+            Text("No listening history yet")
+                .font(.title3)
+                .foregroundStyle(.secondary)
+
+            Text("Songs you play will appear here", comment: "History empty state")
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 60)
+    }
+
     private var contentView: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
                 self.headerView
                     .padding(.horizontal, 24)
                     .padding(.bottom, 16)
+
+                if self.viewModel.sections.isEmpty {
+                    self.emptyStateView
+                }
 
                 ForEach(self.viewModel.sections) { section in
                     Text(section.title)

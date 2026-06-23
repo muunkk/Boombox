@@ -16,6 +16,7 @@ struct PlaylistDetailView: View {
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
     @Environment(LibraryViewModel.self) private var libraryViewModel: LibraryViewModel?
+    @State private var networkMonitor = NetworkMonitor.shared
 
     /// Tracks whether this playlist has been added to library in this session.
     @State private var isAddedToLibrary: Bool = false
@@ -32,20 +33,29 @@ struct PlaylistDetailView: View {
 
     var body: some View {
         Group {
-            switch self.viewModel.loadingState {
-            case .idle, .loading:
-                LoadingView(String(localized: "Loading playlist..."))
-            case .loaded, .loadingMore:
-                if let detail = viewModel.playlistDetail {
-                    self.contentView(detail)
-                } else {
-                    ErrorView(title: String(localized: "Unable to load playlist"), message: String(localized: "Playlist not found")) {
+            if !self.networkMonitor.isConnected {
+                ErrorView(
+                    title: String(localized: "No Connection"),
+                    message: String(localized: "Please check your internet connection and try again.")
+                ) {
+                    Task { await self.viewModel.load() }
+                }
+            } else {
+                switch self.viewModel.loadingState {
+                case .idle, .loading:
+                    LoadingView(String(localized: "Loading playlist..."))
+                case .loaded, .loadingMore:
+                    if let detail = viewModel.playlistDetail {
+                        self.contentView(detail)
+                    } else {
+                        ErrorView(title: String(localized: "Unable to load playlist"), message: String(localized: "Playlist not found")) {
+                            Task { await self.viewModel.load() }
+                        }
+                    }
+                case let .error(error):
+                    ErrorView(error: error) {
                         Task { await self.viewModel.load() }
                     }
-                }
-            case let .error(error):
-                ErrorView(error: error) {
-                    Task { await self.viewModel.load() }
                 }
             }
         }

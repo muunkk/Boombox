@@ -142,11 +142,12 @@ final class SearchViewModel {
             return
         }
 
-        self.suggestionsTask = Task {
+        self.suggestionsTask = Task { [weak self] in
             // Faster debounce for suggestions (150ms vs 300ms for search)
             try? await Task.sleep(for: .milliseconds(150))
 
             guard !Task.isCancelled else { return }
+            guard let self else { return }
 
             await self.performFetchSuggestions()
         }
@@ -197,11 +198,12 @@ final class SearchViewModel {
             return
         }
 
-        self.searchTask = Task {
+        self.searchTask = Task { [weak self] in
             // Debounce: wait a bit before searching
             try? await Task.sleep(for: .milliseconds(300))
 
             guard !Task.isCancelled else { return }
+            guard let self else { return }
 
             await self.performSearch()
         }
@@ -234,7 +236,8 @@ final class SearchViewModel {
             return
         }
 
-        self.searchTask = Task {
+        self.searchTask = Task { [weak self] in
+            guard let self else { return }
             await self.performSearch()
         }
     }

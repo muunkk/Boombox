@@ -54,8 +54,14 @@ final class TopSongsViewModel {
         } catch {
             let errorMessage = error.localizedDescription
             self.logger.error("Failed to load artist songs: \(errorMessage)")
-            // Keep the songs we already have and just mark as loaded
-            self.loadingState = .loaded
+            // If we have nothing to show, surface a retryable error (matching
+            // AllAlbumsViewModel). When a seed preview exists, soft-degrade to
+            // that rather than blanking the screen.
+            if self.songs.isEmpty {
+                self.loadingState = .error(LoadingError(from: error))
+            } else {
+                self.loadingState = .loaded
+            }
         }
     }
 }

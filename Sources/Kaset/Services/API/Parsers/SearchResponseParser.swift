@@ -33,16 +33,25 @@ enum SearchResponseParser {
         // on the first item's id (which YT may reshuffle across personalized
         // re-queries, causing SwiftUI to tear down sections instead of diff).
         // Shelf titles ("Songs", "Albums", "Community playlists", …) are
-        // unique per response, so we use them directly. The "Top result" card
-        // is at most one per response, so a fixed `"top"` is stable. The
-        // index fallback only kicks in for the unexpected untitled-shelf case.
+        // normally unique per response, so we use them directly to keep ids
+        // stable across re-queries. The "Top result" card is at most one per
+        // response, so a fixed `"top"` is stable. YouTube can, however, return
+        // two shelves with the same title (e.g. duplicate "Songs" wrapped in
+        // separate itemSectionRenderers); we only suffix the 2nd+ occurrence of
+        // a repeated title so single-occurrence ids stay unchanged while
+        // duplicates remain distinct for SwiftUI identity. The index fallback
+        // only kicks in for the unexpected untitled-shelf case.
+        var seenTitles: [String: Int] = [:]
         let sections: [SearchSection] = draftSections.enumerated().map { index, draft in
-            let id: String = if draft.isTopResult {
-                "top"
+            let id: String
+            if draft.isTopResult {
+                id = "top"
             } else if let title = draft.title, !title.isEmpty {
-                title
+                let occurrence = seenTitles[title, default: 0]
+                seenTitles[title] = occurrence + 1
+                id = occurrence == 0 ? title : "\(title)#\(occurrence)"
             } else {
-                "shelf-\(index)"
+                id = "shelf-\(index)"
             }
             return SearchSection(id: id, title: draft.title, isTopResult: draft.isTopResult, items: draft.items)
         }
@@ -334,7 +343,7 @@ enum SearchResponseParser {
 
     /// Extracts the continuation token from a filtered search response.
     private static func extractContinuationToken(from sectionListRenderer: [String: Any]) -> String? {
-        // Check for continuations array
+        // Legacy format: continuations[].nextContinuationData.continuation
         if let continuations = sectionListRenderer["continuations"] as? [[String: Any]],
            let firstContinuation = continuations.first,
            let nextContinuationData = firstContinuation["nextContinuationData"] as? [String: Any],
@@ -342,7 +351,29 @@ enum SearchResponseParser {
         {
             return token
         }
+
+        // 2025 format: a trailing continuationItemRenderer is appended to the
+        // section contents instead of a continuations array.
+        if let contents = sectionListRenderer["contents"] as? [[String: Any]],
+           let token = Self.extractTokenFromContents(contents)
+        {
+            return token
+        }
         return nil
+    }
+
+    /// Extracts a continuation token from the trailing `continuationItemRenderer`
+    /// in a contents array (2025 format), mirroring the playlist parser.
+    private static func extractTokenFromContents(_ contents: [[String: Any]]) -> String? {
+        guard let lastItem = contents.last,
+              let continuationItemRenderer = lastItem["continuationItemRenderer"] as? [String: Any],
+              let continuationEndpoint = continuationItemRenderer["continuationEndpoint"] as? [String: Any],
+              let continuationCommand = continuationEndpoint["continuationCommand"] as? [String: Any],
+              let token = continuationCommand["token"] as? String
+        else {
+            return nil
+        }
+        return token
     }
 
     /// Helper to get sectionListRenderer from filtered search response.
@@ -543,7 +574,7 @@ enum SearchResponseParser {
         var buckets = SearchResultBuckets()
         var continuationToken: String?
 
-        // Continuation responses have a different structure
+        // Legacy continuation structure: continuationContents.musicShelfContinuation
         if let continuationContents = data["continuationContents"] as? [String: Any],
            let musicShelfContinuation = continuationContents["musicShelfContinuation"] as? [String: Any]
         {
@@ -567,6 +598,22 @@ enum SearchResponseParser {
             {
                 continuationToken = token
             }
+        } else if let onResponseReceivedActions = data["onResponseReceivedActions"] as? [[String: Any]],
+                  let firstAction = onResponseReceivedActions.first,
+                  let appendAction = firstAction["appendContinuationItemsAction"] as? [String: Any],
+                  let continuationItems = appendAction["continuationItems"] as? [[String: Any]]
+        {
+            // 2025 continuation structure: onResponseReceivedActions ->
+            // appendContinuationItemsAction -> continuationItems, with a trailing
+            // continuationItemRenderer carrying the next token.
+            for itemData in continuationItems {
+                if let show = Self.parsePodcastShowFromSearchResult(itemData) {
+                    buckets.podcastShows.append(show)
+                } else if let item = parseSearchResultItem(itemData) {
+                    buckets.append(item)
+                }
+            }
+            continuationToken = Self.extractTokenFromContents(continuationItems)
         }
 
         return SearchResponse(

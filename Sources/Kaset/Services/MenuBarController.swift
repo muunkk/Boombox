@@ -18,6 +18,12 @@ final class MenuBarController: NSObject {
     /// Routes scrolls inside the popover to volume changes.
     private var scrollMonitor: Any?
 
+    /// Running slider target accumulated synchronously across scroll events so
+    /// a burst of trackpad scroll events accumulates off the in-progress value
+    /// rather than the async-lagged `player.volume`. Reset when the popover
+    /// closes. See P2F001 (lost-update race).
+    private var pendingSliderTarget: Double?
+
     private let hotkeyService = GlobalHotkeyService()
 
     init(playerService: PlayerService, webKitManager: WebKitManager) {
@@ -169,13 +175,21 @@ final class MenuBarController: NSObject {
         guard delta != 0 else { return }
 
         let sensitivity = 0.01
-        let currentSlider = VolumeCurve.sliderValue(forOutputVolume: player.volume)
+        // Accumulate off the running target (updated synchronously below) so a
+        // burst of scroll events does not all read the same async-lagged
+        // `player.volume`. Falls back to the committed volume for the first
+        // event of a gesture. See P2F001.
+        let currentSlider = self.pendingSliderTarget ?? VolumeCurve.sliderValue(forOutputVolume: player.volume)
         let proposed = currentSlider + Double(delta) * sensitivity
         let clamped = max(0, min(1, proposed))
         guard abs(clamped - currentSlider) > 0.001 else { return }
 
         let hitBoundary = (currentSlider > 0 && clamped == 0)
             || (currentSlider < 1 && clamped == 1)
+
+        // Commit the new target synchronously before deferring the write so the
+        // next event in the burst reads this value, not the lagging volume.
+        self.pendingSliderTarget = clamped
 
         Task { @MainActor in
             await player.setVolume(VolumeCurve.outputVolume(forSliderValue: clamped))
@@ -202,6 +216,9 @@ final class MenuBarController: NSObject {
             NSEvent.removeMonitor(monitor)
             self.scrollMonitor = nil
         }
+        // Drop the running scroll target so the next popover session starts
+        // accumulating from the actual committed volume. See P2F001.
+        self.pendingSliderTarget = nil
     }
 
     /// Brings the Boombox main window forward and dismisses the popover.

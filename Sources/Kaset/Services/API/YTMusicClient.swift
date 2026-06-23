@@ -857,6 +857,9 @@ final class YTMusicClient: YTMusicClientProtocol {
                     hasMoreSongs: detail.hasMoreSongs,
                     songsBrowseId: detail.songsBrowseId,
                     songsParams: detail.songsParams,
+                    hasMoreAlbums: detail.hasMoreAlbums,
+                    albumsBrowseId: detail.albumsBrowseId,
+                    albumsParams: detail.albumsParams,
                     mixPlaylistId: detail.mixPlaylistId,
                     mixVideoId: detail.mixVideoId
                 )
@@ -1360,11 +1363,16 @@ final class YTMusicClient: YTMusicClientProtocol {
 
         guard let cookieHeader = await webKitManager.cookieHeader(for: "youtube.com") else {
             self.logger.error("No cookies found for youtube.com domain")
+            // Route through the global recovery so the LoginSheet appears, just as
+            // the 401/403 network path does — otherwise a screen catching this
+            // would render a buttonless "Authentication Required" card.
+            self.authService.sessionExpired()
             throw YTMusicError.notAuthenticated
         }
 
         guard let sapisid = await webKitManager.getSAPISID() else {
             self.logger.error("SAPISID cookie not found or expired")
+            self.authService.sessionExpired()
             throw YTMusicError.authExpired
         }
 
@@ -1511,11 +1519,13 @@ final class YTMusicClient: YTMusicClientProtocol {
             throw YTMusicError.authExpired
         case let .httpError(statusCode):
             self.logger.error("API error: HTTP \(statusCode)")
-            // 400/403 are the failure modes a stale/rotated API key produces; clear
-            // the cached key so a process-lifetime-cached bad key can self-heal.
-            if statusCode == 400 || statusCode == 403 {
-                self.apiKeyProvider.invalidate()
-            }
+            // Note: we intentionally do NOT invalidate the API key here. YouTube
+            // Music returns HTTP 400 for many endpoint-specific, key-unrelated
+            // failures (deleted/invalid browse or playlist id, malformed/expired
+            // continuation token, non-navigable artist id, …). The genuine
+            // dead/rotated-key signal (401/403) is routed to the `.authError`
+            // branch above, which already invalidates the key, so a single
+            // routine 400 no longer forces the next valid request to re-bootstrap.
             throw YTMusicError.apiError(
                 message: "HTTP \(statusCode)",
                 code: statusCode

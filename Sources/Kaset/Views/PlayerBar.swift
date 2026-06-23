@@ -547,7 +547,9 @@ struct PlayerBar: View {
         if self.isSidebarCollapsed {
             self.settings.showSidebarNowPlayingPanel ? "chevron.up" : "chevron.down"
         } else {
-            self.settings.showSidebarNowPlayingPanel ? "chevron.right" : "chevron.left"
+            // *.forward / *.backward auto-mirror in RTL so the toggle points
+            // toward the (trailing-side) sidebar in Arabic. See P2F029.
+            self.settings.showSidebarNowPlayingPanel ? "chevron.forward" : "chevron.backward"
         }
     }
 

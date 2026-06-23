@@ -135,6 +135,11 @@ final class ArtistDetailViewModel {
         }
     }
 
+    /// Clears the subscription error message (e.g. when its alert is dismissed).
+    func clearSubscriptionError() {
+        self.subscriptionError = nil
+    }
+
     /// The songs to display based on showAllSongs state.
     var displayedSongs: [Song] {
         guard let songs = artistDetail?.songs else { return [] }

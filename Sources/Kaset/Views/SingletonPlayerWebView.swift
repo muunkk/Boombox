@@ -263,8 +263,10 @@ final class SingletonPlayerWebView {
             guard type == "STATE_UPDATE" else { return }
 
             let isPlaying = body["isPlaying"] as? Bool ?? false
-            let progress = body["progress"] as? Int ?? 0
-            let duration = body["duration"] as? Int ?? 0
+            // Observer now sends the real media clock as floats (falling back to whole-second
+            // progress-bar attributes only when the video element is missing).
+            let progress = body["progress"] as? Double ?? 0
+            let duration = body["duration"] as? Double ?? 0
             let title = body["title"] as? String ?? ""
             let artist = body["artist"] as? String ?? ""
             let thumbnailUrl = body["thumbnailUrl"] as? String ?? ""
@@ -284,8 +286,8 @@ final class SingletonPlayerWebView {
             Task { @MainActor in
                 self.playerService.updatePlaybackState(
                     isPlaying: isPlaying,
-                    progress: Double(progress),
-                    duration: Double(duration)
+                    progress: progress,
+                    duration: duration
                 )
 
                 // Update like status only when track changes (initial state)

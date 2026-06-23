@@ -133,6 +133,11 @@ struct AccountErrorToast: View {
 
         self.isVisible = true
 
+        // Announce to VoiceOver so the transient toast is read regardless of focus.
+        if let error = accountService.lastError {
+            AccessibilityNotification.Announcement(self.errorMessage(for: error)).post()
+        }
+
         // Schedule auto-dismiss
         self.dismissTask = Task {
             try? await Task.sleep(for: self.autoDismissDelay)
@@ -147,6 +152,116 @@ struct AccountErrorToast: View {
     private func dismiss() {
         self.isVisible = false
         self.accountService.clearError()
+        self.dismissTask?.cancel()
+        self.dismissTask = nil
+    }
+}
+
+// MARK: - ActionErrorPresenter
+
+/// App-wide presenter for transient content-action error messages.
+///
+/// Fire-and-forget content actions (add to library, play album, like/dislike, …)
+/// previously failed silently — they only logged. Routing their failures through
+/// this shared presenter lets `ContentActionErrorToast` surface a transient toast
+/// so the user gets feedback when an action fails (offline, expired session,
+/// server error). A singleton is used so the static `SongActionsHelper` methods
+/// can report failures without threading a dependency through every call site.
+@available(macOS 26.0, *)
+@MainActor
+@Observable
+final class ActionErrorPresenter {
+    static let shared = ActionErrorPresenter()
+
+    /// The most recent message to display. `nil` when nothing is pending.
+    private(set) var lastMessage: String?
+
+    /// Bumped on every `show(_:)` so observers re-trigger even for an identical message.
+    private(set) var sequence: Int = 0
+
+    private init() {}
+
+    /// Presents an error message to the user.
+    func show(_ message: String) {
+        self.lastMessage = message
+        self.sequence &+= 1
+    }
+
+    /// Presents a localized message derived from an error, mapping
+    /// `YTMusicError.authExpired` to a sign-in prompt.
+    func show(error: Error, fallback: String) {
+        if let ytError = error as? YTMusicError {
+            switch ytError {
+            case .authExpired, .notAuthenticated:
+                self.show(String(localized: "Your session expired. Please sign in again."))
+            default:
+                self.show(ytError.localizedDescription)
+            }
+        } else {
+            self.show(fallback)
+        }
+    }
+
+    func clear() {
+        self.lastMessage = nil
+    }
+}
+
+// MARK: - ContentActionErrorToast
+
+/// A toast that observes `ActionErrorPresenter` and auto-dismisses.
+///
+/// Add this to MainWindow as an overlay to show content-action failures
+/// (mirrors `AccountErrorToast`).
+@available(macOS 26.0, *)
+struct ContentActionErrorToast: View {
+    @State private var presenter = ActionErrorPresenter.shared
+
+    @State private var isVisible = false
+    @State private var dismissTask: Task<Void, Never>?
+
+    /// Duration before auto-dismiss in seconds.
+    private let autoDismissDelay: Duration = .seconds(4)
+
+    var body: some View {
+        Group {
+            if self.isVisible, let message = presenter.lastMessage {
+                ToastView(
+                    message: message,
+                    isError: true,
+                    onDismiss: { self.dismiss() }
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(duration: 0.3), value: self.isVisible)
+        .onChange(of: self.presenter.sequence) { _, _ in
+            if let message = presenter.lastMessage {
+                self.show(message: message)
+            }
+        }
+    }
+
+    private func show(message: String) {
+        self.dismissTask?.cancel()
+        self.isVisible = true
+
+        // Announce to VoiceOver so the transient toast is read regardless of focus.
+        AccessibilityNotification.Announcement(message).post()
+
+        self.dismissTask = Task {
+            try? await Task.sleep(for: self.autoDismissDelay)
+            if !Task.isCancelled {
+                await MainActor.run {
+                    self.dismiss()
+                }
+            }
+        }
+    }
+
+    private func dismiss() {
+        self.isVisible = false
+        self.presenter.clear()
         self.dismissTask?.cancel()
         self.dismissTask = nil
     }
