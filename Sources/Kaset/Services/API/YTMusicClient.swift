@@ -1177,7 +1177,10 @@ final class YTMusicClient: YTMusicClientProtocol {
             "feedbackTokens": feedbackTokens,
         ]
 
-        _ = try await self.request("feedback", body: body)
+        // feedback carries single-use toggle tokens — never auto-retry, since a
+        // replay after the server already applied the change can toggle the song
+        // back out of the library or 4xx, desyncing from the optimistic UI.
+        _ = try await self.request("feedback", body: body, retryable: false)
         self.logger.info("Successfully edited library status")
 
         // Invalidate mutation-affected caches in a single pass
@@ -1410,7 +1413,17 @@ final class YTMusicClient: YTMusicClientProtocol {
     }
 
     /// Makes an authenticated request to the API with optional caching and retry.
-    private func request(_ endpoint: String, body: [String: Any], ttl: TimeInterval? = nil) async throws -> [String: Any] {
+    /// - Parameter retryable: Whether to wrap the call in `RetryPolicy`. Defaults
+    ///   to `true` for safe reads and idempotent set-state mutations. Pass `false`
+    ///   for genuinely non-idempotent operations (e.g. the `feedback` endpoint's
+    ///   single-use toggle tokens) that must never be silently replayed after a
+    ///   transient failure, which could double-apply or revert server state.
+    private func request(
+        _ endpoint: String,
+        body: [String: Any],
+        ttl: TimeInterval? = nil,
+        retryable: Bool = true
+    ) async throws -> [String: Any] {
         // Build request body with context so cache keys reflect the actual request
         var fullBody = body
         fullBody["context"] = self.buildContext()
@@ -1423,7 +1436,7 @@ final class YTMusicClient: YTMusicClientProtocol {
             "Request \(endpoint): brandId=\(brandId.isEmpty ? "primary" : brandId), cacheKey=\(cacheKey)"
         )
 
-        // Check cache first
+        // Check cache first (served even when offline for a better UX)
         if ttl != nil, let cached = APICache.shared.get(key: cacheKey) {
             self.logger.debug(
                 "Cache hit for \(endpoint) (brandId=\(brandId.isEmpty ? "primary" : brandId))"
@@ -1431,8 +1444,24 @@ final class YTMusicClient: YTMusicClientProtocol {
             return cached
         }
 
-        // Execute with retry policy
-        let json = try await RetryPolicy.default.execute { [self] in
+        // Fast-fail when the monitor has confirmed the device is offline, rather
+        // than dispatching to URLSession and waiting on the 15s timeout plus the
+        // retry backoff. `isConnected` starts optimistically true and only flips
+        // to false after a confirmed `.unsatisfied` path, so this never blocks
+        // first-launch requests on a transient/unknown path state.
+        if !NetworkMonitor.shared.isConnected {
+            self.logger.warning("Request \(endpoint) skipped — device is offline")
+            throw YTMusicError.networkError(underlying: URLError(.notConnectedToInternet))
+        }
+
+        // Execute with retry policy. Non-idempotent mutations bypass the retry
+        // wrapper so a transient network/5xx failure after the server may have
+        // already applied the change is never silently replayed.
+        let json: [String: Any] = if retryable {
+            try await RetryPolicy.default.execute { [self] in
+                try await self.performRequest(endpoint, fullBody: fullBody)
+            }
+        } else {
             try await self.performRequest(endpoint, fullBody: fullBody)
         }
 
@@ -1494,6 +1523,9 @@ final class YTMusicClient: YTMusicClientProtocol {
             self.apiKeyProvider.invalidate()
             self.authService.sessionExpired()
             throw YTMusicError.authExpired
+        case let .rateLimited(retryAfter):
+            self.logger.error("API rate limited: HTTP 429 (retryAfter=\(retryAfter.map { "\($0)s" } ?? "unspecified"))")
+            throw YTMusicError.rateLimited(retryAfter: retryAfter)
         case let .httpError(statusCode):
             self.logger.error("API error: HTTP \(statusCode)")
             // Note: we intentionally do NOT invalidate the API key here. YouTube
@@ -1536,8 +1568,33 @@ final class YTMusicClient: YTMusicClientProtocol {
     private enum NetworkResult {
         case success(Data)
         case authError(statusCode: Int)
+        case rateLimited(retryAfter: TimeInterval?)
         case httpError(statusCode: Int)
         case networkError(Error)
+    }
+
+    /// Parses an HTTP `Retry-After` header value into a delay in seconds.
+    /// Supports the delta-seconds form (e.g. "120") and the HTTP-date form
+    /// (e.g. "Wed, 21 Oct 2015 07:28:00 GMT"); returns nil when absent or
+    /// unparseable. Negative dates clamp to 0.
+    nonisolated static func parseRetryAfter(_ value: String?) -> TimeInterval? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return nil }
+
+        if let seconds = TimeInterval(trimmed) {
+            return max(0, seconds)
+        }
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "GMT")
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        if let date = formatter.date(from: trimmed) {
+            return max(0, date.timeIntervalSinceNow)
+        }
+
+        return nil
     }
 
     // Performs network request off the main thread.
@@ -1557,6 +1614,16 @@ final class YTMusicClient: YTMusicClientProtocol {
             // Handle auth errors
             if httpResponse.statusCode == 401 || httpResponse.statusCode == 403 {
                 return .authError(statusCode: httpResponse.statusCode)
+            }
+
+            // Handle rate limiting separately so we can honor Retry-After and
+            // surface a rate-limit-specific message instead of a generic "Server
+            // Error". (Falls through to the generic httpError branch otherwise.)
+            if httpResponse.statusCode == 429 {
+                let retryAfter = Self.parseRetryAfter(
+                    httpResponse.value(forHTTPHeaderField: "Retry-After")
+                )
+                return .rateLimited(retryAfter: retryAfter)
             }
 
             // Handle other HTTP errors

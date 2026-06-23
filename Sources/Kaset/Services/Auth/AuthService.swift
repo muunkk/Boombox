@@ -109,6 +109,12 @@ final class AuthService: AuthServiceProtocol {
         await self.webKitManager.clearAllData()
         Self.clearAccountScopedCaches()
 
+        // Clear account-scoped on-disk/in-memory user data so it is never surfaced to
+        // the next account/user on a shared machine.
+        FavoritesManager.shared.clear()
+        RecentSearchesStore.shared.clearAll()
+        Self.clearSavedPlaybackQueue()
+
         self.state = .loggedOut
         self.needsReauth = false
 
@@ -122,6 +128,19 @@ final class AuthService: AuthServiceProtocol {
     private static func clearAccountScopedCaches() {
         APICache.shared.invalidateAll()
         URLCache.shared.removeAllCachedResponses()
+    }
+
+    /// Removes the persisted playback queue so the previous account's queue is not auto-restored
+    /// (via `restoreQueueFromPersistence`) on the next launch for a different user/session.
+    ///
+    /// These keys mirror `PlayerService`'s persisted-queue keys. Clearing the on-disk payload here is
+    /// the high-value privacy fix; tearing down the *live* in-memory queue still requires the active
+    /// `PlayerService` instance (see follow-up note), which `AuthService` does not hold.
+    private static func clearSavedPlaybackQueue() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "boombox.saved.queue")
+        defaults.removeObject(forKey: "boombox.saved.queueIndex")
+        defaults.removeObject(forKey: "boombox.saved.playbackSession")
     }
 
     /// Called when login completes successfully (from LoginSheet observation).

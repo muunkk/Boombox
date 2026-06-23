@@ -85,6 +85,13 @@ struct SidebarProfileView: View {
         } else if self.accountService.lastError != nil, !self.accountService.isLoading {
             // Error state - show retry option
             self.errorStateView
+        } else if !self.accountService.isLoading {
+            // Logged in, finished loading, but no current account and no error
+            // (e.g. a successful fetch returned an empty accounts list). Without
+            // this branch the view would fall through to the loading skeleton and
+            // shimmer forever with no way to recover. Offer the tap-to-retry
+            // affordance instead.
+            self.errorStateView
         } else {
             // Loading state when account not yet fetched
             self.loadingStateView

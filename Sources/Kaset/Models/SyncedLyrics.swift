@@ -49,8 +49,25 @@ struct SyncedLyrics: Equatable {
         }
     }
 
+    /// Returns the index of the last `.current` line at `timeMs` without
+    /// allocating an intermediate `[LineStatus]` array.
+    ///
+    /// Lines are time-sorted, so a single forward scan that stops at the first
+    /// upcoming line is sufficient. A line is `.current` only while playback is
+    /// within its `duration`; this matches `lineStatuses(at:)` semantics exactly.
+    /// Called at ~10Hz during synced-lyric playback, so the allocation-free path
+    /// avoids per-tick heap churn.
     func currentLineIndex(at timeMs: Int) -> Int? {
-        self.lineStatuses(at: timeMs).lastIndex(of: .current)
+        var index: Int?
+        for i in self.lines.indices {
+            let line = self.lines[i]
+            // Lines are sorted by start time; once we pass `timeMs` we can stop.
+            if line.timeInMs > timeMs { break }
+            // Skip lines that have already elapsed (only when a duration is known).
+            if line.duration > 0, timeMs - line.timeInMs >= line.duration { continue }
+            index = i
+        }
+        return index
     }
 }
 

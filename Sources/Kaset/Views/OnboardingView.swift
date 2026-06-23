@@ -79,7 +79,10 @@ struct OnboardingView: View {
             Spacer()
                 .frame(height: 40)
         }
-        .frame(minWidth: 500, minHeight: 500)
+        // Match the authenticated shell's minimum (MainWindow mainContent /
+        // initializingView use 900x600) so signing in does not abruptly grow or
+        // clip the window at the most visible moment of first use.
+        .frame(minWidth: 900, minHeight: 600)
         .sheet(isPresented: self.$showLoginSheet) {
             LoginSheet()
         }

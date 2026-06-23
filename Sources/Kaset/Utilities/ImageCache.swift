@@ -22,6 +22,15 @@ actor ImageCache {
     private let fileManager = FileManager.default
     private let diskCacheURL: URL
 
+    /// How long a URL that failed to download stays negatively cached before it is
+    /// allowed to be re-fetched. Avoids hammering a dead URL on every redraw.
+    private static let negativeCacheTTL: TimeInterval = 60
+
+    /// Keys (URL only) that recently failed to download, with the time they failed.
+    /// A `nil` downsample is not applied here — failures are keyed by URL so a dead
+    /// URL is suppressed at every requested size.
+    private var failedKeys: [NSString: Date] = [:]
+
     private init() {
         self.memoryCache.countLimit = 200
         self.memoryCache.totalCostLimit = 50 * 1024 * 1024 // 50MB
@@ -84,7 +93,15 @@ actor ImageCache {
             return diskImage
         }
 
-        // Check if already fetching at this exact size
+        // Skip URLs that failed to download recently (negative cache) so a dead URL
+        // is not re-requested on every redraw.
+        if self.isNegativelyCached(url: url) {
+            return nil
+        }
+
+        // Check if already fetching at this exact size. Join the shared fetch without
+        // cancelling it: other callers may still be awaiting the same task, so only the
+        // originating fetch below drives cancellation of the underlying download.
         if let existing = inFlight[key] {
             return await existing.value
         }
@@ -93,20 +110,52 @@ actor ImageCache {
         let task = Task<NSImage?, Never> {
             do {
                 let (data, _) = try await URLSession.shared.data(from: url)
+                // Short-circuit if the awaiting context was cancelled while downloading,
+                // so we don't spend CPU downsampling an image nobody is waiting for.
+                try Task.checkCancellation()
                 guard let image = Self.createImage(from: data, targetSize: targetSize) else { return nil }
                 let cost = targetSize != nil ? Int(image.size.width * image.size.height * 4) : data.count
                 self.memoryCache.setObject(image, forKey: key, cost: cost)
                 self.saveToDisk(url: url, data: data)
                 return image
+            } catch is CancellationError {
+                // Cancelled: not a real failure, so don't negatively cache.
+                return nil
             } catch {
+                self.recordFailure(url: url)
                 return nil
             }
         }
 
         self.inFlight[key] = task
-        let result = await task.value
+        // Drive cancellation from the caller: an unstructured Task does not inherit
+        // the caller's cancellation, so cancel the stored task explicitly when the
+        // awaiting context (a SwiftUI .task or prefetch group) is cancelled.
+        let result = await withTaskCancellationHandler {
+            await task.value
+        } onCancel: {
+            task.cancel()
+        }
         self.inFlight.removeValue(forKey: key)
         return result
+    }
+
+    /// Returns whether a URL is currently within its negative-cache window. Expired
+    /// entries are pruned so the URL can be retried.
+    private func isNegativelyCached(url: URL) -> Bool {
+        let key = url.absoluteString as NSString
+        guard let failedAt = failedKeys[key] else { return false }
+        if Date().timeIntervalSince(failedAt) < Self.negativeCacheTTL {
+            return true
+        }
+        self.failedKeys.removeValue(forKey: key)
+        return false
+    }
+
+    /// Records that a URL failed to download, keyed by URL only so it is suppressed
+    /// at every requested size for the TTL window.
+    private func recordFailure(url: URL) {
+        self.failedKeys[url.absoluteString as NSString] = Date()
     }
 
     /// Prefetches images with controlled concurrency to avoid network congestion.
@@ -116,8 +165,11 @@ actor ImageCache {
     ///   - targetSize: Optional target size for downsampling.
     ///   - maxConcurrent: Maximum number of concurrent fetches (default: 4).
     func prefetch(urls: [URL], targetSize: CGSize? = nil, maxConcurrent: Int = maxConcurrentPrefetch) async {
-        // Use structured concurrency directly - cancellation propagates automatically
-        // when SwiftUI's .task is cancelled (view disappears or id changes)
+        // Structured task group: cancellation propagates from the caller's .task to the
+        // group's child tasks. Each child calls image(for:), which now bridges that
+        // cancellation to its unstructured download via withTaskCancellationHandler, so a
+        // cancelled scroll/prefetch actually cancels in-flight downloads instead of
+        // letting them run to completion off-screen.
         await withTaskGroup(of: Void.self) { group in
             var inProgress = 0
             for url in urls {
@@ -185,6 +237,7 @@ actor ImageCache {
     func clearMemoryCache() {
         self.memoryCache.removeAllObjects()
         self.inFlight.removeAll()
+        self.failedKeys.removeAll()
     }
 
     /// Clears both memory and disk caches.

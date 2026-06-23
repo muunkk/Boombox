@@ -68,20 +68,25 @@ enum LyricsParser {
     }
 
     /// Recursively searches nested dictionaries/arrays for a timedLyricsModel payload.
-    private static func findTimedLyricsModel(in node: Any) -> [String: Any]? {
+    ///
+    /// Bounded by `depth` (mirroring `PlaylistParser.findTracksRecursively`) so a
+    /// pathologically deep API response can't exhaust the call stack.
+    private static func findTimedLyricsModel(in node: Any, depth: Int = 0) -> [String: Any]? {
+        guard depth < 20 else { return nil }
+
         if let dictionary = node as? [String: Any] {
             if let timedLyricsModel = dictionary["timedLyricsModel"] as? [String: Any] {
                 return timedLyricsModel
             }
 
             for value in dictionary.values {
-                if let timedLyricsModel = self.findTimedLyricsModel(in: value) {
+                if let timedLyricsModel = self.findTimedLyricsModel(in: value, depth: depth + 1) {
                     return timedLyricsModel
                 }
             }
         } else if let array = node as? [Any] {
             for value in array {
-                if let timedLyricsModel = self.findTimedLyricsModel(in: value) {
+                if let timedLyricsModel = self.findTimedLyricsModel(in: value, depth: depth + 1) {
                     return timedLyricsModel
                 }
             }

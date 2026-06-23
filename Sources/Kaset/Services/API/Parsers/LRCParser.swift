@@ -3,16 +3,23 @@ import Foundation
 // MARK: - LRCParser
 
 enum LRCParser {
+    /// Compiled once at type-load time and reused across every line so we don't
+    /// recompile the identical pure-metadata pattern inside the parse loop.
+    private static let pureMetadataRegex = try? NSRegularExpression(pattern: "^\\[([a-z]+):([^\\]]+)\\]\\s*$")
+
+    // swiftlint:disable:next cyclomatic_complexity
     static func parse(_ raw: String) -> SyncedLyrics? {
         var unmergedLines: [SyncedLyricLine] = []
         var offsetMs = 0
 
         let lines = raw.components(separatedBy: .newlines)
 
-        // Match regex for timestamps and metadata
-        let timeRegex = try? NSRegularExpression(pattern: "\\[(\\d{2,}):(\\d{2})\\.(\\d{2,3})\\]")
+        // Match regex for timestamps and metadata. The minute group is capped at
+        // 7 digits so adversarial third-party (lrclib.net) data can't drive the
+        // minute → milliseconds math into integer overflow.
+        let timeRegex = try? NSRegularExpression(pattern: "\\[(\\d{2,7}):(\\d{2})\\.(\\d{2,3})\\]")
         let metadataRegex = try? NSRegularExpression(pattern: "\\[([a-z]+):([^\\]]+)\\]")
-        let wordRegex = try? NSRegularExpression(pattern: "<(\\d{2,}):(\\d{2})\\.(\\d{2,3})>([^<]+)")
+        let wordRegex = try? NSRegularExpression(pattern: "<(\\d{2,7}):(\\d{2})\\.(\\d{2,3})>([^<]+)")
 
         for line in lines {
             let nsLine = line as NSString
@@ -28,7 +35,9 @@ enum LRCParser {
                 }
 
                 // If it's pure metadata and has no lyric text or time tag, skip
-                if (try? NSRegularExpression(pattern: "^\\[([a-z]+):([^\\]]+)\\]\\s*$").firstMatch(in: line, options: [], range: fullRange)) != nil {
+                if let pure = Self.pureMetadataRegex,
+                   pure.firstMatch(in: line, options: [], range: fullRange) != nil
+                {
                     continue
                 }
             }
@@ -55,7 +64,11 @@ enum LRCParser {
                         let ss = Int(nsText.substring(with: match.range(at: 2))) ?? 0
                         let msStr = nsText.substring(with: match.range(at: 3))
                         let ms = self.parseCentsToMs(msStr)
-                        let time = (mm * 60 * 1000) + (ss * 1000) + ms
+                        // Overflow-safe: skip the word rather than trapping on
+                        // adversarial timestamps that exceed Int range.
+                        guard let time = self.timestampMs(minutes: mm, seconds: ss, ms: ms) else {
+                            continue
+                        }
                         let word = nsText.substring(with: match.range(at: 4))
                         extracted.append(TimedWord(timeInMs: time, word: word))
                     }
@@ -72,7 +85,13 @@ enum LRCParser {
                 let msStr = nsLine.substring(with: match.range(at: 3))
                 let ms = self.parseCentsToMs(msStr)
 
-                let timeMs = (mm * 60 * 1000) + (ss * 1000) + ms - offsetMs
+                // Overflow-safe: skip the line instead of trapping if the
+                // timestamp math would exceed Int range.
+                guard let base = self.timestampMs(minutes: mm, seconds: ss, ms: ms) else {
+                    continue
+                }
+                let (timeMs, subOverflow) = base.subtractingReportingOverflow(offsetMs)
+                if subOverflow { continue }
 
                 unmergedLines.append(SyncedLyricLine(
                     timeInMs: max(0, timeMs),
@@ -108,6 +127,22 @@ enum LRCParser {
         }
 
         return SyncedLyrics(lines: processedLines, source: "Parsed")
+    }
+
+    /// Combines minutes/seconds/milliseconds into a single millisecond count
+    /// using overflow-checked arithmetic. Returns nil if any step would exceed
+    /// Int range so adversarial timestamps degrade gracefully instead of trapping.
+    private static func timestampMs(minutes: Int, seconds: Int, ms: Int) -> Int? {
+        guard minutes >= 0, seconds >= 0, ms >= 0 else { return nil }
+        let (minutesMs, mo) = minutes.multipliedReportingOverflow(by: 60 * 1000)
+        if mo { return nil }
+        let (secondsMs, so) = seconds.multipliedReportingOverflow(by: 1000)
+        if so { return nil }
+        let (partial, po) = minutesMs.addingReportingOverflow(secondsMs)
+        if po { return nil }
+        let (total, to) = partial.addingReportingOverflow(ms)
+        if to { return nil }
+        return total
     }
 
     /// ".1" -> 100, ".12" -> 120, ".123" -> 123

@@ -75,8 +75,21 @@ extension PlayerService {
             && firstQueueSong.videoId == observedVideoId
     }
 
+    /// Builds a thumbnail URL from an untrusted WebView-bridge string, accepting only http(s).
+    /// The thumbnail comes from a DOM `img.src` forwarded over the spoofable singletonPlayer
+    /// bridge; rejecting other schemes (e.g. `file://`, large `data:`) keeps a spoofed value from
+    /// reaching URLSession via ImageCache. Legitimate CDN thumbnails are always https.
+    private func validatedThumbnailURL(from thumbnailUrl: String) -> URL? {
+        URL(string: thumbnailUrl).flatMap { url -> URL? in
+            guard let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http" else {
+                return nil
+            }
+            return url
+        }
+    }
+
     private func keepQueueSongVisible(_ song: Song, thumbnailUrl: String) {
-        let intendedThumbnailURL = URL(string: thumbnailUrl) ?? song.thumbnailURL
+        let intendedThumbnailURL = self.validatedThumbnailURL(from: thumbnailUrl) ?? song.thumbnailURL
         self.currentTrack = Song(
             id: song.id,
             title: song.title,
@@ -471,7 +484,9 @@ extension PlayerService {
     /// Updates track metadata and enforces Kaset's queue when YouTube tries to diverge.
     func updateTrackMetadata(title: String, artist: String, thumbnailUrl: String, videoId observedVideoId: String?) {
         self.logger.debug("Track metadata updated: \(title) - \(artist)")
-        let thumbnailURL = URL(string: thumbnailUrl)
+        // Validate the bridge-provided thumbnail URL at the WebView trust boundary (see
+        // validatedThumbnailURL): only http(s) is accepted so a spoofed scheme can't reach URLSession.
+        let thumbnailURL = self.validatedThumbnailURL(from: thumbnailUrl)
         let artistObj = Artist(id: "unknown", name: artist)
         let resolvedVideoId = self.resolvedObservedVideoId(observedVideoId)
         let trackChanged = self.currentTrack?.title != title

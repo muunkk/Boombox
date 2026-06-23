@@ -255,7 +255,10 @@ enum PodcastParser {
         var isPlayed = false
 
         if let playbackProgressPercent = data["playbackProgress"] as? [String: Any],
-           let percentage = playbackProgressPercent["playbackProgressPercentage"] as? Int
+           // Read as NSNumber so a float-encoded integral percentage (e.g. 33.0
+           // bridged to a Double-backed NSNumber) is still honored instead of
+           // silently dropped by a strict `as? Int` cast.
+           let percentage = (playbackProgressPercent["playbackProgressPercentage"] as? NSNumber)?.intValue
         {
             playbackProgress = Double(percentage) / 100.0
             isPlayed = percentage >= 95
@@ -611,24 +614,33 @@ enum PodcastParser {
     }
 
     /// Parses duration string like "36 min" or "1:11:19" to seconds.
+    ///
+    /// Uses overflow-checked arithmetic so adversarial API duration text (e.g.
+    /// "200000000000000000 min" or "200000000000000000:00") returns nil instead
+    /// of trapping the process.
     private static func parseDurationToSeconds(_ string: String) -> Int? {
         // Try "X min" format
         if string.hasSuffix(" min") {
             let numberPart = string.dropLast(4)
             if let minutes = Int(numberPart) {
-                return minutes * 60
+                let (seconds, overflow) = minutes.multipliedReportingOverflow(by: 60)
+                return overflow ? nil : seconds
             }
         }
 
-        // Try "X:XX" or "X:XX:XX" format
+        // Try "X:XX" or "X:XX:XX" format using overflow-checked base-60 folding.
         let components = string.split(separator: ":").compactMap { Int($0) }
-        if components.count == 2 {
-            return components[0] * 60 + components[1]
-        } else if components.count == 3 {
-            return components[0] * 3600 + components[1] * 60 + components[2]
+        guard components.count == 2 || components.count == 3 else { return nil }
+        var total = 0
+        for component in components {
+            guard component >= 0 else { return nil }
+            let (scaled, mulOverflow) = total.multipliedReportingOverflow(by: 60)
+            if mulOverflow { return nil }
+            let (sum, addOverflow) = scaled.addingReportingOverflow(component)
+            if addOverflow { return nil }
+            total = sum
         }
-
-        return nil
+        return total
     }
 
     // MARK: - Podcast Detection Helpers

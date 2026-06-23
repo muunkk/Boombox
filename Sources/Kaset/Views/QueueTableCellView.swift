@@ -516,9 +516,11 @@ class WaveformView: NSView {
 
         self.startTime = CACurrentMediaTime()
 
-        // Keep the timer on the main run loop and hop explicitly before touching view state.
+        // The timer callback already runs on RunLoop.main (added below), so we are
+        // on the main actor's thread. Use MainActor.assumeIsolated to call updateBars()
+        // directly instead of allocating a fresh Task 30x/sec just to satisfy isolation.
         let timer = Timer(timeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
-            Task { @MainActor [weak self] in
+            MainActor.assumeIsolated {
                 self?.updateBars()
             }
         }
