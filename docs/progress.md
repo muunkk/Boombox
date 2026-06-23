@@ -18,9 +18,9 @@
 |-------|-------------|--------|
 | P0 | Setup & green baseline (branch, relax UI-test rule, baseline build/test/lint/format) | ✅ Done |
 | P1 | Document every feature → user stories → canonical `docs/user-stories.csv` | ✅ Done — **373 stories**, 15 areas |
-| P2 | Test every user story + hunt bugs → document all errors in the CSV | 🔄 In progress (bug hunt landing) |
-| P3 | Synthesize prioritized fix plan from findings | ⏳ Pending |
-| P4 | Fix every logistical/UX error + bug (build→audit→fix sub-loop, isolated worktrees) | ⏳ Pending |
+| P2 | Test every user story + hunt bugs → document all errors in the CSV | ✅ Done — **36 found → 35 confirmed** (44 stories flagged) |
+| P3 | Synthesize prioritized fix plan from findings | ✅ Done — 4 disjoint batches, per-finding verified fixes |
+| P4 | Fix every logistical/UX error + bug (build→audit→fix sub-loop, isolated worktrees) | 🔄 In progress (4 fixers in worktrees) |
 | P5 | Retest every user behavior post-fix → update CSV | ⏳ Pending |
 | P6 | Commit → push → PR → watch CI → fix failures → merge when green (loop) | ⏳ Pending |
 
@@ -61,8 +61,18 @@ Toolchain: Swift 6.3.2, Xcode 26.5, SwiftLint 0.64.0, SwiftFormat 0.61.1.
 - **2026-06-23 ~00:58** — Live-app smoke (runtime-tester): app builds, launches, renders Home window, **no crash**.
 - **2026-06-23 ~01:00** — Local XCUITest run **blocked by macOS Gatekeeper** (unsigned runner "damaged" on Apple Silicon via `CODE_SIGNING_ALLOWED=NO`). Per maintainer's fallback instruction, local UI execution is **deferred to CI** (the `tests.yml` UI-test job runs the full suite authoritatively on every PR). Stuck run killed; `runtime-tester` redirected to enumerate UI coverage instead.
 - **2026-06-23 ~01:02** — P1 inventory workflow finished: **373 user stories** written to `docs/user-stories.csv`.
-- **2026-06-23 ~01:02** — Bug-hunters landing: playback 6, data 10, ui 10 findings so far; systems + runtime pending.
+- **2026-06-23 ~01:03** — All 4 hunters done: **36 findings** (playback 6, data 10, ui 10, systems 10).
+- **2026-06-23 ~01:05** — Adversarial verify workflow: **35 confirmed, 1 refuted** (F006). Corrected severities: 1 high, 13 medium, 21 low. F027 downgraded high→low (xcstrings is shipped dead-weight; runtime reads .lproj).
+- **2026-06-23 ~01:08** — P2 documented: `docs/audit-findings.md` written; `user-stories.csv` updated — 44 stories flagged with issues, 329 pass; per-story Test Method/Result/Severity/Fix Status filled.
+- **2026-06-23 ~01:10** — P4 launched: 4 fixer agents in isolated worktrees (`fix/playback`, `fix/data`, `fix/ui`, `fix/systems`), disjoint file allowlists, each must leave its worktree green (swiftformat + swiftlint + build + test) and commit.
 - _(updates appended as phases complete)_
+
+## Confirmed Findings (P2 → P4)
+
+35 confirmed bugs (full detail in [`audit-findings.md`](./audit-findings.md)). Highlights:
+- **HIGH** F028 — Chinese/Bengali/Hindi romanizers index Swift String with UTF‑16 offsets → wrong output + **out-of-bounds crash** (`fix/systems`).
+- **MEDIUM** (13) — shuffle replays current track (F001); WebView crash recovery double-navigates (F005); shared continuation token corrupts pagination (F007/F023); favorites decode all-or-nothing wipes data (F009); "Add to Library" force-plays (F022); tab switch loses navigation drill-down (F020); search filter chips trap on empty results (F017); PlayerBar shortcuts hijack text fields (F024); Carbon hotkey handler leak (F030); scrambled fr/id translations (F027, low/partial); etc.
+- **LOW** (21) — unstable list identities, missing a11y ids, cache keying, monitor leaks, doc gaps, etc.
 
 ## UI-Test Strategy (decision)
 
