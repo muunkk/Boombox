@@ -398,7 +398,7 @@ struct PlaylistDetailView: View {
         Divider()
 
         Button {
-            SongActionsHelper.addToLibrary(track, playerService: self.playerService)
+            Task { await SongActionsHelper.addToLibrary(track, client: self.viewModel.client) }
         } label: {
             Label("Add to Library", systemImage: "plus.circle")
         }

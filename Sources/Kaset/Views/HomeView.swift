@@ -7,7 +7,7 @@ struct HomeView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var settings = SettingsManager.shared
 
@@ -424,9 +424,10 @@ struct HomeView: View {
 }
 
 #Preview {
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    HomeView(viewModel: HomeViewModel(client: client))
+    HomeView(viewModel: HomeViewModel(client: client), navigationPath: $navigationPath)
         .environment(PlayerService())
         .environment(FavoritesManager.shared)
 }

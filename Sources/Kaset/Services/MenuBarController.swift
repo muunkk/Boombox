@@ -109,6 +109,12 @@ final class MenuBarController: NSObject {
             return
         }
 
+        // Defensively remove any monitors left over from a previous popover that
+        // closed via a path bypassing dismissPopover() (e.g. Esc, Cmd-Tab, or
+        // app deactivation while .transient auto-closes). Without this, a second
+        // present would overwrite the monitor references and leak the old pair.
+        self.removeEventMonitors()
+
         let rootView = MenuBarPlayerView(openApp: { [weak self] in
             self?.openMainAppWindow()
         })
@@ -119,6 +125,9 @@ final class MenuBarController: NSObject {
         let popover = NSPopover()
         popover.behavior = .transient
         popover.animates = true
+        // Clean up monitors promptly when .transient closes the popover via a
+        // path that doesn't route through dismissPopover() (Esc, Cmd-Tab, etc.).
+        popover.delegate = self
 
         let hostingController = NSHostingController(rootView: rootView)
         // Track SwiftUI's intrinsic content size so the popover grows when the
@@ -179,6 +188,12 @@ final class MenuBarController: NSObject {
     private func dismissPopover() {
         self.popover?.performClose(nil)
         self.popover = nil
+        self.removeEventMonitors()
+    }
+
+    /// Removes the popover's global mouse-down and local scroll monitors if
+    /// installed. Safe to call repeatedly.
+    private func removeEventMonitors() {
         if let monitor = self.eventMonitor {
             NSEvent.removeMonitor(monitor)
             self.eventMonitor = nil
@@ -203,5 +218,17 @@ final class MenuBarController: NSObject {
         if let any = windows.first(where: { $0.canBecomeMain }) {
             any.makeKeyAndOrderFront(nil)
         }
+    }
+}
+
+// MARK: NSPopoverDelegate
+
+extension MenuBarController: NSPopoverDelegate {
+    /// Fired whenever the popover closes, including the .transient auto-close
+    /// paths (Esc, app deactivation) that bypass dismissPopover(). Ensures the
+    /// event monitors are always torn down so they can't accumulate.
+    func popoverDidClose(_: Notification) {
+        self.popover = nil
+        self.removeEventMonitors()
     }
 }

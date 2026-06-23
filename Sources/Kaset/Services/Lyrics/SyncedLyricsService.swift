@@ -140,25 +140,84 @@ final class SyncedLyricsService {
 
     private func refreshCurrentRomanization() {
         guard let baseLyrics = self.currentBaseSyncedLyrics else { return }
-        self.currentLyrics = .synced(self.displayLyrics(from: baseLyrics))
+        self.applySyncedDisplay(from: baseLyrics, requestID: self.fetchGeneration)
     }
 
-    private func displayLyrics(from synced: SyncedLyrics) -> SyncedLyrics {
-        guard self.romanizationService.isEnabled else {
-            return synced
-        }
+    /// Applies a synced result to `currentLyrics`. The base lyrics are shown
+    /// immediately so resolving/toggling never blocks the UI. When romanization
+    /// is enabled, the per-line script detection + tokenization
+    /// (NLLanguageRecognizer / CFStringTokenizer) is performed off the MainActor
+    /// and the romanized annotation is overlaid once it's ready. `romanizedText`
+    /// is a separate per-line field, so the base lyrics are correct on their own.
+    private func applySyncedDisplay(from synced: SyncedLyrics, requestID: Int) {
+        self.currentLyrics = .synced(synced)
 
-        let romanized = self.romanizationService.romanizeAll(synced)
-        guard !romanized.isEmpty else {
-            return synced
-        }
+        guard self.romanizationService.isEnabled else { return }
 
+        let lineTexts = synced.lines.map { (id: $0.id, text: $0.text) }
+        Task { [weak self] in
+            let romanized = await Task.detached(priority: .userInitiated) {
+                Self.romanizeLines(lineTexts)
+            }.value
+
+            guard let self else { return }
+            // Drop stale results, a disabled toggle, or an empty romanization.
+            guard requestID == self.fetchGeneration,
+                  self.romanizationService.isEnabled,
+                  !romanized.isEmpty,
+                  case .synced = self.currentLyrics
+            else { return }
+
+            self.currentLyrics = .synced(Self.merge(romanized, into: synced))
+        }
+    }
+
+    /// Merges a `lineID → romanized text` map into a copy of `synced`.
+    private static func merge(_ romanized: [UUID: String], into synced: SyncedLyrics) -> SyncedLyrics {
         var updatedLines = synced.lines
         for index in updatedLines.indices {
             updatedLines[index].romanizedText = romanized[updatedLines[index].id]
         }
-
         return SyncedLyrics(lines: updatedLines, source: synced.source)
+    }
+
+    /// Romanizes each line off the MainActor. Mirrors `RomanizationService`
+    /// `romanize(_:)` dispatch using the same nonisolated romanizers; kept here
+    /// (rather than reusing the MainActor-isolated service) so the heavy work
+    /// can run on a background executor. Dedupes repeated line texts locally.
+    nonisolated static func romanizeLines(_ lines: [(id: UUID, text: String)]) -> [UUID: String] {
+        var results: [UUID: String] = [:]
+        var cache: [String: String?] = [:]
+        for line in lines {
+            let romanized: String?
+            if let cached = cache[line.text] {
+                romanized = cached
+            } else {
+                romanized = Self.romanize(line.text)
+                cache[line.text] = romanized
+            }
+            if let romanized {
+                results[line.id] = romanized
+            }
+        }
+        return results
+    }
+
+    nonisolated static func romanize(_ text: String) -> String? {
+        if ScriptDetector.isLatinOnly(text) { return nil }
+
+        let result: String? = switch ScriptDetector.dominantScript(text) {
+        case .japanese: JapaneseRomanizer.romanize(text)
+        case .korean: KoreanRomanizer.romanize(text)
+        case .chinese: ChineseRomanizer.romanize(text)
+        case .thai: ThaiRomanizer.romanize(text)
+        case .bengali: BengaliRomanizer.romanize(text)
+        case .hindi: HindiRomanizer.romanize(text)
+        default: nil
+        }
+
+        let canonicalized = result.map { TextCanonicalizer.canonicalize($0) }
+        return (canonicalized != nil && canonicalized != text) ? canonicalized : nil
     }
 
     private func resultRank(_ result: LyricResult) -> Int {
@@ -227,7 +286,7 @@ final class SyncedLyricsService {
 
         if case let .synced(synced) = resolved.result {
             self.currentBaseSyncedLyrics = synced
-            self.currentLyrics = .synced(self.displayLyrics(from: synced))
+            self.applySyncedDisplay(from: synced, requestID: requestID)
         } else {
             self.currentBaseSyncedLyrics = nil
             self.currentLyrics = resolved.result

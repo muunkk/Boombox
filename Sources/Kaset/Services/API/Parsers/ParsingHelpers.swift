@@ -124,7 +124,9 @@ enum ParsingHelpers {
         {
             for run in runs {
                 if let text = run["text"] as? String,
-                   text != " • ", text != " & ", text != ", "
+                   text != " • ", text != " & ", text != ", ",
+                   !Self.contentTypeKeywords.contains(text),
+                   !Self.looksLikeNonArtistMetadata(text)
                 {
                     if let endpoint = run["navigationEndpoint"] as? [String: Any],
                        let browseEndpoint = endpoint["browseEndpoint"] as? [String: Any],

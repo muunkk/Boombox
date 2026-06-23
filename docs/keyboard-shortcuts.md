@@ -37,3 +37,9 @@ Mute is still available from the Playback menu, but Boombox intentionally does n
 | `Esc`    | Dismiss queue or lyrics panel |
 
 Hold `⌘` over the sidebar to see the number for each section as a small "⌘N" badge.
+
+## Window
+
+| Shortcut | Action         |
+| -------- | -------------- |
+| `⌃⌘S`    | Toggle Sidebar |

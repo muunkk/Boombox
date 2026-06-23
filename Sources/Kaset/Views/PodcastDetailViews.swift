@@ -22,17 +22,27 @@ struct PodcastShowView: View {
     private let previewEpisodeCount = 5
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Header
-                self.headerView
+        Group {
+            if case let .error(error) = self.loadingState {
+                ErrorView(error: error) {
+                    // Reset to .idle so loadShow()'s guard allows the retry.
+                    self.loadingState = .idle
+                    Task { await self.loadShow() }
+                }
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        // Header
+                        self.headerView
 
-                Divider()
+                        Divider()
 
-                // Episodes list
-                self.episodesList
+                        // Episodes list
+                        self.episodesList
+                    }
+                    .padding(24)
+                }
             }
-            .padding(24)
         }
         .accentBackground(from: self.show.thumbnailURL)
         .navigationTitle(self.show.title)
@@ -53,7 +63,10 @@ struct PodcastShowView: View {
             )
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            PlayerBar()
+            // Hide the PlayerBar over the error state, matching ArtistDetailView.
+            if case .error = self.loadingState {} else {
+                PlayerBar()
+            }
         }
         .task {
             await self.loadShow()

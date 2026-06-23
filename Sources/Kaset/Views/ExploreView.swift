@@ -5,7 +5,7 @@ import SwiftUI
 struct ExploreView: View {
     @State var viewModel: ExploreViewModel
     @Environment(PlayerService.self) private var playerService
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
 
     var body: some View {
@@ -120,8 +120,9 @@ struct ExploreView: View {
 }
 
 #Preview {
+    @Previewable @State var navigationPath = NavigationPath()
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
-    ExploreView(viewModel: ExploreViewModel(client: client))
+    ExploreView(viewModel: ExploreViewModel(client: client), navigationPath: $navigationPath)
         .environment(PlayerService())
 }

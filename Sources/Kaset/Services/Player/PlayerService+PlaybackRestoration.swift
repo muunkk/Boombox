@@ -115,7 +115,12 @@ private extension PlayerService {
         previousProgress: TimeInterval
     ) {
         self.progress = progress
-        self.duration = duration
+        // The observer reports duration 0 whenever the progress bar is briefly absent (track change /
+        // SPA navigation). Mirror the restore path (resolveRestoredDuration) and keep the last known
+        // duration instead of wiping it, which would flicker the seek slider and time labels.
+        if duration > 0 {
+            self.duration = duration
+        }
 
         if isPlaying {
             self.state = .playing

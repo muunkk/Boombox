@@ -24,6 +24,19 @@ struct RetryPolicy {
             } catch {
                 lastError = error
 
+                // Cancellation is never retryable — rethrow immediately so callers
+                // that special-case `catch is CancellationError` see it as a clean
+                // cancel rather than a spurious network error.
+                if error is CancellationError {
+                    throw error
+                }
+                if let ytError = error as? YTMusicError,
+                   case let .networkError(underlying) = ytError,
+                   (underlying as? URLError)?.code == .cancelled
+                {
+                    throw CancellationError()
+                }
+
                 // Don't retry non-retryable errors (auth, parse, invalid input)
                 if let ytError = error as? YTMusicError, !ytError.isRetryable {
                     throw error

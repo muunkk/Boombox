@@ -393,7 +393,7 @@ struct MenuBarPlayerView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 2) {
-                        ForEach(Array(self.playerService.queue.enumerated()), id: \.offset) { index, song in
+                        ForEach(Array(self.playerService.queue.enumerated()), id: \.element.videoId) { index, song in
                             MenuBarQueueRow(
                                 song: song,
                                 isCurrent: index == self.playerService.currentIndex,
