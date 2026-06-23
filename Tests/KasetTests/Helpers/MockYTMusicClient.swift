@@ -78,8 +78,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
     private var _historyContinuationIndex = 0
     private var _podcastsContinuationIndex = 0
     private var _likedSongsContinuationIndex = 0
-    private var _playlistContinuationIndex = 0
-    private var _currentPlaylistId: String?
 
     var hasMoreHomeSections: Bool {
         self._homeContinuationIndex < self.homeContinuationSections.count
@@ -111,13 +109,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
 
     var hasMoreLikedSongs: Bool {
         self._likedSongsContinuationIndex < self.likedSongsContinuationSongs.count
-    }
-
-    var hasMorePlaylistTracks: Bool {
-        guard let playlistId = _currentPlaylistId,
-              let continuations = playlistContinuationTracks[playlistId]
-        else { return false }
-        return self._playlistContinuationIndex < continuations.count
     }
 
     private var _searchContinuationIndex = 0
@@ -469,9 +460,7 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         self._historyContinuationIndex = 0
         self._podcastsContinuationIndex = 0
         self._likedSongsContinuationIndex = 0
-        self._playlistContinuationIndex = 0
         self._searchContinuationIndex = 0
-        self._currentPlaylistId = nil
     }
 
     func getSearchSuggestions(query: String) async throws -> [SearchSuggestion] {
@@ -530,30 +519,50 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
     func getPlaylist(id: String) async throws -> PlaylistTracksResponse {
         self.getPlaylistCalled = true
         self.getPlaylistIds.append(id)
-        self._currentPlaylistId = id
-        self._playlistContinuationIndex = 0
         if let error = shouldThrowError { throw error }
         guard let detail = playlistDetails[id] else {
             throw YTMusicError.parseError(message: "Playlist not found: \(id)")
         }
         let hasContinuation = self.playlistContinuationTracks[id]?.isEmpty == false
-        return PlaylistTracksResponse(detail: detail, continuationToken: hasContinuation ? "mock-token" : nil)
+        // Encode the playlist id + page index in the continuation token so the
+        // continuation lookup is scoped per request, mirroring the real client.
+        return PlaylistTracksResponse(
+            detail: detail,
+            continuationToken: hasContinuation ? Self.makePlaylistToken(id: id, index: 0) : nil
+        )
     }
 
-    func getPlaylistContinuation() async throws -> PlaylistContinuationResponse? {
+    func getPlaylistContinuation(token: String) async throws -> PlaylistContinuationResponse? {
         self.getPlaylistContinuationCalled = true
         self.getPlaylistContinuationCallCount += 1
         if let error = shouldThrowError { throw error }
-        guard let playlistId = _currentPlaylistId,
+        guard let (playlistId, index) = Self.parsePlaylistToken(token),
               let continuations = playlistContinuationTracks[playlistId],
-              self._playlistContinuationIndex < continuations.count
+              index < continuations.count
         else {
             return nil
         }
-        let tracks = continuations[self._playlistContinuationIndex]
-        self._playlistContinuationIndex += 1
-        let hasMore = self._playlistContinuationIndex < continuations.count
-        return PlaylistContinuationResponse(tracks: tracks, continuationToken: hasMore ? "mock-token-\(self._playlistContinuationIndex)" : nil)
+        let tracks = continuations[index]
+        let nextIndex = index + 1
+        let hasMore = nextIndex < continuations.count
+        return PlaylistContinuationResponse(
+            tracks: tracks,
+            continuationToken: hasMore ? Self.makePlaylistToken(id: playlistId, index: nextIndex) : nil
+        )
+    }
+
+    /// Builds an opaque continuation token that encodes the playlist id and page index.
+    private static func makePlaylistToken(id: String, index: Int) -> String {
+        "playlist-cont|\(id)|\(index)"
+    }
+
+    /// Parses a token produced by `makePlaylistToken` back into its id and index.
+    private static func parsePlaylistToken(_ token: String) -> (id: String, index: Int)? {
+        let parts = token.split(separator: "|", omittingEmptySubsequences: false)
+        guard parts.count == 3, parts[0] == "playlist-cont", let index = Int(parts[2]) else {
+            return nil
+        }
+        return (String(parts[1]), index)
     }
 
     func getPlaylistAllTracks(playlistId: String) async throws -> [Song] {
@@ -788,8 +797,6 @@ final class MockYTMusicClient: YTMusicClientProtocol { // swiftlint:disable:this
         self._historyContinuationIndex = 0
         self._podcastsContinuationIndex = 0
         self._likedSongsContinuationIndex = 0
-        self._playlistContinuationIndex = 0
-        self._currentPlaylistId = nil
         self.searchCalled = false
         self.searchQueries = []
         self.getSearchSuggestionsCalled = false

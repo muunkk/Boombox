@@ -293,6 +293,18 @@ enum SearchResponseParser {
             return .playlist(playlist)
         }
 
+        if pageType == "MUSIC_PAGE_TYPE_PODCAST_SHOW_DETAIL_PAGE" || browseId.hasPrefix("MPSPP") {
+            let show = PodcastShow(
+                id: browseId,
+                title: title,
+                author: subtitle,
+                description: nil,
+                thumbnailURL: thumbnailURL,
+                episodeCount: nil
+            )
+            return .podcastShow(show)
+        }
+
         return nil
     }
 

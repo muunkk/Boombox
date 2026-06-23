@@ -39,10 +39,6 @@ import Foundation
             false
         }
 
-        var hasMorePlaylistTracks: Bool {
-            false
-        }
-
         // MARK: - Mock Data
 
         private let homeSections: [HomeSection]
@@ -291,7 +287,7 @@ import Foundation
             return PlaylistTracksResponse(detail: detail, continuationToken: nil)
         }
 
-        func getPlaylistContinuation() async throws -> PlaylistContinuationResponse? {
+        func getPlaylistContinuation(token _: String) async throws -> PlaylistContinuationResponse? {
             nil
         }
 

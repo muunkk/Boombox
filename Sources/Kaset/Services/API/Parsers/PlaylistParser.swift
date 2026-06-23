@@ -1339,8 +1339,7 @@ enum PlaylistParser {
             ?? "Unknown"
 
         let artistRuns = (renderer["shortBylineText"] as? [String: Any])?["runs"] as? [[String: Any]]
-        let artistName = artistRuns?.first?["text"] as? String ?? "Unknown Artist"
-        let artistId = Self.extractArtistId(from: artistRuns)
+        let artists = Self.parseQueueArtists(from: artistRuns)
 
         let durationText = (renderer["lengthText"] as? [String: Any])?["runs"]
             .flatMap { ($0 as? [[String: Any]])?.first?["text"] as? String }
@@ -1353,7 +1352,7 @@ enum PlaylistParser {
         return Song(
             id: videoId,
             title: title,
-            artists: [Artist(id: artistId ?? "", name: artistName, thumbnailURL: nil)],
+            artists: artists,
             album: nil,
             duration: durationText.flatMap { ParsingHelpers.parseDuration($0) },
             thumbnailURL: thumbnailURL,
@@ -1375,15 +1374,44 @@ enum PlaylistParser {
         return nil
     }
 
-    /// Extracts artist ID from runs array.
-    private static func extractArtistId(from artistRuns: [[String: Any]]?) -> String? {
-        guard let firstRun = artistRuns?.first,
-              let navEndpoint = firstRun["navigationEndpoint"] as? [String: Any],
-              let browseEndpoint = navEndpoint["browseEndpoint"] as? [String: Any]
-        else {
-            return nil
+    /// Parses every artist from a queue item's byline runs, preserving collaborators.
+    ///
+    /// The queue endpoint renders multiple artists as separate runs interleaved with
+    /// separator runs (" • ", " & ", ", "). The previous implementation kept only the
+    /// first run and used an empty-string id when no browse endpoint was present,
+    /// dropping collaborators and producing non-navigable, collision-prone ids.
+    private static func parseQueueArtists(from artistRuns: [[String: Any]]?) -> [Artist] {
+        guard let artistRuns else {
+            return [Artist(id: "", name: "Unknown Artist", thumbnailURL: nil)]
         }
-        return browseEndpoint["browseId"] as? String
+
+        var artists: [Artist] = []
+        for run in artistRuns {
+            guard let name = run["text"] as? String else { continue }
+            let trimmed = name.trimmingCharacters(in: .whitespaces)
+            // Skip separator and whitespace-only runs.
+            if trimmed.isEmpty || trimmed == "•" || trimmed == "&" || trimmed == "," {
+                continue
+            }
+
+            if let navEndpoint = run["navigationEndpoint"] as? [String: Any],
+               let browseEndpoint = navEndpoint["browseEndpoint"] as? [String: Any],
+               let browseId = browseEndpoint["browseId"] as? String,
+               !browseId.isEmpty
+            {
+                artists.append(Artist(id: browseId, name: name, thumbnailURL: nil))
+            } else {
+                // Stable hash id keeps the Artist non-navigable but collision-resistant
+                // (an empty-string id would collide across distinct artists).
+                let stableId = ParsingHelpers.stableId(title: "artist", components: name)
+                artists.append(Artist(id: stableId, name: name, thumbnailURL: nil))
+            }
+        }
+
+        if artists.isEmpty {
+            return [Artist(id: "", name: "Unknown Artist", thumbnailURL: nil)]
+        }
+        return artists
     }
 }
 

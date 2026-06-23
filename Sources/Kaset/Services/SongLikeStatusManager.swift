@@ -38,6 +38,11 @@ final class SongLikeStatusManager {
     /// Reference to the YTMusic client for API calls.
     private var client: (any YTMusicClientProtocol)?
 
+    /// In-flight rate mutations keyed by "accountID|videoId". Overlapping
+    /// like/unlike on the same song chain off the previous request so the network
+    /// mutations run in submission order and the server settles on the latest intent.
+    private var inFlightRates: [String: Task<LikeStatus, Never>] = [:]
+
     private init() {}
 
     // MARK: - Configuration
@@ -175,7 +180,8 @@ final class SongLikeStatusManager {
             return self.status(for: song.videoId, accountID: resolvedAccountID) ?? song.likeStatus ?? .indifferent
         }
 
-        // Optimistically update cache and notify observers
+        // Optimistically update cache and notify observers immediately so the UI
+        // reflects the user's latest intent without waiting for in-flight requests.
         let previousStatus = self.status(for: song.videoId, accountID: resolvedAccountID)
         self.setStatus(status, for: song.videoId, accountID: resolvedAccountID)
         self.publishEvent(
@@ -183,8 +189,47 @@ final class SongLikeStatusManager {
             for: resolvedAccountID
         )
 
+        // Serialize the network mutation per song: chain off any prior in-flight rate
+        // so requests are delivered in submission order (no out-of-order HTTP/2 races).
+        let key = "\(resolvedAccountID)|\(song.videoId)"
+        let previousRate = self.inFlightRates[key]
+        let task = Task { @MainActor [weak self] () -> LikeStatus in
+            _ = await previousRate?.value
+            guard let self else { return status }
+            return await self.performRate(
+                song,
+                status: status,
+                previousStatus: previousStatus,
+                accountID: resolvedAccountID,
+                client: client
+            )
+        }
+        self.inFlightRates[key] = task
+
+        let result = await task.value
+        if self.inFlightRates[key] == task {
+            self.inFlightRates[key] = nil
+        }
+        return result
+    }
+
+    /// Performs the network rate mutation and reconciles the optimistic cache.
+    /// - Parameter previousStatus: The cached status captured before this call's
+    ///   optimistic write, used to roll back on failure/cancellation.
+    private func performRate(
+        _ song: Song,
+        status: LikeStatus,
+        previousStatus: LikeStatus?,
+        accountID resolvedAccountID: String,
+        client: any YTMusicClientProtocol
+    ) async -> LikeStatus {
         do {
             try await client.rateSong(videoId: song.videoId, rating: status)
+            // Re-assert the confirmed status as the final write. Because callers chain
+            // on this task (serializing per song) and there is no suspension between
+            // this write and the caller's return, the settled cache value is the last
+            // intent — even if another path mutated the shared cache during the await.
+            self.setStatus(status, for: song.videoId, accountID: resolvedAccountID)
             DiagnosticsLogger.api.info("Rated song \(song.videoId) as \(status.rawValue)")
             return status
         } catch is CancellationError {

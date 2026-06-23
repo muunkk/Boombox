@@ -129,12 +129,15 @@ struct ParsingHelpersTests {
 
     @Test("Extract artists filters out separator characters")
     func extractArtistsFiltersSeparators() {
+        // Uses two real artist names separated by a bullet. The names avoid
+        // content-type keywords like "Song"/"Artist", which extractArtists now
+        // filters out per the F012 fix (exercised separately in DataFixTests).
         let data: [String: Any] = [
             "subtitle": [
                 "runs": [
-                    ["text": "Artist"],
+                    ["text": "Adele"],
                     ["text": " • "],
-                    ["text": "Song"],
+                    ["text": "Collaborator"],
                 ],
             ],
         ]
@@ -142,8 +145,8 @@ struct ParsingHelpersTests {
         let artists = ParsingHelpers.extractArtists(from: data)
 
         #expect(artists.count == 2)
-        #expect(artists[0].name == "Artist")
-        #expect(artists[1].name == "Song")
+        #expect(artists[0].name == "Adele")
+        #expect(artists[1].name == "Collaborator")
     }
 
     @Test("Extract artists from flex columns accepts library artist browse IDs")
