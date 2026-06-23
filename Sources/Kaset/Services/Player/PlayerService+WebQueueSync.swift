@@ -198,13 +198,13 @@ extension PlayerService {
                     self.logger.info(
                         "YouTube autoplay near end during repeat one; re-asserting current queue track (not advancing)"
                     )
-                    Task {
+                    self.scheduleWebQueueReconciliation {
                         await self.replayCurrentQueueSongForRepeatOneAfterTrackEnd()
                     }
                     return true
                 }
                 self.logger.info("YouTube autoplay detected, overriding with queue track")
-                Task {
+                self.scheduleWebQueueReconciliation {
                     await self.next()
                 }
                 return true
@@ -227,13 +227,13 @@ extension PlayerService {
         if self.canAdvanceNativeQueueAfterTrackEnd {
             if self.repeatMode == .one {
                 self.logger.info("Near-end track change with repeat one; re-asserting current queue track")
-                Task {
+                self.scheduleWebQueueReconciliation {
                     await self.replayCurrentQueueSongForRepeatOneAfterTrackEnd()
                 }
                 return true
             }
             self.logger.info("Near-end track change detected, advancing native queue to enforce playback order")
-            Task {
+            self.scheduleWebQueueReconciliation {
                 await self.next()
             }
             return true
@@ -308,6 +308,14 @@ extension PlayerService {
             return false
         }
 
+        // A near-end corrective action (advance/replay) is already outstanding. A second STATE_UPDATE
+        // observing the not-yet-updated queue must not schedule a conflicting correction; suppress this
+        // frame (return true) so we don't both advance and re-play, or jump the queue pointer backward.
+        if self.isReconcilingWebQueue {
+            self.logger.debug("Web queue reconciliation in flight; suppressing duplicate drift correction")
+            return true
+        }
+
         // Repeat one: autoplay can swap the video before title/artist update, so `trackChanged` may still be false.
         // Without this branch we fall through and assign `currentTrack` from YouTube, breaking UI sync.
         guard trackChanged || self.repeatMode == .one else {
@@ -357,6 +365,20 @@ extension PlayerService {
             await self.play(song: currentQueueSong, webLoadStrategy: .forceFullPageWhenSameVideoId)
         }
         return true
+    }
+
+    /// Runs a single WebView-queue corrective action while marking a reconciliation in flight.
+    ///
+    /// The reconciliation handlers schedule corrective work (`next()` / replay) without synchronously
+    /// updating `currentIndex`, so a STATE_UPDATE that lands before the work runs would otherwise see
+    /// stale state and schedule a second, conflicting correction. Setting `isReconcilingWebQueue`
+    /// synchronously — and clearing it once the work completes — keeps at most one correction outstanding.
+    private func scheduleWebQueueReconciliation(_ work: @escaping @MainActor () async -> Void) {
+        self.isReconcilingWebQueue = true
+        Task { @MainActor in
+            defer { self.isReconcilingWebQueue = false }
+            await work()
+        }
     }
 
     /// Replays the current queue song after a natural `ended` event. User-initiated **Next** uses ``PlayerService/next()`` instead.
