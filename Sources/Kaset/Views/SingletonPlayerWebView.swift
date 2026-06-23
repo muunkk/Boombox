@@ -367,20 +367,26 @@ final class SingletonPlayerWebView {
             // WebView content process crashed - attempt recovery
             DiagnosticsLogger.player.error("Singleton WebView content process terminated, attempting recovery")
 
-            // Get the current video ID before reloading
+            // Get the current video ID before recovering
             let currentVideoId = SingletonPlayerWebView.shared.currentVideoId
 
-            // Reload the WebView
-            webView.reload()
+            // Reflect the interruption in user-visible state. The JS bridge is dead until recovery
+            // completes, so no STATE_UPDATE would otherwise clear the stale `.playing`/frozen-progress
+            // UI. The observer flips this back to `.playing`/`.paused` once the recovered page reports.
+            self.playerService.state = .loading
 
-            // If we had a video playing, reload it after a brief delay
             if let videoId = currentVideoId {
+                // Single recovery navigation. Previously an eager `webView.reload()` raced the delayed
+                // `loadVideo`, causing a double-load/flash; rely on one watch-URL load instead.
                 Task { @MainActor in
                     try? await Task.sleep(for: .seconds(1))
-                    // Reset currentVideoId to force reload
+                    // Reset currentVideoId so the load isn't skipped by loadVideo's dedup guard.
                     SingletonPlayerWebView.shared.currentVideoId = nil
                     SingletonPlayerWebView.shared.loadVideo(videoId: videoId)
                 }
+            } else {
+                // No tracked video to reload; just bring the crashed content process back.
+                webView.reload()
             }
         }
     }

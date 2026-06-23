@@ -506,6 +506,11 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
     /// Flag to suppress YouTube autoplay after the native queue has finished.
     var shouldSuppressAutoplayAfterQueueEnd: Bool = false
 
+    /// Whether a WebView-queue corrective action (advance/replay) is currently outstanding.
+    /// Set synchronously before scheduling reconciliation work so a later STATE_UPDATE observing the
+    /// not-yet-updated queue can't schedule a second, conflicting correction. See `PlayerService+WebQueueSync`.
+    var isReconcilingWebQueue: Bool = false
+
     /// Debounces repeat-one recovery `play()` when YouTube sends bursty metadata (safety net in `PlayerService+WebQueueSync`).
     /// Internal so the WebQueueSync extension can throttle; not part of the public API.
     var lastRepeatOneRecoveryInstant: ContinuousClock.Instant?
@@ -590,7 +595,16 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
 
             // Handle shuffle mode - pick random track
             if self.shuffleEnabled {
-                let randomIndex = Int.random(in: 0 ..< self.queue.count)
+                // Draw from the indices excluding the current one so Next never replays the current
+                // track. `0 ..< count - 1` then bumping past `currentIndex` keeps the draw uniform and
+                // also avoids `Int.random(in: 0 ..< 0)` crashing on a single-song queue.
+                let randomIndex: Int
+                if self.queue.count > 1 {
+                    let candidate = Int.random(in: 0 ..< self.queue.count - 1)
+                    randomIndex = candidate >= self.currentIndex ? candidate + 1 : candidate
+                } else {
+                    randomIndex = 0
+                }
                 self.pushForwardSkipStackIfLeavingIndex(for: randomIndex)
                 self.currentIndex = randomIndex
                 if let nextSong = queue[safe: currentIndex] {
