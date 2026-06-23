@@ -131,3 +131,25 @@ Re-ran the full document → test → fix → retest loop on the post-pass-1 cod
 | viewmodels | artist/playlist/search/topsongs (4) |
 | views | a11y + localization polish (17) |
 | cross-batch | localization runtime keys, error toasts, liked pagination |
+
+---
+
+# Pass 3 — New-axis `/goal` loop (branch `qa/pass-3-audit-fixes`)
+
+After passes 1-2 hit diminishing returns on the original lenses, pass 3 targeted **axes never previously hunted**: security/privacy, performance/main-thread, persistence & migration, network resilience, parser fuzzing, and window/appearance/empty states.
+
+| Phase | Result |
+|-------|--------|
+| Hunt (6 new-axis lenses, ×2 runs unioned) | 51 findings (SEC lens initially failed on a session limit → resumed) |
+| Adversarial verify | **48 confirmed** (2 refuted, 1 dup) — 2 high, 10 medium, 36 low |
+| Fix (7 batches + central reconciliation) | **46 fixed**, 2 deferred (low-severity hygiene) |
+| Retest | **1052 unit tests, 0 failures** (×2 runs); lint/format clean |
+| PR / CI / merge | 🔄 in progress |
+
+**Pass-3 highlights** (detail in [`audit-findings-pass3.md`](./audit-findings-pass3.md)):
+- **FUZZ** — a class of **integer-overflow crashes** in duration/timestamp parsing (ParsingHelpers, Song, LRCParser, Podcast) on adversarial API data → overflow-safe arithmetic + depth-capped recursive parsers.
+- **PERSIST** — sign-out/account-switch left persisted favorites/queue/recent-searches behind (**privacy leak**) → cleared; schema-versioned playback-session restore.
+- **SEC** — WebView had no navigation-policy allowlist, JS-bridge accepted any frame/origin, thumbnail URLs weren't scheme-checked → hardened (verified as defense-in-depth, downgraded to low).
+- **PERF** — synchronous CoreAudio HAL polling on the main thread, double queue-encode, Observation re-notify storms → off-main / single-encode / equality-gated.
+
+**Engineering notes (pass 3):** several test-infra issues were diagnosed and fixed without weakening coverage — a swiftformat↔swiftlint modifier-order conflict (resolved by matching the codebase's stable `nonisolated static func` form), `@MainActor`/`@Sendable` test-capture errors, deep-recursion test inputs overflowing the harness on teardown (capped), and **cross-suite `UserDefaults` contamination** of persistence tests (fixed via a per-instance queue-persistence key prefix). The PERF-002 async-save fix was reverted to synchronous (keeping the single-encode win) because fire-and-forget persistence risked losing the queue on quit.
