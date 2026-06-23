@@ -22,7 +22,11 @@
 | P3 | Synthesize prioritized fix plan from findings | ✅ Done — 4 disjoint batches, per-finding verified fixes |
 | P4 | Fix every logistical/UX error + bug (build→audit→fix sub-loop, isolated worktrees) | ✅ Done — all 35 fixed, 4 batches merged |
 | P5 | Retest every user behavior post-fix → update CSV | ✅ Done — **926 unit tests green**; CSV Fix Status updated |
-| P6 | Commit → push → PR → watch CI → fix failures → merge when green (loop) | 🔄 In progress |
+| P6 | Commit → push → PR → watch CI → fix failures → merge when green (loop) | ✅ Done — **PR #22 merged to main** (`8a4b43a`); all 5 CI checks green |
+
+## ✅ Run Complete
+
+All phases done. **PR [#22](https://github.com/muunkk/Boombox/pull/22) merged to `main`** (`8a4b43a`, 2026-06-23). CI fully green on first run — SwiftFormat, SwiftLint, build, **macOS UI Tests (11m51s)**, macOS Unit Tests. Net: 373-story catalog + 35 verified bug fixes + 33 new unit tests. The two usage-limit agent deaths (ui, data) were recovered by main-thread salvage without losing work.
 
 ## Parallel Execution Tracks
 
