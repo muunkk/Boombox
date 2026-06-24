@@ -57,6 +57,13 @@ Thumbs.db
 .env.local
 *.pem
 *.p8
+*.key
+*.p12
+*.cer
+*.mobileprovision
+
+# Scratch / build & test artifacts (logs, screenshots — never commit)
+.tmp/
 
 TEMP_*
 build/
