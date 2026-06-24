@@ -241,6 +241,15 @@ ${APP_LOCALIZATIONS_PLIST}
     <string>NSApplication</string>
     <key>LSUIElement</key>
     <false/>
+    <!-- Sparkle Auto-Update -->
+    <key>SUFeedURL</key>
+    <string>${SU_FEED_URL:-}</string>
+    <key>SUPublicEDKey</key>
+    <string>${SU_PUBLIC_ED_KEY:-}</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+    <key>SUScheduledCheckInterval</key>
+    <integer>86400</integer>
     <!-- Build Metadata -->
     <key>BoomboxBuildTimestamp</key>
     <string>${BUILD_TIMESTAMP}</string>
@@ -253,6 +262,67 @@ PLIST
 # Strip extended attributes to prevent AppleDouble (._*) files that break code sealing
 xattr -cr "$APP_BUNDLE" 2>/dev/null || true
 find "$APP_BUNDLE" -name '._*' -delete 2>/dev/null || true
+
+# Embed Sparkle.framework and code-sign it inside-out with the SAME identity
+# used for the app. Pass the codesign args array (WITHOUT --entitlements).
+# Sparkle's XCFramework ships ad-hoc signed (no Team ID), and a SwiftPM build
+# does not auto-sign embedded frameworks, so every nested Mach-O must be
+# re-signed inside-out (deepest first). Never use --deep for signing.
+embed_and_sign_sparkle() {
+  local app_bundle="$1"; shift
+  local codesign_args=("$@")
+
+  local xc
+  xc=$(find "$ROOT/.build" -type d -name 'Sparkle.xcframework' 2>/dev/null | head -n1)
+  if [[ -z "$xc" ]]; then
+    echo "ERROR: Sparkle.xcframework not found under .build (run 'swift build' first)" >&2
+    exit 1
+  fi
+
+  # Pick the macOS slice (the SPM artifact ships a universal macos-arm64_x86_64).
+  local slice
+  slice=$(find "$xc" -maxdepth 1 -type d -name 'macos-*' | head -n1)
+  local src_fw="$slice/Sparkle.framework"
+  if [[ ! -d "$src_fw" ]]; then
+    echo "ERROR: Sparkle.framework not found in slice: $slice" >&2
+    exit 1
+  fi
+  echo "  → Embedding Sparkle from: $src_fw"
+
+  local fw_dest="$app_bundle/Contents/Frameworks/Sparkle.framework"
+  mkdir -p "$app_bundle/Contents/Frameworks"
+  rm -rf "$fw_dest"
+  cp -R "$src_fw" "$app_bundle/Contents/Frameworks/"
+
+  # The Boombox binary links @rpath/Sparkle.framework but SPM only gives it an
+  # @loader_path rpath (works in .build, not in the bundle). Add the standard
+  # bundle rpath so dyld resolves Contents/Frameworks at runtime.
+  local main_bin="$app_bundle/Contents/MacOS/$APP_EXECUTABLE"
+  if ! otool -l "$main_bin" 2>/dev/null | grep -q '@loader_path/../Frameworks'; then
+    install_name_tool -add_rpath "@loader_path/../Frameworks" "$main_bin"
+  fi
+
+  # Discover the versioned dir (Sparkle 2.x uses "B"; read it rather than assume).
+  local v
+  v=$(readlink "$fw_dest/Versions/Current" 2>/dev/null || echo "B")
+  local vroot="$fw_dest/Versions/$v"
+  echo "  → Sparkle versioned dir: $vroot"
+
+  # Sign inside-out: deepest nested code first, framework bundle last.
+  local item
+  for item in \
+    "$vroot/XPCServices/Downloader.xpc" \
+    "$vroot/XPCServices/Installer.xpc" \
+    "$vroot/Autoupdate" \
+    "$vroot/Updater.app"; do
+    if [[ -e "$item" ]]; then
+      echo "    ↳ signing $(basename "$item")"
+      codesign "${codesign_args[@]}" "$item"
+    fi
+  done
+  echo "    ↳ signing Sparkle.framework"
+  codesign "${codesign_args[@]}" "$fw_dest"
+}
 
 # Sign the app
 echo "🔏 Signing app..."
@@ -271,6 +341,9 @@ else
   CODESIGN_ID="${APP_IDENTITY:-Developer ID Application}"
   CODESIGN_ARGS=(--force --timestamp --options runtime --sign "$CODESIGN_ID")
 fi
+
+# Embed + inside-out sign Sparkle.framework BEFORE sealing the app bundle.
+embed_and_sign_sparkle "$APP_BUNDLE" "${CODESIGN_ARGS[@]}"
 
 # Sign the app bundle with entitlements
 if [[ -f "$ROOT/Kaset.entitlements" ]]; then

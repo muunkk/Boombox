@@ -56,6 +56,13 @@ Thumbs.db
 .env
 .env.local
 *.pem
+*.p8
 
 TEMP_*
 build/
+
+# Sparkle / release staging (local DMGs + working appcast)
+/releases/
+
+# Subagent-driven-development scratch ledger
+.superpowers/
