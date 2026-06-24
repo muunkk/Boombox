@@ -272,9 +272,13 @@ embed_and_sign_sparkle() {
   local app_bundle="$1"; shift
   local codesign_args=("$@")
 
-  local xc
-  xc=$(find "$ROOT/.build" -type d -name 'Sparkle.xcframework' 2>/dev/null | head -n1)
-  if [[ -z "$xc" ]]; then
+  # Prefer the canonical resolved artifact; fall back to a search that EXCLUDES the
+  # index-build cache (which can hold a stale / differently-configured copy).
+  local xc="$ROOT/.build/artifacts/sparkle/Sparkle/Sparkle.xcframework"
+  if [[ ! -d "$xc" ]]; then
+    xc=$(find "$ROOT/.build" -type d -name 'Sparkle.xcframework' -not -path '*/index-build/*' 2>/dev/null | head -n1)
+  fi
+  if [[ -z "$xc" || ! -d "$xc" ]]; then
     echo "ERROR: Sparkle.xcframework not found under .build (run 'swift build' first)" >&2
     exit 1
   fi
@@ -298,7 +302,7 @@ embed_and_sign_sparkle() {
   # @loader_path rpath (works in .build, not in the bundle). Add the standard
   # bundle rpath so dyld resolves Contents/Frameworks at runtime.
   local main_bin="$app_bundle/Contents/MacOS/$APP_EXECUTABLE"
-  if ! otool -l "$main_bin" 2>/dev/null | grep -q '@loader_path/../Frameworks'; then
+  if ! otool -l "$main_bin" 2>/dev/null | grep -qF '@loader_path/../Frameworks'; then
     install_name_tool -add_rpath "@loader_path/../Frameworks" "$main_bin"
   fi
 
@@ -309,6 +313,10 @@ embed_and_sign_sparkle() {
   echo "  → Sparkle versioned dir: $vroot"
 
   # Sign inside-out: deepest nested code first, framework bundle last.
+  # Each nested Mach-O is re-signed with our Developer ID and NO entitlements:
+  # Sparkle ships them ad-hoc, and keeping Sparkle's original application-identifier
+  # entitlement would mismatch our Team ID and fail notarization. Naked Mach-Os under
+  # Hardened Runtime need no entitlements — do NOT add --entitlements here.
   local item
   for item in \
     "$vroot/XPCServices/Downloader.xpc" \
