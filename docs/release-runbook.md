@@ -6,6 +6,28 @@ See also: [ADR-0014](adr/0014-sparkle-auto-updates-drop-sandbox.md) for the arch
 
 ---
 
+## Future releases — quick reference
+
+Once the one-time setup below is done, **every** release is just two steps:
+
+```bash
+# 1. Build + sign + notarize + update the appcast (one command).
+#    Approve the Keychain prompt that appears for the appcast-signing step.
+Scripts/release.sh <version>        # e.g. 1.1.0
+
+# 2. Publish (release.sh prints these exact commands at the end).
+gh release create <version> releases/Boombox-<version>.dmg \
+  --repo muunkk/Boombox --title "Boombox <version>" --notes "What changed…"
+git add appcast.xml version.env && git commit -m "release: Boombox <version>" && git push
+```
+
+Pick the next `<version>` higher than the last (semantic versioning — `1.0.1` for a
+fix, `1.1.0` for features, `2.0.0` for breaking changes). After you push, installed
+copies update within a day automatically, or instantly via **Boombox → Check for
+Updates…**. Detailed steps, prerequisites, and troubleshooting follow.
+
+---
+
 ## Prerequisites (one-time setup)
 
 Complete these steps once on the machine you will use to cut releases. They do not need to be repeated for each release.
@@ -112,10 +134,10 @@ The script performs these steps automatically:
 
 1. **Bumps `version.env`** — sets `MARKETING_VERSION=<version>` and increments `BUILD_NUMBER` monotonically. Sparkle uses the build number to determine whether a release is newer.
 2. **Builds a universal binary** (`arm64 + x86_64`) in Developer ID signing mode by calling `Scripts/build-app.sh release`. This step also embeds `Sparkle.framework` into `Contents/Frameworks/` and signs all nested Mach-Os inside-out (XPC services and `Updater.app` before the framework, then the framework before the app bundle) using your Developer ID certificate.
-3. **Verifies the app with Gatekeeper** (`spctl -a -t exec -vvv`) and aborts if the signature is rejected.
+3. **Verifies the code signature** (`codesign --verify --deep --strict`) and aborts if invalid. Gatekeeper acceptance is *not* checked here — a Developer ID app is correctly rejected by `spctl` until it has been notarized, so the Gatekeeper assessment runs after step 5.
 4. **Builds a compressed DMG** (`releases/Boombox-<version>.dmg`) containing `Boombox.app` and an `/Applications` symlink for drag-to-install UX.
-5. **Notarizes and staples the DMG** via `xcrun notarytool submit --wait` (using the `boombox-notary` profile) then `xcrun stapler staple`. Aborts if notarization is not accepted.
-6. **Generates `appcast.xml`** via Sparkle's `generate_appcast` tool, which reads the private key from the Keychain to compute an EdDSA signature for each DMG in `releases/`. The updated appcast is written to the repo root (`appcast.xml`), which matches the `SUFeedURL` served from `main`.
+5. **Notarizes and staples the DMG** via `xcrun notarytool submit --wait` (using the `boombox-notary` profile), then `xcrun stapler staple`, then confirms Gatekeeper accepts the stapled DMG (`spctl -a -t open`). Aborts if notarization is not accepted.
+6. **Generates the appcast.** Runs `generate_appcast` over a single-version staging dir (so this release's per-version download URL is correct and no delta items are produced), reading the EdDSA private key from the Keychain to sign it. **A Keychain prompt appears here the first time — enter your login password and click _Always Allow_.** The new `<item>` is merged into the persistent `appcast.xml` at the repo root via `Scripts/merge_appcast.py`, which preserves every prior version's own download URL. (Running `generate_appcast --download-url-prefix` over a multi-version folder instead would rewrite all older releases' URLs to the current tag and 404 them — the per-version merge exists to prevent exactly that.)
 7. **Prints the manual publish steps** (see below).
 
 ### Manual publish steps (you run these)
@@ -215,11 +237,17 @@ Restore the real `SU_FEED_URL` in `version.env`, run the release script for the 
 Scripts/release.sh 9.0.1
 ```
 
-Then regenerate the appcast pointing at the local server:
+Then build a **local** appcast for the new DMG, pointing the download URL at the local
+server. Generate over a single-version dir — never the whole `releases/` folder, since
+one `--download-url-prefix` over multiple versions would rewrite older releases' URLs:
 
 ```bash
 SPARKLE_BIN="$(find "$(pwd)/.build" -type d -path '*artifacts/sparkle/Sparkle/bin' | head -n1)"
-"$SPARKLE_BIN/generate_appcast" releases --download-url-prefix "http://localhost:8000/"
+FEED=/tmp/boombox-localfeed; rm -rf "$FEED"; mkdir -p "$FEED"
+cp releases/Boombox-9.0.1.dmg "$FEED/"
+"$SPARKLE_BIN/generate_appcast" "$FEED" --download-url-prefix "http://localhost:8000/"
+# $FEED now holds Boombox-9.0.1.dmg + a signed appcast.xml. Serve THIS dir instead of
+# releases/ :  stop the earlier server, then  cd "$FEED" && python3 -m http.server 8000
 ```
 
 ### Step 5 — Trigger the update

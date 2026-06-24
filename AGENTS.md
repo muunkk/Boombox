@@ -24,6 +24,8 @@ Boombox is a native macOS YouTube Music client (Swift/SwiftUI) using a hidden We
 
 > ⌨️ **Preserve Standard macOS Shortcuts** — Do not override standard app/window shortcuts such as `⌘M`, `⌘W`, `⌘Q`, `⌘H`, or `⌘,` unless the human explicitly asks for it. When adding media shortcuts, prefer native macOS and Apple Music conventions, and update `docs/keyboard-shortcuts.md`.
 
+> 🚀 **Cutting Releases** — To publish a release, **follow [`docs/release-runbook.md`](docs/release-runbook.md) exactly**. Releases use the one-command pipeline `Scripts/release.sh <version>` (bump → universal Developer ID build → embed + inside-out-sign Sparkle → DMG → notarize → per-version appcast), then the manual `gh release create` + `git push` it prints. Never hand-roll the signing, notarization, or appcast steps. In particular, never run `generate_appcast --download-url-prefix` over a multi-version folder — it rewrites every release's download URL to the current tag and 404s older versions; the pipeline generates per-version and merges via `Scripts/merge_appcast.py` for exactly this reason.
+
 ## Build & Code Quality
 
 ```bash
