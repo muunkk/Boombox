@@ -112,7 +112,7 @@ Re-ran the full document → test → fix → retest loop on the post-pass-1 cod
 | Adversarial verify | ✅ **51 confirmed, 3 refuted** (3 high, 10 medium, 38 low) |
 | Fix (6 batches + cross-batch completion) | ✅ all 51 fixed |
 | Retest | ✅ **981 unit tests, 0 failures** (×2 runs), swiftlint/swiftformat clean |
-| PR / CI / merge | 🔄 in progress |
+| PR / CI / merge | ✅ **PR #23 merged to main** (`453ba75`); all 5 CI checks green |
 
 **Pass-2 highlights** (full detail in [`audit-findings-pass2.md`](./audit-findings-pass2.md)):
 - **HIGH** — 47–59 user-facing strings missing from the runtime `.lproj` (English leaked in all locales); zero-accessibility queue rows; playWithMix metadata stub + state leak; `play(videoId:)` leaked previous track's like/library state; artist album-pagination dropped.
@@ -144,7 +144,7 @@ After passes 1-2 hit diminishing returns on the original lenses, pass 3 targeted
 | Adversarial verify | **48 confirmed** (2 refuted, 1 dup) — 2 high, 10 medium, 36 low |
 | Fix (7 batches + central reconciliation) | **46 fixed**, 2 deferred (low-severity hygiene) |
 | Retest | **1052 unit tests, 0 failures** (×2 runs); lint/format clean |
-| PR / CI / merge | 🔄 in progress |
+| PR / CI / merge | ✅ **PR #24 merged to main** (`259eda1`); all 5 CI checks green |
 
 **Pass-3 highlights** (detail in [`audit-findings-pass3.md`](./audit-findings-pass3.md)):
 - **FUZZ** — a class of **integer-overflow crashes** in duration/timestamp parsing (ParsingHelpers, Song, LRCParser, Podcast) on adversarial API data → overflow-safe arithmetic + depth-capped recursive parsers.
@@ -153,3 +153,21 @@ After passes 1-2 hit diminishing returns on the original lenses, pass 3 targeted
 - **PERF** — synchronous CoreAudio HAL polling on the main thread, double queue-encode, Observation re-notify storms → off-main / single-encode / equality-gated.
 
 **Engineering notes (pass 3):** several test-infra issues were diagnosed and fixed without weakening coverage — a swiftformat↔swiftlint modifier-order conflict (resolved by matching the codebase's stable `nonisolated static func` form), `@MainActor`/`@Sendable` test-capture errors, deep-recursion test inputs overflowing the harness on teardown (capped), and **cross-suite `UserDefaults` contamination** of persistence tests (fixed via a per-instance queue-persistence key prefix). The PERF-002 async-save fix was reverted to synchronous (keeping the single-encode win) because fire-and-forget persistence risked losing the queue on quit.
+
+---
+
+# ✅ All passes complete (Passes 1–3 merged)
+
+| Pass | PR | Merge | Confirmed | Fixed |
+|------|----|-------|-----------|-------|
+| 1 | [#22](https://github.com/muunkk/Boombox/pull/22) | `8a4b43a` | 35 | 35 |
+| 2 | [#23](https://github.com/muunkk/Boombox/pull/23) | `453ba75` | 51 | 51 |
+| 3 | [#24](https://github.com/muunkk/Boombox/pull/24) | `259eda1` | 48 | 46 (2 deferred) |
+| **Total** | | | **134** | **132** |
+
+- **Canonical spreadsheet:** [`user-stories.csv`](./user-stories.csv) — 383 stories with current test/fix status.
+- **Findings:** [`audit-findings.md`](./audit-findings.md) (P1), [`audit-findings-pass2.md`](./audit-findings-pass2.md), [`audit-findings-pass3.md`](./audit-findings-pass3.md).
+- **Outstanding work:** [`deferred-followups.md`](./deferred-followups.md) — the 2 deferred items + minor cross-batch partials, each tagged _anytime_ vs _needs feedback_ for handling once live-app/runtime feedback is available.
+- **Unit tests:** 893 → **1052** (+159). Every pass merged through full CI (incl. macOS UI tests) green.
+
+**Next high-value work is runtime, not static:** the static-analysis well is largely dry; further findings now need live-app/Instruments profiling and the `needs feedback` items above.
