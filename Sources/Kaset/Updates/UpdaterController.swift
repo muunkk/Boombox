@@ -9,10 +9,13 @@ final class UpdaterController {
     private let controller: SPUStandardUpdaterController
 
     init() {
-        // startingUpdater: true → Sparkle checks on its own schedule using the
-        // SUFeedURL / SUPublicEDKey baked into the app's Info.plist.
+        // Only auto-start when a real feed is configured (the bundled Info.plist
+        // injects SUFeedURL). Under `swift run` there is no app-bundle feed, so
+        // starting the updater would just emit Sparkle feed errors; gate it off.
+        let feedURL = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") as? String
+        let hasFeed = !(feedURL ?? "").isEmpty
         self.controller = SPUStandardUpdaterController(
-            startingUpdater: true,
+            startingUpdater: hasFeed,
             updaterDelegate: nil,
             userDriverDelegate: nil
         )
@@ -22,9 +25,12 @@ final class UpdaterController {
         self.controller.updater
     }
 
-    /// Emits whether a manual check is currently allowed.
+    /// Emits whether a manual check is currently allowed. `.receive(on:)` makes the
+    /// main-thread delivery explicit rather than relying on Sparkle's KVO contract.
     var canCheckPublisher: AnyPublisher<Bool, Never> {
-        self.updater.publisher(for: \.canCheckForUpdates).eraseToAnyPublisher()
+        self.updater.publisher(for: \.canCheckForUpdates)
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
     }
 
     func checkForUpdates() {

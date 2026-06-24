@@ -50,11 +50,13 @@ echo "   (If a later step fails, revert version.env: git checkout -- version.env
 ARCHES="arm64 x86_64" BOOMBOX_SIGNING=release "$ROOT/Scripts/build-app.sh" release
 
 # Fail fast if Gatekeeper would reject the freshly signed app.
+# Match ONLY a success line — a rejection prints "source=no usable signature",
+# so grepping for 'source=' would wrongly pass.
 echo "🔎 Verifying Developer ID signature…"
-spctl -a -t exec -vvv "$APP" 2>&1 | grep -E 'accepted|source=' || {
-  echo "ERROR: app failed Gatekeeper assessment — check the Developer ID identity." >&2
+if ! spctl -a -t exec -vvv "$APP" 2>&1 | grep -q ': accepted'; then
+  echo "ERROR: app failed Gatekeeper assessment (spctl rejected) — check the Developer ID identity." >&2
   exit 1
-}
+fi
 
 # --- 3. Stage + build a compressed DMG ---
 mkdir -p "$RELEASES_DIR"
@@ -67,31 +69,55 @@ hdiutil create -volname "Boombox" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
 echo "💿 Built $DMG"
 
 # --- 4. Notarize + staple the DMG ---
+# notarytool submit --wait exits 0 even when the result is Invalid/Rejected, so
+# parse the status explicitly and fail loudly with the log command.
 echo "🔏 Notarizing (can take a few minutes)…"
-xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
+NOTARY_OUT=$(xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait 2>&1)
+echo "$NOTARY_OUT"
+if ! grep -q 'status: Accepted' <<<"$NOTARY_OUT"; then
+  SUBMISSION_ID=$(grep -m1 -oE '\bid: [0-9a-f-]+' <<<"$NOTARY_OUT" | awk '{print $2}')
+  echo "ERROR: notarization was not Accepted. Inspect the log with:" >&2
+  echo "  xcrun notarytool log ${SUBMISSION_ID:-<submission-id>} --keychain-profile $NOTARY_PROFILE" >&2
+  exit 1
+fi
 xcrun stapler staple "$DMG"
 xcrun stapler validate "$DMG"
 echo "✅ Notarized + stapled."
 
-# --- 5. Generate/refresh the appcast (auto-signs each archive via the Keychain key) ---
+# --- 5. Sign this release + merge it into the persistent appcast ---
+# Generate the appcast over a SINGLE-version dir so the one --download-url-prefix is
+# correct for exactly this release. (A shared multi-version dir would rewrite EVERY
+# release's enclosure to the current tag, 404-ing older versions.) Then merge the
+# resulting item into the persistent, committed appcast, which keeps each version's
+# own URL — see Scripts/merge_appcast.py.
 SPARKLE_BIN="$(find "$ROOT/.build" -type d -path '*artifacts/sparkle/Sparkle/bin' | head -n1)"
 if [[ -z "$SPARKLE_BIN" ]]; then
   echo "ERROR: Sparkle bin not found; run 'swift build' first." >&2
   exit 1
 fi
-DL_PREFIX="https://github.com/$REPO/releases/download/$VERSION/"
-"$SPARKLE_BIN/generate_appcast" "$RELEASES_DIR" --download-url-prefix "$DL_PREFIX"
+GENDIR="$ROOT/.build/appcast-gen"
+rm -rf "$GENDIR"
+mkdir -p "$GENDIR"
+cp "$DMG" "$GENDIR/"
+"$SPARKLE_BIN/generate_appcast" "$GENDIR" \
+  --download-url-prefix "https://github.com/$REPO/releases/download/$VERSION/"
 
-# generate_appcast writes appcast.xml into RELEASES_DIR; publish a copy at repo root
-# (this is the SUFeedURL path served from the main branch).
-cp "$RELEASES_DIR/appcast.xml" "$ROOT/appcast.xml"
-echo "📰 appcast.xml updated (download prefix: $DL_PREFIX)"
+python3 "$ROOT/Scripts/merge_appcast.py" "$GENDIR/appcast.xml" "$ROOT/appcast.xml"
+echo "📰 appcast.xml updated with $VERSION"
 
-# --- 6. Verify the new item points at the right URL ---
-if ! grep -q "Boombox-$VERSION.dmg" "$ROOT/appcast.xml"; then
-  echo "ERROR: appcast.xml is missing the $VERSION enclosure — check download-url-prefix." >&2
-  exit 1
-fi
+# --- 6. Verify EVERY enclosure URL matches its own version (not just the current one) ---
+python3 - "$ROOT/appcast.xml" "$VERSION" <<'PY'
+import re, sys
+path, ver = sys.argv[1], sys.argv[2]
+xml = open(path, encoding="utf-8").read()
+urls = re.findall(r'url="([^"]+Boombox-[^"/]+\.dmg)"', xml)
+bad = [u for u in urls if not re.search(r"/releases/download/([^/]+)/Boombox-\1\.dmg$", u)]
+if bad:
+    sys.exit("ERROR: appcast enclosure URL/version mismatch:\n  " + "\n  ".join(bad))
+if not any(("Boombox-%s.dmg" % ver) in u for u in urls):
+    sys.exit("ERROR: current version %s missing from appcast" % ver)
+print("appcast URL check OK (%d version(s))" % len(urls))
+PY
 
 cat <<EOF
 
