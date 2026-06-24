@@ -49,12 +49,13 @@ echo "   (If a later step fails, revert version.env: git checkout -- version.env
 # --- 2. Build universal, Developer ID signed (embeds + inside-out signs Sparkle) ---
 ARCHES="arm64 x86_64" BOOMBOX_SIGNING=release "$ROOT/Scripts/build-app.sh" release
 
-# Fail fast if Gatekeeper would reject the freshly signed app.
-# Match ONLY a success line — a rejection prints "source=no usable signature",
-# so grepping for 'source=' would wrongly pass.
-echo "🔎 Verifying Developer ID signature…"
-if ! spctl -a -t exec -vvv "$APP" 2>&1 | grep -q ': accepted'; then
-  echo "ERROR: app failed Gatekeeper assessment (spctl rejected) — check the Developer ID identity." >&2
+# Verify the code signature is valid + complete (all nested code signed).
+# Do NOT run `spctl -a -t exec` here: a Developer ID app that is not notarized
+# YET is correctly rejected by Gatekeeper ("Unnotarized Developer ID"), so the
+# Gatekeeper assessment belongs AFTER notarization + stapling (step 4).
+echo "🔎 Verifying code signature…"
+if ! codesign --verify --deep --strict --verbose=2 "$APP"; then
+  echo "ERROR: code signature verification failed — check the Developer ID identity." >&2
   exit 1
 fi
 
@@ -82,7 +83,12 @@ if ! grep -q 'status: Accepted' <<<"$NOTARY_OUT"; then
 fi
 xcrun stapler staple "$DMG"
 xcrun stapler validate "$DMG"
-echo "✅ Notarized + stapled."
+# Now that it's notarized + stapled, Gatekeeper must accept it.
+if ! spctl -a -t open --context context:primary-signature -vvv "$DMG" 2>&1 | grep -q ': accepted'; then
+  echo "ERROR: notarized DMG failed Gatekeeper assessment." >&2
+  exit 1
+fi
+echo "✅ Notarized + stapled + Gatekeeper-accepted."
 
 # --- 5. Sign this release + merge it into the persistent appcast ---
 # Generate the appcast over a SINGLE-version dir so the one --download-url-prefix is
