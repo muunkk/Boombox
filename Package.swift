@@ -15,12 +15,16 @@ let package = Package(
             targets: ["Kaset"]
         ),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.3"),
+    ],
     targets: [
         // Main app executable
         .executableTarget(
             name: "Kaset",
-            dependencies: [],
+            dependencies: [
+                .product(name: "Sparkle", package: "Sparkle"),
+            ],
             resources: [
                 .process("Resources"),
             ],
