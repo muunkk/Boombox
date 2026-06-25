@@ -33,64 +33,90 @@ if [[ -z "${SU_PUBLIC_ED_KEY:-}" || "${SU_PUBLIC_ED_KEY}" == REPLACE_* ]]; then
 fi
 : "${SU_FEED_URL:?SU_FEED_URL must be set in version.env}"
 
-# Refuse to release a version that already has a DMG (avoids clobbering a shipped build).
+# --- 1. Build (or RESUME). If the DMG already exists, skip the rebuild so a run
+#        interrupted at notarization (e.g. Apple's queue stalled) can be finished
+#        by simply re-running this script. Remove the DMG to force a clean rebuild. ---
 if [[ -f "$DMG" ]]; then
-  echo "ERROR: $DMG already exists — bump to a new version or remove it first." >&2
-  exit 1
+  echo "↻ $DMG already exists — resuming without rebuilding (rm it to force a clean rebuild)."
+else
+  # Bump version.env (marketing version + monotonic build number).
+  NEW_BUILD=$(( BUILD_NUMBER + 1 ))
+  /usr/bin/sed -i '' "s/^MARKETING_VERSION=.*/MARKETING_VERSION=$VERSION/" "$ROOT/version.env"
+  /usr/bin/sed -i '' "s/^BUILD_NUMBER=.*/BUILD_NUMBER=$NEW_BUILD/" "$ROOT/version.env"
+  echo "📌 Releasing $VERSION (build $NEW_BUILD)"
+  echo "   (If a later step fails, revert version.env: git checkout -- version.env)"
+
+  # Build universal, Developer ID signed (embeds + inside-out signs Sparkle).
+  ARCHES="arm64 x86_64" BOOMBOX_SIGNING=release "$ROOT/Scripts/build-app.sh" release
+
+  # Verify the code signature is valid + complete (all nested code signed).
+  # Do NOT run `spctl -a -t exec` here: a Developer ID app that is not notarized
+  # YET is correctly rejected by Gatekeeper ("Unnotarized Developer ID"), so the
+  # Gatekeeper assessment belongs AFTER notarization + stapling.
+  echo "🔎 Verifying code signature…"
+  if ! codesign --verify --deep --strict --verbose=2 "$APP"; then
+    echo "ERROR: code signature verification failed — check the Developer ID identity." >&2
+    exit 1
+  fi
+
+  # Stage + build a compressed DMG.
+  mkdir -p "$RELEASES_DIR"
+  STAGE="$ROOT/.build/dmg-stage"
+  rm -rf "$STAGE"
+  mkdir -p "$STAGE"
+  cp -R "$APP" "$STAGE/"
+  ln -s /Applications "$STAGE/Applications"
+  hdiutil create -volname "Boombox" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+  echo "💿 Built $DMG"
 fi
 
-# --- 1. Bump version.env (marketing version + monotonic build number) ---
-NEW_BUILD=$(( BUILD_NUMBER + 1 ))
-/usr/bin/sed -i '' "s/^MARKETING_VERSION=.*/MARKETING_VERSION=$VERSION/" "$ROOT/version.env"
-/usr/bin/sed -i '' "s/^BUILD_NUMBER=.*/BUILD_NUMBER=$NEW_BUILD/" "$ROOT/version.env"
-echo "📌 Releasing $VERSION (build $NEW_BUILD)"
-echo "   (If a later step fails, revert version.env: git checkout -- version.env)"
-
-# --- 2. Build universal, Developer ID signed (embeds + inside-out signs Sparkle) ---
-ARCHES="arm64 x86_64" BOOMBOX_SIGNING=release "$ROOT/Scripts/build-app.sh" release
-
-# Verify the code signature is valid + complete (all nested code signed).
-# Do NOT run `spctl -a -t exec` here: a Developer ID app that is not notarized
-# YET is correctly rejected by Gatekeeper ("Unnotarized Developer ID"), so the
-# Gatekeeper assessment belongs AFTER notarization + stapling (step 4).
-echo "🔎 Verifying code signature…"
-if ! codesign --verify --deep --strict --verbose=2 "$APP"; then
-  echo "ERROR: code signature verification failed — check the Developer ID identity." >&2
-  exit 1
+# --- 2. Notarize + staple (skip if the DMG is already notarized + stapled). ---
+if xcrun stapler validate "$DMG" >/dev/null 2>&1; then
+  echo "✅ $DMG is already notarized + stapled — skipping notarization."
+else
+  # Submit WITHOUT --wait and poll with a bounded timeout. `--wait` can hang ~30 min
+  # then exit 124 when Apple's notary queue stalls; polling lets us fail fast with
+  # actionable guidance. (A stuck submission can block the whole queue and notarytool
+  # cannot cancel it — re-running this script later resumes once Apple recovers.)
+  echo "🔏 Notarizing (submitting + polling Apple)…"
+  SUB_OUT=$(xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" 2>&1) || true
+  echo "$SUB_OUT"
+  SUB_ID=$(grep -m1 -oE '\bid: [0-9a-f-]+' <<<"$SUB_OUT" | awk '{print $2}')
+  if [[ -z "$SUB_ID" ]]; then
+    echo "ERROR: notarytool submit failed (no submission id returned)." >&2
+    exit 1
+  fi
+  NOTARY_STATUS=""
+  for _ in $(seq 1 60); do   # ~30 min cap (60 × 30s)
+    NOTARY_STATUS=$(xcrun notarytool info "$SUB_ID" --keychain-profile "$NOTARY_PROFILE" 2>/dev/null | sed -n 's/.*status: //p' | tr -d '[:space:]')
+    [[ "$NOTARY_STATUS" == Accepted || "$NOTARY_STATUS" == Invalid || "$NOTARY_STATUS" == Rejected ]] && break
+    sleep 30
+  done
+  if [[ "$NOTARY_STATUS" != Accepted ]]; then
+    echo "ERROR: notarization not Accepted (status: ${NOTARY_STATUS:-timeout})." >&2
+    if [[ "$NOTARY_STATUS" == Invalid || "$NOTARY_STATUS" == Rejected ]]; then
+      echo "  --- notary log ---" >&2
+      xcrun notarytool log "$SUB_ID" --keychain-profile "$NOTARY_PROFILE" 2>&1 | head -40 >&2
+    else
+      echo "  Apple's notary queue appears slow/stuck (a known, recurring Apple issue — a stuck" >&2
+      echo "  submission can block later ones, and notarytool has no cancel). The signed DMG is" >&2
+      echo "  ready, so just re-run this script later to RESUME (it skips the rebuild and re-" >&2
+      echo "  notarizes): Scripts/release.sh $VERSION" >&2
+      echo "  Watch the queue with: xcrun notarytool history --keychain-profile $NOTARY_PROFILE" >&2
+    fi
+    exit 1
+  fi
+  xcrun stapler staple "$DMG"
+  xcrun stapler validate "$DMG"
+  # Now that it's notarized + stapled, Gatekeeper must accept it.
+  if ! spctl -a -t open --context context:primary-signature -vvv "$DMG" 2>&1 | grep -q ': accepted'; then
+    echo "ERROR: notarized DMG failed Gatekeeper assessment." >&2
+    exit 1
+  fi
+  echo "✅ Notarized + stapled + Gatekeeper-accepted."
 fi
 
-# --- 3. Stage + build a compressed DMG ---
-mkdir -p "$RELEASES_DIR"
-STAGE="$ROOT/.build/dmg-stage"
-rm -rf "$STAGE"
-mkdir -p "$STAGE"
-cp -R "$APP" "$STAGE/"
-ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "Boombox" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
-echo "💿 Built $DMG"
-
-# --- 4. Notarize + staple the DMG ---
-# notarytool submit --wait exits 0 even when the result is Invalid/Rejected, so
-# parse the status explicitly and fail loudly with the log command.
-echo "🔏 Notarizing (can take a few minutes)…"
-NOTARY_OUT=$(xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait 2>&1)
-echo "$NOTARY_OUT"
-if ! grep -q 'status: Accepted' <<<"$NOTARY_OUT"; then
-  SUBMISSION_ID=$(grep -m1 -oE '\bid: [0-9a-f-]+' <<<"$NOTARY_OUT" | awk '{print $2}')
-  echo "ERROR: notarization was not Accepted. Inspect the log with:" >&2
-  echo "  xcrun notarytool log ${SUBMISSION_ID:-<submission-id>} --keychain-profile $NOTARY_PROFILE" >&2
-  exit 1
-fi
-xcrun stapler staple "$DMG"
-xcrun stapler validate "$DMG"
-# Now that it's notarized + stapled, Gatekeeper must accept it.
-if ! spctl -a -t open --context context:primary-signature -vvv "$DMG" 2>&1 | grep -q ': accepted'; then
-  echo "ERROR: notarized DMG failed Gatekeeper assessment." >&2
-  exit 1
-fi
-echo "✅ Notarized + stapled + Gatekeeper-accepted."
-
-# --- 5. Sign this release + merge it into the persistent appcast ---
+# --- 3. Sign this release + merge it into the persistent appcast ---
 # Generate the appcast over a SINGLE-version dir so the one --download-url-prefix is
 # correct for exactly this release. (A shared multi-version dir would rewrite EVERY
 # release's enclosure to the current tag, 404-ing older versions.) Then merge the
@@ -111,7 +137,7 @@ cp "$DMG" "$GENDIR/"
 python3 "$ROOT/Scripts/merge_appcast.py" "$GENDIR/appcast.xml" "$ROOT/appcast.xml"
 echo "📰 appcast.xml updated with $VERSION"
 
-# --- 6. Verify EVERY enclosure URL matches its own version (not just the current one) ---
+# --- 4. Verify EVERY enclosure URL matches its own version (not just the current one) ---
 python3 - "$ROOT/appcast.xml" "$VERSION" <<'PY'
 import re, sys
 path, ver = sys.argv[1], sys.argv[2]
