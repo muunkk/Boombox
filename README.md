@@ -13,7 +13,7 @@ Based on [Kaset](https://github.com/sozercan/kaset) by [@sozercan](https://githu
 
 ## Pre-release notice
 
-Boombox is a personal source-build project in pre-release. There are no signed binaries, no App Store distribution, and no auto-updater. Clone the repo and build it yourself. Expect rough edges — report them in Issues.
+Boombox is a personal project in pre-release. There is no App Store distribution. Signed DMG releases are available on the [Releases page](https://github.com/muunkk/Boombox/releases); you can also clone the repo and build from source. Expect rough edges — report them in Issues.
 
 ## Features
 
@@ -57,6 +57,20 @@ Boombox is a personal source-build project in pre-release. There are no signed b
 - Swift 6.2+ toolchain — Xcode 26+ or a swift.org toolchain
 - A YouTube Music Premium subscription (required for DRM playback)
 - Optional: a local Apple Development certificate for signing — the build falls back to ad-hoc signing if none is present
+
+## Install
+
+1. Download the latest `Boombox-<version>.dmg` from the [Releases page](https://github.com/muunkk/Boombox/releases).
+2. Open the DMG and drag **Boombox** into your **Applications** folder.
+3. Launch it from Applications. Releases are signed with a Developer ID and notarized, so they open without Gatekeeper warnings.
+
+## Updates
+
+Boombox keeps itself up to date with [Sparkle](https://sparkle-project.org):
+
+- It checks for updates automatically once a day in the background.
+- You can check any time via **Boombox → Check for Updates…**.
+- When an update is found it downloads, verifies, installs, and offers to relaunch — no manual reinstall.
 
 ## Build from source
 
@@ -144,7 +158,8 @@ Mute is available from the Playback menu. It intentionally has no default shortc
 
 Boombox removes distribution, AI, and extension infrastructure that isn't needed for a personal source build. Full list in [STRIPPED.md](STRIPPED.md). Highlights:
 
-- **Removed:** Apple FoundationModels integration, Last.fm scrobbling, Sparkle auto-updater, AppleScript support, `kaset://` URL scheme, WKWebExtension runtime, API explorer CLI.
+- **Removed:** Apple FoundationModels integration, Last.fm scrobbling, AppleScript support, `kaset://` URL scheme, WKWebExtension runtime, API explorer CLI.
+- **Added:** Sparkle 2 auto-updater (in-app "Check for Updates…" + daily background checks) with a one-command release pipeline (`Scripts/release.sh`).
 - **Kept:** native player UI, YouTube Music Premium playback, system media integration, LRCLib synced lyrics, library/search/queue/share.
 
 Security and trust boundary notes live in [AUDIT.md](AUDIT.md).

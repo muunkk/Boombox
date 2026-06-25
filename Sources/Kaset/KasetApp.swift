@@ -41,6 +41,9 @@ struct KasetApp: App {
     @State private var syncedLyricsService: SyncedLyricsService
     @State private var settings = SettingsManager.shared
 
+    private let updaterController: UpdaterController
+    private let checkForUpdatesViewModel: CheckForUpdatesViewModel
+
     @State private var globalNavigation = GlobalNavigationCoordinator()
 
     @State private var shortcuts = KeyboardShortcutsManager.shared
@@ -58,6 +61,12 @@ struct KasetApp: App {
     @State private var playerPresentationMode: PlayerPresentationMode = .standard
 
     init() {
+        let updaterController = UpdaterController()
+        self.updaterController = updaterController
+        self.checkForUpdatesViewModel = CheckForUpdatesViewModel(
+            canCheckPublisher: updaterController.canCheckPublisher
+        )
+
         Bundle.enableAppLocalizationOverride()
 
         let services = AppServices.make()
@@ -186,6 +195,13 @@ struct KasetApp: App {
                 .environment(self.authService)
         }
         .commands {
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(
+                    viewModel: self.checkForUpdatesViewModel,
+                    onCheck: { self.updaterController.checkForUpdates() }
+                )
+            }
+
             // Playback commands
             CommandMenu("Playback") {
                 // Play/Pause - Space

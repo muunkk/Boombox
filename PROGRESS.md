@@ -161,7 +161,7 @@ Final verification after merging to `personal/main`:
 ## Resume Commands
 
 ```bash
-cd /Users/melboonchan/Master/Projects/YTM/kaset
+cd .
 git status --short --branch
 git log --oneline -8
 swift build

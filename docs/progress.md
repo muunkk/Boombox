@@ -171,3 +171,21 @@ After passes 1-2 hit diminishing returns on the original lenses, pass 3 targeted
 - **Unit tests:** 893 → **1052** (+159). Every pass merged through full CI (incl. macOS UI tests) green.
 
 **Next high-value work is runtime, not static:** the static-analysis well is largely dry; further findings now need live-app/Instruments profiling and the `needs feedback` items above.
+
+---
+
+# 2026-06-24 — Sparkle auto-updates + one-command release pipeline
+
+**Goal:** ship an installable, self-updating Boombox.app plus a single `Scripts/release.sh <version>` command, so a stable build can run as a daily driver while development continues. (Spec: [`superpowers/specs/2026-06-23-sparkle-auto-updates-design.md`](./superpowers/specs/2026-06-23-sparkle-auto-updates-design.md); plan: [`superpowers/plans/2026-06-24-sparkle-auto-updates.md`](./superpowers/plans/2026-06-24-sparkle-auto-updates.md); decision: [`adr/0014-sparkle-auto-updates-drop-sandbox.md`](./adr/0014-sparkle-auto-updates-drop-sandbox.md).)
+
+**Built (branch `feat/sparkle-auto-updates`):**
+- **App side** — Sparkle 2.9.3 via SPM; `UpdaterController` (holds `SPUStandardUpdaterController`), `CheckForUpdatesViewModel` (testable publisher seam), `CheckForUpdatesView`; wired into `KasetApp` as `CommandGroup(after: .appInfo)` → **Boombox → Check for Updates…**, with daily background checks.
+- **Sandbox dropped** — `Kaset.entitlements` no longer sandboxed (self-distribution, not App Store); `cs.jit` + `network.client` retained.
+- **Packaging** — `build-app.sh` embeds `Sparkle.framework`, adds the `@loader_path/../Frameworks` rpath, inside-out-signs the framework's nested helpers (XPC services, `Autoupdate`, `Updater.app`), and injects `SUFeedURL`/`SUPublicEDKey`/`SUEnableAutomaticChecks`/`SUScheduledCheckInterval`.
+- **Release pipeline** — `release.sh`: bump → universal Developer ID build → DMG → notarize + staple → `generate_appcast` (auto-signs) → prints the manual `gh release` + `git push` publish steps.
+
+**Verification done:** `swift build` green; **1053** unit tests pass (incl. `CheckForUpdatesViewModelTests`); ad-hoc bundle **launches** with `vmmap` confirming `Sparkle.framework` mapped into the process (rpath fix proven); `codesign --verify --deep --strict` passes; `release.sh` passes `bash -n` and `generate_appcast --download-url-prefix` confirmed as a real flag.
+
+**Remaining for the maintainer (credentialed/outward-facing):** run Sparkle `generate_keys` + paste `SU_PUBLIC_ED_KEY` into `version.env`; `xcrun notarytool store-credentials boombox-notary …`; a real Developer ID `release.sh` run (notarize + appcast); the end-to-end staging test (local feed); `gh release create` + push. See [`release-runbook.md`](./release-runbook.md).
+
+**Follow-ups (deferred):** Keychain-encrypt stored WebView auth cookies; optional one-time migration of favorites/settings from the old sandbox container to `~/Library/Application Support` (dropping the sandbox resets local data once).
