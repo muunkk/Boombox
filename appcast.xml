@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Boombox</title>
+    <description>Most recent updates to Boombox</description>
+    <language>en</language>
+    <item>
+            <title>1.0.0</title>
+            <pubDate>Thu, 25 Jun 2026 01:25:27 -0400</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/muunkk/Boombox/releases/download/1.0.0/Boombox-1.0.0.dmg" length="12255625" type="application/octet-stream" sparkle:edSignature="sdYNcs2R2buqKFa+w+0dDwPEG9v3fUNDe0QoOxiJKtdnu4KCEfcJk/XSOP/ohevwtzm6bkAOVf0XmElq8Ly0Bg=="/>
+        </item>
+  </channel>
+</rss>
