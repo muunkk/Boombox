@@ -108,12 +108,24 @@ else
   fi
   xcrun stapler staple "$DMG"
   xcrun stapler validate "$DMG"
-  # Now that it's notarized + stapled, Gatekeeper must accept it.
-  if ! spctl -a -t open --context context:primary-signature -vvv "$DMG" 2>&1 | grep -q ': accepted'; then
-    echo "ERROR: notarized DMG failed Gatekeeper assessment." >&2
+  # Verify Gatekeeper accepts the notarized app *inside* the DMG — the real
+  # end-user guarantee. This pipeline notarizes the DMG without code-signing the
+  # disk image itself, so `spctl -t open` on the DMG reports "no usable signature"
+  # even when it is correctly notarized + stapled; assess the app, not the DMG.
+  VERIFY_MP="$ROOT/.build/dmg-verify"
+  hdiutil detach "$VERIFY_MP" >/dev/null 2>&1 || true
+  rm -rf "$VERIFY_MP"
+  hdiutil attach "$DMG" -nobrowse -quiet -mountpoint "$VERIFY_MP"
+  GK_OK=0
+  if spctl -a -t exec -vv "$VERIFY_MP/Boombox.app" 2>&1 | grep -q 'source=Notarized Developer ID'; then
+    GK_OK=1
+  fi
+  hdiutil detach "$VERIFY_MP" >/dev/null 2>&1 || true
+  if [[ "$GK_OK" -ne 1 ]]; then
+    echo "ERROR: notarized app failed Gatekeeper assessment (source != Notarized Developer ID)." >&2
     exit 1
   fi
-  echo "✅ Notarized + stapled + Gatekeeper-accepted."
+  echo "✅ Notarized + stapled; app inside passes Gatekeeper (Notarized Developer ID)."
 fi
 
 # --- 3. Sign this release + merge it into the persistent appcast ---
