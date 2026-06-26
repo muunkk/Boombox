@@ -78,6 +78,11 @@ Boombox keeps itself up to date with [Sparkle](https://sparkle-project.org):
 
 The first stable release. Following a three-pass code audit (134 issues found, 132 fixed), this release is overwhelmingly about making the existing experience correct, responsive, accessible, and trustworthy. Full per-issue detail lives in [`docs/audit-findings.md`](docs/audit-findings.md), [`docs/audit-findings-pass2.md`](docs/audit-findings-pass2.md), and [`docs/audit-findings-pass3.md`](docs/audit-findings-pass3.md); the canonical feature catalog is [`docs/user-stories.csv`](docs/user-stories.csv).
 
+#### New in this release
+- **Automatic updates** via [Sparkle](https://sparkle-project.org) — Boombox checks once a day in the background and can download, verify, install, and relaunch itself; also on demand via **Boombox → Check for Updates…**. See [Updates](#updates).
+- **Signed & notarized DMG releases** on the [Releases page](https://github.com/muunkk/Boombox/releases), produced by a one-command release pipeline (build → notarize → DMG → appcast).
+- The README screenshot is redacted of any signed-in account details.
+
 #### Playback & queue
 - **Shuffle actually shuffles.** Pressing **Next** with shuffle on no longer restarts the current song or starves part of the queue — it now excludes the current track the way Apple Music / YT Music do.
 - **Single song + shuffle + repeat-off** no longer loops that one song forever at the end.
