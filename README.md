@@ -72,6 +72,104 @@ Boombox keeps itself up to date with [Sparkle](https://sparkle-project.org):
 - You can check any time via **Boombox → Check for Updates…**.
 - When an update is found it downloads, verifies, installs, and offers to relaunch — no manual reinstall.
 
+## Changelog
+
+### 1.0.0 — Quality & hardening release
+
+The first stable release. Following a three-pass code audit (134 issues found, 132 fixed), this release is overwhelmingly about making the existing experience correct, responsive, accessible, and trustworthy. Full per-issue detail lives in [`docs/audit-findings.md`](docs/audit-findings.md), [`docs/audit-findings-pass2.md`](docs/audit-findings-pass2.md), and [`docs/audit-findings-pass3.md`](docs/audit-findings-pass3.md); the canonical feature catalog is [`docs/user-stories.csv`](docs/user-stories.csv).
+
+#### Playback & queue
+- **Shuffle actually shuffles.** Pressing **Next** with shuffle on no longer restarts the current song or starves part of the queue — it now excludes the current track the way Apple Music / YT Music do.
+- **Single song + shuffle + repeat-off** no longer loops that one song forever at the end.
+- **"Add to Library" no longer hijacks playback.** Saving a song used to interrupt your current track and start playing the saved one; it now saves silently in the background. The same content actions also no longer risk removing a song you meant to add.
+- **Starting a Mix is clean.** The first Mix track keeps its real title, artist, and **artwork** instead of flashing a "Loading…" placeholder, and it keeps its **Go to Album / Go to Artist** links. Mixes also correct YouTube autoplay drift so the right track plays.
+- **Per-track state is correct.** Right after a Mix or repeat-one starts, the **like** indicator and the **Library** toggle now reflect the *current* song, not the previous one (previously you could like/save the wrong track).
+- **Duplicate songs in a queue render correctly.** Playlists/albums that legitimately repeat a track no longer show missing rows, mark the wrong row as now-playing, or remove/play the wrong copy.
+- **Smoother track transitions.** Fixed WebView/queue desync that could jump to the next song and snap back, double-load the page, briefly play the wrong track, or drop the AirPlay connection near track boundaries; and recovery from a WebView content-process crash no longer leaves a stuck timeline.
+- **Seek bar precision & polish.** The scrubber and remaining-time are now sub-second (no more 1-second snapping), no longer flicker to `-0:00` on every track change, and a freshly loaded paused track no longer gets stuck showing a loading state.
+- **Stop / Clear** now properly disables the menu-bar transport controls instead of leaving live play/pause on a cleared player.
+
+#### Browsing, detail pages & navigation
+- **Your place is preserved per tab.** Drilling into an artist/album/playlist/search detail and then switching sidebar tabs no longer throws away where you were — each tab keeps its own navigation stack when you come back.
+- **"Show all albums" on artists works again** (an internal enrichment step had been dropping the album-pagination data that powers it).
+- **Pagination is reliable.** "Load more" on a playlist/album/search no longer appends tracks from a *different* list you viewed earlier, and no longer stops early when a page legitimately repeats a track.
+- **Real error & empty states** where there were blank screens before: podcast shows now show an error-with-retry and a proper "no episodes" state; Home / Explore / New Releases / History show a clear empty state instead of a blank page; an artist's "See all top songs" now shows an error+retry like "See all albums" already did.
+- **Failures are visible.** Tapping **Mix** or **Subscribe/Unsubscribe** on an artist while offline or on an API error now tells you it failed instead of silently doing nothing; library/like/queue/album actions now surface a toast on failure.
+- **Detail pages handle offline** with the same immediate "No Connection" card the tabs show, and auto-recover when the network returns.
+- **Cleaner metadata.** Home carousels no longer show junk "artists" (years, "Album", view counts), and radio/mix tracks now list all credited artists instead of just the first.
+
+#### Search
+- **Filter chips no longer disappear** when a filter returns zero results — you can switch back to a populated filter without retyping your query.
+- **Podcasts now appear in the unified "All" results**, not only under the dedicated podcasts filter.
+- **"Load more" in filtered search works** with YouTube's current (2025) results format.
+- Keyboard-highlighted autocomplete suggestions are now exposed to VoiceOver and don't rely on color alone.
+
+#### Library, Favorites & history
+- **Your Favorites are safe.** A single corrupt or older-format entry no longer wipes your entire Favorites collection — unreadable entries are skipped (and backed up) while the rest load.
+- **History fixes.** Removed a duplicate Refresh button, added an empty state, fixed row identity so refreshes don't show stale/mis-highlighted rows, and stopped caching history continuation pages so newer plays show up promptly.
+- **Likes are consistent.** Rapid like/unlike is now serialized so the saved rating can't desync from what's shown, and a failed rating surfaces a toast.
+
+#### Lyrics
+- **Fixed a crash** romanizing Hindi/Bengali (and some Chinese/emoji) synced lyrics, and **moved romanization off the main thread** so loading lyrics or toggling romanization no longer hangs the UI on long CJK songs.
+- **Lyric lines are accessible** — VoiceOver can tap a line to seek and can tell which line is currently active.
+- Hardened LRC parsing against malformed/adversarial lyrics (overflow and deep-nesting guards) and made parsing a bit faster.
+
+#### Player bar, Now Playing & visual polish
+- **No more periodic stutter.** The player bar stopped doing a synchronous CoreAudio device query every 5 seconds, and stopped re-notifying every view ~twice a second during playback — both caused recurring micro-stutters/beachballs, especially with the queue panel open.
+- **The queue side panel is smooth** — it no longer rebuilds the entire table (with flicker and re-loaded artwork) on every play/pause and track change.
+- **Sharper artwork.** The image cache now keys by display size, so album art/thumbnails no longer appear blurry (a small thumbnail reused at full size) or waste memory.
+- **Accent background** behind Now Playing now reuses cached artwork and caches its extracted palette, so it keeps up with the artwork and stops doing redundant downloads/CPU work.
+- The menu-bar queue no longer shows stale artwork/titles when the queue changes.
+
+#### Accounts & sign-in
+- **No cross-account leakage.** Signing out now clears cached library/liked/history data, and Favorites / recent searches / saved queue are cleared and scoped per account, so a different person signing in on a shared Mac doesn't see the previous user's data. *(Note: tearing down the live in-memory queue on sign-out is tracked as a follow-up — see [Known limitations](#known-limitations).)*
+- **No UI stalls during sign-in** — Keychain cookie writes (including the Safari sign-in fallback) now run off the main thread.
+- Fixed an infinite loading shimmer in the sidebar profile when the account list comes back empty.
+
+#### Settings & keyboard shortcuts
+- **Search typing is protected.** Global player shortcuts (Space, ⌘←/→/↑/↓) no longer intercept text editing while the Search field is focused.
+- **Reserved-shortcut warning.** The in-app shortcut recorder now warns if you try to bind a standard macOS shortcut (⌘Q / ⌘W / ⌘M / ⌘,).
+- The **Toggle Sidebar (⌃⌘S)** shortcut is now documented, and your **last-used launch page** is now remembered across relaunches.
+
+#### Localization
+- **French and Indonesian are fixed.** Their translations were almost entirely scrambled (every label mapped to an unrelated word); both are now correct, including strings that carry values (e.g. "Connected as …", "Error: …").
+- **Arabic and Turkish now actually localize** — stale 2-key stub files were replaced with the full translations.
+- **~59 previously English-only strings now translate** across Arabic, French, Indonesian, Korean and Turkish — the menu-bar player, command bar, all hotkey/menu-bar settings, the Safari sign-in flow, and toolbar controls. Sign-in help text and a few interpolated status messages that could *never* localize were fixed too.
+- The Now Playing panel chevron now points the correct way in right-to-left (Arabic) layouts.
+
+#### Accessibility (VoiceOver)
+- The **editable queue** (both the AppKit side panel and the glass queue) is now usable with VoiceOver: rows announce as buttons you can activate to play, expose the now-playing row, and no longer leave "Unknown Artist" hardcoded in English.
+- Added labels/traits for **lyric lines, error/info toasts** (now announced), **account rows, the sidebar profile, the hotkey recorder, favorites cards, the display-mode/density toolbar pickers**, and arrow-key-selected suggestions.
+- New Releases and History screens gained the structural identifiers other tabs already had.
+
+#### Window, layout & empty states
+- Logging out (or a session expiry) while in **Focus** or **Small Player** mode no longer strands the window with broken chrome — it resets to the standard layout.
+- A collapsed sidebar **stays collapsed** when Settings, the login sheet, or the menu-bar popover becomes active (it used to force itself back open).
+- The onboarding window size is now consistent with the signed-in window, so logging in no longer causes an abrupt resize/clip.
+- Multiple error toasts that fire together now stack instead of overlapping into an unreadable pile.
+
+#### Performance & responsiveness
+- Moved heavy work off the main thread: CoreAudio device polling, queue encoding (now a single, synchronous-but-durable encode instead of a double encode), Keychain writes, Favorites saves, accent-palette extraction, and lyric romanization.
+- Reduced steady-state overhead: gated needless playback-state re-notifications, optimized the queue panel, precompiled LRC/duration regexes, trimmed per-frame allocations in the now-playing equalizer and synced-lyrics cursor, and bounded the lyrics/romanization in-memory caches (they previously grew for the app's lifetime).
+- The image cache now de-duplicates by size and propagates cancellation, so off-screen/cancelled image loads stop instead of completing in the background.
+
+#### Stability & crash fixes
+- Fixed **crashes** from: the lyrics romanizer (UTF-16 string indexing), reordering the queue while it changes mid-drag, and **integer overflows** in duration/timestamp parsing (`ParsingHelpers`, `Song`, `LRCParser`, `PodcastParser`) on malformed data.
+- Added **recursion depth limits** to the lyrics and search-results parsers so a pathologically nested API response can't overflow the stack.
+- Fixed an event-handler leak (and use-after-free risk) in the global hotkey service, and a slow leak of mouse-event monitors from the menu-bar popover.
+
+#### Privacy & security
+- Zero telemetry remains (no analytics, no crash reporters).
+- Hardened the playback WebView trust boundary (defense-in-depth): it now restricts top-level navigations to the expected YouTube/Google origins, validates that JS-bridge messages come from the real main frame/origin, and rejects non-`http(s)` thumbnail URLs.
+- Sign-out data clearing (above) closes the cross-account data-leak path.
+
+#### Data accuracy & API resilience
+- Pagination cursors are now per-request across playlists, albums, liked songs, search, and home/explore feeds (no cross-contamination), with support for YouTube's current (2025) continuation format.
+- Network behavior hardened: offline requests fail fast instead of burning the full retry backoff, retries use jitter (no thundering herd) and no longer retry non-idempotent mutations, `429` responses honor `Retry-After`, the API key only re-bootstraps when appropriate, and connectivity updates can't strand a stale offline/online state.
+
+#### Known limitations / follow-ups
+A short list of low-severity items intentionally deferred (several pending live-app feedback) is tracked in [`docs/deferred-followups.md`](docs/deferred-followups.md).
+
 ## Build from source
 
 ```bash
