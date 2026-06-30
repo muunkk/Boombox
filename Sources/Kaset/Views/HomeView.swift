@@ -184,42 +184,26 @@ struct HomeView: View {
         verticalPadding: CGFloat,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                if let rank {
-                    Text("\(rank)")
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 22, alignment: .trailing)
-                        .monospacedDigit()
-                }
+        let thumbCorner: CGFloat = {
+            if case .artist = item { return thumbSize / 2 }
+            return 6
+        }()
 
-                self.listThumbnail(for: item, size: thumbSize)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-
-                    if let subtitle = item.subtitle {
-                        Text(subtitle)
-                            .font(.system(size: 11))
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
+        return MusicListRow(
+            title: item.title,
+            subtitle: item.subtitle,
+            rank: rank,
+            thumbSize: thumbSize,
+            thumbnailCornerRadius: thumbCorner,
+            verticalPadding: verticalPadding,
+            onPlay: action,
+            thumbnail: { self.listThumbnail(for: item, size: thumbSize) },
+            trailing: {
                 Image(systemName: self.listKindIcon(for: item))
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, verticalPadding)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.interactiveRow(cornerRadius: 6))
+        )
     }
 
     @ViewBuilder
