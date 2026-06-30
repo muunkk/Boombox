@@ -10,6 +10,27 @@ final class LikedMusicViewModel {
         let task: Task<Void, Never>
     }
 
+    /// Sort orders offered in the Liked Songs UI.
+    enum SortOrder: String, CaseIterable, Identifiable {
+        case dateAdded
+        case title
+        case artist
+        case duration
+
+        var id: String {
+            self.rawValue
+        }
+
+        var label: String {
+            switch self {
+            case .dateAdded: String(localized: "Recently Added")
+            case .title: String(localized: "Title")
+            case .artist: String(localized: "Artist")
+            case .duration: String(localized: "Duration")
+            }
+        }
+    }
+
     /// Current loading state.
     private(set) var loadingState: LoadingState = .idle
 
@@ -18,6 +39,18 @@ final class LikedMusicViewModel {
 
     /// Whether more songs are available to load.
     private(set) var hasMore: Bool = false
+
+    /// Active search query (filters title/artist). Set via `setSearchQuery`.
+    private(set) var searchQuery: String = ""
+
+    /// Active sort order.
+    var sortOrder: SortOrder = .dateAdded
+
+    /// Whether a background "load all pages for search" pass is running.
+    private(set) var isLoadingAll = false
+
+    @ObservationIgnored
+    private var loadAllTask: Task<Void, Never>?
 
     /// Continuation cursor for the next page of liked songs. Owned by this view
     /// model (not the shared client) so repeated or concurrent liked-music loads
@@ -43,6 +76,60 @@ final class LikedMusicViewModel {
 
     init(client: any YTMusicClientProtocol) {
         self.client = client
+    }
+
+    /// Songs after applying the active search filter and sort order.
+    var displaySongs: [Song] {
+        let query = self.searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).localizedLowercase
+        let filtered: [Song] = if query.isEmpty {
+            self.songs
+        } else {
+            self.songs.filter { song in
+                song.title.localizedLowercase.contains(query)
+                    || song.artistsDisplay.localizedLowercase.contains(query)
+            }
+        }
+
+        switch self.sortOrder {
+        case .dateAdded:
+            return filtered
+        case .title:
+            return filtered.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        case .artist:
+            return filtered.sorted { $0.artistsDisplay.localizedCaseInsensitiveCompare($1.artistsDisplay) == .orderedAscending }
+        case .duration:
+            return filtered.sorted { ($0.duration ?? 0) < ($1.duration ?? 0) }
+        }
+    }
+
+    /// Updates the search query. When non-empty, drains all remaining pages in
+    /// the background so results are complete (the liked feed is paginated and
+    /// has no server-side within-playlist search). When cleared, cancels that pass.
+    func setSearchQuery(_ query: String) {
+        self.searchQuery = query
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            self.loadAllTask?.cancel()
+            self.loadAllTask = nil
+            self.isLoadingAll = false
+        } else if self.hasMore, self.loadAllTask == nil {
+            self.loadAllTask = Task { [weak self] in
+                await self?.loadAllRemaining()
+            }
+        }
+    }
+
+    /// Loads every remaining liked-songs page by repeatedly calling `loadMore`.
+    func loadAllRemaining() async {
+        guard self.hasMore else { return }
+        self.isLoadingAll = true
+        defer {
+            self.isLoadingAll = false
+            self.loadAllTask = nil
+        }
+        while self.hasMore, !Task.isCancelled {
+            await self.loadMore()
+        }
     }
 
     /// Loads liked songs.
@@ -165,6 +252,10 @@ final class LikedMusicViewModel {
     /// Refreshes liked songs.
     func refresh() async {
         self.cancelAllLiveSyncTasks()
+        self.loadAllTask?.cancel()
+        self.loadAllTask = nil
+        self.isLoadingAll = false
+        self.searchQuery = ""
         self.songs = []
         self.hasMore = false
         self.continuationToken = nil
