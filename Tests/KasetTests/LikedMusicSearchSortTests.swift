@@ -77,4 +77,42 @@ struct LikedMusicSearchSortTests {
         #expect(viewModel.isLoadingAll == false)
         #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s1", "s2"])
     }
+
+    @Test("Sort by artist orders alphabetically")
+    func sortByArtist() async {
+        let songs = [
+            TestFixtures.makeSong(id: "s1", title: "Track A", artistName: "Zebra"),
+            TestFixtures.makeSong(id: "s2", title: "Track B", artistName: "apple"),
+            TestFixtures.makeSong(id: "s3", title: "Track C", artistName: "Mango"),
+        ]
+        let viewModel = await self.makeViewModel(songs: songs)
+        viewModel.sortOrder = .artist
+        #expect(viewModel.displaySongs.map(\.id) == ["s2", "s3", "s1"])
+    }
+
+    @Test("setSearchQuery drives a complete background drain")
+    func setSearchQueryDrivesCompleteDrain() async {
+        let page0 = [TestFixtures.makeSong(id: "s0", title: "Song Zero")]
+        let page1 = [TestFixtures.makeSong(id: "s1", title: "Song One")]
+        let page2 = [TestFixtures.makeSong(id: "s2", title: "Song Two")]
+        let viewModel = await self.makeViewModel(songs: page0, pages: [page1, page2])
+        #expect(viewModel.hasMore == true)
+
+        viewModel.setSearchQuery("song")
+
+        // `setSearchQuery` spawns the drain Task synchronously; yield once first so
+        // it gets scheduled and flips `isLoadingAll` before the poll loop checks it,
+        // otherwise the loop can observe `isLoadingAll == false` before the drain
+        // has even started.
+        var guardCount = 0
+        await Task.yield()
+        while viewModel.isLoadingAll, guardCount < 1000 {
+            await Task.yield()
+            guardCount += 1
+        }
+
+        #expect(viewModel.hasMore == false)
+        #expect(viewModel.isLoadingAll == false)
+        #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s1", "s2"])
+    }
 }

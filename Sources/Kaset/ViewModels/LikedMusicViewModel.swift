@@ -52,6 +52,9 @@ final class LikedMusicViewModel {
     @ObservationIgnored
     private var loadAllTask: Task<Void, Never>?
 
+    @ObservationIgnored
+    private var loadAllGeneration = 0
+
     /// Continuation cursor for the next page of liked songs. Owned by this view
     /// model (not the shared client) so repeated or concurrent liked-music loads
     /// never cross pagination state.
@@ -113,19 +116,25 @@ final class LikedMusicViewModel {
             self.loadAllTask = nil
             self.isLoadingAll = false
         } else if self.hasMore, self.loadAllTask == nil {
+            self.loadAllGeneration += 1
+            let generation = self.loadAllGeneration
             self.loadAllTask = Task { [weak self] in
-                await self?.loadAllRemaining()
+                await self?.loadAllRemaining(generation: generation)
             }
         }
     }
 
     /// Loads every remaining liked-songs page by repeatedly calling `loadMore`.
-    func loadAllRemaining() async {
+    func loadAllRemaining(generation: Int? = nil) async {
         guard self.hasMore else { return }
         self.isLoadingAll = true
         defer {
-            self.isLoadingAll = false
-            self.loadAllTask = nil
+            // Only the current generation's task may clear shared state, so a
+            // cancelled older drain can't clobber a newer respawned one.
+            if generation == nil || generation == self.loadAllGeneration {
+                self.isLoadingAll = false
+                self.loadAllTask = nil
+            }
         }
         while self.hasMore, !Task.isCancelled {
             await self.loadMore()
