@@ -131,7 +131,7 @@ struct LikedMusicView: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("\(self.viewModel.songs.count) songs")
+                Text("\(self.viewModel.displaySongs.count) songs")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -139,10 +139,10 @@ struct LikedMusicView: View {
             Spacer()
 
             // Play all button
-            if !self.viewModel.songs.isEmpty {
+            if !self.viewModel.displaySongs.isEmpty {
                 Button {
                     Task {
-                        await self.playerService.playQueue(self.viewModel.songs, startingAt: 0)
+                        await self.playerService.playQueue(self.viewModel.displaySongs, startingAt: 0)
                     }
                 } label: {
                     Label("Play All", systemImage: "play.fill")
@@ -154,7 +154,7 @@ struct LikedMusicView: View {
                 // Shuffle button
                 Button {
                     Task {
-                        let shuffled = self.viewModel.songs.shuffled()
+                        let shuffled = self.viewModel.displaySongs.shuffled()
                         await self.playerService.playQueue(shuffled, startingAt: 0)
                     }
                 } label: {
@@ -278,12 +278,14 @@ struct LikedMusicView: View {
 
             Divider()
 
+            // Go to Artist - show first artist with valid ID
             if let artist = song.artists.first(where: { $0.hasNavigableId }) {
                 NavigationLink(value: artist) {
                     Label("Go to Artist", systemImage: "person")
                 }
             }
 
+            // Go to Album - show if album has valid browse ID
             if let album = song.album, album.hasNavigableId {
                 let playlist = Playlist(
                     id: album.id,
