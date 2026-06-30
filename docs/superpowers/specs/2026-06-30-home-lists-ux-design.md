@@ -111,9 +111,10 @@ distinct shelves with vertical breathing room.
 #### 5. Section header + shelf affordances
 
 - Consistent header typography/weight and spacing across all sections.
-- Optional **"See all ›"** trailing affordance when a section has a navigable detail
-  destination (only shown when such a destination exists; no dead chevrons).
 - Carousel scroll-edge clipping/insets tuned so shelves align with the 24px content gutter.
+- **"See all ›" deferred:** `HomeSection` carries no per-section browse destination, so
+  there is nothing to navigate to without new model/API plumbing. Out of scope for this
+  pass; revisit if section destinations get added.
 
 Keep within the existing visual system (Liquid Glass / `.glassEffect()` where relevant);
 no new color or type scales.
