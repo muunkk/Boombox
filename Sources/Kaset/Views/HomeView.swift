@@ -101,10 +101,58 @@ struct HomeView: View {
 
     @ViewBuilder
     private func sectionView(_ section: HomeSection) -> some View {
-        if self.settings.displayMode == .list {
-            self.sectionListView(section)
-        } else {
+        switch section.layout {
+        case .quickPicks:
+            self.quickPicksCarousel(section)
+        case .cardShelf:
             self.sectionGridView(section)
+        case .songList:
+            if self.settings.displayMode == .list {
+                self.sectionListView(section)
+            } else {
+                self.sectionGridView(section)
+            }
+        }
+    }
+
+    /// Quick Picks as a multi-row horizontal carousel of compact song rows,
+    /// keeping the shelf vertically compact while staying horizontally scannable.
+    private func quickPicksCarousel(_ section: HomeSection) -> some View {
+        let isCompact = self.settings.displayDensity == .compact
+        let thumbSize: CGFloat = isCompact ? 36 : 44
+        let columnWidth: CGFloat = isCompact ? 260 : 300
+        let rowsPerColumn = 4
+
+        let columns = stride(from: 0, to: section.items.count, by: rowsPerColumn).map { start in
+            Array(section.items[start ..< min(start + rowsPerColumn, section.items.count)])
+        }
+
+        return VStack(alignment: .leading, spacing: 12) {
+            self.sectionHeader(section)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 16) {
+                    ForEach(Array(columns.enumerated()), id: \.offset) { columnIndex, column in
+                        VStack(spacing: 2) {
+                            ForEach(Array(column.enumerated()), id: \.element.id) { rowIndex, item in
+                                let globalIndex = columnIndex * rowsPerColumn + rowIndex
+                                self.sectionListRow(
+                                    item: item,
+                                    rank: nil,
+                                    thumbSize: thumbSize,
+                                    verticalPadding: isCompact ? 4 : 6,
+                                    action: { self.playItem(item, in: section, at: globalIndex) }
+                                )
+                                .contextMenu {
+                                    self.contextMenuItems(for: item, in: section, at: globalIndex)
+                                }
+                            }
+                        }
+                        .frame(width: columnWidth)
+                    }
+                }
+            }
+            .scrollClipDisabled()
         }
     }
 
