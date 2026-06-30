@@ -10,7 +10,7 @@ struct LikedMusicView: View {
     @State private var networkMonitor = NetworkMonitor.shared
 
     @Binding var navigationPath: NavigationPath
-    @State private var hoveredSongId: String?
+    @State private var searchText = ""
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -65,18 +65,27 @@ struct LikedMusicView: View {
                     .padding(.horizontal, 24)
                     .padding(.bottom, 16)
 
+                self.searchAndSortBar
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 12)
+
                 // Songs list
-                if self.viewModel.songs.isEmpty {
-                    self.emptyStateView
+                if self.viewModel.displaySongs.isEmpty {
+                    if self.viewModel.searchQuery.isEmpty {
+                        self.emptyStateView
+                    } else {
+                        ContentUnavailableView.search(text: self.viewModel.searchQuery)
+                            .frame(minHeight: 200)
+                    }
                 } else {
-                    ForEach(Array(self.viewModel.songs.enumerated()), id: \.element.id) { index, song in
+                    ForEach(Array(self.viewModel.displaySongs.enumerated()), id: \.element.id) { index, song in
                         self.songRow(song, index: index)
                             .task {
-                                if index >= self.viewModel.songs.count - 3, self.viewModel.hasMore {
+                                if index >= self.viewModel.displaySongs.count - 3, self.viewModel.hasMore {
                                     await self.viewModel.loadMore()
                                 }
                             }
-                        if index < self.viewModel.songs.count - 1 {
+                        if index < self.viewModel.displaySongs.count - 1 {
                             Divider()
                                 .padding(.leading, 72)
                         }
@@ -158,6 +167,48 @@ struct LikedMusicView: View {
         }
     }
 
+    private var searchAndSortBar: some View {
+        HStack(spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                TextField(String(localized: "Search liked songs"), text: self.$searchText)
+                    .textFieldStyle(.plain)
+                if self.viewModel.isLoadingAll {
+                    ProgressView().controlSize(.small)
+                } else if !self.searchText.isEmpty {
+                    Button {
+                        self.searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(RoundedRectangle(cornerRadius: 8).fill(.quaternary.opacity(0.5)))
+            .frame(maxWidth: 320)
+
+            Spacer()
+
+            Menu {
+                Picker(String(localized: "Sort By"), selection: self.$viewModel.sortOrder) {
+                    ForEach(LikedMusicViewModel.SortOrder.allCases) { order in
+                        Text(order.label).tag(order)
+                    }
+                }
+            } label: {
+                Label(self.viewModel.sortOrder.label, systemImage: "arrow.up.arrow.down")
+            }
+            .menuStyle(.borderlessButton)
+            .fixedSize()
+        }
+        .onChange(of: self.searchText) { _, newValue in
+            self.viewModel.setSearchQuery(newValue)
+        }
+    }
+
     private var emptyStateView: some View {
         VStack(spacing: 16) {
             Image(systemName: "heart")
@@ -177,70 +228,23 @@ struct LikedMusicView: View {
     }
 
     private func songRow(_ song: Song, index: Int) -> some View {
-        let isHovering = self.hoveredSongId == song.id
-
-        return Button {
-            Task {
-                await self.playerService.playQueue(self.viewModel.songs, startingAt: index)
-            }
-        } label: {
-            HStack(spacing: 12) {
-                // Thumbnail with play overlay on hover
-                ZStack {
-                    SongThumbnailView(song: song)
-                    if isHovering {
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(.black.opacity(0.45))
-                            .frame(width: 48, height: 48)
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
+        MusicListRow(
+            title: song.title,
+            subtitle: song.artistsDisplay,
+            thumbSize: 48,
+            verticalPadding: 8,
+            onPlay: {
+                Task {
+                    await self.playerService.playQueue(self.viewModel.displaySongs, startingAt: index)
                 }
-                .pointingHandCursor()
-
-                // Song info
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(song.title)
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-
-                    Text(song.artistsDisplay)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-
-                Spacer()
-
-                // Duration
+            },
+            thumbnail: { SongThumbnailView(song: song) },
+            trailing: {
                 Text(song.durationDisplay)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-
-                // Play indicator
-                Image(systemName: "play.circle")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
-            .background {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(isHovering ? Color.primary.opacity(0.06) : .clear)
-                    .padding(.horizontal, 12)
-            }
-        }
-        .buttonStyle(.plain)
-        .animation(.easeInOut(duration: 0.12), value: isHovering)
-        .onHover { hovering in
-            if hovering {
-                self.hoveredSongId = song.id
-            } else if self.hoveredSongId == song.id {
-                self.hoveredSongId = nil
-            }
-        }
+        )
         .contextMenu {
             AddToQueueContextMenu(song: song, playerService: self.playerService)
 
@@ -274,14 +278,12 @@ struct LikedMusicView: View {
 
             Divider()
 
-            // Go to Artist - show first artist with valid ID
             if let artist = song.artists.first(where: { $0.hasNavigableId }) {
                 NavigationLink(value: artist) {
                     Label("Go to Artist", systemImage: "person")
                 }
             }
 
-            // Go to Album - show if album has valid browse ID
             if let album = song.album, album.hasNavigableId {
                 let playlist = Playlist(
                     id: album.id,
