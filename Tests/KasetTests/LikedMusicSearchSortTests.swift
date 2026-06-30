@@ -63,19 +63,35 @@ struct LikedMusicSearchSortTests {
         #expect(viewModel.displaySongs.map(\.id) == ["s2", "s3", "s1"])
     }
 
-    @Test("loadAllRemaining drains all continuation pages")
-    func loadAllDrainsPages() async {
+    @Test("searchDeeper drains all continuation pages")
+    func searchDeeperDrainsPages() async {
         let page0 = [TestFixtures.makeSong(id: "s0", title: "Zero")]
         let page1 = [TestFixtures.makeSong(id: "s1", title: "One")]
         let page2 = [TestFixtures.makeSong(id: "s2", title: "Two")]
         let viewModel = await self.makeViewModel(songs: page0, pages: [page1, page2])
         #expect(viewModel.hasMore == true)
 
-        await viewModel.loadAllRemaining()
+        await viewModel.searchDeeper()
 
         #expect(viewModel.hasMore == false)
-        #expect(viewModel.isLoadingAll == false)
+        #expect(viewModel.isSearchingDeeper == false)
         #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s1", "s2"])
+    }
+
+    @Test("setSearchQuery does not eagerly load more pages")
+    func setSearchQueryDoesNotAutoLoad() async {
+        let page0 = [TestFixtures.makeSong(id: "s0", title: "Zero")]
+        let page1 = [TestFixtures.makeSong(id: "s1", title: "One")]
+        let viewModel = await self.makeViewModel(songs: page0, pages: [page1])
+        #expect(viewModel.hasMore == true)
+
+        viewModel.setSearchQuery("zero")
+        await Task.yield()
+
+        // Searching only filters the loaded window; it must not auto-drain.
+        #expect(viewModel.isSearchingDeeper == false)
+        #expect(viewModel.songs.count == 1)
+        #expect(viewModel.hasMore == true)
     }
 
     @Test("Sort by artist orders alphabetically")
@@ -90,34 +106,33 @@ struct LikedMusicSearchSortTests {
         #expect(viewModel.displaySongs.map(\.id) == ["s2", "s3", "s1"])
     }
 
-    @Test("setSearchQuery drives a complete background drain")
-    func setSearchQueryDrivesCompleteDrain() async {
+    @Test("startDeepSearch drives a complete background drain")
+    func startDeepSearchDrivesCompleteDrain() async {
         let page0 = [TestFixtures.makeSong(id: "s0", title: "Song Zero")]
         let page1 = [TestFixtures.makeSong(id: "s1", title: "Song One")]
         let page2 = [TestFixtures.makeSong(id: "s2", title: "Song Two")]
         let viewModel = await self.makeViewModel(songs: page0, pages: [page1, page2])
         #expect(viewModel.hasMore == true)
 
-        viewModel.setSearchQuery("song")
+        viewModel.startDeepSearch()
 
-        // `setSearchQuery` spawns the drain Task synchronously; yield once first so
-        // it gets scheduled and flips `isLoadingAll` before the poll loop checks it,
-        // otherwise the loop can observe `isLoadingAll == false` before the drain
-        // has even started.
+        // `startDeepSearch` spawns the drain Task synchronously; yield once first so
+        // it gets scheduled and flips `isSearchingDeeper` before the poll loop checks
+        // it, otherwise the loop can observe `false` before the drain has even started.
         var guardCount = 0
         await Task.yield()
-        while viewModel.isLoadingAll, guardCount < 1000 {
+        while viewModel.isSearchingDeeper, guardCount < 1000 {
             await Task.yield()
             guardCount += 1
         }
 
         #expect(viewModel.hasMore == false)
-        #expect(viewModel.isLoadingAll == false)
+        #expect(viewModel.isSearchingDeeper == false)
         #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s1", "s2"])
     }
 
-    @Test("loadAllRemaining terminates across all-duplicate pages without breaking early")
-    func loadAllRemainingHandlesDuplicatePages() async {
+    @Test("searchDeeper terminates across all-duplicate pages without breaking early")
+    func searchDeeperHandlesDuplicatePages() async {
         // page1 repeats page0's song (all-duplicate: no new songs, but the
         // continuation token still advances). The drain's no-progress guard must
         // NOT break here — token advancement is real progress — and must still
@@ -127,10 +142,10 @@ struct LikedMusicSearchSortTests {
         let viewModel = await self.makeViewModel(songs: [s0], pages: [[s0], [s2]])
         #expect(viewModel.hasMore == true)
 
-        await viewModel.loadAllRemaining()
+        await viewModel.searchDeeper()
 
         #expect(viewModel.hasMore == false)
-        #expect(viewModel.isLoadingAll == false)
+        #expect(viewModel.isSearchingDeeper == false)
         #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s2"])
     }
 }

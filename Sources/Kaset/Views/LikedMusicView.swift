@@ -11,6 +11,9 @@ struct LikedMusicView: View {
 
     @Binding var navigationPath: NavigationPath
     @State private var searchText = ""
+    @FocusState private var searchFieldFocused: Bool
+    /// Liked-tab-local density override (independent of the global setting).
+    @AppStorage("settings.likedMusicCompact") private var likedCompact = false
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -45,10 +48,20 @@ struct LikedMusicView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }
+        .background {
+            // ⌘F focuses the search field (scoped to the Liked Music tab).
+            Button("") { self.searchFieldFocused = true }
+                .keyboardShortcut("f", modifiers: .command)
+                .opacity(0)
+                .accessibilityHidden(true)
+        }
         .task {
             if self.viewModel.loadingState == .idle {
                 await self.viewModel.load()
             }
+        }
+        .onDisappear {
+            self.viewModel.cancelDeepSearch()
         }
         .refreshable {
             await self.viewModel.refresh()
@@ -71,36 +84,17 @@ struct LikedMusicView: View {
 
                 // Songs list
                 if self.viewModel.displaySongs.isEmpty {
-                    if self.viewModel.searchQuery.isEmpty {
-                        self.emptyStateView
-                    } else {
-                        ContentUnavailableView.search(text: self.viewModel.searchQuery)
-                            .frame(minHeight: 200)
-                    }
+                    self.emptyContent
                 } else {
                     ForEach(Array(self.viewModel.displaySongs.enumerated()), id: \.element.id) { index, song in
                         self.songRow(song, index: index)
-                            .task {
-                                if index >= self.viewModel.displaySongs.count - 3, self.viewModel.hasMore {
-                                    await self.viewModel.loadMore()
-                                }
-                            }
                         if index < self.viewModel.displaySongs.count - 1 {
                             Divider()
-                                .padding(.leading, 72)
+                                .padding(.leading, self.likedCompact ? 60 : 72)
                         }
                     }
 
-                    // Loading indicator for pagination
-                    if self.viewModel.loadingState == .loadingMore {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                                .controlSize(.small)
-                                .padding()
-                            Spacer()
-                        }
-                    }
+                    self.listFooter
                 }
             }
             .padding(.vertical, 20)
@@ -174,9 +168,8 @@ struct LikedMusicView: View {
                     .foregroundStyle(.secondary)
                 TextField(String(localized: "Search liked songs"), text: self.$searchText)
                     .textFieldStyle(.plain)
-                if self.viewModel.isLoadingAll {
-                    ProgressView().controlSize(.small)
-                } else if !self.searchText.isEmpty {
+                    .focused(self.$searchFieldFocused)
+                if !self.searchText.isEmpty {
                     Button {
                         self.searchText = ""
                     } label: {
@@ -191,6 +184,17 @@ struct LikedMusicView: View {
             .frame(maxWidth: 320)
 
             Spacer()
+
+            // Liked-tab-local density toggle (independent of global density).
+            Button {
+                self.likedCompact.toggle()
+            } label: {
+                Image(systemName: self.likedCompact ? "rectangle.compress.vertical" : "rectangle.expand.vertical")
+            }
+            .buttonStyle(.borderless)
+            .help(self.likedCompact
+                ? String(localized: "Switch to comfortable rows")
+                : String(localized: "Switch to compact rows"))
 
             Menu {
                 Picker(String(localized: "Sort By"), selection: self.$viewModel.sortOrder) {
@@ -207,6 +211,101 @@ struct LikedMusicView: View {
         .onChange(of: self.searchText) { _, newValue in
             self.viewModel.setSearchQuery(newValue)
         }
+    }
+
+    /// Content shown when no songs are visible — either the empty library state,
+    /// a deep-search prompt/progress, or a true "no matches" state.
+    @ViewBuilder
+    private var emptyContent: some View {
+        if self.viewModel.searchQuery.isEmpty {
+            self.emptyStateView
+        } else if self.viewModel.isSearchingDeeper {
+            self.deepSearchProgress
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 60)
+        } else if self.viewModel.hasMore {
+            self.deepSearchPrompt
+        } else {
+            ContentUnavailableView.search(text: self.viewModel.searchQuery)
+                .frame(minHeight: 200)
+        }
+    }
+
+    /// Footer below the list: a Load More button while browsing, or a
+    /// "search deeper for more" affordance / progress while searching.
+    @ViewBuilder
+    private var listFooter: some View {
+        if self.viewModel.isSearchingDeeper {
+            self.deepSearchProgress.padding()
+        } else if self.viewModel.hasMore {
+            if self.viewModel.searchQuery.isEmpty {
+                if self.viewModel.loadingState == .loadingMore {
+                    ProgressView().controlSize(.small).padding()
+                } else {
+                    Button {
+                        Task { await self.viewModel.loadMore() }
+                    } label: {
+                        Label("Load More", systemImage: "arrow.down.circle")
+                    }
+                    .buttonStyle(.bordered)
+                    .padding()
+                }
+            } else {
+                Button {
+                    self.viewModel.startDeepSearch()
+                } label: {
+                    Label("Search deeper for more", systemImage: "magnifyingglass.circle")
+                }
+                .buttonStyle(.bordered)
+                .padding()
+            }
+        }
+    }
+
+    /// Progress ring + loaded count shown while a deep search runs.
+    private var deepSearchProgress: some View {
+        HStack(spacing: 10) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .controlSize(.small)
+            Text("Searching… \(self.viewModel.loadedCount) songs loaded")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Button(String(localized: "Stop")) {
+                self.viewModel.cancelDeepSearch()
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.tint)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    /// Prompt shown when a search has no matches in loaded songs but more pages
+    /// remain — offers to load deeper.
+    private var deepSearchPrompt: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 40))
+                .foregroundStyle(.tertiary)
+
+            Text("No matches in loaded songs")
+                .font(.headline)
+
+            Text("This song may not be loaded yet — search deeper to look through the rest of your liked music.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 360)
+
+            Button {
+                self.viewModel.startDeepSearch()
+            } label: {
+                Label("Search deeper", systemImage: "arrow.down.circle")
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 50)
     }
 
     private var emptyStateView: some View {
@@ -228,17 +327,18 @@ struct LikedMusicView: View {
     }
 
     private func songRow(_ song: Song, index: Int) -> some View {
-        MusicListRow(
+        let thumb: CGFloat = self.likedCompact ? 40 : 48
+        return MusicListRow(
             title: song.title,
             subtitle: song.artistsDisplay,
-            thumbSize: 48,
-            verticalPadding: 8,
+            thumbSize: thumb,
+            verticalPadding: self.likedCompact ? 4 : 8,
             onPlay: {
                 Task {
                     await self.playerService.playQueue(self.viewModel.displaySongs, startingAt: index)
                 }
             },
-            thumbnail: { SongThumbnailView(song: song) },
+            thumbnail: { SongThumbnailView(song: song, size: thumb) },
             trailing: {
                 Text(song.durationDisplay)
                     .font(.system(size: 12))

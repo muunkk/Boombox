@@ -46,14 +46,17 @@ final class LikedMusicViewModel {
     /// Active sort order.
     var sortOrder: SortOrder = .dateAdded
 
-    /// Whether a background "load all pages for search" pass is running.
-    private(set) var isLoadingAll = false
+    /// Whether a "search deeper" pass (loading further pages to surface matches
+    /// for the active query) is running.
+    private(set) var isSearchingDeeper = false
+
+    /// Songs loaded so far — surfaced as a progress count during a deep search.
+    var loadedCount: Int {
+        self.songs.count
+    }
 
     @ObservationIgnored
-    private var loadAllTask: Task<Void, Never>?
-
-    @ObservationIgnored
-    private var loadAllGeneration = 0
+    private var deepSearchTask: Task<Void, Never>?
 
     /// Continuation cursor for the next page of liked songs. Owned by this view
     /// model (not the shared client) so repeated or concurrent liked-music loads
@@ -105,37 +108,41 @@ final class LikedMusicViewModel {
         }
     }
 
-    /// Updates the search query. When non-empty, drains all remaining pages in
-    /// the background so results are complete (the liked feed is paginated and
-    /// has no server-side within-playlist search). When cleared, cancels that pass.
+    /// Updates the active search query. Filtering happens over already-loaded
+    /// songs (`displaySongs`); deeper pages are loaded only on explicit request
+    /// via `startDeepSearch`. Changing the query cancels any running deep search.
     func setSearchQuery(_ query: String) {
+        guard query != self.searchQuery else { return }
         self.searchQuery = query
-        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty {
-            self.loadAllTask?.cancel()
-            self.loadAllTask = nil
-            self.isLoadingAll = false
-        } else if self.hasMore, self.loadAllTask == nil {
-            self.loadAllGeneration += 1
-            let generation = self.loadAllGeneration
-            self.loadAllTask = Task { [weak self] in
-                await self?.loadAllRemaining(generation: generation)
-            }
+        self.cancelDeepSearch()
+    }
+
+    /// Starts an opt-in "search deeper" pass that loads further pages (showing
+    /// progress) so matches beyond the loaded window can surface. No-op if one
+    /// is already running.
+    func startDeepSearch() {
+        guard self.deepSearchTask == nil else { return }
+        self.deepSearchTask = Task { [weak self] in
+            await self?.searchDeeper()
+            self?.deepSearchTask = nil
         }
     }
 
-    /// Loads every remaining liked-songs page by repeatedly calling `loadMore`.
-    func loadAllRemaining(generation: Int? = nil) async {
+    /// Cancels a running deep search (e.g. when the query changes or the view
+    /// goes away).
+    func cancelDeepSearch() {
+        self.deepSearchTask?.cancel()
+        self.deepSearchTask = nil
+        self.isSearchingDeeper = false
+    }
+
+    /// Loads every remaining liked-songs page by repeatedly calling `loadMore`,
+    /// surfacing matches as they stream in. Runs only when explicitly requested
+    /// via `startDeepSearch`.
+    func searchDeeper() async {
         guard self.hasMore else { return }
-        self.isLoadingAll = true
-        defer {
-            // Only the current generation's task may clear shared state, so a
-            // cancelled older drain can't clobber a newer respawned one.
-            if generation == nil || generation == self.loadAllGeneration {
-                self.isLoadingAll = false
-                self.loadAllTask = nil
-            }
-        }
+        self.isSearchingDeeper = true
+        defer { self.isSearchingDeeper = false }
         while self.hasMore, !Task.isCancelled {
             let beforeCount = self.songs.count
             let beforeToken = self.continuationToken
@@ -277,9 +284,7 @@ final class LikedMusicViewModel {
     /// Refreshes liked songs.
     func refresh() async {
         self.cancelAllLiveSyncTasks()
-        self.loadAllTask?.cancel()
-        self.loadAllTask = nil
-        self.isLoadingAll = false
+        self.cancelDeepSearch()
         self.searchQuery = ""
         self.songs = []
         self.hasMore = false
