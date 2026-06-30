@@ -222,7 +222,10 @@ struct HomeView: View {
     private func sectionHeader(_ section: HomeSection) -> some View {
         Text(section.title)
             .font(.title2)
-            .fontWeight(.semibold)
+            .fontWeight(.bold)
+            .lineLimit(1)
+            .padding(.bottom, 2)
+            .accessibilityAddTraits(.isHeader)
     }
 
     private func sectionListRow(
