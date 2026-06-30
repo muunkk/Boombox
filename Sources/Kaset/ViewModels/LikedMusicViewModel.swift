@@ -137,7 +137,23 @@ final class LikedMusicViewModel {
             }
         }
         while self.hasMore, !Task.isCancelled {
+            let beforeCount = self.songs.count
+            let beforeToken = self.continuationToken
             await self.loadMore()
+
+            // `loadMore()` early-returns without suspending when it cannot
+            // proceed — notably when a concurrent scroll-triggered load already
+            // holds `loadingState == .loadingMore`. Without this guard the
+            // `while hasMore` loop would spin with no suspension point, starving
+            // the main actor so that in-flight load's continuation can never
+            // resume to clear the state — freezing the UI.
+            if self.songs.count == beforeCount, self.continuationToken == beforeToken {
+                // No progress. If there is genuinely nothing more to fetch,
+                // stop. Otherwise a concurrent load is in flight — yield the
+                // main actor (via sleep) so it can finish, then retry.
+                guard self.continuationToken != nil else { break }
+                try? await Task.sleep(for: .milliseconds(50))
+            }
         }
     }
 

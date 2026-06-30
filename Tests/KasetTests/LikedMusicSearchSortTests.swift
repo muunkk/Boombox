@@ -115,4 +115,22 @@ struct LikedMusicSearchSortTests {
         #expect(viewModel.isLoadingAll == false)
         #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s1", "s2"])
     }
+
+    @Test("loadAllRemaining terminates across all-duplicate pages without breaking early")
+    func loadAllRemainingHandlesDuplicatePages() async {
+        // page1 repeats page0's song (all-duplicate: no new songs, but the
+        // continuation token still advances). The drain's no-progress guard must
+        // NOT break here — token advancement is real progress — and must still
+        // terminate once a genuinely empty continuation is reached.
+        let s0 = TestFixtures.makeSong(id: "s0", title: "Zero")
+        let s2 = TestFixtures.makeSong(id: "s2", title: "Two")
+        let viewModel = await self.makeViewModel(songs: [s0], pages: [[s0], [s2]])
+        #expect(viewModel.hasMore == true)
+
+        await viewModel.loadAllRemaining()
+
+        #expect(viewModel.hasMore == false)
+        #expect(viewModel.isLoadingAll == false)
+        #expect(Set(viewModel.displaySongs.map(\.id)) == ["s0", "s2"])
+    }
 }
