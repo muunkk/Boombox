@@ -10,6 +10,7 @@ struct HomeView: View {
     @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var settings = SettingsManager.shared
+    @State private var showMoreSections = false
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -86,12 +87,19 @@ struct HomeView: View {
                     .staggeredAppearance(index: 0)
                 }
 
-                // API sections - Quick Picks pinned first, rest in API order
-                ForEach(self.viewModel.displaySections) { section in
+                // API sections - Quick Picks pinned first, rest in API order.
+                // Everything up to and including "Daily Discover" shows normally;
+                // sections after it are tucked behind a "Show more" toggle so the
+                // long tail isn't built (or image-prefetched) until requested.
+                ForEach(self.visibleSections) { section in
                     self.sectionView(section)
                         .task {
                             await self.prefetchImagesAsync(for: section)
                         }
+                }
+
+                if !self.hiddenSections.isEmpty {
+                    self.moreSectionsDisclosure
                 }
             }
             .padding(.horizontal, 24)
@@ -99,12 +107,116 @@ struct HomeView: View {
         }
     }
 
+    /// Sections shown by default: everything up to and including the first
+    /// "Daily Discover" shelf (or all sections if there is none).
+    private var visibleSections: [HomeSection] {
+        let sections = self.viewModel.displaySections
+        guard let discoverIndex = sections.firstIndex(where: \.isDailyDiscover) else {
+            return sections
+        }
+        return Array(sections.prefix(discoverIndex + 1))
+    }
+
+    /// Sections after "Daily Discover" — tucked behind the "Show more" toggle.
+    private var hiddenSections: [HomeSection] {
+        let sections = self.viewModel.displaySections
+        guard let discoverIndex = sections.firstIndex(where: \.isDailyDiscover) else {
+            return []
+        }
+        return Array(sections.dropFirst(discoverIndex + 1))
+    }
+
+    /// "Show more" toggle revealing the sections after Daily Discover. Collapsed
+    /// by default so their rows and image prefetch aren't built until requested.
+    @ViewBuilder
+    private var moreSectionsDisclosure: some View {
+        if self.showMoreSections {
+            ForEach(self.hiddenSections) { section in
+                self.sectionView(section)
+                    .task {
+                        await self.prefetchImagesAsync(for: section)
+                    }
+            }
+            Button {
+                withAnimation(.snappy) { self.showMoreSections = false }
+            } label: {
+                Label("Show less", systemImage: "chevron.up")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+        } else {
+            Button {
+                withAnimation(.snappy) { self.showMoreSections = true }
+            } label: {
+                HStack(spacing: 8) {
+                    Text("Show more")
+                        .font(.headline)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 13, weight: .semibold))
+                    Spacer()
+                }
+                .foregroundStyle(.secondary)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
     @ViewBuilder
     private func sectionView(_ section: HomeSection) -> some View {
-        if self.settings.displayMode == .list {
-            self.sectionListView(section)
-        } else {
+        switch section.layout {
+        case .quickPicks:
+            self.quickPicksCarousel(section)
+        case .cardShelf:
             self.sectionGridView(section)
+        case .songList:
+            if self.settings.displayMode == .list {
+                self.sectionListView(section)
+            } else {
+                self.sectionGridView(section)
+            }
+        }
+    }
+
+    /// Quick Picks as a multi-row horizontal carousel of compact song rows,
+    /// keeping the shelf vertically compact while staying horizontally scannable.
+    private func quickPicksCarousel(_ section: HomeSection) -> some View {
+        let isCompact = self.settings.displayDensity == .compact
+        let thumbSize: CGFloat = isCompact ? 36 : 44
+        let columnWidth: CGFloat = isCompact ? 260 : 300
+        let rowsPerColumn = 4
+
+        let columns = stride(from: 0, to: section.items.count, by: rowsPerColumn).map { start in
+            Array(section.items[start ..< min(start + rowsPerColumn, section.items.count)])
+        }
+
+        return VStack(alignment: .leading, spacing: 12) {
+            self.sectionHeader(section)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 16) {
+                    ForEach(Array(columns.enumerated()), id: \.offset) { columnIndex, column in
+                        VStack(spacing: 2) {
+                            ForEach(Array(column.enumerated()), id: \.element.id) { rowIndex, item in
+                                let globalIndex = columnIndex * rowsPerColumn + rowIndex
+                                self.sectionListRow(
+                                    item: item,
+                                    rank: nil,
+                                    thumbSize: thumbSize,
+                                    verticalPadding: isCompact ? 4 : 6,
+                                    action: { self.playItem(item, in: section, at: globalIndex) }
+                                )
+                                .contextMenu {
+                                    self.contextMenuItems(for: item, in: section, at: globalIndex)
+                                }
+                            }
+                        }
+                        .frame(width: columnWidth)
+                    }
+                }
+            }
+            .scrollClipDisabled()
         }
     }
 
@@ -174,7 +286,10 @@ struct HomeView: View {
     private func sectionHeader(_ section: HomeSection) -> some View {
         Text(section.title)
             .font(.title2)
-            .fontWeight(.semibold)
+            .fontWeight(.bold)
+            .lineLimit(1)
+            .padding(.bottom, 2)
+            .accessibilityAddTraits(.isHeader)
     }
 
     private func sectionListRow(
@@ -184,42 +299,26 @@ struct HomeView: View {
         verticalPadding: CGFloat,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                if let rank {
-                    Text("\(rank)")
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 22, alignment: .trailing)
-                        .monospacedDigit()
-                }
+        let thumbCorner: CGFloat = {
+            if case .artist = item { return thumbSize / 2 }
+            return 6
+        }()
 
-                self.listThumbnail(for: item, size: thumbSize)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-
-                    if let subtitle = item.subtitle {
-                        Text(subtitle)
-                            .font(.system(size: 11))
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
+        return MusicListRow(
+            title: item.title,
+            subtitle: item.subtitle,
+            rank: rank,
+            thumbSize: thumbSize,
+            thumbnailCornerRadius: thumbCorner,
+            verticalPadding: verticalPadding,
+            onPlay: action,
+            thumbnail: { self.listThumbnail(for: item, size: thumbSize) },
+            trailing: {
                 Image(systemName: self.listKindIcon(for: item))
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, verticalPadding)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.interactiveRow(cornerRadius: 6))
+        )
     }
 
     @ViewBuilder

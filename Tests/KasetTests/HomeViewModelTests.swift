@@ -37,6 +37,23 @@ struct HomeViewModelTests {
         #expect(self.viewModel.sections[1].title == "Recommended")
     }
 
+    @Test("displaySections pins Quick Picks first, preserving other order")
+    func displaySectionsOrdering() async {
+        self.mockClient.homeResponse = HomeResponse(sections: [
+            TestFixtures.makeHomeSection(title: "Your Daily Discover"),
+            TestFixtures.makeHomeSection(title: "Recommended"),
+            TestFixtures.makeHomeSection(title: "Quick picks"),
+        ])
+
+        await self.viewModel.load()
+
+        // Quick Picks is hoisted to the top; everything else keeps API order
+        // (Daily Discover stays in place — the Home view collapses what follows).
+        #expect(self.viewModel.displaySections.map(\.title) == [
+            "Quick picks", "Your Daily Discover", "Recommended",
+        ])
+    }
+
     @Test("Load error sets error state")
     func loadError() async {
         self.mockClient.shouldThrowError = YTMusicError.networkError(underlying: URLError(.notConnectedToInternet))

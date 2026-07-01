@@ -338,16 +338,14 @@ struct MainWindow: View {
                         }
                         if self.currentPageSupportsDensity {
                             ToolbarItem(placement: .navigation) {
-                                Picker("Density", selection: self.$settings.displayDensity) {
-                                    ForEach(SettingsManager.DisplayDensity.allCases) { density in
-                                        Image(systemName: density.systemImage)
-                                            .tag(density)
-                                            .accessibilityLabel(density.displayName)
-                                    }
+                                Button {
+                                    self.settings.displayDensity = self.settings.displayDensity.next
+                                } label: {
+                                    Image(systemName: self.settings.displayDensity.systemImage)
                                 }
-                                .pickerStyle(.segmented)
-                                .help(String(localized: "Density"))
+                                .help(String(localized: "Density: \(self.settings.displayDensity.displayName)"))
                                 .accessibilityLabel(String(localized: "Density"))
+                                .accessibilityValue(self.settings.displayDensity.displayName)
                             }
                         }
                     }

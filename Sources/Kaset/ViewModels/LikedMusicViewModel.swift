@@ -10,6 +10,27 @@ final class LikedMusicViewModel {
         let task: Task<Void, Never>
     }
 
+    /// Sort orders offered in the Liked Songs UI.
+    enum SortOrder: String, CaseIterable, Identifiable {
+        case dateAdded
+        case title
+        case artist
+        case duration
+
+        var id: String {
+            self.rawValue
+        }
+
+        var label: String {
+            switch self {
+            case .dateAdded: String(localized: "Recently Added")
+            case .title: String(localized: "Title")
+            case .artist: String(localized: "Artist")
+            case .duration: String(localized: "Duration")
+            }
+        }
+    }
+
     /// Current loading state.
     private(set) var loadingState: LoadingState = .idle
 
@@ -18,6 +39,24 @@ final class LikedMusicViewModel {
 
     /// Whether more songs are available to load.
     private(set) var hasMore: Bool = false
+
+    /// Active search query (filters title/artist). Set via `setSearchQuery`.
+    private(set) var searchQuery: String = ""
+
+    /// Active sort order.
+    var sortOrder: SortOrder = .dateAdded
+
+    /// Whether a "search deeper" pass (loading further pages to surface matches
+    /// for the active query) is running.
+    private(set) var isSearchingDeeper = false
+
+    /// Songs loaded so far — surfaced as a progress count during a deep search.
+    var loadedCount: Int {
+        self.songs.count
+    }
+
+    @ObservationIgnored
+    private var deepSearchTask: Task<Void, Never>?
 
     /// Continuation cursor for the next page of liked songs. Owned by this view
     /// model (not the shared client) so repeated or concurrent liked-music loads
@@ -43,6 +82,86 @@ final class LikedMusicViewModel {
 
     init(client: any YTMusicClientProtocol) {
         self.client = client
+    }
+
+    /// Songs after applying the active search filter and sort order.
+    var displaySongs: [Song] {
+        let query = self.searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).localizedLowercase
+        let filtered: [Song] = if query.isEmpty {
+            self.songs
+        } else {
+            self.songs.filter { song in
+                song.title.localizedLowercase.contains(query)
+                    || song.artistsDisplay.localizedLowercase.contains(query)
+            }
+        }
+
+        switch self.sortOrder {
+        case .dateAdded:
+            return filtered
+        case .title:
+            return filtered.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        case .artist:
+            return filtered.sorted { $0.artistsDisplay.localizedCaseInsensitiveCompare($1.artistsDisplay) == .orderedAscending }
+        case .duration:
+            return filtered.sorted { ($0.duration ?? 0) < ($1.duration ?? 0) }
+        }
+    }
+
+    /// Updates the active search query. Filtering happens over already-loaded
+    /// songs (`displaySongs`); deeper pages are loaded only on explicit request
+    /// via `startDeepSearch`. Changing the query cancels any running deep search.
+    func setSearchQuery(_ query: String) {
+        guard query != self.searchQuery else { return }
+        self.searchQuery = query
+        self.cancelDeepSearch()
+    }
+
+    /// Starts an opt-in "search deeper" pass that loads further pages (showing
+    /// progress) so matches beyond the loaded window can surface. No-op if one
+    /// is already running.
+    func startDeepSearch() {
+        guard self.deepSearchTask == nil else { return }
+        self.deepSearchTask = Task { [weak self] in
+            await self?.searchDeeper()
+            self?.deepSearchTask = nil
+        }
+    }
+
+    /// Cancels a running deep search (e.g. when the query changes or the view
+    /// goes away).
+    func cancelDeepSearch() {
+        self.deepSearchTask?.cancel()
+        self.deepSearchTask = nil
+        self.isSearchingDeeper = false
+    }
+
+    /// Loads every remaining liked-songs page by repeatedly calling `loadMore`,
+    /// surfacing matches as they stream in. Runs only when explicitly requested
+    /// via `startDeepSearch`.
+    func searchDeeper() async {
+        guard self.hasMore else { return }
+        self.isSearchingDeeper = true
+        defer { self.isSearchingDeeper = false }
+        while self.hasMore, !Task.isCancelled {
+            let beforeCount = self.songs.count
+            let beforeToken = self.continuationToken
+            await self.loadMore()
+
+            // `loadMore()` early-returns without suspending when it cannot
+            // proceed — notably when a concurrent scroll-triggered load already
+            // holds `loadingState == .loadingMore`. Without this guard the
+            // `while hasMore` loop would spin with no suspension point, starving
+            // the main actor so that in-flight load's continuation can never
+            // resume to clear the state — freezing the UI.
+            if self.songs.count == beforeCount, self.continuationToken == beforeToken {
+                // No progress. If there is genuinely nothing more to fetch,
+                // stop. Otherwise a concurrent load is in flight — yield the
+                // main actor (via sleep) so it can finish, then retry.
+                guard self.continuationToken != nil else { break }
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+        }
     }
 
     /// Loads liked songs.
@@ -165,6 +284,8 @@ final class LikedMusicViewModel {
     /// Refreshes liked songs.
     func refresh() async {
         self.cancelAllLiveSyncTasks()
+        self.cancelDeepSearch()
+        self.searchQuery = ""
         self.songs = []
         self.hasMore = false
         self.continuationToken = nil

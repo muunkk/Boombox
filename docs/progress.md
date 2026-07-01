@@ -189,3 +189,17 @@ After passes 1-2 hit diminishing returns on the original lenses, pass 3 targeted
 **Remaining for the maintainer (credentialed/outward-facing):** run Sparkle `generate_keys` + paste `SU_PUBLIC_ED_KEY` into `version.env`; `xcrun notarytool store-credentials boombox-notary …`; a real Developer ID `release.sh` run (notarize + appcast); the end-to-end staging test (local feed); `gh release create` + push. See [`release-runbook.md`](./release-runbook.md).
 
 **Follow-ups (deferred):** Keychain-encrypt stored WebView auth cookies; optional one-time migration of favorites/settings from the old sandbox container to `~/Library/Application Support` (dropping the sandbox resets local data once).
+
+---
+
+# 2026-06-30 — Home & Lists UX pass
+
+**Goal:** Make Home read as distinct recommendation shelves, give list rows play-on-hover parity, and bring search/sort to Liked Songs — toward Spotify/Apple Music UX parity. (Spec: [`superpowers/specs/2026-06-30-home-lists-ux-design.md`](./superpowers/specs/2026-06-30-home-lists-ux-design.md); plan: [`superpowers/plans/2026-06-30-home-lists-ux-pass.md`](./superpowers/plans/2026-06-30-home-lists-ux-pass.md).)
+
+**Built (branch `feature/home-lists-ux-pass`, 7 tasks via subagent-driven development):**
+- **A — Home restructure** — `SectionLayout` classifier (`Sources/Kaset/Models/SectionLayout.swift`: `quickPicks`/`cardShelf`/`songList`) drives section rendering. Quick Picks now renders as a multi-row horizontal carousel (≤4 rows/column) in both list and grid mode; in list mode card shelves stay horizontal and song sections render as vertical lists — freeing vertical space so shelves read as distinct.
+- **B — List hover-play parity** — new reusable `MusicListRow` (`Views/SharedViews/MusicListRow.swift`) with a play-on-hover thumbnail overlay; adopted by Home list rows (the actual gap) and Liked Songs.
+- **C — Liked Songs search/sort** — `LikedMusicViewModel` gains `searchQuery`/`sortOrder`/`displaySongs` (filter by title/artist, sort by Recently Added/Title/Artist/Duration) with **auto-load-all-on-search** (drains paginated continuations so results are complete, since there is no server-side within-playlist search). UI adds a search field (with clear + loading spinner), a sort menu, a "no matches" state, and the header count/Play All/Shuffle reflect the active filter.
+- **D — Home polish** — consistent bold, single-line section headers with the `.isHeader` accessibility trait. ("See all" affordance deferred — `HomeSection` carries no per-section browse destination to navigate to.)
+
+**Verification done:** `swiftformat .` 0 changes; `swiftlint --strict` 0 violations (274 files); `swift build` green; **1063** unit tests pass (incl. new `SectionLayoutTests` ×5 and `LikedMusicSearchSortTests` ×5). Each task passed an independent spec+quality review; the Liked concurrency (cancellable auto-load-all) was reviewed on the most capable model. **Pending:** human visual QA in the running app (hover overlays, carousel scroll, density variants) and the final whole-branch review.
