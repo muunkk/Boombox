@@ -44,4 +44,11 @@ struct SectionLayoutTests {
         #expect(self.section(title: "Your QUICK PICKS", items: []).isQuickPicks)
         #expect(!self.section(title: "Listen again", items: []).isQuickPicks)
     }
+
+    @Test("isDailyDiscover matches discover sections case-insensitively")
+    func isDailyDiscoverMatch() {
+        #expect(self.section(title: "Your Daily DISCOVER", items: []).isDailyDiscover)
+        #expect(self.section(title: "Discover Mix", items: []).isDailyDiscover)
+        #expect(!self.section(title: "Listen again", items: []).isDailyDiscover)
+    }
 }

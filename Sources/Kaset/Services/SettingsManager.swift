@@ -73,6 +73,13 @@ final class SettingsManager {
             case .compact: "rectangle.expand.vertical"
             }
         }
+
+        /// The next density in the cycle, for the toolbar cycle button.
+        var next: DisplayDensity {
+            let all = Self.allCases
+            let index = all.firstIndex(of: self) ?? 0
+            return all[(index + 1) % all.count]
+        }
     }
 
     // MARK: - Launch Page Options

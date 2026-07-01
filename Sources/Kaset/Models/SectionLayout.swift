@@ -18,6 +18,12 @@ extension HomeSection {
         self.title.localizedLowercase.contains("quick pick")
     }
 
+    /// Whether this section is a "daily discover" shelf (matched by title).
+    /// These are pushed to the bottom of Home and collapsed by default.
+    var isDailyDiscover: Bool {
+        self.title.localizedLowercase.contains("discover")
+    }
+
     /// Derived layout classification driving Home rendering.
     var layout: SectionLayout {
         if self.isQuickPicks { return .quickPicks }

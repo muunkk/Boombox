@@ -10,6 +10,7 @@ struct HomeView: View {
     @Binding var navigationPath: NavigationPath
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var settings = SettingsManager.shared
+    @State private var showMoreSections = false
 
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
@@ -86,16 +87,79 @@ struct HomeView: View {
                     .staggeredAppearance(index: 0)
                 }
 
-                // API sections - Quick Picks pinned first, rest in API order
-                ForEach(self.viewModel.displaySections) { section in
+                // API sections - Quick Picks pinned first, rest in API order.
+                // Everything up to and including "Daily Discover" shows normally;
+                // sections after it are tucked behind a "Show more" toggle so the
+                // long tail isn't built (or image-prefetched) until requested.
+                ForEach(self.visibleSections) { section in
                     self.sectionView(section)
                         .task {
                             await self.prefetchImagesAsync(for: section)
                         }
                 }
+
+                if !self.hiddenSections.isEmpty {
+                    self.moreSectionsDisclosure
+                }
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 20)
+        }
+    }
+
+    /// Sections shown by default: everything up to and including the first
+    /// "Daily Discover" shelf (or all sections if there is none).
+    private var visibleSections: [HomeSection] {
+        let sections = self.viewModel.displaySections
+        guard let discoverIndex = sections.firstIndex(where: \.isDailyDiscover) else {
+            return sections
+        }
+        return Array(sections.prefix(discoverIndex + 1))
+    }
+
+    /// Sections after "Daily Discover" — tucked behind the "Show more" toggle.
+    private var hiddenSections: [HomeSection] {
+        let sections = self.viewModel.displaySections
+        guard let discoverIndex = sections.firstIndex(where: \.isDailyDiscover) else {
+            return []
+        }
+        return Array(sections.dropFirst(discoverIndex + 1))
+    }
+
+    /// "Show more" toggle revealing the sections after Daily Discover. Collapsed
+    /// by default so their rows and image prefetch aren't built until requested.
+    @ViewBuilder
+    private var moreSectionsDisclosure: some View {
+        if self.showMoreSections {
+            ForEach(self.hiddenSections) { section in
+                self.sectionView(section)
+                    .task {
+                        await self.prefetchImagesAsync(for: section)
+                    }
+            }
+            Button {
+                withAnimation(.snappy) { self.showMoreSections = false }
+            } label: {
+                Label("Show less", systemImage: "chevron.up")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+        } else {
+            Button {
+                withAnimation(.snappy) { self.showMoreSections = true }
+            } label: {
+                HStack(spacing: 8) {
+                    Text("Show more")
+                        .font(.headline)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 13, weight: .semibold))
+                    Spacer()
+                }
+                .foregroundStyle(.secondary)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
