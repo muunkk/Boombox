@@ -5,6 +5,14 @@
     <description>Most recent updates to Boombox</description>
     <language>en</language>
     <item>
+            <title>1.1.0</title>
+            <pubDate>Thu, 02 Jul 2026 14:09:19 -0400</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/muunkk/Boombox/releases/download/1.1.0/Boombox-1.1.0.dmg" length="12437964" type="application/octet-stream" sparkle:edSignature="uJ3dg8qQkA5P56aOkUfhJM7HgD+kY34n0eJza07UziDB9cRp31DuSh8No/s6JImWg9aqfUfMc5b0k1Sa3tZ6Dg=="/>
+        </item>
+    <item>
             <title>1.0.0</title>
             <pubDate>Thu, 25 Jun 2026 01:25:27 -0400</pubDate>
             <sparkle:version>2</sparkle:version>
